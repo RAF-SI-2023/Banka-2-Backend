@@ -31,7 +31,7 @@
 Docker image-i mogu da se pokrenu i iz Docker Desktop aplikacije tako sto odete na tab `Images` or `Containtars` i u koloni `Actions` ih pokrenete 
 
 ## Workflow
-- Potrebno je forkovati (fork) glavnog projekat sa `dev` grane u vase lokalne repozitorijume i da radite na svom forku
+- Potrebno je forkovati (fork) glavni projekat sa `dev` grane u vase lokalne repozitorijume i da radite na svom forku
 - Kada hocete da odratite merge sa glavnim projektom potrebno je da kreirate `Pull request` sa vaseg forka i da odaberete da hocete da mergujete sa `dev` granom glavnog projeta
 
 
