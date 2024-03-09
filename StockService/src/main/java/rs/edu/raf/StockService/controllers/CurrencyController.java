@@ -1,0 +1,53 @@
+package rs.edu.raf.StockService.controllers;
+
+
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import rs.edu.raf.StockService.data.entities.Currency;
+import rs.edu.raf.StockService.data.entities.CurrencyInflation;
+import rs.edu.raf.StockService.services.CurrencyInflationService;
+import rs.edu.raf.StockService.services.CurrencyService;
+import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
+import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
+
+import java.util.List;
+
+@RestController("/currency")
+public class CurrencyController {
+    private final CurrencyService currencyServiceImpl;
+    private final CurrencyInflationService currencyInflationService;
+
+    public CurrencyController(InMemoryCurrencyServiceImpl currencyServiceImpl, CurrencyInflationService currencyInflationService) {
+        this.currencyServiceImpl = currencyServiceImpl;
+        this.currencyInflationService = currencyInflationService;
+    }
+
+    @GetMapping("/all")
+    ResponseEntity<List<Currency>> findAllCurrency() {
+        return ResponseEntity.ok(currencyServiceImpl.findAll());
+    }
+
+    @GetMapping("/{id}")
+    ResponseEntity<Currency> findCurrencyById(@PathVariable Long id) {
+        return ResponseEntity.ok(currencyServiceImpl.findById(id));
+    }
+
+    @GetMapping("/code/{currencyCode}")
+    ResponseEntity<Currency> findCurrencyByCurrencyCode(@PathVariable String currencyCode) {
+        return ResponseEntity.ok(currencyServiceImpl.findByCurrencyCode(currencyCode));
+    }
+
+    @GetMapping("/inflation/{currencyId}")
+    ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable long currencyId) {
+        return ResponseEntity.ok(currencyInflationService.findInflationByCurrencyId(currencyId));
+    }
+
+    @GetMapping("/inflation")
+    ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") long currencyId, @Param("year") long year) {
+        return ResponseEntity.ok(currencyInflationService.findInflationByCurrencyIdAndYear(currencyId, year));
+    }
+
+}
