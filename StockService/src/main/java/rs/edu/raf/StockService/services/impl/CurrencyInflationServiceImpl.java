@@ -1,15 +1,16 @@
 package rs.edu.raf.StockService.services.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 import rs.edu.raf.StockService.repositories.CurrencyInflationRepository;
+import rs.edu.raf.StockService.services.CurrencyInflationService;
 
 import java.util.List;
 
 @Service
-public class CurrencyInflationServiceImpl {
-    @Autowired
+public class CurrencyInflationServiceImpl implements CurrencyInflationService {
+
+
     private final CurrencyInflationRepository currencyInflationRepository;
 
     /**

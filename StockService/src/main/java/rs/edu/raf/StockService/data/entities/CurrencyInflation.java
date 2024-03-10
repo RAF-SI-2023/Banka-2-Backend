@@ -1,9 +1,11 @@
 package rs.edu.raf.StockService.data.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,17 +17,26 @@ import lombok.NoArgsConstructor;
 
 public class CurrencyInflation {
 
+    /**
+     * Izbrisati ako se upisuje u DB
+     */
+    @JsonIgnore
+    @Transient
+    private static long generatedId;
     private double inflationRate;
     private long year;
     @Id
+    @GeneratedValue
     private Long id;
-    @ManyToOne
-    private Currency currency;
+    private long currencyId;
 
-
-    public CurrencyInflation(double inflationRate, long year, Currency currency) {
+    public CurrencyInflation(double inflationRate, long year, long currency) {
         this.inflationRate = inflationRate;
         this.year = year;
-        this.currency = currency;
+        this.currencyId = currency;
+
+        /** Ovaj deo izbrisati ako se upisuje u DB, kao i celo polje generated Id*/
+        this.id = generatedId++;
     }
+
 }

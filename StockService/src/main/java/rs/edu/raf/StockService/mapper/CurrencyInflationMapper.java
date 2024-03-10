@@ -12,7 +12,7 @@ public class CurrencyInflationMapper {
         return new CurrencyInflationDto(
                 currencyInflation.getInflationRate(),
                 currencyInflation.getYear(),
-                currencyInflation.getCurrency()
+                currencyInflation.getCurrencyId()
         );
     }
 
@@ -20,7 +20,7 @@ public class CurrencyInflationMapper {
         return new CurrencyInflation(
                 dto.getInflationRate(),
                 dto.getYear(),
-                dto.getCurrency()
+                dto.getCurrencyId()
         );
     }
 }

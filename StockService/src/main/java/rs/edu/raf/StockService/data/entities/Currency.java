@@ -23,7 +23,7 @@ public class Currency {
     private String currencyCode;
     private String currencySymbol;
     private String currencyPolity;
-    @OneToMany(mappedBy = "currency")
+    @OneToMany(mappedBy = "currencyId")
     private List<CurrencyInflation> inflationList;
 
     public Currency(String currencyName, String currencyCode) {

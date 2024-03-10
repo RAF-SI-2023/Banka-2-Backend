@@ -1,29 +1,15 @@
 package rs.edu.raf.StockService.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
-import rs.edu.raf.StockService.repositories.CurrencyInflationRepository;
 
 import java.util.List;
 
-@Service
-public class CurrencyInflationService {
-    @Autowired
-    private final CurrencyInflationRepository currencyInflationRepository;
 
-    public CurrencyInflationService(CurrencyInflationRepository currencyInflationRepository) {
-        this.currencyInflationRepository = currencyInflationRepository;
-    }
+public interface CurrencyInflationService {
 
-    //TODO metode neke
-    // findInflationByCurrencyId, findInflationByCurrencyIdAndYear
-    public List<CurrencyInflation> findInflationByCurrencyId(long currencyId) {
-        return currencyInflationRepository.findByCurrencyId(currencyId).orElse(null);
-    }
+    List<CurrencyInflation> findInflationByCurrencyId(long currencyId);
 
-    public CurrencyInflation findInflationByCurrencyIdAndYear(long currencyId, long year) {
-        return currencyInflationRepository.findByCurrencyIdAndYear(currencyId, year).orElse(null);
-    }
+    CurrencyInflation findInflationByCurrencyIdAndYear(long currencyId, long year);
 
 }
