@@ -18,7 +18,7 @@ public class EmailDtoMapper {
             [Change Password Link: $changePasswordLink]
             """;
 
-    public EmailDto activationEmail(PasswordActivationDto passwordActivationDto){
+    public EmailDto activationEmail(PasswordActivationDto passwordActivationDto) {
         EmailDto emailDto = new EmailDto();
         emailDto.setEmail(passwordActivationDto.getEmail());
         emailDto.setSubject("Activate Your Account");
@@ -26,7 +26,7 @@ public class EmailDtoMapper {
         return emailDto;
     }
 
-    public EmailDto changePasswordEmail(PasswordChangeDto passwordChangeDto){
+    public EmailDto changePasswordEmail(PasswordChangeDto passwordChangeDto) {
         EmailDto emailDto = new EmailDto();
         emailDto.setEmail(passwordChangeDto.getEmail());
         emailDto.setSubject("Change Your Password");

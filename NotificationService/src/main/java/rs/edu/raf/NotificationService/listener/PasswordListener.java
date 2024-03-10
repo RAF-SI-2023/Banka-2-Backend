@@ -11,9 +11,7 @@ import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 
 
 @Component
@@ -23,18 +21,18 @@ public class PasswordListener {
     private final ObjectMapper objectMapper;
     private final EmailDtoMapper emailDtoMapper;
 
-    public PasswordListener(ObjectMapper objectMapper, EmailDtoMapper emailDtoMapper){
+    public PasswordListener(ObjectMapper objectMapper, EmailDtoMapper emailDtoMapper) {
         this.objectMapper = objectMapper;
         this.emailDtoMapper = emailDtoMapper;
     }
 
     @RabbitListener(queues = "password-activation")
-    public void passwordActivationHandler(Message message) throws IOException{
+    public void passwordActivationHandler(Message message) throws IOException {
 
         PasswordActivationDto passwordActivationDto = objectMapper.readValue(message.getBody(), PasswordActivationDto.class);
         EmailDto activationEmail = emailDtoMapper.activationEmail(passwordActivationDto);
         System.out.println(activationEmail);
-        logger.info("passwordActivationListener received message: " + passwordActivationDto.toString());
+        logger.info("passwordActivationListener received message: " + passwordActivationDto);
 
     }
 
@@ -43,7 +41,7 @@ public class PasswordListener {
         PasswordChangeDto passwordChangeDto = objectMapper.readValue(message.getBody(), PasswordChangeDto.class);
         EmailDto passwordChangeEmail = emailDtoMapper.changePasswordEmail(passwordChangeDto);
         System.out.println(passwordChangeEmail);
-        logger.info("passwordChangeListener received message: " + passwordChangeDto.toString());
+        logger.info("passwordChangeListener received message: " + passwordChangeDto);
     }
 
     @RabbitListener(queues = "password-forgot")
