@@ -146,6 +146,17 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
+        <!--	Kada sam imao problema sa generisanjem JWT-a dodao sam ovaj dependency
+        		NoClassDefFoundError javax/xml/bind/DatatypeConverter
+        		link ka problemu: https://medium.com/@jiri.caga/java-lang-classnotfoundexception-javax-xml-bind-datatypeconverter-in-java-17-solved-499d0ea776d0
+		-->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+        <!-- #############################################      -->
+
 	</dependencies>
 
 	<build>
