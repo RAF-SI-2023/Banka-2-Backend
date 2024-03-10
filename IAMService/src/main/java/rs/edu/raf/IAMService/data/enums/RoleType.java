@@ -4,6 +4,6 @@ public enum RoleType {
     ADMIN,
     EMPLOYEE,
     SUPERVISOR,
-    ACTUATOR,
+    AGENT,
     USER
 }
