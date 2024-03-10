@@ -10,7 +10,7 @@
      - “Rearrange entities”
      - “Cleanup code"
    - u VScode-u komandom Alt + Shift + F, odaberete "format on save" checkbox u settings-u, i sacuvate
-- Na ovom kanalu [backend-main](https://discord.com/channels/1212372631265742888/1212372631681110020) potrebno je `do ponedeljka uvece` ukratko napisati status vasih tiketa tako sto posaljete link ka vasem tiketu a ispod linka opisete status. Ovim izvestajem treba da se odgovori na sledeca pitanja:
+- Na ovom kanalu [backend-izvestaj]([https://discord.com/channels/1212372631265742888/1212372631681110020](https://discord.com/channels/1212372631265742888/1216333094286790787)) potrebno je `do ponedeljka uvece` ukratko napisati status vasih tiketa tako sto posaljete link ka vasem tiketu a ispod linka opisete status. Ovim izvestajem treba da se odgovori na sledeca pitanja:
      - Da li stizete da odratite i testirate ispravnost odradjenih tiketa koji su vam dodeljeni `do cetvrtka u 12:00h`
 -------
  ## Sta je potrebno instalirati
