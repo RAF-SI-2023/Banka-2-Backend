@@ -33,14 +33,19 @@ public class PasswordListenerUnitTest {
     @InjectMocks
     private PasswordListener passwordListener;
 
+    private String validEmail = "test@example.com";
+    private String validActivationUrl = "http://example.com/activate";
+    private String blankEmail = "";
+    private String invalidEmail = "test";
+    private String blankActivationUrl = "";
+
+
 
     @Test
     void passwordActivationValidInput(){
-        //setup
-        String email = "test@example.com";
-        String activationUrl = "http://example.com/activate";
-        String validJson = "{\"email\":\"" + email + "\",\"activationUrl\":\"" + activationUrl + "\"}";
-        PasswordActivationDto passwordActivationDto = new PasswordActivationDto(email, activationUrl);
+
+        String validJson = generateJson("email", "activationUrl", validEmail, validActivationUrl);
+        PasswordActivationDto passwordActivationDto = new PasswordActivationDto(validEmail, validActivationUrl);
 
         Message validMessage = createMockMessage(validJson);
 
@@ -55,15 +60,11 @@ public class PasswordListenerUnitTest {
 
     @Test
     void passwordActivationInvalidInputs(){
-        String validEmail = "test@example.com";
-        String blankEmail = "";
-        String invalidEmail = "test";
-        String blankActivationUrl = "";
-        String validActivationUrl = "http://example.com/activate";
-        String invalidJson1 = "{\"email\":\"" + blankEmail + "\",\"activationUrl\":\"" + validActivationUrl + "\"}";
-        String invalidJson2 = "{\"email\":\"" + invalidEmail + "\",\"activationUrl\":\"" + validActivationUrl + "\"}";
-        String invalidJson3 = "{\"email\":\"" + validEmail + "\",\"activationUrl\":\"" + blankActivationUrl + "\"}";
-        String invalidJson4 = "{\"email\":\"" + blankEmail + "\",\"activationUrl\":\"" + blankActivationUrl + "\"}";
+
+        String invalidJson1 = generateJson("email", "activationUrl", blankEmail, validActivationUrl);
+        String invalidJson2 = generateJson("email", "activationUrl", invalidEmail, validActivationUrl);
+        String invalidJson3 = generateJson("email", "activationUrl", validEmail, blankActivationUrl);
+        String invalidJson4 = generateJson("email", "activationUrl", blankEmail, blankActivationUrl);
 
         try {
             Message invalidMessage1 = createMockMessage(invalidJson1);
@@ -84,6 +85,10 @@ public class PasswordListenerUnitTest {
         } catch (IOException e) {
             fail(e.getMessage());
         }
+    }
+
+    private String generateJson(String propName1, String propName2, String value1, String value2){
+        return "{\""+ propName1 +"\":\"" + value1 + "\",\"" + propName2 +"\":\"" + value2 + "\"}";
     }
 
     private Message createMockMessage(String content){
