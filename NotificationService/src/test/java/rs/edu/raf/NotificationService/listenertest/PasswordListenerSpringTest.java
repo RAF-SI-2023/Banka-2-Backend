@@ -24,7 +24,7 @@ public class PasswordListenerSpringTest {
 
     @Test
     void passwordActivationTest() {
-        PasswordActivationDto dto = new PasswordActivationDto("", "localhost://link");
+        PasswordActivationDto dto = new PasswordActivationDto("email@gmail.com", "localhost://link");
         try {
             String json = objectMapper.writeValueAsString(dto);
             template.convertAndSend("password-activation", json);

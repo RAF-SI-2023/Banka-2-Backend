@@ -10,7 +10,7 @@ public class EmailDtoMapper {
     private final String activationContent = """
             Thank you for creating an account with us. To activate your account please click on the following link:
                         
-            [Activation Link: $activationLink]
+            [Activation Link: $activationUrl]
             """;
     private final String changePasswordContent = """
             You have requested to change your password. To proceed with this change, please click on the following link:
@@ -22,7 +22,7 @@ public class EmailDtoMapper {
         EmailDto emailDto = new EmailDto();
         emailDto.setEmail(passwordActivationDto.getEmail());
         emailDto.setSubject("Activate Your Account");
-        emailDto.setContent(activationContent.replaceAll("@activationUrl", passwordActivationDto.getActivationUrl()));
+        emailDto.setContent(activationContent.replaceAll("\\$activationUrl", passwordActivationDto.getActivationUrl()));
         return emailDto;
     }
 

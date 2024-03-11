@@ -33,24 +33,23 @@ public class PasswordListener {
 
     @RabbitListener(queues = "password-activation")
     public void passwordActivationHandler(Message message) throws IOException {
-
         PasswordActivationDto passwordActivationDto = objectMapper.readValue(message.getBody(), PasswordActivationDto.class);
         if (!isValid(passwordActivationDto)) return;
 
         EmailDto activationEmail = emailDtoMapper.activationEmail(passwordActivationDto);
 
-        logger.info("passwordActivationListener received message: " + passwordActivationDto);
+        logger.info("passwordActivationListener received message: " + activationEmail);
 
     }
 
     @RabbitListener(queues = "password-change")
     public void passwordChangeHandler(Message message) throws IOException {
         PasswordChangeDto passwordChangeDto = objectMapper.readValue(message.getBody(), PasswordChangeDto.class);
-        if (isValid(passwordChangeDto)) return;
+        if (!isValid(passwordChangeDto)) return;
 
         EmailDto passwordChangeEmail = emailDtoMapper.changePasswordEmail(passwordChangeDto);
 
-        logger.info("passwordChangeListener received message: " + passwordChangeDto);
+        logger.info("passwordChangeListener received message: " + passwordChangeEmail);
     }
 
     @RabbitListener(queues = "password-forgot")
@@ -60,6 +59,7 @@ public class PasswordListener {
 
     private <T> boolean isValid(T dto) {
         Set<ConstraintViolation<T>> violations = validator.validate(dto);
+
         if (violations.isEmpty()) return true;
 
         StringBuilder sb = new StringBuilder();
