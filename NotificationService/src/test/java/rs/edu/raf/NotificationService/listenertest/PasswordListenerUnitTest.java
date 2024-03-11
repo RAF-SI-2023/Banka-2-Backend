@@ -15,17 +15,24 @@ import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
 import rs.edu.raf.NotificationService.listener.PasswordListener;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class PasswordListenerUnitTest {
 
+    private final String validEmail = "test@example.com";
+    private final String validUrl = "http://example.com/activate";
+    private final String blankEmail = "";
+    private final String invalidEmail = "test";
+    private final String blankUrl = "";
     @Mock
     private Logger logger;
     @Spy
@@ -37,16 +44,8 @@ public class PasswordListenerUnitTest {
     @InjectMocks
     private PasswordListener passwordListener;
 
-    private final String validEmail = "test@example.com";
-    private final String validUrl = "http://example.com/activate";
-    private final String blankEmail = "";
-    private final String invalidEmail = "test";
-    private final String blankUrl = "";
-
-
-
     @Test
-    void passwordActivationValidInput(){
+    void passwordActivationValidInput() {
 
         String validJson = generateJson("email", "activationUrl", validEmail, validUrl);
         PasswordActivationDto passwordActivationDto = new PasswordActivationDto(validEmail, validUrl);
@@ -63,10 +62,10 @@ public class PasswordListenerUnitTest {
     }
 
     @Test
-    void passwordChangeValidInput(){
+    void passwordChangeValidInput() {
 
         String validJson = generateJson("email", "urlLink", validEmail, validUrl);
-        PasswordChangeDto passwordChangeDto= new PasswordChangeDto(validEmail, validUrl);
+        PasswordChangeDto passwordChangeDto = new PasswordChangeDto(validEmail, validUrl);
 
         Message validMessage = createMockMessage(validJson);
 
@@ -80,10 +79,10 @@ public class PasswordListenerUnitTest {
     }
 
     @Test
-    void passwordActivationInvalidInputs(){
+    void passwordActivationInvalidInputs() {
         List<Message> invalidMessages = createInvalidMessages("email", "activationUrl");
         try {
-            for(Message message: invalidMessages){
+            for (Message message : invalidMessages) {
                 passwordListener.passwordActivationHandler(message);
                 verify(emailDtoMapper, never()).activationEmail(any());
             }
@@ -93,10 +92,10 @@ public class PasswordListenerUnitTest {
     }
 
     @Test
-    void passwordChangeInvalidInputs(){
+    void passwordChangeInvalidInputs() {
         List<Message> invalidMessages = createInvalidMessages("email", "urlLink");
         try {
-            for(Message message: invalidMessages){
+            for (Message message : invalidMessages) {
                 passwordListener.passwordChangeHandler(message);
                 verify(emailDtoMapper, never()).changePasswordEmail(any());
             }
@@ -105,7 +104,7 @@ public class PasswordListenerUnitTest {
         }
     }
 
-    private List<Message> createInvalidMessages(String prop1, String prop2){
+    private List<Message> createInvalidMessages(String prop1, String prop2) {
         List<Message> invalidMessages = new ArrayList<>();
         invalidMessages.add(createMockMessage(generateJson(prop1, prop2, blankEmail, validUrl)));
         invalidMessages.add(createMockMessage(generateJson(prop1, prop2, invalidEmail, validUrl)));
@@ -114,11 +113,11 @@ public class PasswordListenerUnitTest {
         return invalidMessages;
     }
 
-    private String generateJson(String propName1, String propName2, String value1, String value2){
-        return "{\""+ propName1 +"\":\"" + value1 + "\",\"" + propName2 +"\":\"" + value2 + "\"}";
+    private String generateJson(String propName1, String propName2, String value1, String value2) {
+        return "{\"" + propName1 + "\":\"" + value1 + "\",\"" + propName2 + "\":\"" + value2 + "\"}";
     }
 
-    private Message createMockMessage(String content){
+    private Message createMockMessage(String content) {
         byte[] body = content.getBytes();
         return new Message(body);
     }
