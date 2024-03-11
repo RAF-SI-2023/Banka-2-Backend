@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class ExchangeServiceImpl implements ExchangeService {
 
-    private ExchangeRepository exchangeRepository;
+    private final ExchangeRepository exchangeRepository;
 
     public ExchangeServiceImpl(ExchangeRepository exchangeRepository) {
         this.exchangeRepository = exchangeRepository;

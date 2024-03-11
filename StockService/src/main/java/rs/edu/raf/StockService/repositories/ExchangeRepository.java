@@ -7,5 +7,6 @@ import rs.edu.raf.StockService.data.entities.Exchange;
 @Repository
 public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
     Exchange findByExchangeName(String exchangeName);
+
     Exchange findByExchangeMICode(String miCode);
 }
