@@ -2,8 +2,6 @@ package rs.edu.raf.IAMService.utils;
 
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,9 +20,9 @@ public class SubmitLimiter {
             info.resetRequestCount();
         }
         int count = info.incrementAndGetRequestCount();
-        if (count > MAX_REQUESTS) {
+        if (count > MAX_REQUESTS)
             return false;
-        }
+
         return true;
     }
 
