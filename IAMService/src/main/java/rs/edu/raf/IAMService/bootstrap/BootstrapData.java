@@ -32,24 +32,6 @@ public class BootstrapData implements CommandLineRunner {
 
         logger.info("DATA LOADING IN PROGRESS...");
 
-        Role role = new Role(RoleType.USER);
-
-        roleRepository.save(role);
-
-
-        User user1 = new User();
-        user1.setUsername("lol");
-        user1.setPassword(this.passwordEncoder.encode("lol"));
-        user1.setEmail("lol");
-        user1.setAddress("lol");
-        user1.setRole(null);
-        user1.setPhone("lol");
-        user1.setPermissions(null);
-        user1.setDateOfBirth(null);
-        user1.setRole(role);
-
-
-        this.userRepository.save(user1);
 
         logger.info("DATA LOADING FINISHED...");
     }
