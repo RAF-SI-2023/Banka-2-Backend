@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
 import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @CrossOrigin
 @RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
-    @Autowired
+
     private HttpServletRequest request;
 
     private final UserService userService;
@@ -30,19 +31,27 @@ public class UserController {
     private final SubmitLimiter submitLimiter;
     private final ChangedPasswordTokenUtil changedPasswordTokenUtil;
 
-    public UserController(UserService userService, ChangedPasswordTokenUtil changedPasswordTokenUtil, PasswordEncoder passwordEncoder, SubmitLimiter submitLimiter) {
+    private final PasswordValidator passwordValidator;
+
+
+
+    public UserController(UserService userService, ChangedPasswordTokenUtil changedPasswordTokenUtil,
+                          PasswordEncoder passwordEncoder, SubmitLimiter submitLimiter,
+                          PasswordValidator passwordValidator,HttpServletRequest request) {
         this.userService = userService;
         this.changedPasswordTokenUtil = changedPasswordTokenUtil;
         this.passwordEncoder = passwordEncoder;
         this.submitLimiter = submitLimiter;
+        this.passwordValidator = passwordValidator;
+        this.request=request;
     }
 
 
     @GetMapping(path = "/changePassword/{email}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@PathVariable String email) {
+
         if (!submitLimiter.allowRequest(email))
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-
 
         int port = this.request.getServerPort();
 
@@ -60,6 +69,10 @@ public class UserController {
     public ResponseEntity<?> changePasswordSubmit(String newPassword, PasswordChangeTokenDto passwordChangeTokenDto) {
 
         Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
+
+
+
+
         if (userOptional.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
@@ -69,7 +82,7 @@ public class UserController {
         if (passwordEncoder.matches(newPassword, user.getPassword()))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
 
-        if (!PasswordValidator.isValid(newPassword))
+        if (!passwordValidator.isValid(newPassword))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
 
 

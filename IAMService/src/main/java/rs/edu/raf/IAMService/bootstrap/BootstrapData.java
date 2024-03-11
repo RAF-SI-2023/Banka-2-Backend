@@ -33,6 +33,7 @@ public class BootstrapData implements CommandLineRunner {
         logger.info("DATA LOADING IN PROGRESS...");
 
 
+
         logger.info("DATA LOADING FINISHED...");
     }
 }

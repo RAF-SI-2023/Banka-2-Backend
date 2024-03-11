@@ -13,23 +13,27 @@ import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+    private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RabbitTemplate rabbitTemplate) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
+
     }
 
     @Override
@@ -54,11 +58,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void sendToQueue(String email,String urlLink) {
+    public void sendToQueue(String email, String urlLink) {
         PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
         passwordChangeDto.setEmail(email);
         passwordChangeDto.setUrlLink(urlLink);
-        rabbitTemplate.convertAndSend("password-change-queue", passwordChangeDto);
+        try {
+            String json = objectMapper.writeValueAsString(passwordChangeDto);
+            rabbitTemplate.convertAndSend("password-change-queue", json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
