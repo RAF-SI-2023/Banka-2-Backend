@@ -31,6 +31,7 @@ public class EmployeeDto extends UserDto {
             String address,
             List<Permission> permissions,
             String name,
+            String surname,
             String gender,
             String position,
             String department,

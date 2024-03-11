@@ -110,6 +110,7 @@ public class UserMapper {
                 user.getAddress(),
                 user.getPermissions(),
                 user.getName(),
+                user.getSurname(),
                 user.getGender(),
                 user.getPosition(),
                 user.getDepartment(),
