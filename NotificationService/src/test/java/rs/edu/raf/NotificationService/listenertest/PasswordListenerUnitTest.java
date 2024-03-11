@@ -110,6 +110,7 @@ public class PasswordListenerUnitTest {
         invalidMessages.add(createMockMessage(generateJson(prop1, prop2, invalidEmail, validUrl)));
         invalidMessages.add(createMockMessage(generateJson(prop1, prop2, validEmail, blankUrl)));
         invalidMessages.add(createMockMessage(generateJson(prop1, prop2, blankEmail, blankUrl)));
+        invalidMessages.add(null);
         return invalidMessages;
     }
 
