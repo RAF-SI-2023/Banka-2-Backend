@@ -6,13 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.Role;
+import rs.edu.raf.IAMService.data.enums.RoleType;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 public class EmployeeDto extends UserDto {
 
@@ -30,7 +29,6 @@ public class EmployeeDto extends UserDto {
             String username,
             String phone,
             String address,
-            Role role,
             List<Permission> permissions,
             String name,
             String gender,
@@ -38,7 +36,7 @@ public class EmployeeDto extends UserDto {
             String department,
             boolean active
     ) {
-        super(id, dateOfBirth, email, username, phone, address, role, permissions);
+        super(id, dateOfBirth, email, username, phone, address, new Role(RoleType.EMPLOYEE), permissions);
         this.name = name;
         this.surname = surname;
         this.gender = gender;
