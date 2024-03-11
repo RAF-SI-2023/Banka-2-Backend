@@ -17,7 +17,7 @@ import java.util.List;
 public class Currency {
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
 
     private String currencyName;
     private String currencyCode;

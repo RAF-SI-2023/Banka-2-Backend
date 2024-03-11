@@ -22,7 +22,7 @@ public class InMemoryCurrencyInflationServiceImpl implements CurrencyInflationSe
 
     @Override
     public CurrencyInflation findInflationByCurrencyIdAndYear(long currencyId, long year) {
-        System.out.println("ULAZI OVDE");
+
         return currencyInflationList.stream().filter(currencyInflation -> currencyInflation.getCurrencyId() == currencyId && currencyInflation.getYear() == year).findFirst().orElse(null);
     }
 

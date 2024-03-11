@@ -6,6 +6,7 @@ import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
@@ -17,15 +18,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class CurrencyCsvReader {
-    public static List<Currency> readCurrencyCsv() {
-        BufferedReader br;
+    static String fileLocation = "StockService/src/main/resources/csvs/physical_currency_list.csv";
+    private BufferedReader bufferedReader;
+
+    public List<Currency> readCurrencyFromCsv() {
+
         String line;
         String cvsSplitBy = ",";
         List<Currency> currencyList = new ArrayList<>();
         boolean hasHeader = true;
         try {
-            br = new BufferedReader(new FileReader("StockService/src/main/resources/csvs/physical_currency_list.csv"));
-            while ((line = br.readLine()) != null) {
+            inititateBufferedReaderStream();
+            while ((line = bufferedReader.readLine()) != null) {
                 if (hasHeader) {
                     hasHeader = false;
                     continue;
@@ -42,8 +46,8 @@ public class CurrencyCsvReader {
         return currencyList;
     }
 
-    public static List<Currency> loadCurrencyData() {
-        List<Currency> currencyList = readCurrencyCsv();
+    public List<Currency> loadCurrencyData() {
+        List<Currency> currencyList = readCurrencyFromCsv();
         int i = 0;
         for (Currency currency : currencyList) {
             String currencySymbol = "";
@@ -69,7 +73,7 @@ public class CurrencyCsvReader {
         return currencyList;
     }
 
-    public static List<CurrencyInflation> pullCurrencyInflationData(List<Currency> currencyList) {
+    public List<CurrencyInflation> pullCurrencyInflationData(List<Currency> currencyList) {
         List<CurrencyInflation> currencyInflationListEnd = new ArrayList<>();
         HttpClient client = HttpClient.newHttpClient();
 
@@ -116,4 +120,19 @@ public class CurrencyCsvReader {
         return currencyInflationListEnd;
     }
 
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
+
+    private BufferedReader inititateBufferedReaderStream() {
+        try {
+            if (this.bufferedReader != null) {
+                return bufferedReader;
+            }
+            bufferedReader = new BufferedReader(new FileReader(fileLocation));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return bufferedReader;
+    }
 }

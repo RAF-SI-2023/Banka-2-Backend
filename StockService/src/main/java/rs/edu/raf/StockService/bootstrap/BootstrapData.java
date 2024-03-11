@@ -43,8 +43,9 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) {
         logger.info("DATA LOADING IN PROGRESS...");
-        List<Currency> currencyList = CurrencyCsvReader.loadCurrencyData();
-        List<CurrencyInflation> currencyInflationList = CurrencyCsvReader.pullCurrencyInflationData(currencyList);
+        CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader();
+        List<Currency> currencyList = currencyCsvReader.loadCurrencyData();
+        List<CurrencyInflation> currencyInflationList = currencyCsvReader.pullCurrencyInflationData(currencyList);
         /*
          * otkomentarisati ako cemo koristiti bazu, a ne in memory listu , slicno i za currencyInflation
          currencyRepository.saveAll(currencyList);    */

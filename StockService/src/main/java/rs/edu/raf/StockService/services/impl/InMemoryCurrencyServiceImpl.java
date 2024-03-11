@@ -24,10 +24,10 @@ public class InMemoryCurrencyServiceImpl implements CurrencyService {
     }
 
     public Currency findByCurrencyCode(String currencyCode) {
-        return currencyList.stream().filter(currency -> currency.getCurrencyCode().equals(currencyCode)).findFirst().orElse(null);
+        return currencyList.stream().filter(currency -> currency.getCurrencyCode().equalsIgnoreCase(currencyCode)).findFirst().orElse(null);
     }
 
     public Currency findByCurrencyName(String currencyName) {
-        return currencyList.stream().filter(currency -> currency.getCurrencyName().equals(currencyName)).findFirst().orElse(null);
+        return currencyList.stream().filter(currency -> currency.getCurrencyName().equalsIgnoreCase(currencyName)).findFirst().orElse(null);
     }
 }

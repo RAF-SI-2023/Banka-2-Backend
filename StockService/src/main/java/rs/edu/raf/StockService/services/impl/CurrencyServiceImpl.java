@@ -39,7 +39,5 @@ public class CurrencyServiceImpl implements CurrencyService {
         return currencyRepository.findByCurrencyName(currencyName);
     }
 
-    public void setCurrencyList(List<Currency> currencyList) {
-        this.currencyList = currencyList;
-    }
+
 }

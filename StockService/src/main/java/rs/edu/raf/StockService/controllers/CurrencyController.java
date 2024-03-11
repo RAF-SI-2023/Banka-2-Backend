@@ -22,7 +22,7 @@ public class CurrencyController {
 
     /**
      * dodati security anotacije, videti koje metode su jos potrebne,
-     * i videti implementaciju CurrencServisa u zavisnosti od db/InMemory, slicno i za CurrencyInflationService
+     * i videti implementaciju CurrencyServisa u zavisnosti od db/InMemory, slicno i za CurrencyInflationService
      */
     public CurrencyController(InMemoryCurrencyServiceImpl currencyServiceImpl,
                               InMemoryCurrencyInflationServiceImpl currencyInflationServiceImpl) {
@@ -31,27 +31,28 @@ public class CurrencyController {
     }
 
     @GetMapping("/all")
-    ResponseEntity<List<Currency>> findAllCurrency() {
+    public ResponseEntity<List<Currency>> findAllCurrency() {
+
         return ResponseEntity.ok(currencyServiceImpl.findAll());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Currency> findCurrencyById(@PathVariable Long id) {
+    public ResponseEntity<Currency> findCurrencyById(@PathVariable Long id) {
         return ResponseEntity.ok(currencyServiceImpl.findById(id));
     }
 
     @GetMapping("/code/{currencyCode}")
-    ResponseEntity<Currency> findCurrencyByCurrencyCode(@PathVariable String currencyCode) {
+    public ResponseEntity<Currency> findCurrencyByCurrencyCode(@PathVariable String currencyCode) {
         return ResponseEntity.ok(currencyServiceImpl.findByCurrencyCode(currencyCode));
     }
 
     @GetMapping("/inflation/{currencyId}")
-    ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable long currencyId) {
+    public ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable long currencyId) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyId(currencyId));
     }
 
     @GetMapping("/inflation")
-    ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") long currencyId, @Param("year") long year) {
+    public ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") long currencyId, @Param("year") long year) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyIdAndYear(currencyId, year));
     }
 
