@@ -30,7 +30,7 @@ public class EmailDtoMapper {
         EmailDto emailDto = new EmailDto();
         emailDto.setEmail(passwordChangeDto.getEmail());
         emailDto.setSubject("Change Your Password");
-        emailDto.setContent(activationContent.replaceAll("@changePasswordLink", passwordChangeDto.getUrlLink()));
+        emailDto.setContent(changePasswordContent.replaceAll("\\$changePasswordLink", passwordChangeDto.getUrlLink()));
         return emailDto;
     }
 

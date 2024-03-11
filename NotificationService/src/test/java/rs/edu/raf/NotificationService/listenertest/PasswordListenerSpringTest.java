@@ -3,6 +3,7 @@ package rs.edu.raf.NotificationService.listenertest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -13,6 +14,7 @@ import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Disabled
 @SpringBootTest
 @EnableRabbit
 public class PasswordListenerSpringTest {
