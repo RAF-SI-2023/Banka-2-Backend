@@ -1,7 +1,7 @@
 package rs.edu.raf.BankService.data.enums;
 
 public enum UserAccountUserProfileConnectionState {
-    NONE,
+    NOT_ASSOCIATED,
     IN_PROCESS,
-    LINKED
+    ASSOCIATED
 }

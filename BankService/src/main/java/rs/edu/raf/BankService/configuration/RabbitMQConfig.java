@@ -10,9 +10,9 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue activationCodeQueue() {
-        return new Queue("back-service-activation-code", false);
+        return new Queue("user-profile-activation-code", false);
     }
 
     @Bean
-    public Queue userProfileUserAccountBindingConfirmation() { return new Queue("user-profile-user-account-binding-confirmation", false); }
+    public Queue userProfileUserAccountBindingConfirmation() { return new Queue("account-link-confirmation", false); }
 }

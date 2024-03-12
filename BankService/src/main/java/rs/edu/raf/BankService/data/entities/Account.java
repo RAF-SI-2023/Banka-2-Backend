@@ -44,7 +44,7 @@ public class Account {
             Double maintenanceFee
     ){
         this.accountNumber = accountNumber;
-        this.linkedWithUserProfile = UserAccountUserProfileConnectionState.NONE;
+        this.linkedWithUserProfile = UserAccountUserProfileConnectionState.NOT_ASSOCIATED;
         this.email = email;
         this.status = true;
         this.accountType = accountType;
