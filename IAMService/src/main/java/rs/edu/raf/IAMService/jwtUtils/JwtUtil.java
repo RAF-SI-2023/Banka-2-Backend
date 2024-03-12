@@ -29,8 +29,15 @@ public class JwtUtil {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public String generateToken(UserDto userDto) {
+    public boolean validateToken(String token, UserDetails user) {
+        return (user.getUsername().equals(extractEmail(token)) && !isTokenExpired(token));
+    }
 
+    public String getRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
+    public String generateToken(UserDto userDto) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userDto.getId());
         claims.put("email", userDto.getEmail());
@@ -44,11 +51,5 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
     }
-
-    public boolean validateToken(String token, UserDetails user) {
-        return (user.getUsername().equals(extractEmail(token)) && !isTokenExpired(token));
-    }
-
-
 
 }
