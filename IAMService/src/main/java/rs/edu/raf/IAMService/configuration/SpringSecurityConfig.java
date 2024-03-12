@@ -54,7 +54,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/permissions/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/permissions/**")).hasAnyRole("ADMIN","EMPLOYEE")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
