@@ -1,6 +1,8 @@
 package rs.edu.raf.IAMService;
 
 import io.cucumber.java.Before;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.apache.catalina.filters.RateLimitFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,7 @@ import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.Role;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
+import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
@@ -58,6 +61,10 @@ class PasswordChangeTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private JwtUtil jwtUtil;
+
 
     @Mock(answer = Answers.RETURNS_MOCKS)
     private User user;
@@ -125,9 +132,7 @@ class PasswordChangeTest {
         PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
         passwordChangeTokenDto.setEmail(email);
 
-
         Role role = new Role(RoleType.USER);
-        PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
         User user1 = new User();
         user1.setUsername("lol");
         user1.setPassword(passwordEncoder.encode("lol"));
@@ -138,14 +143,27 @@ class PasswordChangeTest {
         user1.setPermissions(null);
         user1.setDateOfBirth(null);
         user1.setRole(role);
-        user1.setId(Long.valueOf(1));
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
 
         when(userService.findUserByEmail(email)).thenReturn(Optional.of(user1));
         when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
         when(passwordValidator.isValid(newPassword)).thenReturn(true);
         when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+        when(jwtUtil.extractAllClaims(anyString())).thenReturn(null);
 
-        // Test
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+
+
         ResponseEntity<?> responseEntity = userController.changePasswordSubmit(newPassword, passwordChangeTokenDto);
 
         // Verification
