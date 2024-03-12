@@ -34,12 +34,12 @@ public class PasswordListener {
     @RabbitListener(queues = "password-activation")
     public void passwordActivationHandler(Message message) throws IOException {
         if(message == null) return;
+
         PasswordActivationDto passwordActivationDto = objectMapper.readValue(message.getBody(), PasswordActivationDto.class);
         if (!isValid(passwordActivationDto)) return;
 
         EmailDto activationEmail = emailDtoMapper.activationEmail(passwordActivationDto);
-
-        logger.info("passwordActivationListener received message: " + activationEmail);
+        logger.info("passwordActivationListener received message" + activationEmail);
 
     }
 
