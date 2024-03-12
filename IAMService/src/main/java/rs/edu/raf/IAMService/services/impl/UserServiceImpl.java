@@ -7,8 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
@@ -47,6 +49,19 @@ public class UserServiceImpl implements UserService {
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with username: " + email + " not found."));
         return userMapper.userToUserDto(user);
+    }
+
+
+    public EmployeeDto employeeActivation(int id){
+        Employee employee = userRepository.findByID(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        employee.setActive(true);
+        return userMapper.employeeToEmployeeDto(employee);
+    }
+
+    public EmployeeDto employeeDeactivation(int id){
+        Employee employee = userRepository.findByID(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        employee.setActive(false);
+        return userMapper.employeeToEmployeeDto(employee);
     }
 
     @Override
