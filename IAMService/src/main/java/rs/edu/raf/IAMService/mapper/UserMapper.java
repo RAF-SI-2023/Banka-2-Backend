@@ -22,6 +22,7 @@ public class UserMapper {
                 dto.getAddress(),
                 dto.getRole(),
                 dto.getPermissions(),
+                false,
                 dto.getName(),
                 dto.getPrimaryAccountNumber()
         );
@@ -36,6 +37,7 @@ public class UserMapper {
                 dto.getAddress(),
                 dto.getRole(),
                 dto.getPermissions(),
+                false,
                 dto.getName(),
                 dto.getSurname(),
                 dto.getGender(),
@@ -52,12 +54,12 @@ public class UserMapper {
                 dto.getAddress(),
                 dto.getRole(),
                 dto.getPermissions(),
+                false,
                 dto.getName(),
                 dto.getSurname(),
                 dto.getGender(),
                 dto.getPosition(),
-                dto.getDepartment(),
-                dto.isActive()
+                dto.getDepartment()
         );
     }
 
@@ -69,7 +71,8 @@ public class UserMapper {
                 dto.getPhone(),
                 dto.getAddress(),
                 dto.getRole(),
-                dto.getPermissions()
+                dto.getPermissions(),
+                dto.isActive()
         );
     }
 
@@ -83,6 +86,7 @@ public class UserMapper {
                 user.getAddress(),
                 user.getRole(),
                 user.getPermissions(),
+                user.isActive(),
                 user.getName(),
                 user.getPrimaryAccountNumber()
         );
@@ -98,6 +102,7 @@ public class UserMapper {
                 user.getAddress(),
                 user.getRole(),
                 user.getPermissions(),
+                user.isActive(),
                 user.getName(),
                 user.getSurname(),
                 user.getGender(),
@@ -115,11 +120,11 @@ public class UserMapper {
                 user.getAddress(),
                 user.getRole(),
                 user.getPermissions(),
+                user.isActive(),
                 user.getName(),
                 user.getGender(),
                 user.getPosition(),
-                user.getDepartment(),
-                user.isActive()
+                user.getDepartment()
         );
     }
 
@@ -132,7 +137,8 @@ public class UserMapper {
                 user.getPhone(),
                 user.getAddress(),
                 user.getRole(),
-                user.getPermissions()
+                user.getPermissions(),
+                user.isActive()
         );
     }
 

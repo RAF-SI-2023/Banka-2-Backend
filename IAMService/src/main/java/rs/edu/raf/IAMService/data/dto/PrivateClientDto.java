@@ -31,12 +31,13 @@ public class PrivateClientDto extends UserDto {
             String address,
             Role role,
             List<Permission> permissions,
+            boolean active,
             String name,
             String surname,
             String gender,
             String primaryAccountNumber
     ) {
-        super(id, dateOfBirth, email, username, phone, address, role, permissions);
+        super(id, dateOfBirth, email, username, phone, address, role, permissions, active);
         this.name = name;
         this.surname = surname;
         this.gender = gender;
