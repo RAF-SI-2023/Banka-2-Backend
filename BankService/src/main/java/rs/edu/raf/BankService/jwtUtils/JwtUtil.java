@@ -21,6 +21,10 @@ public class JwtUtil {
         return extractAllClaims(token).getSubject();
     }
 
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("id", Long.class);
+    }
+
     public List<String> extractPermissions(String token) {
         Claims claims = extractAllClaims(token);
         List<?> rawList = claims.get("permissions", List.class);
