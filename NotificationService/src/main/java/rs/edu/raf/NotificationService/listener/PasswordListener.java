@@ -33,7 +33,7 @@ public class PasswordListener {
 
     @RabbitListener(queues = "password-activation")
     public void passwordActivationHandler(Message message) throws IOException {
-        if(message == null) return;
+        if (message == null) return;
 
         PasswordActivationDto passwordActivationDto = objectMapper.readValue(message.getBody(), PasswordActivationDto.class);
         if (!isValid(passwordActivationDto)) return;
@@ -45,7 +45,7 @@ public class PasswordListener {
 
     @RabbitListener(queues = "password-change")
     public void passwordChangeHandler(Message message) throws IOException {
-        if(message == null) return;
+        if (message == null) return;
         PasswordChangeDto passwordChangeDto = objectMapper.readValue(message.getBody(), PasswordChangeDto.class);
         if (!isValid(passwordChangeDto)) return;
 

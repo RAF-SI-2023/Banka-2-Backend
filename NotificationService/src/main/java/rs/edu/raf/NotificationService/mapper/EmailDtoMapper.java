@@ -7,12 +7,12 @@ import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
 
 @Component
 public class EmailDtoMapper {
-    private final String activationContent = """
+    private static final String PASSWORD_ACTIVATION_CONTENT = """
             Thank you for creating an account with us. To activate your account please click on the following link:
                         
             [Activation Link: $activationUrl]
             """;
-    private final String changePasswordContent = """
+    private static final String PASSWORD_CHANGE_CONTENT = """
             You have requested to change your password. To proceed with this change, please click on the following link:
                         
             [Change Password Link: $changePasswordLink]
@@ -22,7 +22,7 @@ public class EmailDtoMapper {
         EmailDto emailDto = new EmailDto();
         emailDto.setEmail(passwordActivationDto.getEmail());
         emailDto.setSubject("Activate Your Account");
-        emailDto.setContent(activationContent.replaceAll("\\$activationUrl", passwordActivationDto.getActivationUrl()));
+        emailDto.setContent(PASSWORD_ACTIVATION_CONTENT.replaceAll("\\$activationUrl", passwordActivationDto.getActivationUrl()));
         return emailDto;
     }
 
@@ -30,7 +30,7 @@ public class EmailDtoMapper {
         EmailDto emailDto = new EmailDto();
         emailDto.setEmail(passwordChangeDto.getEmail());
         emailDto.setSubject("Change Your Password");
-        emailDto.setContent(changePasswordContent.replaceAll("\\$changePasswordLink", passwordChangeDto.getUrlLink()));
+        emailDto.setContent(PASSWORD_CHANGE_CONTENT.replaceAll("\\$changePasswordLink", passwordChangeDto.getUrlLink()));
         return emailDto;
     }
 
