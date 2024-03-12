@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import rs.edu.raf.BankService.data.enums.AccountType;
+import rs.edu.raf.BankService.data.enums.UserAccountUserProfileConnectionState;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String accountNumber;
-    private boolean linkedWithUserProfile;
+    private UserAccountUserProfileConnectionState linkedWithUserProfile;
     private String email;
     private boolean status;
     private AccountType accountType;
@@ -43,6 +44,7 @@ public class Account {
             Double maintenanceFee
     ){
         this.accountNumber = accountNumber;
+        this.linkedWithUserProfile = UserAccountUserProfileConnectionState.NONE;
         this.email = email;
         this.status = true;
         this.accountType = accountType;
@@ -51,7 +53,7 @@ public class Account {
         this.employeeId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         this.creationData = new Date().getTime();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, 2); // Add 2 years
+        calendar.add(Calendar.YEAR, 2);
         this.expirationDate = calendar.getTime().getTime();
         this.currencyCode = currencyCode;
         this.maintenanceFee = maintenanceFee;

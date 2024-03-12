@@ -17,4 +17,6 @@ public class UserAccountUserProfileConnectionToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String accountNumber;
+    private Long expirationDateTime;
 }

@@ -51,7 +51,7 @@ public class AccountMapper {
         return new AccountDto(
                 account.getId(),
                 account.getAccountNumber(),
-                account.isLinkedWithUserProfile(),
+                account.getLinkedWithUserProfile(),
                 account.getEmail(),
                 account.isStatus(),
                 account.getAccountType().name(),
@@ -69,7 +69,7 @@ public class AccountMapper {
         return new DomesticCurrencyAccountDto(
                 account.getId(),
                 account.getAccountNumber(),
-                account.isLinkedWithUserProfile(),
+                account.getLinkedWithUserProfile(),
                 account.getEmail(),
                 account.isStatus(),
                 account.getAccountType().name(),
@@ -89,7 +89,7 @@ public class AccountMapper {
         return new ForeignCurrencyAccountDto(
                 account.getId(),
                 account.getAccountNumber(),
-                account.isLinkedWithUserProfile(),
+                account.getLinkedWithUserProfile(),
                 account.getEmail(),
                 account.isStatus(),
                 account.getAccountType().name(),
