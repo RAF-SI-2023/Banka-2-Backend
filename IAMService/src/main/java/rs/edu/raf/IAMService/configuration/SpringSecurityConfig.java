@@ -55,6 +55,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/permissions/**")).hasAnyRole("ADMIN","EMPLOYEE")
+                                .requestMatchers(new AntPathRequestMatcher("/api/roles/**")).hasAnyRole("ADMIN","EMPLOYEE")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
