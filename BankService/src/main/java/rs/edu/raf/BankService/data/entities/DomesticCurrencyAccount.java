@@ -20,6 +20,7 @@ public class DomesticCurrencyAccount extends Account {
     private Double interestRate; // vazi za retirement i student
 
     public DomesticCurrencyAccount(
+            String accountNumber,
             String email,
             AccountType accountType,
             String currencyCode,
@@ -27,7 +28,7 @@ public class DomesticCurrencyAccount extends Account {
             DomesticCurrencyAccountType domesticCurrencyAccountType
 
     ){
-        super(email, accountType, currencyCode, maintenanceFee);
+        super(accountNumber, email, accountType, currencyCode, maintenanceFee);
 
         this.domesticCurrencyAccountType = domesticCurrencyAccountType;
 

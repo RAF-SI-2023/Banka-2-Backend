@@ -21,25 +21,28 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // *
-    private boolean linkedWithUserProfile; // *
+    private Long id;
+    private String accountNumber;
+    private boolean linkedWithUserProfile;
     private String email;
-    private boolean status; // *
+    private boolean status;
     private AccountType accountType;
-    private Long availableBalance; // *
-    private Long reservedFunds; // *
+    private Long availableBalance;
+    private Long reservedFunds;
     private Long employeeId;
-    private Long creationData; // *
-    private Long expirationDate; // *
+    private Long creationData;
+    private Long expirationDate;
     private String currencyCode;
     private Double maintenanceFee;
 
     public Account(
+            String accountNumber,
             String email,
             AccountType accountType,
             String currencyCode,
             Double maintenanceFee
     ){
+        this.accountNumber = accountNumber;
         this.email = email;
         this.status = true;
         this.accountType = accountType;

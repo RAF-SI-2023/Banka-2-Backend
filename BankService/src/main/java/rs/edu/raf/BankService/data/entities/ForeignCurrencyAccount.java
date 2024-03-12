@@ -28,12 +28,13 @@ public class ForeignCurrencyAccount extends Account {
     private List<ForeignCurrencyHolder> foreignCurrencyHolders = new ArrayList<>();
 
     public ForeignCurrencyAccount(
+            String accountNumber,
             String email,
             AccountType accountType,
             String currencyCode,
             Double maintenanceFee
     ){
-        super(email, accountType, currencyCode, maintenanceFee);
+        super(accountNumber, email, accountType, currencyCode, maintenanceFee);
         this.interestRate = 1.0;
         this.defaultCurrencyCode = currencyCode;
         this.numberOfAllowedCurrencies = 4;

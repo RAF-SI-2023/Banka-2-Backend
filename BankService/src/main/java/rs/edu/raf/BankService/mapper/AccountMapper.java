@@ -18,6 +18,7 @@ public class AccountMapper {
 
     public Account accountDtoToAccount(AccountDto dto){
         return new Account(
+                dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.valueOf(dto.getAccountType()),
                 dto.getCurrencyCode(),
@@ -27,6 +28,7 @@ public class AccountMapper {
 
     public DomesticCurrencyAccount domesticAccountDtoToDomesticAccount(DomesticCurrencyAccountDto dto){
         return new DomesticCurrencyAccount(
+                dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 dto.getCurrencyCode(),
@@ -37,6 +39,7 @@ public class AccountMapper {
 
     public ForeignCurrencyAccount foreignAccountDtoToForeignAccount(ForeignCurrencyAccountDto dto){
         return new ForeignCurrencyAccount(
+                dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.FOREIGN_CURRENCY_ACCOUNT,
                 dto.getCurrencyCode(),
@@ -47,6 +50,7 @@ public class AccountMapper {
     public AccountDto accountToAccountDto(Account account){
         return new AccountDto(
                 account.getId(),
+                account.getAccountNumber(),
                 account.isLinkedWithUserProfile(),
                 account.getEmail(),
                 account.isStatus(),
@@ -64,6 +68,7 @@ public class AccountMapper {
     public DomesticCurrencyAccountDto domesticCurrencyAccountToDomesticCurrencyAccountDtoDto(DomesticCurrencyAccount account){
         return new DomesticCurrencyAccountDto(
                 account.getId(),
+                account.getAccountNumber(),
                 account.isLinkedWithUserProfile(),
                 account.getEmail(),
                 account.isStatus(),
@@ -83,6 +88,7 @@ public class AccountMapper {
     public ForeignCurrencyAccountDto foreignCurrencyAccountToForeignCurrencyAccountDtoDto(ForeignCurrencyAccount account){
         return new ForeignCurrencyAccountDto(
                 account.getId(),
+                account.getAccountNumber(),
                 account.isLinkedWithUserProfile(),
                 account.getEmail(),
                 account.isStatus(),

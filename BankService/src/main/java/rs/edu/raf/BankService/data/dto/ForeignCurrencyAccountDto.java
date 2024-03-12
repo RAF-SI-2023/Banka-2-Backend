@@ -20,6 +20,7 @@ public class ForeignCurrencyAccountDto extends AccountDto {
 
     public ForeignCurrencyAccountDto(
             Long id,
+            String accountNumber,
             boolean linkedWithUserProfile,
             String email,
             boolean status,
@@ -36,7 +37,7 @@ public class ForeignCurrencyAccountDto extends AccountDto {
             Integer numberOfAllowedCurrencies,
             List<ForeignCurrencyHolderDto> foreignCurrencyHolderDto
     ) {
-        super(id, linkedWithUserProfile, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
+        super(id, accountNumber, linkedWithUserProfile, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
                 expirationDate, currencyCode, maintenanceFee);
         this.interestRate = interestRate;
         this.defaultCurrencyCode = defaultCurrencyCode;

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class AccountDto {
 
     private Long id;
+    private String accountNumber;
     private boolean linkedWithUserProfile;
     private String email;
     private boolean status;
