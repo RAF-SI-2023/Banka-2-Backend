@@ -3,6 +3,7 @@ package rs.edu.raf.BankService.data.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.enums.UserAccountUserProfileConnectionState;
 
 @Data
 @AllArgsConstructor
@@ -10,7 +11,8 @@ import lombok.NoArgsConstructor;
 public class AccountDto {
 
     private Long id;
-    private boolean linkedWithUserProfile;
+    private String accountNumber;
+    private UserAccountUserProfileConnectionState linkedWithUserProfile;
     private String email;
     private boolean status;
     private String accountType;

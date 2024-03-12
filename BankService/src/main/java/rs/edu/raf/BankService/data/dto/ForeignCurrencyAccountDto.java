@@ -3,6 +3,7 @@ package rs.edu.raf.BankService.data.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.enums.UserAccountUserProfileConnectionState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,8 @@ public class ForeignCurrencyAccountDto extends AccountDto {
 
     public ForeignCurrencyAccountDto(
             Long id,
-            boolean linkedWithUserProfile,
+            String accountNumber,
+            UserAccountUserProfileConnectionState linkedWithUserProfile,
             String email,
             boolean status,
             String name,
@@ -36,7 +38,7 @@ public class ForeignCurrencyAccountDto extends AccountDto {
             Integer numberOfAllowedCurrencies,
             List<ForeignCurrencyHolderDto> foreignCurrencyHolderDto
     ) {
-        super(id, linkedWithUserProfile, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
+        super(id, accountNumber, linkedWithUserProfile, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
                 expirationDate, currencyCode, maintenanceFee);
         this.interestRate = interestRate;
         this.defaultCurrencyCode = defaultCurrencyCode;
