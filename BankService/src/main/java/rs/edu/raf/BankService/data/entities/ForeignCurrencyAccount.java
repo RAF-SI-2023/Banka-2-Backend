@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.enums.AccountType;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("ForeignCurrencyAccount")
@@ -23,5 +25,17 @@ public class ForeignCurrencyAccount extends Account {
             fetch = FetchType.EAGER,
             orphanRemoval = true
     )
-    private Set<ForeignCurrencyHolder> foreignCurrencyHolders;
+    private List<ForeignCurrencyHolder> foreignCurrencyHolders = new ArrayList<>();
+
+    public ForeignCurrencyAccount(
+            String email,
+            AccountType accountType,
+            String currencyCode,
+            Double maintenanceFee
+    ){
+        super(email, accountType, currencyCode, maintenanceFee);
+        this.interestRate = 1.0;
+        this.defaultCurrencyCode = currencyCode;
+        this.numberOfAllowedCurrencies = 4;
+    }
 }
