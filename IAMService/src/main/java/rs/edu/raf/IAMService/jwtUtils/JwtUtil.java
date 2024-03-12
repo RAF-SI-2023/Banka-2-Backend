@@ -6,12 +6,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.IAMService.data.dto.UserDto;
-import rs.edu.raf.IAMService.data.entites.Permission;
+
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Component
 public class JwtUtil {
@@ -34,8 +34,8 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userDto.getId());
         claims.put("email", userDto.getEmail());
-        claims.put("role", userDto.getRole().getRoleType());
-        claims.put("permissions", userDto.getPermissions().stream().map(Permission::getPermissionType).collect(Collectors.toList()));
+        claims.put("role", userDto.getRole());
+        claims.put("permissions", userDto.getPermissions());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -48,4 +48,7 @@ public class JwtUtil {
     public boolean validateToken(String token, UserDetails user) {
         return (user.getUsername().equals(extractEmail(token)) && !isTokenExpired(token));
     }
+
+
+
 }
