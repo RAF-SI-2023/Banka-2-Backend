@@ -53,13 +53,13 @@ public class UserServiceImpl implements UserService {
 
 
     public EmployeeDto employeeActivation(int id){
-        Employee employee = userRepository.findByID(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(true);
         return userMapper.employeeToEmployeeDto(employee);
     }
 
     public EmployeeDto employeeDeactivation(int id){
-        Employee employee = userRepository.findByID(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(false);
         return userMapper.employeeToEmployeeDto(employee);
     }
