@@ -1,25 +1,17 @@
 package rs.edu.raf.IAMService.userController;
 
-import io.cucumber.java.Before;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
-import org.apache.catalina.filters.RateLimitFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rs.edu.raf.IAMService.controllers.UserController;
-import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.Role;
@@ -60,14 +52,8 @@ class PasswordChangeTest {
     private HttpServletRequest request;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private JwtUtil jwtUtil;
 
-
-    @Mock(answer = Answers.RETURNS_MOCKS)
-    private User user;
 
     @InjectMocks
     private UserController userController;

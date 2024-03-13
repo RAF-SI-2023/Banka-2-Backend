@@ -26,11 +26,11 @@ import java.util.Optional;
 @SecurityRequirement(name = "userApi")
 public class UserController {
 
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     private final UserService userService;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final SubmitLimiter submitLimiter;
     private final ChangedPasswordTokenUtil changedPasswordTokenUtil;

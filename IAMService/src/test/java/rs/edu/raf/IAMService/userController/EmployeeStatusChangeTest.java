@@ -27,9 +27,6 @@ public class EmployeeStatusChangeTest {
     private UserService userService;
 
     @Mock
-    private HttpServletRequest request;
-
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
@@ -48,9 +45,9 @@ public class EmployeeStatusChangeTest {
 
         User admin = new User();
 
-        Role role = new Role(RoleType.USER);
+
         Role roleAdmin = new Role(RoleType.ADMIN);
-        Role roleEmployee= new Role(RoleType.EMPLOYEE);
+
 
 
         admin.setUsername("lol");
@@ -85,9 +82,9 @@ public class EmployeeStatusChangeTest {
 
         User admin = new User();
 
-        Role role = new Role(RoleType.USER);
+
         Role roleAdmin = new Role(RoleType.USER);
-        Role roleEmployee= new Role(RoleType.EMPLOYEE);
+
 
 
         admin.setUsername("lol");
@@ -122,7 +119,7 @@ public class EmployeeStatusChangeTest {
 
         User admin = new User();
 
-        Role role = new Role(RoleType.USER);
+
         Role roleAdmin = new Role(RoleType.ADMIN);
         Role roleEmployee= new Role(RoleType.USER);
 
@@ -169,7 +166,7 @@ public class EmployeeStatusChangeTest {
 
         User admin = new User();
 
-        Role role = new Role(RoleType.USER);
+
         Role roleAdmin = new Role(RoleType.ADMIN);
         Role roleEmployee= new Role(RoleType.USER);
 
