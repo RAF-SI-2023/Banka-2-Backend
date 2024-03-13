@@ -20,11 +20,6 @@ public class ExchangeController {
         this.exchangeService = exchangeService;
     }
 
-    @GetMapping("/example")
-    public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello World!");
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<Exchange>> findAllExchanges() {
         return ResponseEntity.ok(exchangeService.findAll());

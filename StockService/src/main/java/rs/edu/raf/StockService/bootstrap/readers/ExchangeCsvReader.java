@@ -3,6 +3,7 @@ package rs.edu.raf.StockService.bootstrap.readers;
 import rs.edu.raf.StockService.data.entities.Exchange;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.ZoneId;
@@ -13,15 +14,34 @@ import java.util.TimeZone;
 
 public class ExchangeCsvReader {
     private static final String FILE_PATH = "StockService/src/main/resources/csvs/exchanges.csv";
+    private BufferedReader reader;
 
-    public static List<Exchange> loadExchangeCsv() {
+    public void setReader(BufferedReader reader) {
+        this.reader = reader;
+    }
+
+    private BufferedReader initBufferedReaderStream() {
+        try {
+            if (this.reader != null) {
+                return reader;
+            }
+            reader = new BufferedReader(new FileReader(FILE_PATH));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return reader;
+    }
+
+    public List<Exchange> loadExchangeCsv() {
         List<Exchange> data = new ArrayList<>();
         String line;
         String cvsSplitBy = ",";
         long i = 0;
         boolean isFirst = true;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(ExchangeCsvReader.FILE_PATH))) {
+        try {
+            initBufferedReaderStream();
+
             while ((line = reader.readLine()) != null) {
                 String[] row = line.split(cvsSplitBy);
 
