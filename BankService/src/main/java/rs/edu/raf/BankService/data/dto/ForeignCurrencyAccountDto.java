@@ -3,7 +3,7 @@ package rs.edu.raf.BankService.data.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.enums.UserAccountUserProfileConnectionState;
+import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class ForeignCurrencyAccountDto extends AccountDto {
     public ForeignCurrencyAccountDto(
             Long id,
             String accountNumber,
-            UserAccountUserProfileConnectionState linkedWithUserProfile,
+            UserAccountUserProfileLinkState linkedWithUserProfile,
             String email,
             boolean status,
             String name,

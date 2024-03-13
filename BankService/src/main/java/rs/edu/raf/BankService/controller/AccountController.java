@@ -14,7 +14,7 @@ import rs.edu.raf.BankService.service.AccountService;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/accounts", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class AccountController {
 
     private final AccountService accountService;
@@ -40,6 +40,18 @@ public class AccountController {
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.badRequest().body("Code is not valid.");
+    }
+
+    @PostMapping("/create-account/domestic")
+    public ResponseEntity<?> createDomesticAccount(@RequestBody DomesticCurrencyAccountDto domesticCurrencyAccountDto) {
+
+        return ResponseEntity.badRequest().body("Account is not created.");
+    }
+
+    @PostMapping("/create-account/foreign")
+    public ResponseEntity<?> createForeignAccount(@RequestBody ForeignCurrencyAccountDto foreignCurrencyAccountDto) {
+
+        return ResponseEntity.badRequest().body("Account is not created.");
     }
 
 
