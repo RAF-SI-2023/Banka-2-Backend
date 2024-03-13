@@ -1,5 +1,6 @@
 package rs.edu.raf.BankService.mapper;
 
+import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.AccountDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
@@ -14,6 +15,8 @@ import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@Component
 public class AccountMapper {
 
     public Account accountDtoToAccount(AccountDto dto){

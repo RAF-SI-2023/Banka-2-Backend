@@ -3,7 +3,7 @@ package rs.edu.raf.BankService.data.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.enums.UserAccountUserProfileConnectionState;
+import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +16,7 @@ public class DomesticCurrencyAccountDto extends AccountDto {
     public DomesticCurrencyAccountDto(
             Long id,
             String accountNumber,
-            UserAccountUserProfileConnectionState linkedWithUserProfile,
+            UserAccountUserProfileLinkState linkedWithUserProfile,
             String email,
             boolean status,
             String name,

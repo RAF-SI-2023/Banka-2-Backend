@@ -8,9 +8,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import rs.edu.raf.BankService.data.entities.CustomUserPrincipal;
 import rs.edu.raf.BankService.jwtUtils.JwtUtil;
 
 import java.io.IOException;
@@ -31,23 +34,30 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String jwt = null;
+        String role = null;
         Long userId = null;
         List<String> permissions = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
+            role = jwtUtil.extractUserRole(jwt);
             userId = jwtUtil.extractUserId(jwt);
             permissions = jwtUtil.extractPermissions(jwt);
         }
         if (permissions != null && SecurityContextHolder.getContext().getAuthentication().getAuthorities() == null) {
 
+            UserDetails userDetails = User
+                    .withUserDetails(new CustomUserPrincipal(userId,  permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())))
+                    .roles(role)
+                    .build();
+
             if (jwtUtil.validateToken(jwt)) {
                 UsernamePasswordAuthenticationToken
                         usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(
-                                                userId,
+                                                userDetails,
                                                 null,
-                                                permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                                                userDetails.getAuthorities()
                                             );
 
                 usernamePasswordAuthenticationToken

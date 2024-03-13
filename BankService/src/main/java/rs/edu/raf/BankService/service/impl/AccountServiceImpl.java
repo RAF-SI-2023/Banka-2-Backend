@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.AccountNumberDto;
+import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.EmailDto;
+import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
 import rs.edu.raf.BankService.data.entities.Account;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileConnectionToken;
-import rs.edu.raf.BankService.data.enums.UserAccountUserProfileConnectionState;
+import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
+import rs.edu.raf.BankService.mapper.AccountMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.UserAccountUserProfileConnectionTokenRepository;
 import rs.edu.raf.BankService.service.AccountService;
@@ -19,7 +22,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-
+    private final AccountMapper accountMapper;
     private final AccountRepository accountRepository;
     private final UserAccountUserProfileConnectionTokenRepository userAccountUserProfileConnectionTokenRepository;
     private final RabbitTemplate rabbitTemplate;
@@ -28,14 +31,14 @@ public class AccountServiceImpl implements AccountService {
     public boolean userAccountUserProfileConnectionAttempt(AccountNumberDto accountNumberDto) {
        Account account = accountRepository.findByAccountNumber(accountNumberDto.getAccountNumber());
         if(account != null){
-            UserAccountUserProfileConnectionState userAccountUserProfileConnectionState = account.getLinkedWithUserProfile();
-            if(userAccountUserProfileConnectionState.equals(UserAccountUserProfileConnectionState.NOT_ASSOCIATED)){
+            UserAccountUserProfileLinkState userAccountUserProfileLinkState = account.getLinkedWithUserProfile();
+            if(userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.NOT_ASSOCIATED)){
                 generateActivationCodeAndSendToQueue(accountNumberDto.getAccountNumber(),account.getEmail());
-                account.setLinkedWithUserProfile(UserAccountUserProfileConnectionState.IN_PROCESS);
+                account.setLinkedWithUserProfile(UserAccountUserProfileLinkState.IN_PROCESS);
                 accountRepository.saveAndFlush(account);
                 return true;
             }
-            else if(userAccountUserProfileConnectionState.equals(UserAccountUserProfileConnectionState.IN_PROCESS)){
+            else if(userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.IN_PROCESS)){
                 throw new UserAccountLinkingWithUserProfileInProcessException(accountNumberDto.getAccountNumber());
             }
             else{
@@ -57,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
                     throw new ActivationCodeExpiredException();
                 }
                 userAccountUserProfileConnectionTokenRepository.delete(token);
-                account.setLinkedWithUserProfile(UserAccountUserProfileConnectionState.ASSOCIATED);
+                account.setLinkedWithUserProfile(UserAccountUserProfileLinkState.ASSOCIATED);
                 accountRepository.saveAndFlush(account);
                 return true;
             }
@@ -66,6 +69,26 @@ public class AccountServiceImpl implements AccountService {
             }
         }
         return false;
+    }
+
+    @Override
+    public DomesticCurrencyAccountDto createDomesticCurrencyAccount(DomesticCurrencyAccountDto dto) throws AccountNumberAlreadyExistException {
+        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if(account != null){
+            throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
+        }
+        accountRepository.saveAndFlush(accountMapper.domesticAccountDtoToDomesticAccount(dto));
+        return dto;
+    }
+
+    @Override
+    public ForeignCurrencyAccountDto createForeignCurrencyAccount(ForeignCurrencyAccountDto dto) throws AccountNumberAlreadyExistException {
+        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if(account != null){
+            throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
+        }
+        accountRepository.saveAndFlush(accountMapper.foreignAccountDtoToForeignAccount(dto));
+        return dto;
     }
 
     private void generateActivationCodeAndSendToQueue(String accountNumber, String email){
