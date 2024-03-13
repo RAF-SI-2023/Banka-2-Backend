@@ -10,4 +10,5 @@ public interface UserService extends UserDetailsService {
     UserDto findByEmail(String email);
     UserDto createAdmin(UserDto userDto, String password);
     EmployeeDto createEmployee(EmployeeDto employeeDto);
+    EmployeeDto activateEmployee(String email, String password);
 }

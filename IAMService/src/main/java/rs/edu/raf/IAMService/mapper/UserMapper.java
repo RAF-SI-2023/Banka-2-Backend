@@ -45,9 +45,10 @@ public class UserMapper {
         return new Employee(
                 dto.getDateOfBirth(),
                 dto.getEmail(),
-                dto.getEmail(),
+                dto.getUsername(),
                 dto.getPhone(),
                 dto.getAddress(),
+                dto.getRole(),
                 dto.getPermissions(),
                 dto.getName(),
                 dto.getSurname(),

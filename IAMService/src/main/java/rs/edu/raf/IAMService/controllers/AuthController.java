@@ -8,11 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.configuration.PasswordEncoderConfig;
-import rs.edu.raf.IAMService.data.dto.LoginDto;
-import rs.edu.raf.IAMService.data.dto.TokenDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.Role;
 import rs.edu.raf.IAMService.data.enums.RoleType;
+import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
 
@@ -52,5 +51,15 @@ public class AuthController {
             return ResponseEntity.status(401).build();
         }
         return ResponseEntity.ok(new TokenDto(jwtUtil.generateToken(userService.findByEmail(loginRequest.getEmail()))));
+    }
+
+    @PutMapping("/activate-employee")
+    public ResponseEntity<?> activateEmployee(@RequestBody PasswordDto passwordDto) {
+        try {
+            EmployeeDto employeeDto = userService.activateEmployee(passwordDto.getEmail(), passwordDto.getPassword());
+            return ResponseEntity.ok(employeeDto);
+        } catch (EmailNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
