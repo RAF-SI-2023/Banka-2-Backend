@@ -30,7 +30,7 @@ public class CorporateClient extends User {
             String name,
             String primaryAccountNumber
     ) {
-        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.ROLE_USER), permissions);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }

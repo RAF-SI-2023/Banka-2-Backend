@@ -27,7 +27,7 @@ public class CorporateClientDto extends UserDto {
             String name,
             String primaryAccountNumber
     ) {
-        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.ROLE_USER, permissions);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }
