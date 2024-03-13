@@ -114,17 +114,17 @@ public class UserController {
         Optional<User> employeeOpt = userService.findUserByEmail(employeeEmail);
         Optional<User> adminOpt = userService.findUserByEmail(email);
         User admin = adminOpt.orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
-        Employee employee;
+        User employee;
         if(employeeOpt.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee with email: " + employeeEmail + " not found.");
 
         if (employeeOpt.get() instanceof Employee) {
-            employee = (Employee) employeeOpt.get();
+            employee = employeeOpt.get();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot change active status of non-employee user.");
         }
         if (admin.getRole().getRoleType().equals(RoleType.ADMIN)) {
-            employee.setActive(!employee.isActive());
+            ((Employee) employee).setActive(!((Employee) employee).isActive());
             userService.updateEntity(employee);
             return ResponseEntity.ok().build();
         }
