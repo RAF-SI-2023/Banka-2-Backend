@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.ClientActivationMessageDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
@@ -141,6 +142,64 @@ class UserServiceImplTest {
         verify(passwordEncoder, times(0)).encode(any());
         verify(userRepository, times(0)).save(any());
     }
+
+    @Test
+    public void employeeActivationTest() {
+        // given
+        Employee employee = new Employee();
+        employee.setActive(false);
+        when(userRepository.findById(1)).thenReturn(Optional.of(employee));
+        when(userRepository.save(employee)).thenReturn(employee);
+
+        // when
+        userService.employeeActivation(1);
+
+        // then
+        assertTrue(employee.isActive());
+
+    }
+
+    @Test
+    public void employeeActivation_doesNotExist_throwsException_Test() {
+        // given
+        Employee employee = new Employee();
+        employee.setActive(false);
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(NotFoundException.class,
+                () -> userService.employeeActivation(1));
+
+    }
+
+    @Test
+    public void employeeDeactivationTest() {
+        // given
+        Employee employee = new Employee();
+        employee.setActive(true);
+        when(userRepository.findById(1)).thenReturn(Optional.of(employee));
+        when(userRepository.save(employee)).thenReturn(employee);
+
+        // when
+        userService.employeeDeactivation(1);
+
+        // then
+        assertFalse(employee.isActive());
+    }
+
+    @Test
+    public void employeeDeactivation_doesNotExist_throwsException_Test() {
+        // given
+        Employee employee = new Employee();
+        employee.setActive(false);
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(NotFoundException.class,
+                () -> userService.employeeDeactivation(1));
+
+    }
+
 
     private PrivateClientDto getPrivateClientDto() {
         PrivateClientDto dto = new PrivateClientDto();
