@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
+import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
@@ -106,5 +108,27 @@ public class UserController {
         return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
     }
 
+    @PutMapping(path = "/changeActiveStatusOfEmployee/{email} ", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<?> changeActiveStatusOfEmployee(@PathVariable String email, String employeeEmail) {
+        Optional<User> employeeOpt = userService.findUserByEmail(employeeEmail);
+        Optional<User> adminOpt = userService.findUserByEmail(email);
+        User admin = adminOpt.get();
+        Employee employee;
+        if(employeeOpt.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee with email: " + employeeEmail + " not found.");
+
+        if (employeeOpt.get() instanceof Employee) {
+            employee = (Employee) employeeOpt.get();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot change active status of non-employee user.");
+        }
+        if (admin.getRole().getRoleType().equals(RoleType.ADMIN)) {
+            employee.setActive(!employee.isActive());
+            userService.updateEntity(employee);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to change active status of employee.");
+
+    }
 
 }

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.CorporateClient;
+import rs.edu.raf.IAMService.data.entites.Employee;
+import rs.edu.raf.IAMService.data.entites.PrivateClient;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
@@ -72,9 +75,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateEntity(User user) {
+     userRepository.findByEmail(user.getEmail()).orElseThrow(() -> new NotFoundException("User with username: " + user.getEmail() + " not found."));
 
         return this.userRepository.save(user);
     }
+
+
 
 
 }

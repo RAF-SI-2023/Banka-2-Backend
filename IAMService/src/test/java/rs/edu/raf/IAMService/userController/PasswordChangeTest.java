@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService;
+package rs.edu.raf.IAMService.userController;
 
 import io.cucumber.java.Before;
 import io.jsonwebtoken.Claims;
@@ -97,7 +97,7 @@ class PasswordChangeTest {
         userDto.setPhone("lol");
         userDto.setPermissions(null);
         userDto.setDateOfBirth(null);
-        userDto.setRole(role);
+        userDto.setRole(role.getRoleType());
         userDto.setId(Long.valueOf(1));
 
         reset(submitLimiter);
@@ -170,5 +170,7 @@ class PasswordChangeTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(userService).updateEntity(user1);
     }
+
+
 
 }
