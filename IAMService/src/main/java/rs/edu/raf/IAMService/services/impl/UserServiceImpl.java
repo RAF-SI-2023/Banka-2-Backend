@@ -1,17 +1,15 @@
 package rs.edu.raf.IAMService.services.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.CorporateClient;
 import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.PrivateClient;
@@ -19,12 +17,10 @@ import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -57,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findByEmail(String email) {
+    public UserDto findByEmail(String email) throws NotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email: " + email + " not found."));
         return checkInstance(user);
     }
@@ -71,11 +67,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto deleteUserByEmail(String email) {
         User u = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email: " + email + " not found."));
-        if (u != null) {
-            userRepository.removeUserByEmail(email);
-            return checkInstance(u);
-        }
-        throw new NotFoundException("User with email: " + email + " not found.");
+        userRepository.removeUserByEmail(email);
+        return checkInstance(u);
     }
 
     @Override
@@ -108,7 +101,7 @@ public class UserServiceImpl implements UserService {
         return checkInstance(userRepository.save(user));
     }
 
-    private UserDto checkInstance(User user) {
+    public UserDto checkInstance(User user) {
 
         if (user instanceof Employee)
             return userMapper.employeeToEmployeeDto((Employee) user);

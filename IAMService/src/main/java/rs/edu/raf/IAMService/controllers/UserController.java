@@ -100,12 +100,20 @@ public class UserController {
     @GetMapping(path = "/findByEmail/{email}", consumes = MediaType.ALL_VALUE)
     //  @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE', 'USER')")
     public ResponseEntity<?> findByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(userService.findByEmail(email));
+        UserDto userDto = userService.findByEmail(email);
+        if (userDto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(userDto);
     }
 
     @GetMapping(path = "/findById/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+        UserDto userDto = userService.findById(id);
+        if (userDto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(userDto);
     }
 
 
@@ -122,13 +130,13 @@ public class UserController {
 
         if (roleType.equals(RoleType.ROLE_USER)) {
             if (!email.equals(claims.get("email"))) {
-                return ResponseEntity.status(401).build();
+                return ResponseEntity.status(403).build();
             }
         }
         UserDto userDto = userService.findByEmail(email);
         if (roleType.equals(RoleType.ROLE_EMPLOYEE)) {
             if (!userDto.getRole().equals(RoleType.ROLE_USER) && !email.equals(claims.get("email"))) {
-                return ResponseEntity.status(401).build();
+                return ResponseEntity.status(403).build();
             }
         }
         return ResponseEntity.ok(userService.deleteUserByEmail(email));
@@ -151,23 +159,25 @@ public class UserController {
                 }
                 return ResponseEntity.status(401).build();
 
-            }
+            } else return ResponseEntity.status(403).build();
         }
         if (roleType.equals(RoleType.ROLE_EMPLOYEE)) {
             if ((userDto.getRole().equals(RoleType.ROLE_USER) || userDto.getEmail().equals(claims.get("email"))) && validationCheck(userDto, userDtoFromDB)) {
                 return ResponseEntity.ok(userService.updateUser(userDto));
-            } else return ResponseEntity.status(401).build();
+            } else return ResponseEntity.status(403).build();
         }
 
         if (roleType.equals(RoleType.ROLE_ADMIN)) {
-            if (validationCheck(userDto, userDtoFromDB)) return ResponseEntity.ok(userService.updateUser(userDto));
-            else return ResponseEntity.status(401).build();
+            if (validationCheck(userDto, userDtoFromDB)) {
+                return ResponseEntity.ok(userService.updateUser(userDto));
+            } else {
+                return ResponseEntity.status(403).build();
+            }
         }
         return ResponseEntity.ok(userService.updateUser(userDto));
     }
 
-
-    private Claims getClaims(HttpServletRequest request) {
+    public Claims getClaims(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || authHeader.isEmpty()) {
             authHeader = request.getHeader("authorization");
@@ -182,7 +192,7 @@ public class UserController {
         return jwtUtil.extractAllClaims(token);
     }
 
-    private boolean validationCheck(UserDto userDto, UserDto userDtoFromDB) {
+    public boolean validationCheck(UserDto userDto, UserDto userDtoFromDB) {
         if (userDto.getEmail().equalsIgnoreCase(userDtoFromDB.getEmail()) && userDto.getRole().equals(userDtoFromDB.getRole()) && userDto.getPermissions().equals(userDtoFromDB.getPermissions()) && userDto.getId().equals(userDtoFromDB.getId()) && userDto.getUsername().equals(userDtoFromDB.getUsername())) {
             if (userDto instanceof CorporateClientDto && userDtoFromDB instanceof CorporateClientDto) {
                 if (((CorporateClientDto) userDto).getPrimaryAccountNumber().equals(((CorporateClientDto) userDtoFromDB).getPrimaryAccountNumber())) {
