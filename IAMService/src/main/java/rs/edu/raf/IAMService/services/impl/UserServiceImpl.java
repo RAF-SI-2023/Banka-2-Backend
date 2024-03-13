@@ -10,7 +10,6 @@ import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.CorporateClient;
@@ -74,9 +73,6 @@ public class UserServiceImpl implements UserService {
         employee.setActive(false);
         return updateEntity(employee);
     }
-
-    @Override
-    public Optional<User> findUserByEmail(String email) {
 
     @Override
     public List<UserDto> findAll() {
