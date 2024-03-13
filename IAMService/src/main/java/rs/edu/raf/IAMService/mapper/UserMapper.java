@@ -55,7 +55,7 @@ public class UserMapper {
                 dto.getSurname(),
                 dto.getGender(),
                 dto.getPosition(),
-                dto.getDepartment().toLowerCase(Locale.ROOT),
+                dto.getDepartment(),
                 false
         );
     }
