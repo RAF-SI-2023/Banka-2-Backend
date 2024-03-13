@@ -28,9 +28,10 @@ public class CorporateClient extends User {
             String address,
             List<Permission> permissions,
             String name,
-            String primaryAccountNumber
+            String primaryAccountNumber,
+            boolean active
     ) {
-        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions, active);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }
