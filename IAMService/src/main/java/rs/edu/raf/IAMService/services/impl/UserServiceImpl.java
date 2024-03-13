@@ -8,12 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.ActivationRequestDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
-import rs.edu.raf.IAMService.data.entites.Employee;
-import rs.edu.raf.IAMService.data.entites.Role;
-import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;
 import rs.edu.raf.IAMService.exceptions.EmailTakenException;
@@ -22,13 +18,18 @@ import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+    private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
@@ -43,16 +44,114 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto findById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found."));
+        return checkInstance(user);
+    }
+
+    @Override
     public UserDto findByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email: " + email + " not found."));
+        return checkInstance(user);
+    }
+
+    public User employeeActivation(int id){
+        Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        employee.setActive(true);
+        return updateEntity(employee);
+    }
+
+    @Override
+    public User employeeDeactivation(int id){
+        Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        employee.setActive(false);
+        return updateEntity(employee);
+    }
+
+    @Override
+    public List<UserDto> findAll() {
+        List<User> users = userRepository.findAll();
+        return new ArrayList<>(users.stream().map(this::checkInstance).toList());
+    }
+
+    @Override
+    public UserDto deleteUserByEmail(String email) {
+        User u = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email: " + email + " not found."));
+        userRepository.removeUserByEmail(email);
+        return checkInstance(u);
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto) {
+        User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new NotFoundException("User with email: " + userDto.getEmail() + " not found."));
+        if (user instanceof Employee && userDto instanceof EmployeeDto) {
+            Employee employee = userMapper.employeeDtoToEmployee((EmployeeDto) userDto);
+            ((Employee) user).setDepartment(employee.getDepartment());
+            ((Employee) user).setPosition(employee.getPosition());
+            ((Employee) user).setGender(employee.getGender());
+            ((Employee) user).setName(employee.getName());
+            ((Employee) user).setSurname(employee.getSurname());
+
+        } else if (user instanceof CorporateClient && userDto instanceof CorporateClientDto) {
+            CorporateClient corporateClient = userMapper.corporateClientDtoToCorporateClient((CorporateClientDto) userDto);
+            ((CorporateClient) user).setName(corporateClient.getName());
+            ((CorporateClient) user).setName(corporateClient.getName());
+
+        } else if (user instanceof PrivateClient && userDto instanceof PrivateClientDto) {
+            PrivateClient privateClient = userMapper.privateClientDtoToPrivateClient((PrivateClientDto) userDto);
+            ((PrivateClient) user).setSurname(privateClient.getSurname());
+            ((PrivateClient) user).setName(privateClient.getName());
+            ((PrivateClient) user).setGender(privateClient.getGender());
+
+        }
+        User u = userMapper.userDtoToUser(userDto);
+        user.setPhone(u.getPhone());
+        user.setAddress(u.getAddress());
+        user.setDateOfBirth(u.getDateOfBirth());
+        return checkInstance(userRepository.save(user));
+    }
+
+    public UserDto checkInstance(User user) {
+
+        if (user instanceof Employee)
+            return userMapper.employeeToEmployeeDto((Employee) user);
+        if (user instanceof CorporateClient)
+            return userMapper.corporateClientToCorporateClientDto((CorporateClient) user);
+        if (user instanceof PrivateClient)
+            return userMapper.privateClientToPrivateClientDto((PrivateClient) user);
         return userMapper.userToUserDto(user);
+    }
+
+
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void sendToQueue(String email, String urlLink) {
+        PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
+        passwordChangeDto.setEmail(email);
+        passwordChangeDto.setUrlLink(urlLink);
+        try {
+            String json = objectMapper.writeValueAsString(passwordChangeDto);
+            rabbitTemplate.convertAndSend("password-change-queue", json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public User updateEntity(User user) {
+        return this.userRepository.save(user);
     }
 
     @Override
     public UserDto createAdmin(UserDto userDto, String password) {
         User user = userMapper.userDtoToUser(userDto);
         user.setPassword(password);
-        user.setRole(roleRepository.save(userDto.getRole()));
+        user.setRole(roleRepository.save(new Role(userDto.getRole())));
         roleRepository.save(new Role(RoleType.EMPLOYEE));
         return userMapper.userToUserDto(userRepository.save(user));
     }

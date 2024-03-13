@@ -34,7 +34,7 @@ public class AuthController {
         adminUser.setUsername("admin");
         Role adminRole = new Role();
         adminRole.setRoleType(RoleType.ADMIN);
-        adminUser.setRole(adminRole);
+        adminUser.setRole(RoleType.ADMIN);
 
         String encodedPassword = passwordEncoder.encode("admin");
         adminUser = userService.createAdmin(adminUser, encodedPassword);

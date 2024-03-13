@@ -1,11 +1,8 @@
 package rs.edu.raf.IAMService.data.dto;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import rs.edu.raf.IAMService.data.entites.Permission;
-import rs.edu.raf.IAMService.data.entites.Role;
+import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 
 import java.util.Date;
@@ -29,7 +26,7 @@ public class EmployeeDto extends UserDto {
             String username,
             String phone,
             String address,
-            List<Permission> permissions,
+            List<PermissionType> permissions,
             String name,
             String surname,
             String gender,
@@ -37,7 +34,7 @@ public class EmployeeDto extends UserDto {
             String department,
             boolean active
     ) {
-        super(id, dateOfBirth, email, username, phone, address, new Role(RoleType.EMPLOYEE), permissions);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.EMPLOYEE, permissions);
         this.name = name;
         this.surname = surname;
         this.gender = gender;

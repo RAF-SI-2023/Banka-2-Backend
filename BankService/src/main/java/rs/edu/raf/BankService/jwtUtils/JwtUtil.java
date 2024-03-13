@@ -21,12 +21,12 @@ public class JwtUtil {
         return extractAllClaims(token).getSubject();
     }
 
-    public List<String> extractPermissions(String token) {
-        Claims claims = extractAllClaims(token);
-        List<?> rawList = claims.get("permissions", List.class);
-        return rawList.stream()
-                .map(object -> String.valueOf(object))
-                .collect(Collectors.toList());
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("id", Long.class);
+    }
+
+    public String extractUserRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 
     public boolean isTokenExpired(String token) {
@@ -35,5 +35,13 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         return !isTokenExpired(token);
+    }
+
+    public List<String> extractPermissions(String token) {
+        Claims claims = extractAllClaims(token);
+        List<?> rawList = claims.get("permissions", List.class);
+        return rawList.stream()
+                .map(object -> String.valueOf(object))
+                .collect(Collectors.toList());
     }
 }
