@@ -2,6 +2,7 @@ package rs.edu.raf.IAMService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -53,15 +54,11 @@ class PasswordChangeTest {
     @Mock
     private HttpServletRequest request;
 
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private JwtUtil jwtUtil;
 
 
-    @Mock(answer = Answers.RETURNS_MOCKS)
-    private User user;
 
     @InjectMocks
     private UserController userController;
@@ -76,11 +73,18 @@ class PasswordChangeTest {
         String email = "test@example.com";
         int port = 8000;
 
+
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getServerPort()).thenReturn(port);
 
 
         //  Role role = new Role(RoleType.ROLE_USER);
+
+
+        when(httpServletRequest.getServerPort()).thenReturn(port);
+
+        Role role = new Role(RoleType.USER);
+
 
         UserDto userDto = new UserDto();
         userDto.setUsername("lol");
@@ -115,6 +119,50 @@ class PasswordChangeTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(userService).findByEmail(email);
         verify(userService).sendToQueue(eq(email), anyString());
+    }
+
+    @Test
+    void testInitiatesChangePasswordTooManyRequests() {
+        String email = "test@example.com";
+        int port = 8000;
+        HttpServletRequest httpServletRequest= mock(HttpServletRequest.class);
+        when(httpServletRequest.getServerPort()).thenReturn(port);
+
+        Role role = new Role(RoleType.USER);
+
+        UserDto userDto = new UserDto();
+        userDto.setUsername("lol");
+        userDto.setEmail("lol");
+        userDto.setAddress("lol");
+        userDto.setRole(null);
+        userDto.setPhone("lol");
+        userDto.setPermissions(null);
+        userDto.setDateOfBirth(null);
+        userDto.setRole(role.getRoleType());
+        userDto.setId(Long.valueOf(1));
+
+        reset(submitLimiter);
+
+        when(submitLimiter.allowRequest(anyString())).thenReturn(false);
+
+        when(userService.findByEmail(email)).thenReturn(userDto);
+
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail(email);
+        passwordChangeTokenDto.setUrlLink("http://localhost:8000/api/users/changePasswordSubmit/");
+        passwordChangeTokenDto.setToken("token");
+        passwordChangeTokenDto.setExpireTime(1000L);
+
+
+        when(changedPasswordTokenUtil.generateToken(any(), anyString())).thenReturn(passwordChangeTokenDto);
+        // Test
+        ResponseEntity<PasswordChangeTokenDto> responseEntity = userController.InitiatesChangePassword(email);
+
+
+        // Verification
+        assertEquals(HttpStatus.TOO_MANY_REQUESTS, responseEntity.getStatusCode());
+
+
     }
 
     @Test
@@ -162,6 +210,195 @@ class PasswordChangeTest {
         // Verification
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(userService).updateEntity(user1);
+    }
+    @Test
+    void testChangePasswordSubmitUserIsNotFound() {
+        // Mocking
+        String newPassword = "Paaricefdsfghehe12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail(email);
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("lol"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(null);
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+        when(userService.findUserByEmail(email)).thenReturn(Optional.empty());
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+        when(jwtUtil.extractAllClaims(anyString())).thenReturn(null);
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(newPassword, passwordChangeTokenDto);
+
+        // Verification
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.NOT_FOUND;
+       }
+
+    @Test
+    void testChangePasswordSubmitUserHasSamePassword() {
+        // Mocking
+        String newPassword = "Paricehehe12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail(email);
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("Paricehehe12"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(null);
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+        when(userService.findUserByEmail(email)).thenReturn(Optional.of(user1));
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(true);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+        when(jwtUtil.extractAllClaims(anyString())).thenReturn(null);
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(newPassword, passwordChangeTokenDto);
+
+        // Verification
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST;
+    }
+
+    @Test
+    public void testChangePasswordSubmit_Unauthorized() {
+        // Mocking
+        String newPassword = "Paricehehe12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail(email);
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("Paricehehe12"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(null);
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+        when(userService.findUserByEmail(email)).thenReturn(Optional.of(user1));
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(true);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+        when(jwtUtil.extractAllClaims(anyString())).thenReturn(null);
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+        Claims extractedToken = mock(Claims.class);
+        when(extractedToken.get("email")).thenReturn("someemail@example.com");
+        when(jwtUtil.extractAllClaims(anyString())).thenReturn(extractedToken);
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(newPassword, passwordChangeTokenDto);
+
+        // Verification
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.FORBIDDEN;
+    }
+    @Test
+    public void testChangePasswordSubmitNotValidToken() {
+        // Mocking
+        String newPassword = "PariceheheDASD12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail(email);
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("Paricehehe12"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(null);
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+        when(userService.findUserByEmail(email)).thenReturn(Optional.of(user1));
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(false);
+        when(jwtUtil.extractAllClaims(anyString())).thenReturn(null);
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(newPassword, passwordChangeTokenDto);
+
+        // Verification
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED;
     }
 
 }
