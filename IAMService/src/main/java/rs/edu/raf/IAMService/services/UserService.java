@@ -32,6 +32,10 @@ public interface UserService extends UserDetailsService {
 
     UserDto findByEmail(String email);
 
+    UserDto createAdmin(UserDto userDto, String password);
+    EmployeeDto createEmployee(EmployeeDto employeeDto);
+    EmployeeDto activateEmployee(String email, String password);
+
     /**
      * Finds User by email, and returns it as Optional<User>. This method is used for security purposes, like
      * changing a password.
