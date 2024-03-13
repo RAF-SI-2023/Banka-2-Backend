@@ -209,9 +209,6 @@ public class UserController {
 
         if (roleType.equals(RoleType.ADMIN)) {
             if (validationCheck(userDto, userDtoFromDB)) {
-                if (userDto instanceof EmployeeDto) {
-                    System.out.println("PETAR PAN");
-                }
                 UserDto ud = userService.updateUser(userDto);
                 return ResponseEntity.ok(ud);
             } else {
