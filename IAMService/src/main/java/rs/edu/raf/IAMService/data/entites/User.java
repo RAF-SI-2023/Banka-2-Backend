@@ -30,7 +30,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
-    private Role role = new Role(RoleType.ROLE_USER);
+    private Role role = new Role(RoleType.USER);
 
     @ManyToMany
     @JoinTable(

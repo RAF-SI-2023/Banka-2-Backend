@@ -15,15 +15,17 @@ import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.services.UserService;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class CrudUserControllerTests {
 
     @Mock
-    HttpServletRequest request;
-    @Mock
     private UserService userService;
+    @Mock
+    HttpServletRequest request;
     @InjectMocks
     private UserController controller;
 
@@ -44,7 +46,7 @@ public class CrudUserControllerTests {
         expectedUser.setPhone("lol");
         expectedUser.setPermissions(null);
         expectedUser.setDateOfBirth(null);
-        expectedUser.setRole(RoleType.ROLE_ADMIN);
+        expectedUser.setRole(RoleType.ADMIN);
 
 
         when(userService.findByEmail(email)).thenReturn(expectedUser);
@@ -82,7 +84,7 @@ public class CrudUserControllerTests {
         expectedUser.setPhone("lol");
         expectedUser.setPermissions(null);
         expectedUser.setDateOfBirth(null);
-        expectedUser.setRole(RoleType.ROLE_ADMIN);
+        expectedUser.setRole(RoleType.ADMIN);
 
 
         when(userService.findById(1L)).thenReturn(expectedUser);
@@ -115,7 +117,7 @@ public class CrudUserControllerTests {
         UserDto user = new UserDto();
         user.setEmail(email);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_ADMIN.name());
+        when(claims.get("role")).thenReturn(RoleType.ADMIN.name());
         UserController controller = Mockito.spy(this.controller);
         //     when(controller.getClaims(request)).Return(claims);
         doReturn(claims).when(controller).getClaims(request);
@@ -134,10 +136,10 @@ public class CrudUserControllerTests {
         // Arrange
         String email = "employee@example.com";
         UserDto user = new UserDto();
-        user.setRole(RoleType.ROLE_EMPLOYEE);
+        user.setRole(RoleType.EMPLOYEE);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_EMPLOYEE.name());
+        when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
         when(claims.get("email")).thenReturn(email);
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
@@ -168,10 +170,10 @@ public class CrudUserControllerTests {
         // Arrange
         String email = "test@example.com";
         UserDto user = new UserDto();
-        user.setRole(RoleType.ROLE_USER);
+        user.setRole(RoleType.USER);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_EMPLOYEE.name());
+        when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
         when(claims.get("email")).thenReturn("employee@example.com");
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
@@ -191,10 +193,10 @@ public class CrudUserControllerTests {
         // Arrange
         String email = "admin@example.com";
         UserDto user = new UserDto();
-        user.setRole(RoleType.ROLE_ADMIN);
+        user.setRole(RoleType.ADMIN);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_EMPLOYEE.name());
+        when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
         when(claims.get("email")).thenReturn("employee@example.com");
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
@@ -212,10 +214,10 @@ public class CrudUserControllerTests {
         // Arrange
         String email = "user@example.com";
         UserDto user = new UserDto();
-        user.setRole(RoleType.ROLE_USER);
+        user.setRole(RoleType.USER);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_USER.name());
+        when(claims.get("role")).thenReturn(RoleType.USER.name());
         when(claims.get("email")).thenReturn("user2@example.com");
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
@@ -245,11 +247,11 @@ public class CrudUserControllerTests {
         // Arrange
         UserDto userDto = new UserDto();
         userDto.setEmail("user@example.com");
-        userDto.setRole(RoleType.ROLE_USER);
+        userDto.setRole(RoleType.USER);
         userDto.setId(1L);
         userDto.setUsername("user");
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_USER.name());
+        when(claims.get("role")).thenReturn(RoleType.USER.name());
         when(claims.get("email")).thenReturn("user@example.com");
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
@@ -268,13 +270,13 @@ public class CrudUserControllerTests {
         // Arrange
         UserDto userDto = new UserDto();
         userDto.setEmail("anotheruser@example.com");
-        userDto.setRole(RoleType.ROLE_USER);
+        userDto.setRole(RoleType.USER);
         userDto.setId(1L);
         userDto.setUsername("user");
         UserController controller = Mockito.spy(this.controller);
         Claims claims = mock(Claims.class);
         when(claims.get("email")).thenReturn("employee@example.com");
-        when(claims.get("role")).thenReturn(RoleType.ROLE_EMPLOYEE.name());
+        when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
         when(controller.getClaims(request)).thenReturn(claims);
         when(userService.findByEmail("anotheruser@example.com")).thenReturn(userDto);
         when(userService.updateUser(userDto)).thenReturn(userDto);
@@ -291,12 +293,12 @@ public class CrudUserControllerTests {
         // Arrange
         UserDto userDto = new UserDto();
         userDto.setEmail("anotheruser@example.com");
-        userDto.setRole(RoleType.ROLE_USER);
+        userDto.setRole(RoleType.USER);
         userDto.setId(1L);
         userDto.setUsername("user");
         UserController controller = Mockito.spy(this.controller);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_ADMIN.name());
+        when(claims.get("role")).thenReturn(RoleType.ADMIN.name());
         when(controller.getClaims(request)).thenReturn(claims);
         when(userService.findByEmail("anotheruser@example.com")).thenReturn(userDto);
         when(userService.updateUser(userDto)).thenReturn(userDto);
@@ -313,12 +315,12 @@ public class CrudUserControllerTests {
         // Arrange
         UserDto userDto = new UserDto();
         userDto.setEmail("anotheruser@example.com");
-        userDto.setRole(RoleType.ROLE_USER);
+        userDto.setRole(RoleType.USER);
         userDto.setId(1L);
         userDto.setUsername("user");
         UserController controller = Mockito.spy(this.controller);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_USER.name());
+        when(claims.get("role")).thenReturn(RoleType.USER.name());
         when(claims.get("email")).thenReturn("user@example.com"); // Different user's email
         when(controller.getClaims(request)).thenReturn(claims);
 
@@ -334,12 +336,12 @@ public class CrudUserControllerTests {
         // Arrange
         UserDto userDto = new UserDto();
         userDto.setEmail("anotheruser@example.com");
-        userDto.setRole(RoleType.ROLE_ADMIN);
+        userDto.setRole(RoleType.ADMIN);
         userDto.setId(1L);
         userDto.setUsername("user");
         UserController controller = Mockito.spy(this.controller);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_EMPLOYEE.name());
+        when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
         when(controller.getClaims(request)).thenReturn(claims);
         when(userService.findByEmail("user@example.com")).thenReturn(userDto);
 
@@ -355,13 +357,13 @@ public class CrudUserControllerTests {
         // Arrange
         UserDto userDto = new UserDto();
         userDto.setEmail("anotheruser@example.com");
-        userDto.setRole(RoleType.ROLE_USER);
+        userDto.setRole(RoleType.USER);
         userDto.setId(1L);
         userDto.setUsername("user");
 
         UserController controller = Mockito.spy(this.controller);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ROLE_ADMIN.name());
+        when(claims.get("role")).thenReturn(RoleType.ADMIN.name());
         when(controller.getClaims(request)).thenReturn(claims);
         when(userService.findByEmail("anotheruser@example.com")).thenReturn(userDto);
         //simulate validation check fail even tho its the same user
@@ -375,6 +377,20 @@ public class CrudUserControllerTests {
     }
 
 
+    @Test
+    public void testFindAll() {
+        // Arrange
+        when(userService.findAll()).thenReturn(new ArrayList<>());
+
+        // Act
+        ResponseEntity<?> response = controller.findAll();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(userService, times(1)).findAll();
+    }
 }
+
+
 
 

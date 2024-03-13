@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
 
@@ -41,6 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
             jwt = authHeader.substring(7);
             role = jwtUtil.getRole(jwt);
             email = jwtUtil.extractEmail(jwt);
+            System.out.println("Role: " + role);
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

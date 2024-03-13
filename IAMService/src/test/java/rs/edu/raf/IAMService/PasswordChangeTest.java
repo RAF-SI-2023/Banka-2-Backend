@@ -2,7 +2,6 @@ package rs.edu.raf.IAMService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -26,6 +25,8 @@ import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -89,7 +90,7 @@ class PasswordChangeTest {
         userDto.setPhone("lol");
         userDto.setPermissions(null);
         userDto.setDateOfBirth(null);
-        userDto.setRole(RoleType.ROLE_USER);
+        userDto.setRole(RoleType.USER);
         userDto.setId(Long.valueOf(1));
 
         reset(submitLimiter);
@@ -124,7 +125,7 @@ class PasswordChangeTest {
         PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
         passwordChangeTokenDto.setEmail(email);
 
-        Role role = new Role(RoleType.ROLE_USER);
+        Role role = new Role(RoleType.USER);
         User user1 = new User();
         user1.setUsername("lol");
         user1.setPassword(passwordEncoder.encode("lol"));

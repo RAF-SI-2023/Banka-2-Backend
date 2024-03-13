@@ -36,7 +36,7 @@ public class Employee extends User {
             String department,
             boolean active
     ) {
-        super(dateOfBirth, email, username, phone, address, new Role(RoleType.ROLE_EMPLOYEE), permissions);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.EMPLOYEE), permissions);
         this.name = name;
         this.surname = surname;
         this.gender = gender;

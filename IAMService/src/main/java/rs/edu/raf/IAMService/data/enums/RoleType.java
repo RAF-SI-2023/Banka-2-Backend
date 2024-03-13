@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum RoleType {
-    ROLE_ADMIN("ROLE_ADMIN"),
-    ROLE_EMPLOYEE("ROLE_EMPLOYEE"),
-    ROLE_SUPERVISOR("ROLE_SUPERVISOR"),
-    ROLE_AGENT("ROLE_AGENT"),
-    ROLE_USER("ROLE_USER");
+    ADMIN("ADMIN"),
+    EMPLOYEE("EMPLOYEE"),
+    SUPERVISOR("SUPERVISOR"),
+    AGENT("AGENT"),
+    USER("USER");
 
     private final String role;
 

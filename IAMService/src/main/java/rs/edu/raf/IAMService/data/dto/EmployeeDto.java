@@ -33,7 +33,7 @@ public class EmployeeDto extends UserDto {
             String department,
             boolean active
     ) {
-        super(id, dateOfBirth, email, username, phone, address, RoleType.ROLE_EMPLOYEE, permissions);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.EMPLOYEE, permissions);
         this.name = name;
         this.surname = surname;
         this.gender = gender;

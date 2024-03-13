@@ -1,6 +1,12 @@
 package rs.edu.raf.IAMService.controllers;
 
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -10,10 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
@@ -48,6 +51,7 @@ public class UserController {
         this.request = request;
         this.jwtUtil = jwtUtil;
     }
+
 
     @GetMapping(path = "/changePassword/{email}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@PathVariable String email) {
@@ -96,10 +100,19 @@ public class UserController {
 
     }
 
-
+    @Operation(
+            summary = "Find user by email",
+            description = "Finds a user by their email address."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found, returns userDto"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @GetMapping(path = "/findByEmail/{email}", consumes = MediaType.ALL_VALUE)
     //  @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE', 'USER')")
-    public ResponseEntity<?> findByEmail(@PathVariable String email) {
+    public ResponseEntity<?> findByEmail(@PathVariable
+                                         @Parameter(description = "Email address of the user to be found", required = true)
+                                         String email) {
         UserDto userDto = userService.findByEmail(email);
         if (userDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -107,6 +120,9 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @Operation(summary = "Find User by ID", description = "Returns a user by their ID.")
+    @ApiResponse(responseCode = "200", description = "User found, returns userDto", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserDto.class)))
+    @ApiResponse(responseCode = "404", description = "User not found")
     @GetMapping(path = "/findById/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findById(@PathVariable Long id) {
         UserDto userDto = userService.findById(id);
@@ -116,7 +132,10 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-
+    @Operation(summary = "Delete User by Email", description = "Deletes a user by their email.")
+    @ApiResponse(responseCode = "200", description = "User deleted successfully return deleted UserDto")
+    @ApiResponse(responseCode = "401", description = "Unauthorized")
+    @ApiResponse(responseCode = "403", description = "Forbidden")
     @DeleteMapping(path = "/delete/{email}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Transactional
@@ -128,31 +147,52 @@ public class UserController {
 
         RoleType roleType = RoleType.valueOf((String) claims.get("role"));
 
-        if (roleType.equals(RoleType.ROLE_USER)) {
+        if (roleType.equals(RoleType.USER)) {
             if (!email.equals(claims.get("email"))) {
                 return ResponseEntity.status(403).build();
             }
         }
         UserDto userDto = userService.findByEmail(email);
-        if (roleType.equals(RoleType.ROLE_EMPLOYEE)) {
-            if (!userDto.getRole().equals(RoleType.ROLE_USER) && !email.equals(claims.get("email"))) {
+        if (roleType.equals(RoleType.EMPLOYEE)) {
+            if (!userDto.getRole().equals(RoleType.USER) && !email.equals(claims.get("email"))) {
                 return ResponseEntity.status(403).build();
             }
         }
         return ResponseEntity.ok(userService.deleteUserByEmail(email));
     }
 
+    @PutMapping(path = "/updateEmployee", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    public ResponseEntity<?> updateEmployee(@RequestBody EmployeeDto employeeDto) {
+        return updateUser(employeeDto);
+    }
 
-    @PutMapping("/updateUser")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE', 'USER')")
-    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
+    @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE','ROLE_USER')")
+    @PutMapping(path = "/updateCorporateClient", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateCorporateClient(@RequestBody CorporateClientDto corporateClientDto) {
+        return updateUser(corporateClientDto);
+    }
+
+    @PutMapping(path = "/updatePrivateClient", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE','ROLE_USER')")
+    public ResponseEntity<?> updatePrivateClient(@RequestBody PrivateClientDto privateClientDto) {
+        return updateUser(privateClientDto);
+    }
+
+    @GetMapping(path = "/findAll", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    public ResponseEntity<?> updateUser(UserDto userDto) {
         Claims claims = getClaims(request);
         if (claims == null) {
             return ResponseEntity.status(401).build();
         }
         RoleType roleType = RoleType.valueOf((String) claims.get("role"));
         UserDto userDtoFromDB = userService.findByEmail(userDto.getEmail());
-        if (roleType.equals(RoleType.ROLE_USER)) {
+        if (roleType.equals(RoleType.USER)) {
             if (userDto.getEmail().equals(claims.get("email"))) {
                 if (validationCheck(userDto, userDtoFromDB)) {
                     return ResponseEntity.ok(userService.updateUser(userDto));
@@ -161,15 +201,19 @@ public class UserController {
 
             } else return ResponseEntity.status(403).build();
         }
-        if (roleType.equals(RoleType.ROLE_EMPLOYEE)) {
-            if ((userDto.getRole().equals(RoleType.ROLE_USER) || userDto.getEmail().equals(claims.get("email"))) && validationCheck(userDto, userDtoFromDB)) {
+        if (roleType.equals(RoleType.EMPLOYEE)) {
+            if ((userDto.getRole().equals(RoleType.USER) || userDto.getEmail().equals(claims.get("email"))) && validationCheck(userDto, userDtoFromDB)) {
                 return ResponseEntity.ok(userService.updateUser(userDto));
             } else return ResponseEntity.status(403).build();
         }
 
-        if (roleType.equals(RoleType.ROLE_ADMIN)) {
+        if (roleType.equals(RoleType.ADMIN)) {
             if (validationCheck(userDto, userDtoFromDB)) {
-                return ResponseEntity.ok(userService.updateUser(userDto));
+                if (userDto instanceof EmployeeDto) {
+                    System.out.println("PETAR PAN");
+                }
+                UserDto ud = userService.updateUser(userDto);
+                return ResponseEntity.ok(ud);
             } else {
                 return ResponseEntity.status(403).build();
             }
@@ -209,6 +253,7 @@ public class UserController {
         return false;
 
     }
+
 
 }
 

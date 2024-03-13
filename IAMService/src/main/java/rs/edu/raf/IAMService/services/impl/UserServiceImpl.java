@@ -1,15 +1,17 @@
 package rs.edu.raf.IAMService.services.impl;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
+import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
+import rs.edu.raf.IAMService.data.dto.EmployeeDto;
+import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
+import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.CorporateClient;
 import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.PrivateClient;
@@ -17,10 +19,12 @@ import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.List;
 
 
 @Service
@@ -74,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto) {
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new NotFoundException("User with email: " + userDto.getEmail() + " not found."));
-        if (user instanceof Employee) {
+        if (user instanceof Employee && userDto instanceof EmployeeDto) {
             Employee employee = userMapper.employeeDtoToEmployee((EmployeeDto) userDto);
             ((Employee) user).setDepartment(employee.getDepartment());
             ((Employee) user).setPosition(employee.getPosition());
@@ -82,12 +86,12 @@ public class UserServiceImpl implements UserService {
             ((Employee) user).setName(employee.getName());
             ((Employee) user).setSurname(employee.getSurname());
 
-        } else if (user instanceof CorporateClient) {
+        } else if (user instanceof CorporateClient && userDto instanceof CorporateClientDto) {
             CorporateClient corporateClient = userMapper.corporateClientDtoToCorporateClient((CorporateClientDto) userDto);
             ((CorporateClient) user).setName(corporateClient.getName());
             ((CorporateClient) user).setName(corporateClient.getName());
 
-        } else if (user instanceof PrivateClient) {
+        } else if (user instanceof PrivateClient && userDto instanceof PrivateClientDto) {
             PrivateClient privateClient = userMapper.privateClientDtoToPrivateClient((PrivateClientDto) userDto);
             ((PrivateClient) user).setSurname(privateClient.getSurname());
             ((PrivateClient) user).setName(privateClient.getName());
