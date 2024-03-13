@@ -30,14 +30,17 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
+        if (authHeader == null) {
+            authHeader = request.getHeader("authorization");
+        }
         String jwt = null;
         String role = null;
         String email = null;
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             role = jwtUtil.getRole(jwt);
             email = jwtUtil.extractEmail(jwt);
+            System.out.println("Role: " + role);
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
