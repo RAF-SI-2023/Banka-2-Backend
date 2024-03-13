@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
@@ -106,5 +108,30 @@ public class UserController {
         return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
     }
 
+
+    @PutMapping(path = "/activateEmployee/{id}")
+    @Secured("ADMIN")
+    public ResponseEntity<Boolean> ActivateEmployee(@PathVariable int id) {
+
+        try{
+            userService.employeeActivation(id);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
+    }
+    @PutMapping(path = "/deactivateEmployee/{id}")
+    @Secured("ADMIN")
+    public ResponseEntity<Boolean> DeactivateEmployee(@PathVariable int id) {
+
+        try{
+            userService.employeeDeactivation(id);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
+    }
 
 }
