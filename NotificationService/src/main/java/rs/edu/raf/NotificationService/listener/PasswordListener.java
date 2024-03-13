@@ -57,7 +57,7 @@ public class PasswordListener {
 
     @RabbitListener(queues = "user-profile-activation-code")
     public void userProfileActivationCodeHandler(Message message) throws IOException {
-        if(message == null) return;
+        if (message == null) return;
         ProfileActivationCodeDto profileActivationCodeDto = objectMapper.readValue(message.getBody(), ProfileActivationCodeDto.class);
         if (!isValid(profileActivationCodeDto)) return;
         EmailDto userActivationCodeEmail = emailDtoMapper.profileActivationEmail(profileActivationCodeDto);
