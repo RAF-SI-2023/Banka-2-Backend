@@ -27,6 +27,7 @@ public class Employee extends User {
             String username,
             String phone,
             String address,
+            Role role,
             List<Permission> permissions,
             String name,
             String surname,

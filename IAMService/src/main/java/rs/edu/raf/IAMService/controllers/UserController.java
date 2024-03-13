@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
+import rs.edu.raf.IAMService.exceptions.EmailTakenException;
+import rs.edu.raf.IAMService.exceptions.MissingRoleException;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
@@ -34,8 +36,11 @@ import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-@SecurityRequirement(name = "userApi")
+@RequestMapping(
+        value = "/api/users",
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class UserController {
     private final HttpServletRequest request;
     private final UserService userService;
@@ -54,6 +59,18 @@ public class UserController {
         this.passwordValidator = passwordValidator;
         this.request = request;
         this.jwtUtil = jwtUtil;
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createEmployee(@RequestBody EmployeeDto employeeDto) {
+        try {
+            EmployeeDto newEmployeeDto = userService.createEmployee(employeeDto);
+            return ResponseEntity.ok(newEmployeeDto.getId());
+        } catch (EmailTakenException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (MissingRoleException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
 
