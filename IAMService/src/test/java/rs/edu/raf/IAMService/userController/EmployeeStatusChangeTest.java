@@ -1,6 +1,5 @@
 package rs.edu.raf.IAMService.userController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -58,7 +57,7 @@ public class EmployeeStatusChangeTest {
         admin.setPermissions(null);
         admin.setDateOfBirth(null);
         admin.setRole(roleAdmin);
-        admin.setId(Long.valueOf(1));
+        admin.setId(1L);
 
         Employee employee = new Employee();
         employee.setEmail(employeeEmail);
@@ -95,7 +94,7 @@ public class EmployeeStatusChangeTest {
         admin.setPermissions(null);
         admin.setDateOfBirth(null);
         admin.setRole(roleAdmin);
-        admin.setId(Long.valueOf(1));
+        admin.setId(1L);
 
         Employee employee = new Employee();
         employee.setEmail(employeeEmail);
@@ -132,7 +131,7 @@ public class EmployeeStatusChangeTest {
         admin.setPermissions(null);
         admin.setDateOfBirth(null);
         admin.setRole(roleAdmin);
-        admin.setId(Long.valueOf(1));
+        admin.setId(1L);
 
         User employee = new User();
         employee.setUsername("employee");
@@ -143,7 +142,7 @@ public class EmployeeStatusChangeTest {
         employee.setPermissions(null);
         employee.setDateOfBirth(null);
         employee.setRole(roleEmployee);
-        employee.setId(Long.valueOf(4));
+        employee.setId(4L);
 
 
         when(userService.findUserByEmail(adminEmail)).thenReturn(Optional.of(admin));
@@ -179,7 +178,7 @@ public class EmployeeStatusChangeTest {
         admin.setPermissions(null);
         admin.setDateOfBirth(null);
         admin.setRole(roleAdmin);
-        admin.setId(Long.valueOf(1));
+        admin.setId(1L);
 
         User employee = new User();
         employee.setUsername("employee");
@@ -190,7 +189,7 @@ public class EmployeeStatusChangeTest {
         employee.setPermissions(null);
         employee.setDateOfBirth(null);
         employee.setRole(roleEmployee);
-        employee.setId(Long.valueOf(4));
+        employee.setId(4L);
 
 
         when(userService.findUserByEmail(adminEmail)).thenReturn(Optional.of(admin));

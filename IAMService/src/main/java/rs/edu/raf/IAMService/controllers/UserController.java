@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
@@ -112,7 +113,7 @@ public class UserController {
     public ResponseEntity<?> changeActiveStatusOfEmployee(@PathVariable String email, String employeeEmail) {
         Optional<User> employeeOpt = userService.findUserByEmail(employeeEmail);
         Optional<User> adminOpt = userService.findUserByEmail(email);
-        User admin = adminOpt.get();
+        User admin = adminOpt.orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
         Employee employee;
         if(employeeOpt.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee with email: " + employeeEmail + " not found.");
