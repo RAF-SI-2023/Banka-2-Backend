@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService;
+package rs.edu.raf.IAMService.userController;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
