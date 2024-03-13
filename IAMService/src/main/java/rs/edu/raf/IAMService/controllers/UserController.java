@@ -74,7 +74,7 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/changePassword/{email}", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/changePassword/{email}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@PathVariable String email) {
 
         if (!submitLimiter.allowRequest(email)) {
@@ -89,7 +89,7 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/changePasswordSubmit/{token} ", consumes = MediaType.ALL_VALUE)
+    @PutMapping(path = "/changePasswordSubmit/{token} ", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> changePasswordSubmit(String newPassword, PasswordChangeTokenDto passwordChangeTokenDto) {
         String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
         Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
