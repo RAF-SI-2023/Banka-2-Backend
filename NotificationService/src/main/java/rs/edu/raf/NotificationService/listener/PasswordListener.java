@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import rs.edu.raf.NotificationService.data.dto.EmailDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
+import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
 
 import java.io.IOException;
@@ -52,6 +53,15 @@ public class PasswordListener {
         EmailDto passwordChangeEmail = emailDtoMapper.changePasswordEmail(passwordChangeDto);
 
         logger.info("passwordChangeListener received message: " + passwordChangeEmail);
+    }
+
+    @RabbitListener(queues = "user-profile-activation-code")
+    public void userProfileActivationCodeHandler(Message message) throws IOException {
+        if(message == null) return;
+        ProfileActivationCodeDto profileActivationCodeDto = objectMapper.readValue(message.getBody(), ProfileActivationCodeDto.class);
+        if (!isValid(profileActivationCodeDto)) return;
+        EmailDto userActivationCodeEmail = emailDtoMapper.profileActivationEmail(profileActivationCodeDto);
+        logger.info("userProfileActivationCodeListener received message: " + userActivationCodeEmail);
     }
 
     @RabbitListener(queues = "password-forgot")
