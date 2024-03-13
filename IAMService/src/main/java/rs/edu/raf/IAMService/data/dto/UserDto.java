@@ -23,5 +23,6 @@ public class UserDto {
     private String address;
     private RoleType role;
     private List<PermissionType> permissions = new ArrayList<>();
+    private boolean active;
 
 }

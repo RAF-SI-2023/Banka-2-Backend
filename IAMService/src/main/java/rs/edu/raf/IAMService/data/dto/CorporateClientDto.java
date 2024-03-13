@@ -25,9 +25,10 @@ public class CorporateClientDto extends UserDto {
             String address,
             List<PermissionType> permissions,
             String name,
-            String primaryAccountNumber
+            String primaryAccountNumber,
+            boolean active
     ) {
-        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions, active);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }
