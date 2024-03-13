@@ -2,18 +2,15 @@ package rs.edu.raf.IAMService.data.entites;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import rs.edu.raf.IAMService.data.enums.RoleType;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @DiscriminatorValue("PrivateClient")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PrivateClient extends User {
@@ -29,15 +26,14 @@ public class PrivateClient extends User {
             String username,
             String phone,
             String address,
-            Role role,
             List<Permission> permissions,
-            boolean active,
             String name,
             String surname,
             String gender,
-            String primaryAccountNumber
+            String primaryAccountNumber,
+            boolean active
     ) {
-        super(dateOfBirth, email, username, phone, address, role, permissions, active);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions, active);
         this.name = name;
         this.surname = surname;
         this.gender = gender;

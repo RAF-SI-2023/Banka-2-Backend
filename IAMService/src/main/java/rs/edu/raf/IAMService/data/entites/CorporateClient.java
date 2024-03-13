@@ -2,10 +2,8 @@ package rs.edu.raf.IAMService.data.entites;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import rs.edu.raf.IAMService.data.enums.RoleType;
 
 import java.util.Date;
 import java.util.List;
@@ -13,8 +11,7 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("CorporateClient")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CorporateClient extends User {
@@ -29,13 +26,12 @@ public class CorporateClient extends User {
             String username,
             String phone,
             String address,
-            Role role,
             List<Permission> permissions,
-            boolean active,
             String name,
-            String primaryAccountNumber
+            String primaryAccountNumber,
+            boolean active
     ) {
-        super(dateOfBirth, email, username, phone, address, role, permissions, active);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions, active);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }

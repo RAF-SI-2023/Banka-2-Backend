@@ -73,8 +73,8 @@ class UserServiceImplTest {
         assertEquals(requestDto.getEmail(), result.getEmail());
         assertEquals(requestDto.getPhone(), result.getPhone());
         assertEquals(requestDto.getPrimaryAccountNumber(), result.getPrimaryAccountNumber());
-        assertEquals(requestDto.getRole().getRoleType(), result.getRole().getRoleType());
-        assertEquals(requestDto.getPermissions().get(0).getPermissionType(), result.getPermissions().get(0).getPermissionType());
+        assertEquals(requestDto.getRole().getRole(), result.getRole().getRole());
+        assertEquals(requestDto.getPermissions().get(0).getAuthority(), result.getPermissions().get(0).getAuthority());
     }
 
     @Test
@@ -101,8 +101,8 @@ class UserServiceImplTest {
         assertEquals(requestDto.getEmail(), result.getEmail());
         assertEquals(requestDto.getPhone(), result.getPhone());
         assertEquals(requestDto.getPrimaryAccountNumber(), result.getPrimaryAccountNumber());
-        assertEquals(requestDto.getRole().getRoleType(), result.getRole().getRoleType());
-        assertEquals(requestDto.getPermissions().get(0).getPermissionType(), result.getPermissions().get(0).getPermissionType());
+        assertEquals(requestDto.getRole().getRole(), result.getRole().getRole());
+        assertEquals(requestDto.getPermissions().get(0).getAuthority(), result.getPermissions().get(0).getAuthority());
     }
 
     @Test
@@ -114,6 +114,7 @@ class UserServiceImplTest {
         user.setActive(false);
         when(userRepository.findById(Long.parseLong(clientId))).thenReturn(Optional.of(user));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(new User());
 
         // when
         userService.activateClient(clientId, password);
@@ -123,7 +124,7 @@ class UserServiceImplTest {
         assertEquals("encodedPassword", user.getPassword());
         verify(userRepository, times(1)).findById(any());
         verify(passwordEncoder, times(1)).encode(any());
-        verify(userRepository, times(1)).save(any());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
@@ -154,8 +155,8 @@ class UserServiceImplTest {
         dto.setPhone("test phone number");
         dto.setUsername("test username");
         dto.setPrimaryAccountNumber("test account number");
-        dto.setRole(new Role(RoleType.USER));
-        dto.setPermissions(List.of(new Permission(PermissionType.PERMISSION_1)));
+        dto.setRole(new Role(RoleType.USER).getRoleType());
+        dto.setPermissions(List.of(new Permission(PermissionType.PERMISSION_1).getPermissionType()));
 
         return dto;
     }
@@ -190,8 +191,8 @@ class UserServiceImplTest {
         dto.setPhone("test phone number");
         dto.setUsername("test username");
         dto.setPrimaryAccountNumber("test account number");
-        dto.setRole(new Role(RoleType.USER));
-        dto.setPermissions(List.of(new Permission(PermissionType.PERMISSION_1)));
+        dto.setRole(new Role(RoleType.USER).getRoleType());
+        dto.setPermissions(List.of(new Permission(PermissionType.PERMISSION_1).getPermissionType()));
 
         return dto;
     }

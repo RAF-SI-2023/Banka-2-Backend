@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.IAMService.TestSecurityConfig;
 import rs.edu.raf.IAMService.data.dto.ClientActivationDto;
@@ -18,18 +19,23 @@ import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.filters.JwtFilter;
+import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
+import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
+import rs.edu.raf.IAMService.utils.SubmitLimiter;
+import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Import({TestSecurityConfig.class})
 @WebMvcTest(controllers = UserController.class,
         excludeFilters = {
-            @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtFilter.class)
+                @ComponentScan.Filter(
+                        type = FilterType.ASSIGNABLE_TYPE, classes = {JwtFilter.class})
         })
+@Import({TestSecurityConfig.class})
 class UserControllerTest {
 
     @Autowired
@@ -40,6 +46,21 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private ChangedPasswordTokenUtil changedPasswordTokenUtil;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private SubmitLimiter submitLimiter;
+
+    @MockBean
+    private PasswordValidator passwordValidator;
+
+    @MockBean
+    private JwtUtil jwtUtil;
 
     @BeforeEach
     public void setup() {
