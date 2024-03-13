@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.EmployeeDto;
@@ -61,6 +62,21 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email: " + email + " not found."));
         return checkInstance(user);
     }
+    public User employeeActivation(int id){
+        Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        employee.setActive(true);
+        return updateEntity(employee);
+    }
+
+    @Override
+    public User employeeDeactivation(int id){
+        Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
+        employee.setActive(false);
+        return updateEntity(employee);
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
 
     @Override
     public List<UserDto> findAll() {

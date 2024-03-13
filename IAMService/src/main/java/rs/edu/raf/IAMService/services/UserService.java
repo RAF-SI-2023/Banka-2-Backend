@@ -3,6 +3,7 @@ package rs.edu.raf.IAMService.services;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.User;
 
@@ -38,6 +39,9 @@ public interface UserService extends UserDetailsService {
      * @param email - email of the user that needs to be found
      * @return Optional<User> - user that was found
      */
+    User employeeActivation(int id);
+
+    User employeeDeactivation(int id);
 
     Optional<User> findUserByEmail(String email);
 
@@ -74,6 +78,5 @@ public interface UserService extends UserDetailsService {
      * @return UserDto - user that was updated
      */
     UserDto updateUser(UserDto userDto);
-
 
 }
