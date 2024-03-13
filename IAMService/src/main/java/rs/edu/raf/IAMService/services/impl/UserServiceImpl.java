@@ -21,7 +21,6 @@ import rs.edu.raf.IAMService.data.entites.PrivateClient;
 import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
-import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;

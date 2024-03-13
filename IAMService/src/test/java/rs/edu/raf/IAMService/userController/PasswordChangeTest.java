@@ -19,7 +19,7 @@ import rs.edu.raf.IAMService.data.entites.Role;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
-import rs.edu.raf.IAMService.repositories.UserRepository;
+
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
