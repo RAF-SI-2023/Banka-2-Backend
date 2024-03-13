@@ -17,6 +17,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue userProfileActivationCodeQueue() {
+        return new Queue("user-profile-activation-code", false);
+    }
+
+    @Bean
     public Queue passwordForgotQueue() {
         return new Queue("password-forgot", false);
     }

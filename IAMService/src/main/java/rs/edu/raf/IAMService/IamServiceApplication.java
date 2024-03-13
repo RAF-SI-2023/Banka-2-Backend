@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SecurityScheme(name = "userApi", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class IamServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(IamServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(IamServiceApplication.class, args);
+    }
 
 }

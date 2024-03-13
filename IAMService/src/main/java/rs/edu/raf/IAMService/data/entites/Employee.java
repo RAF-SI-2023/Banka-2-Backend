@@ -20,7 +20,6 @@ public class Employee extends User {
     private String gender;
     private String position;
     private String department;
-    private boolean active;
 
     public Employee(
             Date dateOfBirth,
@@ -28,6 +27,7 @@ public class Employee extends User {
             String username,
             String phone,
             String address,
+            Role role,
             List<Permission> permissions,
             String name,
             String surname,
@@ -36,12 +36,11 @@ public class Employee extends User {
             String department,
             boolean active
     ) {
-        super(dateOfBirth, email, username, phone, address, new Role(RoleType.EMPLOYEE), permissions);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.EMPLOYEE), permissions, active);
         this.name = name;
         this.surname = surname;
         this.gender = gender;
         this.position = position;
         this.department = department;
-        this.active = active;
     }
 }

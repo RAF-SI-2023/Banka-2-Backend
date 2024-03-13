@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.springframework.amqp.core.Message;
 import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
+import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
 import rs.edu.raf.NotificationService.listener.PasswordListener;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
 
@@ -79,6 +80,23 @@ public class PasswordListenerUnitTest {
     }
 
     @Test
+    void userProfileActivationCodeValidInput() {
+
+        String validJson = generateJson("email", "code", validEmail, "1234567");
+        ProfileActivationCodeDto profileActivationCodeDto = new ProfileActivationCodeDto(validEmail, Long.valueOf(1234567));
+
+        Message validMessage = createMockMessage(validJson);
+
+        try {
+            passwordListener.userProfileActivationCodeHandler(validMessage);
+            verify(emailDtoMapper).profileActivationEmail(profileActivationCodeDto);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+
+    }
+
+    @Test
     void passwordActivationInvalidInputs() {
         List<Message> invalidMessages = createInvalidMessages("email", "activationUrl");
         try {
@@ -98,6 +116,24 @@ public class PasswordListenerUnitTest {
             for (Message message : invalidMessages) {
                 passwordListener.passwordChangeHandler(message);
                 verify(emailDtoMapper, never()).changePasswordEmail(any());
+            }
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void userProfileActivationCodeInvalidInputs() {
+        List<Message> invalidMessages = new ArrayList<>();
+        invalidMessages.add(createMockMessage(generateJson("email", "code", blankEmail, "1234567")));
+        invalidMessages.add(createMockMessage(generateJson("email", "code", invalidEmail, "1234567")));
+        invalidMessages.add(createMockMessage(generateJson("email", "code", validEmail, null)));
+        invalidMessages.add(createMockMessage(generateJson("email", "code", validEmail, "")));
+        invalidMessages.add(createMockMessage(generateJson("email", "code", blankEmail, "")));
+        try {
+            for (Message message : invalidMessages) {
+                passwordListener.userProfileActivationCodeHandler(message);
+                verify(emailDtoMapper, never()).profileActivationEmail(any());
             }
         } catch (IOException e) {
             fail(e.getMessage());

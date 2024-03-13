@@ -32,7 +32,6 @@ public class CurrencyController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Currency>> findAllCurrency() {
-
         return ResponseEntity.ok(currencyServiceImpl.findAll());
     }
 
