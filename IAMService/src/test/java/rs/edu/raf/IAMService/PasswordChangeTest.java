@@ -97,7 +97,7 @@ class PasswordChangeTest {
         userDto.setPhone("lol");
         userDto.setPermissions(null);
         userDto.setDateOfBirth(null);
-        userDto.setRole(role);
+        userDto.setRole(role.getRoleType());
         userDto.setId(Long.valueOf(1));
 
         reset(submitLimiter);

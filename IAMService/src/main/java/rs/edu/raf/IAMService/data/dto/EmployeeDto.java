@@ -17,7 +17,6 @@ public class EmployeeDto extends UserDto {
     private String gender;
     private String position;
     private String department;
-    private boolean active;
 
     public EmployeeDto(
             Long id,
@@ -28,17 +27,17 @@ public class EmployeeDto extends UserDto {
             String address,
             List<PermissionType> permissions,
             String name,
+            String surname,
             String gender,
             String position,
             String department,
             boolean active
     ) {
-        super(id, dateOfBirth, email, username, phone, address, RoleType.EMPLOYEE, permissions);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.EMPLOYEE, permissions, active);
         this.name = name;
         this.surname = surname;
         this.gender = gender;
         this.position = position;
         this.department = department;
-        this.active = active;
     }
 }

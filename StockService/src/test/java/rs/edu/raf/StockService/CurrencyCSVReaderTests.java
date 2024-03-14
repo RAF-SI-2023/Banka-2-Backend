@@ -6,6 +6,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.io.ResourceLoader;
 import rs.edu.raf.StockService.bootstrap.readers.CurrencyCsvReader;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
@@ -110,7 +111,7 @@ public class CurrencyCSVReaderTests {
 
 
         // Call the method under test
-        CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader();
+        CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(Mockito.mock(ResourceLoader.class));
         List<CurrencyInflation> result = currencyCsvReader.pullCurrencyInflationData(currencyList);
 
         // Assertions

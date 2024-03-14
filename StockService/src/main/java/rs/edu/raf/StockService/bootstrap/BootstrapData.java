@@ -3,6 +3,7 @@ package rs.edu.raf.StockService.bootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.bootstrap.readers.CurrencyCsvReader;
 import rs.edu.raf.StockService.data.entities.Currency;
@@ -26,15 +27,17 @@ public class BootstrapData implements CommandLineRunner {
     private final InMemoryCurrencyServiceImpl currencyService;
 
     private final InMemoryCurrencyInflationServiceImpl currencyInflationService;
+    private final ResourceLoader resourceLoader;
 
     public BootstrapData(CurrencyRepository currencyRepository,
                          CurrencyInflationRepository currencyInflationRepository,
                          InMemoryCurrencyServiceImpl currencyService,
-                         InMemoryCurrencyInflationServiceImpl currencyInflationService) {
+                         InMemoryCurrencyInflationServiceImpl currencyInflationService, ResourceLoader resourceLoader) {
         this.currencyRepository = currencyRepository;
         this.currencyInflationRepository = currencyInflationRepository;
         this.currencyService = currencyService;
         this.currencyInflationService = currencyInflationService;
+        this.resourceLoader = resourceLoader;
     }
 
     /**
@@ -43,7 +46,7 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) {
         logger.info("DATA LOADING IN PROGRESS...");
-        CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader();
+        CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(resourceLoader);
         List<Currency> currencyList = currencyCsvReader.loadCurrencyData();
         List<CurrencyInflation> currencyInflationList = currencyCsvReader.pullCurrencyInflationData(currencyList);
         /*
