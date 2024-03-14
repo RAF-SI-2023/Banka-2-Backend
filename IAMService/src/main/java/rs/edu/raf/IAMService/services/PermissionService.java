@@ -6,6 +6,6 @@ import rs.edu.raf.IAMService.data.dto.PermissionDto;
 import java.util.List;
 
 @Service
-public interface PermissionService {
+public interface  PermissionService {
     List<PermissionDto> getAll();
 }

@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
@@ -29,6 +30,7 @@ import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
 
+import java.util.List;
 import java.util.Optional;
 
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
@@ -121,6 +123,29 @@ public class UserController {
         return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
 
     }
+
+    @GetMapping(path = "/getUserPermissions/{id}")
+    public ResponseEntity<?> getUserPermissions(@PathVariable Long id) {
+        return ResponseEntity.ok().body(userService.getUserPermissions(id));
+    }
+
+    @PostMapping(path = "/addUserPermission/{id}")
+    public ResponseEntity<?> addUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
+        userService.addUserPermission(id, permission);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping(path = "/removeUserPermission/{id}")
+    public ResponseEntity<?> removeUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
+        userService.removeUserPermission(id, permission);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(path = "/deleteAndSetUserPermissions/{id}")
+    public ResponseEntity<?> deleteAndSetUserPermissions(@PathVariable Long id, @RequestBody List<Permission> permissionList) {
+        userService.deleteAndSetUserPermissions(id, permissionList);
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/public/private-client")
     public PrivateClientDto createPrivateClient(@RequestBody PrivateClientDto clientDto) {

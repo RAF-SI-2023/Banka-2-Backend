@@ -15,6 +15,7 @@ import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.CorporateClient;
 import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.PrivateClient;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.List;
 
@@ -190,6 +192,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<Permission> getUserPermissions(Long id) {
+        List<Permission> permissionList = new ArrayList<>(userRepository.findById(id).get().getPermissions());
+        return permissionList;
+    }
+
+    @Override
+    public void addUserPermission(Long id, Permission permission) {
+        List<Permission> permissionList = getUserPermissions(id);
+        permissionList.add(permission);
+    }
+
+    @Override
+    public void removeUserPermission(Long id, Permission permission) {
+        List<Permission> permissionList = getUserPermissions(id);
+        permissionList.remove(permission);
+    }
+
+    @Override
+    public void deleteAndSetUserPermissions(Long id, List<Permission> permissionList) {
+        getUserPermissions(id).clear();
+        getUserPermissions(id).addAll(permissionList);
     }
 
     @Override

@@ -7,6 +7,7 @@ import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.User;
 
 import java.util.List;
@@ -53,7 +54,19 @@ public interface UserService extends UserDetailsService {
 
     Optional<User> findUserByEmail(String email);
 
+
+    List<Permission> getUserPermissions(Long id);
+
+    void addUserPermission(Long id, Permission permission);
+
+    void removeUserPermission(Long id, Permission permission);
+
+    void deleteAndSetUserPermissions(Long id, List<Permission> permissionList);
+
+    void sendToQueue(String email,String urlLink);
+
     void sendToQueue(String email, String urlLink);
+
 
     /**
      * Updates the UserEntity, but should be only used for updating passwords,activation and such. For regular use
@@ -86,5 +99,6 @@ public interface UserService extends UserDetailsService {
      * @return UserDto - user that was updated
      */
     UserDto updateUser(UserDto userDto);
+
 
 }
