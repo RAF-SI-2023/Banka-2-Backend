@@ -17,6 +17,7 @@ import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -80,8 +81,8 @@ public class BootstrapData implements CommandLineRunner {
         //admin creation
         Employee adminUser = new Employee();
 
-        String birthDayAdmin = "22-Feb-1990";
-        Date date = formatter.parse(birthDayAdmin);
+        //   LocalDateTime.of(1990, 9, 22, 0, 0);
+        Date date = Date.from(LocalDateTime.of(1990, 9, 22, 0, 0).atZone(java.time.ZoneId.systemDefault()).toInstant());
 
         adminUser.setName("Michale");
         adminUser.setSurname("Robbin");
@@ -91,7 +92,7 @@ public class BootstrapData implements CommandLineRunner {
         adminUser.setActive(false);
         adminUser.setDateOfBirth(date);
         adminUser.setEmail("admin2290@gmail.com");
-        adminUser.setUsername("admin2290");
+        adminUser.setUsername("admin2290@gmail.com");
         adminUser.setPhone("+3812290011");
         adminUser.setAddress("Cecilia Chapman, " + "711-2880 Nulla Street " + "Mankato Mississippi 96522");
         adminUser.setPassword(this.passwordEncoder.encode("admin2290"));
@@ -104,8 +105,8 @@ public class BootstrapData implements CommandLineRunner {
         Employee employee1 = new Employee();
         Employee employee2 = new Employee();
 
-        String birthDayEmployee1 = "10-Sep-1993";
-        Date date1 = formatter.parse(birthDayEmployee1);
+        Date date1 = Date.from(LocalDateTime.of(1993, 9, 10, 0, 0).atZone(java.time.ZoneId.systemDefault()).toInstant());
+
 
         //employee1
         employee1.setName("Mario");
@@ -116,7 +117,7 @@ public class BootstrapData implements CommandLineRunner {
         employee1.setActive(false);
         employee1.setDateOfBirth(date1);
         employee1.setEmail("employee1009@gmail.com");
-        employee1.setUsername("employee1009");
+        employee1.setUsername("employee1009@gmail.com");
         employee1.setPhone("+3811009111");
         employee1.setAddress("Celeste Slater, " + "606-3727 Ullamcorper. Street " + "Roseville NH 11523");
         employee1.setPassword(this.passwordEncoder.encode("employee1009"));
@@ -125,9 +126,7 @@ public class BootstrapData implements CommandLineRunner {
 
         allUser.add(employee1);
 
-        String birthDayEmployee2 = "04-Dec-1995";
-        Date date2 = formatter.parse(birthDayEmployee2);
-
+        Date date2 = Date.from(LocalDateTime.of(1995, 12, 4, 0, 0).atZone(java.time.ZoneId.systemDefault()).toInstant());
         //employee2
         employee2.setName("Zanifer");
         employee2.setSurname("Foster");
@@ -137,7 +136,7 @@ public class BootstrapData implements CommandLineRunner {
         employee2.setActive(false);
         employee2.setDateOfBirth(date2);
         employee2.setEmail("employee0412@gmail.com");
-        employee2.setUsername("employee0412");
+        employee2.setUsername("employee0412@gmail.com");
         employee2.setPhone("+3810412111");
         employee2.setAddress("Hiroko Potter, " + "P.O. Box 887 2508 Dolor. Avenu " + "Muskegon KY 12482");
         employee2.setPassword(this.passwordEncoder.encode("employee0412"));
