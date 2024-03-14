@@ -37,7 +37,6 @@ public interface UserService extends UserDetailsService {
     CorporateClientDto createCorporateClient(CorporateClientDto corporateClientDto);
     Long activateClient(String clientId, String password);
 
-    UserDto createAdmin(UserDto userDto, String password);
     EmployeeDto createEmployee(EmployeeDto employeeDto);
     EmployeeDto activateEmployee(String email, String password);
 

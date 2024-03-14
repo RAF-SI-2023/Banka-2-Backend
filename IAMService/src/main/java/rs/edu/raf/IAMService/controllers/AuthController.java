@@ -25,22 +25,6 @@ public class AuthController {
     private final AuthenticationProvider authenticationProvider;
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
-
-    @GetMapping("/create-admin")
-    public ResponseEntity<?> jwt() {
-        UserDto adminUser = new UserDto();
-        adminUser.setEmail("admin@raf.rs");
-        adminUser.setUsername("admin");
-        Role adminRole = new Role();
-        adminRole.setRoleType(RoleType.ADMIN);
-        adminUser.setRole(RoleType.ADMIN);
-
-        String encodedPassword = passwordEncoder.encode("admin");
-        adminUser = userService.createAdmin(adminUser, encodedPassword);
-
-        return ResponseEntity.ok(new TokenDto(jwtUtil.generateToken(adminUser)));
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginRequest) {

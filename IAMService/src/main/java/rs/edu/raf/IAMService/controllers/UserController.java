@@ -62,6 +62,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDto employeeDto) {
         try {
             EmployeeDto newEmployeeDto = userService.createEmployee(employeeDto);

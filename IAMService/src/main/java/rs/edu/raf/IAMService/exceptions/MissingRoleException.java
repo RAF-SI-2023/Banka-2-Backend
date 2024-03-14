@@ -4,7 +4,7 @@ import rs.edu.raf.IAMService.data.enums.RoleType;
 
 public class MissingRoleException extends RuntimeException {
 
-    public MissingRoleException(RoleType roleType) {
-        super(String.format("Role of type '%s' not found!", roleType.toString()));
+    public MissingRoleException(String role) {
+        super(String.format("Role of type '%s' not found!", role));
     }
 }

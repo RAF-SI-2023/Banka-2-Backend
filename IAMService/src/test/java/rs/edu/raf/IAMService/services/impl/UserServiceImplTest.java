@@ -10,12 +10,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.ClientActivationMessageDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
+import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
+import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;
+import rs.edu.raf.IAMService.exceptions.EmailTakenException;
+import rs.edu.raf.IAMService.exceptions.MissingRoleException;
 import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.mapper.UserMapper;
+import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 
 import java.util.Date;
@@ -30,6 +35,9 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private RoleRepository roleRepository;
 
     @Mock
     private UserMapper userMapper;
@@ -271,5 +279,95 @@ class UserServiceImplTest {
         client.setPermissions(List.of(new Permission(PermissionType.PERMISSION_1)));
 
         return client;
+    }
+
+    @Test
+    public void testCreateEmployee_Success() {
+        // Setup
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setEmail("test@user.com");
+
+        Employee employee = new Employee();
+
+        // Mocking userRepository
+        when(userRepository.findByEmail(employeeDto.getEmail())).thenReturn(Optional.empty());
+
+        when(userMapper.employeeDtoToEmployee(employeeDto)).thenReturn(employee);
+
+        // Mocking roleRepository
+        Role role = new Role(RoleType.EMPLOYEE);
+        when(roleRepository.findByRoleType(RoleType.EMPLOYEE)).thenReturn(Optional.of(role));
+
+        // Mocking userRepository.save()
+        when(userRepository.save(any(Employee.class))).thenReturn(employee);
+
+        // Mocking userMapper
+        when(userMapper.employeeToEmployeeDto(employee)).thenReturn(employeeDto);
+
+        // Execution
+        EmployeeDto result = userService.createEmployee(employeeDto);
+
+        // Assertion
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testCreateEmployee_EmailTaken() {
+        // Setup
+        EmployeeDto employeeDto = new EmployeeDto(/* provide employee details */);
+
+        // Mocking userRepository
+        when(userRepository.findByEmail(employeeDto.getEmail())).thenReturn(Optional.of(new Employee()));
+
+        // Execution and Assertion
+        assertThrows(EmailTakenException.class, () -> userService.createEmployee(employeeDto));
+    }
+
+    @Test
+    public void testCreateEmployee_MissingRole() {
+        // Setup
+        EmployeeDto employeeDto = new EmployeeDto();
+        when(userRepository.findByEmail(employeeDto.getEmail())).thenReturn(Optional.empty());
+        when(roleRepository.findByRoleType(RoleType.EMPLOYEE)).thenReturn(Optional.empty());
+
+        // Execution and Assertion
+        assertThrows(MissingRoleException.class, () -> userService.createEmployee(employeeDto));
+    }
+
+    @Test
+    public void testActivateEmployee_Success() {
+        // Setup
+        String email = "test@example.com";
+        String password = "password123";
+        Employee employee = new Employee(/* provide employee details */);
+        when(userRepository.findEmployeeByEmail(email)).thenReturn(Optional.of(employee));
+
+        // Mocking password encoder
+        String encodedPassword = "encodedPassword";
+        when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
+
+        // Mocking userRepository.save()
+        when(userRepository.save(any(Employee.class))).thenReturn(employee);
+
+        // Mocking userMapper
+        EmployeeDto employeeDto = new EmployeeDto(/* provide employee details */);
+        when(userMapper.employeeToEmployeeDto(employee)).thenReturn(employeeDto);
+
+        // Execution
+        EmployeeDto result = userService.activateEmployee(email, password);
+
+        // Assertion
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testActivateEmployee_EmailNotFound() {
+        // Setup
+        String email = "nonexistent@example.com";
+        String password = "password123";
+        when(userRepository.findEmployeeByEmail(email)).thenReturn(Optional.empty());
+
+        // Execution and Assertion
+        assertThrows(EmailNotFoundException.class, () -> userService.activateEmployee(email, password));
     }
 }
