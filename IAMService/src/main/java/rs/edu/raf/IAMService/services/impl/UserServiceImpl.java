@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,6 +58,30 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
+
+    @Override
+    public List<Permission> getUserPermissions(Long id) {
+        List<Permission> permissionList = new ArrayList<>(userRepository.findById(id).get().getPermissions());
+        return permissionList;
+    }
+
+    @Override
+    public void addUserPermission(Long id, Permission permission) {
+        List<Permission> permissionList = getUserPermissions(id);
+        permissionList.add(permission);
+    }
+
+    @Override
+    public void removeUserPermission(Long id, Permission permission) {
+        List<Permission> permissionList = getUserPermissions(id);
+        permissionList.remove(permission);
+    }
+
+    @Override
+    public void deleteAndSetUserPermissions(Long id, List<Permission> permissionList) {
+        getUserPermissions(id).clear();
+        getUserPermissions(id).addAll(permissionList);
+    }
 
     @Override
     public void sendToQueue(String email, String urlLink) {
