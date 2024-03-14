@@ -3,7 +3,6 @@ package rs.edu.raf.IAMService.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -69,7 +68,7 @@ class UserControllerTest {
     @MockBean
     private PasswordValidator passwordValidator;
 
-    @InjectMocks
+    @Autowired
     private UserController userController;
 
     @MockBean
