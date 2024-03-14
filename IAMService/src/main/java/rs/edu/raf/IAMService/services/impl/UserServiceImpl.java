@@ -148,30 +148,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createAdmin(UserDto userDto, String password) {
-        User user = userMapper.userDtoToUser(userDto);
-        user.setPassword(password);
-        user.setRole(roleRepository.save(new Role(userDto.getRole())));
-        roleRepository.save(new Role(RoleType.EMPLOYEE));
-        return userMapper.userToUserDto(userRepository.save(user));
-    }
-
-    @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         if (userRepository.findByEmail(employeeDto.getEmail()).isPresent())
             throw new EmailTakenException(employeeDto.getEmail());
 
         Employee newEmployee = userMapper.employeeDtoToEmployee(employeeDto);
         newEmployee.setRole(roleRepository.findByRoleType(RoleType.EMPLOYEE)
-                .orElseThrow(() -> new MissingRoleException(RoleType.EMPLOYEE)));
+                .orElseThrow(() -> new MissingRoleException("EMPLOYEE")));
 
         newEmployee = userRepository.save(newEmployee);
-        sendToQueue(newEmployee);
+        sendToActivationQueue(newEmployee);
 
         return userMapper.employeeToEmployeeDto(newEmployee);
     }
 
-    private void sendToQueue(Employee employee) {
+    public void sendToActivationQueue(Employee employee) {
         ActivationRequestDto activationRequestDto = new ActivationRequestDto();
         activationRequestDto.setEmail(employee.getEmail());
         activationRequestDto.setActivationUrl("https://google.com");
