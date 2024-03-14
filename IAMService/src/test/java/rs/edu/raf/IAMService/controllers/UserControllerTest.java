@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.IAMService.TestSecurityConfig;
-import rs.edu.raf.IAMService.data.dto.ClientActivationDto;
+import rs.edu.raf.IAMService.data.dto.PasswordActivationDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.EmployeeDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
@@ -108,10 +108,10 @@ class UserControllerTest {
     @Test
     void activateClient_happyFlow_returnsOk() throws Exception {
         String clientId = "1";
-        ClientActivationDto activationDto = new ClientActivationDto();
+        PasswordActivationDto activationDto = new PasswordActivationDto();
         activationDto.setPassword("newPassword");
 
-        when(userService.activateClient(clientId, activationDto.getPassword()))
+        when(userService.passwordActivation(clientId, activationDto.getPassword()))
                 .thenReturn(Long.valueOf(clientId));
 
         mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
@@ -123,10 +123,10 @@ class UserControllerTest {
     @Test
     void activateClient_userDoesNotExist_returnsNotFound() throws Exception {
         String clientId = "non existing id";
-        ClientActivationDto activationDto = new ClientActivationDto();
+        PasswordActivationDto activationDto = new PasswordActivationDto();
         activationDto.setPassword("newPassword");
 
-        when(userService.activateClient(clientId, activationDto.getPassword()))
+        when(userService.passwordActivation(clientId, activationDto.getPassword()))
                 .thenThrow(UserNotFoundException.class);
 
         mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")

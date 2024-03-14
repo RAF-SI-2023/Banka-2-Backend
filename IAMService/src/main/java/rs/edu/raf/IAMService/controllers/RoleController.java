@@ -24,12 +24,11 @@ public class RoleController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     @GetMapping("/all")
-    public ResponseEntity getAllRoles() {
+    public ResponseEntity<?> getAllRoles() {
         try {
-            List<RoleDto> roleDtos = roleService.getAllRoles();
-            return ResponseEntity.ok(roleDtos);
+            return ResponseEntity.ok(roleService.getAllRoles());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Roles retrieval failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

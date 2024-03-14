@@ -1,15 +1,8 @@
 package rs.edu.raf.IAMService.controllers;
 
 import io.jsonwebtoken.Claims;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +31,14 @@ import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 @RequestMapping(
         value = "/api/users",
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE
 )
 public class UserController {
+
     private final HttpServletRequest request;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -52,16 +47,6 @@ public class UserController {
     private final ChangedPasswordTokenUtil changedPasswordTokenUtil;
     private final PasswordValidator passwordValidator;
 
-    @Autowired
-    public UserController(UserService userService, ChangedPasswordTokenUtil changedPasswordTokenUtil, PasswordEncoder passwordEncoder, SubmitLimiter submitLimiter, PasswordValidator passwordValidator, HttpServletRequest request, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.changedPasswordTokenUtil = changedPasswordTokenUtil;
-        this.passwordEncoder = passwordEncoder;
-        this.submitLimiter = submitLimiter;
-        this.passwordValidator = passwordValidator;
-        this.request = request;
-        this.jwtUtil = jwtUtil;
-    }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -77,14 +62,13 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/changePassword/{email}", consumes = MediaType.ALL_VALUE)
+    @GetMapping(path = "/password-forgot-initialization/{email}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@PathVariable String email) {
 
         if (!submitLimiter.allowRequest(email)) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
         }
-        int port = this.request.getServerPort();
-        String baseURL = "http://localhost:" + port + "/api/users/changePasswordSubmit/";
+        String baseURL = "uzeti od front-a rutu za promenu sifre";
         PasswordChangeTokenDto passwordChangeTokenDto =
                 changedPasswordTokenUtil.generateToken(userService.findByEmail(email.toLowerCase()), baseURL);
         userService.sendToQueue(email, passwordChangeTokenDto.getUrlLink());
@@ -92,7 +76,7 @@ public class UserController {
     }
 
 
-    @PutMapping(path = "/changePasswordSubmit/{token} ", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/password-forgot-confirmation/{token} ", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> changePasswordSubmit(String newPassword, PasswordChangeTokenDto passwordChangeTokenDto) {
         String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
         Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
@@ -157,25 +141,14 @@ public class UserController {
         return userService.createCorporateClient(clientDto);
     }
 
-    @PatchMapping("/public/{clientId}/activate")
+    @PatchMapping("/public/{clientId}/password-activation")
     public Long activateClient(@PathVariable String clientId,
-                               @RequestBody ClientActivationDto dto) {
-        return userService.activateClient(clientId, dto.getPassword());
+                               @RequestBody PasswordActivationDto dto) {
+        return userService.passwordActivation(clientId, dto.getPassword());
     }
 
-    @Operation(
-            summary = "Find user by email",
-            description = "Finds a user by their email address."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found, returns userDto"),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
     @GetMapping(path = "/findByEmail/{email}", consumes = MediaType.ALL_VALUE)
-    //  @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE', 'USER')")
-    public ResponseEntity<?> findByEmail(@PathVariable
-                                         @Parameter(description = "Email address of the user to be found", required = true)
-                                         String email) {
+    public ResponseEntity<?> findByEmail(@PathVariable String email) {
         UserDto userDto = userService.findByEmail(email);
         if (userDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -183,9 +156,6 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @Operation(summary = "Find User by ID", description = "Returns a user by their ID.")
-    @ApiResponse(responseCode = "200", description = "User found, returns userDto", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserDto.class)))
-    @ApiResponse(responseCode = "404", description = "User not found")
     @GetMapping(path = "/findById/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findById(@PathVariable Long id) {
         UserDto userDto = userService.findById(id);
@@ -195,32 +165,10 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @Operation(summary = "Delete User by Email", description = "Deletes a user by their email.")
-    @ApiResponse(responseCode = "200", description = "User deleted successfully return deleted UserDto")
-    @ApiResponse(responseCode = "401", description = "Unauthorized")
-    @ApiResponse(responseCode = "403", description = "Forbidden")
     @DeleteMapping(path = "/delete/{email}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Transactional
     public ResponseEntity<?> deleteUserByEmail(@PathVariable String email) {
-        Claims claims = getClaims(request);
-        if (claims == null) {
-            return ResponseEntity.status(401).build();
-        }
-
-        RoleType roleType = RoleType.valueOf((String) claims.get("role"));
-
-        if (roleType.equals(RoleType.USER)) {
-            if (!email.equals(claims.get("email"))) {
-                return ResponseEntity.status(403).build();
-            }
-        }
-        UserDto userDto = userService.findByEmail(email);
-        if (roleType.equals(RoleType.EMPLOYEE)) {
-            if (!userDto.getRole().equals(RoleType.USER) && !email.equals(claims.get("email"))) {
-                return ResponseEntity.status(403).build();
-            }
-        }
         return ResponseEntity.ok(userService.deleteUserByEmail(email));
     }
 

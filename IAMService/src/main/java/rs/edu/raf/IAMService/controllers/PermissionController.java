@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rs.edu.raf.IAMService.services.PermissionService;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/permissions")
@@ -28,13 +26,9 @@ public class PermissionController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<?> getAll() {
         try {
-            List<String> permissionTypes = permissionService.getAll()
-                    .stream()
-                    .map(permission -> permission.getPermissionType().toString())
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(permissionTypes);
+            return ResponseEntity.ok(permissionService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve permission");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

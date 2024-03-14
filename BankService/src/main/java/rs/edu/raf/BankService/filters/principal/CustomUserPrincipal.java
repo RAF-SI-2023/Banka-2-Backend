@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.data.entities;
+package rs.edu.raf.BankService.filters.principal;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+
 @Getter
 public class CustomUserPrincipal extends User implements UserDetails{
     private Long id;

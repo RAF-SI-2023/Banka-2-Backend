@@ -21,7 +21,7 @@ public class PrivateClient extends User {
     private String primaryAccountNumber;
 
     public PrivateClient(
-            Date dateOfBirth,
+            Long dateOfBirth,
             String email,
             String username,
             String phone,
@@ -30,10 +30,9 @@ public class PrivateClient extends User {
             String name,
             String surname,
             String gender,
-            String primaryAccountNumber,
-            boolean active
+            String primaryAccountNumber
     ) {
-        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions, active);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions);
         this.name = name;
         this.surname = surname;
         this.gender = gender;

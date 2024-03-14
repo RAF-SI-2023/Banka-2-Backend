@@ -20,19 +20,18 @@ public class PrivateClientDto extends UserDto {
 
     public PrivateClientDto(
             Long id,
-            Date dateOfBirth,
+            Long dateOfBirth,
             String email,
             String username,
             String phone,
             String address,
             List<PermissionType> permissions,
-            boolean active,
             String name,
             String surname,
             String gender,
             String primaryAccountNumber
     ) {
-        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions, active);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions);
         this.name = name;
         this.surname = surname;
         this.gender = gender;

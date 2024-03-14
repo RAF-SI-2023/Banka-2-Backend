@@ -16,9 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ForeignCurrencyAccount extends Account {
 
-    private Double interestRate;
+    private Double interestRate = 1.0;
     private String defaultCurrencyCode;
-    private Integer numberOfAllowedCurrencies;
+    private Integer numberOfAllowedCurrencies = 4;
     @OneToMany(
             mappedBy = "account",
             cascade = CascadeType.ALL,
@@ -35,8 +35,7 @@ public class ForeignCurrencyAccount extends Account {
             Double maintenanceFee
     ){
         super(accountNumber, email, accountType, currencyCode, maintenanceFee);
-        this.interestRate = 1.0;
+
         this.defaultCurrencyCode = currencyCode;
-        this.numberOfAllowedCurrencies = 4;
     }
 }

@@ -7,8 +7,6 @@ import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.*;
 
-import java.util.Locale;
-
 @Component
 public class UserMapper {
 
@@ -21,8 +19,7 @@ public class UserMapper {
                 dto.getAddress(),
                 dto.getPermissions().stream().map(Permission::new).toList(),
                 dto.getName(),
-                dto.getPrimaryAccountNumber(),
-                false
+                dto.getPrimaryAccountNumber()
         );
     }
 
@@ -37,8 +34,7 @@ public class UserMapper {
                 dto.getName(),
                 dto.getSurname(),
                 dto.getGender(),
-                dto.getPrimaryAccountNumber(),
-                false
+                dto.getPrimaryAccountNumber()
         );
     }
 
@@ -46,17 +42,16 @@ public class UserMapper {
         return new Employee(
                 dto.getDateOfBirth(),
                 dto.getEmail(),
-                dto.getUsername(),
+                dto.getEmail(),
                 dto.getPhone(),
                 dto.getAddress(),
-                new Role(dto.getRole()),
                 dto.getPermissions().stream().map(Permission::new).toList(),
                 dto.getName(),
                 dto.getSurname(),
                 dto.getGender(),
                 dto.getPosition(),
                 dto.getDepartment(),
-                false
+                dto.isActive()
         );
     }
 
@@ -68,8 +63,7 @@ public class UserMapper {
                 dto.getPhone(),
                 dto.getAddress(),
                 new Role(dto.getRole()),
-                dto.getPermissions().stream().map(Permission::new).toList(),
-                dto.isActive()
+                dto.getPermissions().stream().map(Permission::new).toList()
         );
     }
 
@@ -83,8 +77,7 @@ public class UserMapper {
                 user.getAddress(),
                 user.getPermissions().stream().map(Permission::getPermissionType).toList(),
                 user.getName(),
-                user.getPrimaryAccountNumber(),
-                user.isActive()
+                user.getPrimaryAccountNumber()
         );
     }
 
@@ -97,7 +90,6 @@ public class UserMapper {
                 user.getPhone(),
                 user.getAddress(),
                 user.getPermissions().stream().map(Permission::getPermissionType).toList(),
-                user.isActive(),
                 user.getName(),
                 user.getSurname(),
                 user.getGender(),
@@ -115,7 +107,6 @@ public class UserMapper {
                 user.getAddress(),
                 user.getPermissions().stream().map(Permission::getPermissionType).toList(),
                 user.getName(),
-                user.getSurname(),
                 user.getGender(),
                 user.getPosition(),
                 user.getDepartment(),
@@ -132,8 +123,7 @@ public class UserMapper {
                 user.getPhone(),
                 user.getAddress(),
                 user.getRole().getRoleType(),
-                user.getPermissions().stream().map(Permission::getPermissionType).toList(),
-                user.isActive()
+                user.getPermissions().stream().map(Permission::getPermissionType).toList()
         );
     }
 

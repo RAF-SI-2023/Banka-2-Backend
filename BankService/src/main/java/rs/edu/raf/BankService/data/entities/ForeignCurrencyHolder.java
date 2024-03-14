@@ -16,8 +16,8 @@ public class ForeignCurrencyHolder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String currencyCode;
-    private Long availableBalance;
-    private Long reservedFunds;
+    private Long availableBalance = 0l;
+    private Long reservedFunds = 0l;
     @ManyToOne
     @JoinColumn(name = "account_id")
     private ForeignCurrencyAccount account;

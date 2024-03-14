@@ -33,6 +33,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,10 +101,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto deleteUserByEmail(String email) {
-        User u = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email: " + email + " not found."));
-        userRepository.removeUserByEmail(email);
-        return checkInstance(u);
+    public boolean deleteUserByEmail(String email) {
+        if(SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")){
+            return userRepository.removeUserByEmail(email);
+        }
+        if(SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE")) {
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if(userOptional.isPresent()){
+                User user = userOptional.get();
+                if(user.getRole().getRoleType() == RoleType.USER){
+                    return userRepository.removeUserByEmail(email);
+                }
+            }
+        }
+        if(SpringSecurityUtil.hasRoleRole("ROLE_USER")) {
+            if (SpringSecurityUtil.getPrincipalEmail().equals(email)) {
+                return userRepository.removeUserByEmail(email);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -173,13 +189,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Long activateClient(String clientId, String password) {
+    public Long passwordActivation(String clientId, String password) {
         User clientToBeActivated = userRepository.findById(Long.parseLong(clientId))
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + clientId + " not found."));
-
         clientToBeActivated.setPassword(passwordEncoder.encode(password));
-        clientToBeActivated.setActive(true);
-
         return userRepository.save(clientToBeActivated).getId();
     }
 
