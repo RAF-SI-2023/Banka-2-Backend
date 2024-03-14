@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -18,17 +17,16 @@ public class CorporateClientDto extends UserDto {
 
     public CorporateClientDto(
             Long id,
-            Date dateOfBirth,
+            Long dateOfBirth,
             String email,
             String username,
             String phone,
             String address,
             List<PermissionType> permissions,
             String name,
-            String primaryAccountNumber,
-            boolean active
+            String primaryAccountNumber
     ) {
-        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions, active);
+        super(id, dateOfBirth, email, username, phone, address, RoleType.USER, permissions);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }

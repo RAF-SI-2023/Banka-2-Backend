@@ -12,7 +12,7 @@ public class AccountDto {
 
     private Long id;
     private String accountNumber;
-    private UserAccountUserProfileLinkState linkedWithUserProfile;
+    private UserAccountUserProfileLinkState linkState;
     private String email;
     private boolean status;
     private String accountType;

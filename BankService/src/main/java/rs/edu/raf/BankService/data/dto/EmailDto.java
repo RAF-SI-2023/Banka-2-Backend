@@ -9,5 +9,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class EmailDto implements Serializable {
     private String email;
-    private Integer code;
+    private String code;
 }

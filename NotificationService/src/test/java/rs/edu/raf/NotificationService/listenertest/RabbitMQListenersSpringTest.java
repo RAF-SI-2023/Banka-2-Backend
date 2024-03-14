@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Disabled
 @SpringBootTest
 @EnableRabbit
-public class PasswordListenerSpringTest {
+public class RabbitMQListenersSpringTest {
 
     @Autowired
     private RabbitTemplate template;

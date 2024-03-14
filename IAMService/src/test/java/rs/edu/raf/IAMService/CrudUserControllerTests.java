@@ -113,16 +113,17 @@ public class CrudUserControllerTests {
     @Test
     public void testDeleteUserByEmail_AdminRole_Success() {
         // Arrange
-        String email = "admin@example.com";
+        String email = "employee@example.com";
         UserDto user = new UserDto();
+        user.setRole(RoleType.EMPLOYEE);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
-        when(claims.get("role")).thenReturn(RoleType.ADMIN.name());
+        when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
+        when(claims.get("email")).thenReturn(email);
         UserController controller = Mockito.spy(this.controller);
-        //     when(controller.getClaims(request)).Return(claims);
         doReturn(claims).when(controller).getClaims(request);
-        when(userService.deleteUserByEmail(email)).thenReturn(user);
-
+        when(userService.deleteUserByEmail(email)).thenReturn(true);
+        when(userService.findByEmail(email)).thenReturn(user);
         // Act
         ResponseEntity<?> response = controller.deleteUserByEmail(email);
 
@@ -134,23 +135,22 @@ public class CrudUserControllerTests {
     @Test
     public void testDeleteUserByEmail_EmployeeRole_DeleteOwnAccount_Success() {
         // Arrange
-        String email = "employee@example.com";
+        String email = "test@example.com";
         UserDto user = new UserDto();
-        user.setRole(RoleType.EMPLOYEE);
+        user.setRole(RoleType.USER);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
         when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
-        when(claims.get("email")).thenReturn(email);
+        when(claims.get("email")).thenReturn("employee@example.com");
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
-        when(userService.deleteUserByEmail(email)).thenReturn(user);
         when(userService.findByEmail(email)).thenReturn(user);
+        when(userService.deleteUserByEmail(email)).thenReturn(true);
+
         // Act
         ResponseEntity<?> response = controller.deleteUserByEmail(email);
-
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user.getEmail(), ((UserDto) response.getBody()).getEmail());
     }
 
     @Test
@@ -168,9 +168,9 @@ public class CrudUserControllerTests {
     @Test
     public void testDeleteUserByEmail_EmployeeRole_DeleteAnotherUserAccount_SUCCESS() {
         // Arrange
-        String email = "test@example.com";
+        String email = "admin@example.com";
         UserDto user = new UserDto();
-        user.setRole(RoleType.USER);
+        user.setRole(RoleType.ADMIN);
         user.setEmail(email);
         Claims claims = mock(Claims.class);
         when(claims.get("role")).thenReturn(RoleType.EMPLOYEE.name());
@@ -178,14 +178,12 @@ public class CrudUserControllerTests {
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
         when(userService.findByEmail(email)).thenReturn(user);
-        when(userService.deleteUserByEmail(email)).thenReturn(user);
+        when(userService.deleteUserByEmail(email)).thenThrow(new RuntimeException("User with role ADMIN cannot be deleted by EMPLOYEE"));
 
         // Act
         ResponseEntity<?> response = controller.deleteUserByEmail(email);
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test

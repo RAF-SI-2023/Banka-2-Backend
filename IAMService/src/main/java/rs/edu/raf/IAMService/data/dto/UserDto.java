@@ -7,7 +7,6 @@ import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -16,13 +15,12 @@ import java.util.List;
 public class UserDto {
 
     private Long id;
-    private Date dateOfBirth;
+    private Long dateOfBirth;
     private String email;
     private String username;
     private String phone;
     private String address;
     private RoleType role;
     private List<PermissionType> permissions = new ArrayList<>();
-    private boolean active;
 
 }

@@ -16,8 +16,9 @@ import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 @NoArgsConstructor
 public class DomesticCurrencyAccount extends Account {
 
+    private Long id;
     private DomesticCurrencyAccountType domesticCurrencyAccountType;
-    private Double interestRate; // vazi za retirement i student
+    private Double interestRate = 0.0; // vazi za retirement i student
 
     public DomesticCurrencyAccount(
             String accountNumber,
@@ -26,17 +27,11 @@ public class DomesticCurrencyAccount extends Account {
             String currencyCode,
             Double maintenanceFee,
             DomesticCurrencyAccountType domesticCurrencyAccountType
-
     ){
         super(accountNumber, email, accountType, currencyCode, maintenanceFee);
-
         this.domesticCurrencyAccountType = domesticCurrencyAccountType;
-
-        double interestRate = 0;
-        if(domesticCurrencyAccountType == DomesticCurrencyAccountType.RETIREMENT) interestRate = 2.5;
-        if(domesticCurrencyAccountType == DomesticCurrencyAccountType.STUDENT) interestRate = 4.0;
-
-        this.interestRate = interestRate;
+        if(domesticCurrencyAccountType == DomesticCurrencyAccountType.RETIREMENT) this.interestRate = 2.5;
+        if(domesticCurrencyAccountType == DomesticCurrencyAccountType.STUDENT) this.interestRate = 4.0;
     }
 
 }

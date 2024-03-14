@@ -24,16 +24,8 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<PermissionDto> getAll() {
-        try {
-            List<Permission> permissions = permissionRepository.findAll();
-            if (permissions == null) throw new RuntimeException("Permission repository returned null");
-
-            List<PermissionDto> permissionDtos = permissions.stream().map(this.permissionMapper::permissionToPermissionDto).collect(Collectors.toList());
-
-            return permissionDtos;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to retrieve permissions ", e);
-        }
+        List<Permission> permissions = permissionRepository.findAll();
+        return permissions.stream().map(this.permissionMapper::permissionToPermissionDto).collect(Collectors.toList());
     }
 
 }

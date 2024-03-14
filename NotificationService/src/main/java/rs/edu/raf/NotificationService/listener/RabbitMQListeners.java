@@ -3,6 +3,7 @@ package rs.edu.raf.NotificationService.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -13,24 +14,21 @@ import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
 import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
+import rs.edu.raf.NotificationService.services.EmailService;
 
 import java.io.IOException;
 import java.util.Set;
 
 
 @Component
-public class PasswordListener {
+@RequiredArgsConstructor
+public class RabbitMQListeners {
 
-    private final Logger logger = LoggerFactory.getLogger(PasswordListener.class);
+    private final Logger logger = LoggerFactory.getLogger(RabbitMQListeners.class);
     private final ObjectMapper objectMapper;
     private final EmailDtoMapper emailDtoMapper;
     private final Validator validator;
-
-    public PasswordListener(ObjectMapper objectMapper, EmailDtoMapper emailDtoMapper, Validator validator) {
-        this.objectMapper = objectMapper;
-        this.emailDtoMapper = emailDtoMapper;
-        this.validator = validator;
-    }
+    private final EmailService emailService;
 
     @RabbitListener(queues = "password-activation")
     public void passwordActivationHandler(Message message) throws IOException {
@@ -56,11 +54,17 @@ public class PasswordListener {
     }
 
     @RabbitListener(queues = "user-profile-activation-code")
-    public void userProfileActivationCodeHandler(Message message) throws IOException {
-        if (message == null) return;
-        ProfileActivationCodeDto profileActivationCodeDto = objectMapper.readValue(message.getBody(), ProfileActivationCodeDto.class);
+    public void userProfileActivationCodeHandler(ProfileActivationCodeDto profileActivationCodeDto) throws IOException {
+
         if (!isValid(profileActivationCodeDto)) return;
+
         EmailDto userActivationCodeEmail = emailDtoMapper.profileActivationEmail(profileActivationCodeDto);
+        logger.info(userActivationCodeEmail.getEmail());
+        logger.info(userActivationCodeEmail.getSubject());
+        logger.info(userActivationCodeEmail.getContent());
+
+        emailService.sendSimpleMailMessage(userActivationCodeEmail.getEmail(), userActivationCodeEmail.getSubject(), userActivationCodeEmail.getContent());
+
         logger.info("userProfileActivationCodeListener received message: " + userActivationCodeEmail);
     }
 

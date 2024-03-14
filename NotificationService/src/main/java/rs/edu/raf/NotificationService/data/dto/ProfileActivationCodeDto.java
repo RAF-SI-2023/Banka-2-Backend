@@ -1,7 +1,6 @@
 package rs.edu.raf.NotificationService.data.dto;
 
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileActivationCodeDto {
-    @Email
+
     @NotBlank
     private String email;
     @NotNull
-    private Long code;
+    private String code;
 }

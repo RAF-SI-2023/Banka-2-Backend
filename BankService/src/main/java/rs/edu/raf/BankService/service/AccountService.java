@@ -7,13 +7,13 @@ import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
 import rs.edu.raf.BankService.exception.ActivationCodeExpiredException;
 import rs.edu.raf.BankService.exception.UserAccountAlreadyAssociatedWithUserProfileException;
-import rs.edu.raf.BankService.exception.UserAccountLinkingWithUserProfileInProcessException;
+import rs.edu.raf.BankService.exception.UserAccountInProcessOfBindingWithUserProfileException;
 
 @Service
 public interface AccountService {
 
     boolean userAccountUserProfileConnectionAttempt(AccountNumberDto accountNumberDto)
-            throws UserAccountAlreadyAssociatedWithUserProfileException, UserAccountLinkingWithUserProfileInProcessException;
+            throws UserAccountAlreadyAssociatedWithUserProfileException, UserAccountInProcessOfBindingWithUserProfileException;
 
     boolean confirmActivationCode(String accountNumber, Integer code)
             throws ActivationCodeExpiredException, ActivationCodeExpiredException;

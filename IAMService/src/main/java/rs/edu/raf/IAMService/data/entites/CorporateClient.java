@@ -19,19 +19,17 @@ public class CorporateClient extends User {
     private String name;
     private String primaryAccountNumber;
 
-
     public CorporateClient(
-            Date dateOfBirth,
+            Long dateOfBirth,
             String email,
             String username,
             String phone,
             String address,
             List<Permission> permissions,
             String name,
-            String primaryAccountNumber,
-            boolean active
+            String primaryAccountNumber
     ) {
-        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions, active);
+        super(dateOfBirth, email, username, phone, address, new Role(RoleType.USER), permissions);
         this.name = name;
         this.primaryAccountNumber = primaryAccountNumber;
     }

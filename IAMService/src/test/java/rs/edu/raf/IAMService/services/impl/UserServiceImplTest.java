@@ -126,7 +126,7 @@ class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(new User());
 
         // when
-        userService.activateClient(clientId, password);
+        userService.passwordActivation(clientId, password);
 
         // then
         assertTrue(user.isActive());
@@ -145,7 +145,7 @@ class UserServiceImplTest {
 
         // then
         assertThrows(UserNotFoundException.class,
-                () -> userService.activateClient(clientId, password));
+                () -> userService.passwordActivation(clientId, password));
         verify(userRepository, times(1)).findById(any());
         verify(passwordEncoder, times(0)).encode(any());
         verify(userRepository, times(0)).save(any());

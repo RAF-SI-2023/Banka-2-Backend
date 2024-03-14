@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UserServiceCrudTests {
@@ -168,9 +167,9 @@ public class UserServiceCrudTests {
 
         when(userMapper.userToUserDto(user)).thenReturn(userDto1);
         // Act
-        UserDto deletedUserDto = userService.deleteUserByEmail(email);
+        boolean flag = userService.deleteUserByEmail(email);
         // Assert
-        assertEquals(email, deletedUserDto.getEmail());
+        assertTrue(flag);
         // Add more assertions as needed for other properties
         verify(userRepository, times(1)).removeUserByEmail(email);
     }

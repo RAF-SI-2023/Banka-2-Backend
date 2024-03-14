@@ -20,7 +20,7 @@ public class AccountController {
     private final AccountService accountService;
 
 
-    @PostMapping("/associate-profile")
+    @PostMapping("/associate-profile-initialization")
     public ResponseEntity<?> login(@RequestBody AccountNumberDto accountNumberDto) {
         try {
             boolean canAssociateProfile = accountService.userAccountUserProfileConnectionAttempt(accountNumberDto);

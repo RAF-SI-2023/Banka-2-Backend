@@ -36,18 +36,11 @@ public interface UserService extends UserDetailsService {
     UserDto findByEmail(String email);
     PrivateClientDto createPrivateClient(PrivateClientDto privateClientDtoDto);
     CorporateClientDto createCorporateClient(CorporateClientDto corporateClientDto);
-    Long activateClient(String clientId, String password);
+    Long passwordActivation(String clientId, String password);
 
     EmployeeDto createEmployee(EmployeeDto employeeDto);
     EmployeeDto activateEmployee(String email, String password);
 
-    /**
-     * Finds User by email, and returns it as Optional<User>. This method is used for security purposes, like
-     * changing a password.
-     *
-     * @param email - email of the user that needs to be found
-     * @return Optional<User> - user that was found
-     */
     User employeeActivation(int id);
 
     User employeeDeactivation(int id);
@@ -64,9 +57,6 @@ public interface UserService extends UserDetailsService {
     void deleteAndSetUserPermissions(Long id, List<Permission> permissionList);
 
     void sendToQueue(String email,String urlLink);
-
-    void sendToQueue(String email, String urlLink);
-
 
     /**
      * Updates the UserEntity, but should be only used for updating passwords,activation and such. For regular use
@@ -90,7 +80,7 @@ public interface UserService extends UserDetailsService {
      * @param email - email of the user that needs to be deleted
      * @return UserDto - user that was deleted //TODO check if u want to return void
      */
-    UserDto deleteUserByEmail(String email);
+    boolean deleteUserByEmail(String email);
 
     /**
      * Updates users information, and returns the updated user as UserDto. Role and permission checks are done in the controller.

@@ -20,14 +20,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date dateOfBirth;
+    private Long dateOfBirth;
     @Column(unique = true, nullable = false)
     private String email;
     private String username;
     private String phone;
     private String address;
     private String password;
-    private boolean active;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -42,23 +41,21 @@ public class User {
     private List<Permission> permissions = new ArrayList<>();
 
     public User(
-            Date dateOfBirth,
+            Long dateOfBirth,
             String email,
             String username,
             String phone,
             String address,
             Role role,
-            List<Permission> permissions,
-            boolean active
+            List<Permission> permissions
     ) {
         this.dateOfBirth = dateOfBirth;
-        this.username = username;
         this.email = email;
+        this.username = username;
         this.phone = phone;
         this.address = address;
         this.role = role;
         this.permissions = permissions;
-        this.active = active;
     }
 
 }
