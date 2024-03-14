@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,8 @@ import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import java.util.Optional;
 
+import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
+import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 
 @RestController
 @CrossOrigin
@@ -39,15 +42,15 @@ import java.util.Optional;
         consumes = MediaType.APPLICATION_JSON_VALUE
 )
 public class UserController {
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
     private final UserService userService;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final SubmitLimiter submitLimiter;
     private final ChangedPasswordTokenUtil changedPasswordTokenUtil;
     private final PasswordValidator passwordValidator;
 
-
+    @Autowired
     public UserController(UserService userService, ChangedPasswordTokenUtil changedPasswordTokenUtil, PasswordEncoder passwordEncoder, SubmitLimiter submitLimiter, PasswordValidator passwordValidator, HttpServletRequest request, JwtUtil jwtUtil) {
         this.userService = userService;
         this.changedPasswordTokenUtil = changedPasswordTokenUtil;
@@ -72,7 +75,7 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/changePassword/{email}", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/changePassword/{email}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@PathVariable String email) {
 
         if (!submitLimiter.allowRequest(email)) {
@@ -87,7 +90,7 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/changePasswordSubmit/{token} ", consumes = MediaType.ALL_VALUE)
+    @PutMapping(path = "/changePasswordSubmit/{token} ", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> changePasswordSubmit(String newPassword, PasswordChangeTokenDto passwordChangeTokenDto) {
         String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
         Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
@@ -117,6 +120,22 @@ public class UserController {
         }
         return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
 
+    }
+
+    @PostMapping("/public/private-client")
+    public PrivateClientDto createPrivateClient(@RequestBody PrivateClientDto clientDto) {
+        return userService.createPrivateClient(clientDto);
+    }
+
+    @PostMapping("/public/corporate-client")
+    public CorporateClientDto createCorporateClient(@RequestBody CorporateClientDto clientDto) {
+        return userService.createCorporateClient(clientDto);
+    }
+
+    @PatchMapping("/public/{clientId}/activate")
+    public Long activateClient(@PathVariable String clientId,
+                               @RequestBody ClientActivationDto dto) {
+        return userService.activateClient(clientId, dto.getPassword());
     }
 
     @Operation(

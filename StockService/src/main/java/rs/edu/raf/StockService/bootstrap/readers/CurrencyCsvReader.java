@@ -2,13 +2,12 @@ package rs.edu.raf.StockService.bootstrap.readers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.core.util.Json;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,6 +19,11 @@ import java.util.Locale;
 public class CurrencyCsvReader {
     static String fileLocation = "StockService/src/main/resources/csvs/physical_currency_list.csv";
     private BufferedReader bufferedReader;
+    private Resource resource;
+
+    public CurrencyCsvReader(ResourceLoader resourceLoader) {
+        resource = resourceLoader.getResource("classpath:csvs/physical_currency_list.csv");
+    }
 
     public List<Currency> readCurrencyFromCsv() {
 
@@ -129,8 +133,8 @@ public class CurrencyCsvReader {
             if (this.bufferedReader != null) {
                 return bufferedReader;
             }
-            bufferedReader = new BufferedReader(new FileReader(fileLocation));
-        } catch (FileNotFoundException e) {
+            bufferedReader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return bufferedReader;

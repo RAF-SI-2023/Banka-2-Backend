@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
 import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
+import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -43,6 +44,19 @@ public class PasswordListenerSpringTest {
         try {
             String json = objectMapper.writeValueAsString(dto);
             template.convertAndSend("password-change", json);
+            Thread.sleep(2000);
+        } catch (JsonProcessingException | InterruptedException | ConstraintViolationException e) {
+            fail(e.getMessage());
+        }
+
+    }
+
+    @Test
+    void userProfileActivationCodeTest() {
+        ProfileActivationCodeDto dto = new ProfileActivationCodeDto("email@gmail.com", Long.valueOf(1234567890));
+        try {
+            String json = objectMapper.writeValueAsString(dto);
+            template.convertAndSend("user-profile-activation-code", json);
             Thread.sleep(2000);
         } catch (JsonProcessingException | InterruptedException | ConstraintViolationException e) {
             fail(e.getMessage());

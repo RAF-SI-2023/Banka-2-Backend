@@ -3,12 +3,24 @@ package rs.edu.raf.IAMService.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import rs.edu.raf.IAMService.data.dto.EmployeeDto;
+import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
+import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
+import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
+import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.CorporateClient;
+import rs.edu.raf.IAMService.data.entites.Employee;
+import rs.edu.raf.IAMService.data.entites.PrivateClient;
 import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;
@@ -35,6 +47,17 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final RabbitTemplate rabbitTemplate;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository, RabbitTemplate rabbitTemplate, ObjectMapper objectMapper, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
+        this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
+        this.passwordEncoder = passwordEncoder;
+
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -122,7 +145,47 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserDto(user);
     }
 
+    @Transactional
+    @Override
+    public PrivateClientDto createPrivateClient(PrivateClientDto privateClientDto) {
+        PrivateClient client = userMapper
+                .privateClientDtoToPrivateClient(privateClientDto);
+        PrivateClient savedClient = userRepository.save(client);
 
+        sendClientActivationMessage(savedClient.getEmail());
+
+        return userMapper.privateClientToPrivateClientDto(savedClient);
+    }
+
+    @Transactional
+    @Override
+    public CorporateClientDto createCorporateClient(CorporateClientDto corporateClientDto) {
+        CorporateClient client = userMapper
+                .corporateClientDtoToCorporateClient(corporateClientDto);
+        CorporateClient savedClient = userRepository.save(client);
+
+        sendClientActivationMessage(savedClient.getEmail());
+
+        return userMapper.corporateClientToCorporateClientDto(savedClient);
+    }
+
+    @Transactional
+    @Override
+    public Long activateClient(String clientId, String password) {
+        User clientToBeActivated = userRepository.findById(Long.parseLong(clientId))
+                .orElseThrow(() -> new UserNotFoundException("User with id: " + clientId + " not found."));
+
+        clientToBeActivated.setPassword(passwordEncoder.encode(password));
+        clientToBeActivated.setActive(true);
+
+        return userRepository.save(clientToBeActivated).getId();
+    }
+
+    private void sendClientActivationMessage(String email) {
+        rabbitTemplate.convertAndSend(
+                "password-activation",
+                new ClientActivationMessageDto("url", email));
+    }
 
     @Override
     public Optional<User> findUserByEmail(String email) {

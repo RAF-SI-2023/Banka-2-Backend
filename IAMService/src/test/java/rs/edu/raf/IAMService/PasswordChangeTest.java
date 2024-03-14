@@ -1,17 +1,25 @@
 package rs.edu.raf.IAMService;
 
+import io.cucumber.java.Before;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
+import org.apache.catalina.filters.RateLimitFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rs.edu.raf.IAMService.controllers.UserController;
+import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.Role;
@@ -23,9 +31,7 @@ import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
-
 import java.util.Optional;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,11 +82,12 @@ class PasswordChangeTest {
         String email = "test@example.com";
         int port = 8000;
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        HttpServletRequest httpServletRequest= mock(HttpServletRequest.class);
         when(httpServletRequest.getServerPort()).thenReturn(port);
 
 
-        //  Role role = new Role(RoleType.ROLE_USER);
+
+        Role role = new Role(RoleType.USER);
 
         UserDto userDto = new UserDto();
         userDto.setUsername("lol");
@@ -90,14 +97,14 @@ class PasswordChangeTest {
         userDto.setPhone("lol");
         userDto.setPermissions(null);
         userDto.setDateOfBirth(null);
-        userDto.setRole(RoleType.USER);
+        userDto.setRole(role.getRoleType());
         userDto.setId(Long.valueOf(1));
 
         reset(submitLimiter);
 
         when(submitLimiter.allowRequest(anyString())).thenReturn(true);
 
-        when(userService.findByEmail(email)).thenReturn(userDto);
+            when(userService.findByEmail(email)).thenReturn(userDto);
 
         PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
         passwordChangeTokenDto.setEmail(email);
@@ -106,7 +113,7 @@ class PasswordChangeTest {
         passwordChangeTokenDto.setExpireTime(1000L);
 
 
-        when(changedPasswordTokenUtil.generateToken(any(), anyString())).thenReturn(passwordChangeTokenDto);
+            when(changedPasswordTokenUtil.generateToken(any(), anyString())).thenReturn(passwordChangeTokenDto);
         // Test
         ResponseEntity<PasswordChangeTokenDto> responseEntity = userController.InitiatesChangePassword(email);
 
