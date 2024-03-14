@@ -28,6 +28,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginRequest) {
         try {
+            System.out.println(loginRequest.getEmail() + " " + loginRequest.getPassword());
+            System.out.println(userService.findAll());
+            System.out.println("2312312312312");
+            System.out.println(userService.findByEmail(loginRequest.getEmail()));
+
             authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (Exception e) {
             e.printStackTrace();

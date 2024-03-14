@@ -16,23 +16,7 @@ import java.util.Optional;
 @Service
 public interface UserService extends UserDetailsService {
 
-    /**
-     * Finds user by id, and returns it as UserDto. Everyone? can search for users by id.
-     *
-     * @param id - id of the user that needs to be found
-     * @return UserDto - user that was found
-     * @throws NotFoundException - if user with given id is not found
-     */
     UserDto findById(Long id);
-
-    /**
-     * Finds user by email, and returns it as UserDto. Everyone? can search for users by email.
-     *
-     * @param email - email of the user that needs to be found
-     * @return UserDto - user that was found
-     * @throws NotFoundException - if user with given email is not found
-     */
-
     UserDto findByEmail(String email);
     PrivateClientDto createPrivateClient(PrivateClientDto privateClientDtoDto);
     CorporateClientDto createCorporateClient(CorporateClientDto corporateClientDto);

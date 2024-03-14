@@ -189,9 +189,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Long passwordActivation(String clientId, String password) {
-        User clientToBeActivated = userRepository.findById(Long.parseLong(clientId))
-                .orElseThrow(() -> new UserNotFoundException("User with id: " + clientId + " not found."));
+    public Long passwordActivation(String email, String password) {
+        User clientToBeActivated = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found."));
         clientToBeActivated.setPassword(passwordEncoder.encode(password));
         return userRepository.save(clientToBeActivated).getId();
     }

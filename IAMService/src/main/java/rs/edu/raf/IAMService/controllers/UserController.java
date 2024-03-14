@@ -141,10 +141,10 @@ public class UserController {
         return userService.createCorporateClient(clientDto);
     }
 
-    @PatchMapping("/public/{clientId}/password-activation")
-    public Long activateClient(@PathVariable String clientId,
+    @PatchMapping("/public/{email}/password-activation")
+    public Long activateClient(@PathVariable String email,
                                @RequestBody PasswordActivationDto dto) {
-        return userService.passwordActivation(clientId, dto.getPassword());
+        return userService.passwordActivation(email, dto.getPassword());
     }
 
     @GetMapping(path = "/findByEmail/{email}", consumes = MediaType.ALL_VALUE)
