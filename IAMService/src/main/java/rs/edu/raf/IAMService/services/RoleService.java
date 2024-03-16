@@ -8,4 +8,6 @@ import java.util.List;
 @Service
 public interface RoleService {
     List<RoleDto> getAllRoles();
+
+
 }

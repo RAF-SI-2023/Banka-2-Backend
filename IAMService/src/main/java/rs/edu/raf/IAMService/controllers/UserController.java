@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,7 +140,7 @@ public class UserController {
         return userService.createCorporateClient(clientDto);
     }
 
-    @PatchMapping("/public/{email}/password-activation")
+    @PostMapping("/public/{email}/password-activation")
     public Long activateClient(@PathVariable String email,
                                @RequestBody PasswordActivationDto dto) {
         return userService.passwordActivation(email, dto.getPassword());
@@ -264,8 +263,8 @@ public class UserController {
 
 
     @PutMapping(path = "/activateEmployee/{id}")
-    @Secured("ADMIN")
-    public ResponseEntity<Boolean> ActivateEmployee(@PathVariable int id) {
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Boolean> activateEmployee(@PathVariable int id) {
 
         try{
             userService.employeeActivation(id);
@@ -275,9 +274,9 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
-    @PutMapping(path = "/deactivateEmployee/{id}")
-    @Secured("ADMIN")
-    public ResponseEntity<Boolean> DeactivateEmployee(@PathVariable int id) {
+    @PutMapping(path = "/deactivateEmployee/{id}" )
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Boolean> deactivateEmployee(@PathVariable int id) {
 
         try{
             userService.employeeDeactivation(id);

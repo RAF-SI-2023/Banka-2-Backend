@@ -38,7 +38,6 @@ import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.List;
 
 
 @Service
@@ -101,7 +100,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUserByEmail(String email) {
+    public Integer deleteUserByEmail(String email) {
         if(SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")){
             return userRepository.removeUserByEmail(email);
         }
@@ -119,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 return userRepository.removeUserByEmail(email);
             }
         }
-        return false;
+        return -1;
     }
 
     @Override
@@ -168,6 +167,12 @@ public class UserServiceImpl implements UserService {
     public PrivateClientDto createPrivateClient(PrivateClientDto privateClientDto) {
         PrivateClient client = userMapper
                 .privateClientDtoToPrivateClient(privateClientDto);
+
+        Role role = roleRepository.findByRoleType(RoleType.USER)
+                .orElseThrow(() -> new MissingRoleException("USER"));
+
+        client.setRole(role);
+
         PrivateClient savedClient = userRepository.save(client);
 
         sendClientActivationMessage(savedClient.getEmail());
@@ -181,6 +186,11 @@ public class UserServiceImpl implements UserService {
         CorporateClient client = userMapper
                 .corporateClientDtoToCorporateClient(corporateClientDto);
         CorporateClient savedClient = userRepository.save(client);
+
+        Role role = roleRepository.findByRoleType(RoleType.USER)
+                .orElseThrow(() -> new MissingRoleException("USER"));
+
+        client.setRole(role);
 
         sendClientActivationMessage(savedClient.getEmail());
 

@@ -64,7 +64,7 @@ public interface UserService extends UserDetailsService {
      * @param email - email of the user that needs to be deleted
      * @return UserDto - user that was deleted //TODO check if u want to return void
      */
-    boolean deleteUserByEmail(String email);
+    Integer deleteUserByEmail(String email);
 
     /**
      * Updates users information, and returns the updated user as UserDto. Role and permission checks are done in the controller.

@@ -31,10 +31,7 @@ public class RabbitMQListeners {
     private final EmailService emailService;
 
     @RabbitListener(queues = "password-activation")
-    public void passwordActivationHandler(Message message) throws IOException {
-        if (message == null) return;
-
-        PasswordActivationDto passwordActivationDto = objectMapper.readValue(message.getBody(), PasswordActivationDto.class);
+    public void passwordActivationHandler(PasswordActivationDto passwordActivationDto) throws IOException {
         if (!isValid(passwordActivationDto)) return;
 
         EmailDto activationEmail = emailDtoMapper.activationEmail(passwordActivationDto);
@@ -43,9 +40,7 @@ public class RabbitMQListeners {
     }
 
     @RabbitListener(queues = "password-change")
-    public void passwordChangeHandler(Message message) throws IOException {
-        if (message == null) return;
-        PasswordChangeDto passwordChangeDto = objectMapper.readValue(message.getBody(), PasswordChangeDto.class);
+    public void passwordChangeHandler(PasswordChangeDto passwordChangeDto) throws IOException {
         if (!isValid(passwordChangeDto)) return;
 
         EmailDto passwordChangeEmail = emailDtoMapper.changePasswordEmail(passwordChangeDto);
@@ -59,9 +54,6 @@ public class RabbitMQListeners {
         if (!isValid(profileActivationCodeDto)) return;
 
         EmailDto userActivationCodeEmail = emailDtoMapper.profileActivationEmail(profileActivationCodeDto);
-        logger.info(userActivationCodeEmail.getEmail());
-        logger.info(userActivationCodeEmail.getSubject());
-        logger.info(userActivationCodeEmail.getContent());
 
         emailService.sendSimpleMailMessage(userActivationCodeEmail.getEmail(), userActivationCodeEmail.getSubject(), userActivationCodeEmail.getContent());
 
