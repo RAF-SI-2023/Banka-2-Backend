@@ -1,10 +1,7 @@
 package rs.edu.raf.IAMService.mapper;
 
 import org.springframework.stereotype.Component;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.*;
 
 @Component
@@ -128,4 +125,53 @@ public class UserMapper {
         );
     }
 
+    public Supervisor supervisorDtoToSupervisor(SupervisorDto dto) {
+        return new Supervisor(
+                dto.getDateOfBirth(),
+                dto.getEmail(),
+                dto.getEmail(),
+                dto.getPhone(),
+                dto.getAddress(),
+                dto.getPermissions().stream().map(Permission::new).toList()
+        );
+    }
+
+    public SupervisorDto supervisorToSupervisorDto(Supervisor supervisor) {
+        return new SupervisorDto(
+                supervisor.getId(),
+                supervisor.getDateOfBirth(),
+                supervisor.getEmail(),
+                supervisor.getUsername(),
+                supervisor.getPhone(),
+                supervisor.getAddress(),
+                supervisor.getPermissions().stream().map(Permission::getPermissionType).toList()
+        );
+    }
+
+    public Agent agentDtoToAgent(AgentDto dto) {
+        return new Agent(
+                dto.getDateOfBirth(),
+                dto.getEmail(),
+                dto.getUsername(),
+                dto.getPhone(),
+                dto.getAddress(),
+                dto.getPermissions().stream().map(Permission::new).toList(),
+                dto.getLimit(),
+                dto.getLeftOfLimit()
+        );
+    }
+
+    public AgentDto agentToAgentDto(Agent agent) {
+        return new AgentDto(
+                agent.getId(),
+                agent.getDateOfBirth(),
+                agent.getEmail(),
+                agent.getUsername(),
+                agent.getPhone(),
+                agent.getAddress(),
+                agent.getPermissions().stream().map(Permission::getPermissionType).toList(),
+                agent.getLimit(),
+                agent.getLeftOfLimit()
+        );
+    }
 }
