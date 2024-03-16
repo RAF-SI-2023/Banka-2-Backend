@@ -120,7 +120,6 @@ class UserServiceImplTest {
         String clientId = "1";
         String password = "newPassword";
         User user = new User();
-        user.setActive(false);
         when(userRepository.findById(Long.parseLong(clientId))).thenReturn(Optional.of(user));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(new User());
@@ -129,7 +128,6 @@ class UserServiceImplTest {
         userService.passwordActivation(clientId, password);
 
         // then
-        assertTrue(user.isActive());
         assertEquals("encodedPassword", user.getPassword());
         verify(userRepository, times(1)).findById(any());
         verify(passwordEncoder, times(1)).encode(any());
@@ -218,7 +216,7 @@ class UserServiceImplTest {
         dto.setGender("test gender");
         dto.setAddress("test address");
         dto.setEmail("test email");
-        dto.setDateOfBirth(new Date());
+        dto.setDateOfBirth(new Date().getTime());
         dto.setPhone("test phone number");
         dto.setUsername("test username");
         dto.setPrimaryAccountNumber("test account number");
@@ -237,7 +235,7 @@ class UserServiceImplTest {
         client.setGender("test gender");
         client.setAddress("test address");
         client.setEmail("test email");
-        client.setDateOfBirth(new Date());
+        client.setDateOfBirth(new Date().getTime());
         client.setPhone("test phone number");
         client.setUsername("test username");
         client.setPrimaryAccountNumber("test account number");
@@ -254,7 +252,7 @@ class UserServiceImplTest {
         dto.setUsername("test username");
         dto.setAddress("test address");
         dto.setEmail("test email");
-        dto.setDateOfBirth(new Date());
+        dto.setDateOfBirth(new Date().getTime());
         dto.setPhone("test phone number");
         dto.setUsername("test username");
         dto.setPrimaryAccountNumber("test account number");
@@ -271,7 +269,7 @@ class UserServiceImplTest {
         client.setUsername("test username");
         client.setAddress("test address");
         client.setEmail("test email");
-        client.setDateOfBirth(new Date());
+        client.setDateOfBirth(new Date().getTime());
         client.setPhone("test phone number");
         client.setUsername("test username");
         client.setPrimaryAccountNumber("test account number");

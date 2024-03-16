@@ -107,6 +107,7 @@ public class UserMapper {
                 user.getAddress(),
                 user.getPermissions().stream().map(Permission::getPermissionType).toList(),
                 user.getName(),
+                user.getSurname(),
                 user.getGender(),
                 user.getPosition(),
                 user.getDepartment(),

@@ -23,7 +23,7 @@ public class UserMapperTest {
     public void testCorporateClientDtoToCorporateClient() {
         // Arrange
         CorporateClientDto dto = new CorporateClientDto();
-        dto.setDateOfBirth(Date.valueOf(LocalDate.of(1980, 1, 10)));
+        dto.setDateOfBirth(Long.valueOf(LocalDate.of(1980, 1, 10).toEpochDay()));
         dto.setEmail("corporate@example.com");
         // Set other DTO properties as needed
 
@@ -40,7 +40,7 @@ public class UserMapperTest {
     public void testPrivateClientDtoToPrivateClient() {
         // Arrange
         PrivateClientDto dto = new PrivateClientDto();
-        dto.setDateOfBirth(Date.valueOf(LocalDate.of(1980, 1, 10)));
+        dto.setDateOfBirth(Long.valueOf(LocalDate.of(1980, 1, 10).toEpochDay()));
         dto.setEmail("private@example.com");
         // Set other DTO properties as needed
 
@@ -57,7 +57,7 @@ public class UserMapperTest {
     public void testEmployeeDtoToEmployee() {
         // Arrange
         EmployeeDto dto = new EmployeeDto();
-        dto.setDateOfBirth(Date.valueOf(LocalDate.of(1980, 1, 10)));
+        dto.setDateOfBirth(Long.valueOf(LocalDate.of(1980, 1, 10).toEpochDay()));
         dto.setEmail("employee@example.com");
         // Set other DTO properties as needed
 

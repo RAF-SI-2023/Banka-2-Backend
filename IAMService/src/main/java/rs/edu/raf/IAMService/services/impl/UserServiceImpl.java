@@ -38,7 +38,6 @@ import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.List;
 
 
 @Service
@@ -101,7 +100,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUserByEmail(String email) {
+    public Integer deleteUserByEmail(String email) {
         if(SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")){
             return userRepository.removeUserByEmail(email);
         }
@@ -119,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 return userRepository.removeUserByEmail(email);
             }
         }
-        return false;
+        return -1;
     }
 
     @Override
@@ -168,6 +167,12 @@ public class UserServiceImpl implements UserService {
     public PrivateClientDto createPrivateClient(PrivateClientDto privateClientDto) {
         PrivateClient client = userMapper
                 .privateClientDtoToPrivateClient(privateClientDto);
+
+        Role role = roleRepository.findByRoleType(RoleType.USER)
+                .orElseThrow(() -> new MissingRoleException("USER"));
+
+        client.setRole(role);
+
         PrivateClient savedClient = userRepository.save(client);
 
         sendClientActivationMessage(savedClient.getEmail());
@@ -182,6 +187,11 @@ public class UserServiceImpl implements UserService {
                 .corporateClientDtoToCorporateClient(corporateClientDto);
         CorporateClient savedClient = userRepository.save(client);
 
+        Role role = roleRepository.findByRoleType(RoleType.USER)
+                .orElseThrow(() -> new MissingRoleException("USER"));
+
+        client.setRole(role);
+
         sendClientActivationMessage(savedClient.getEmail());
 
         return userMapper.corporateClientToCorporateClientDto(savedClient);
@@ -189,9 +199,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Long passwordActivation(String clientId, String password) {
-        User clientToBeActivated = userRepository.findById(Long.parseLong(clientId))
-                .orElseThrow(() -> new UserNotFoundException("User with id: " + clientId + " not found."));
+    public Long passwordActivation(String email, String password) {
+        User clientToBeActivated = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found."));
         clientToBeActivated.setPassword(passwordEncoder.encode(password));
         return userRepository.save(clientToBeActivated).getId();
     }

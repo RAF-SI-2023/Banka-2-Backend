@@ -51,10 +51,8 @@ public class RabbitMQListenersUnitTest {
         String validJson = generateJson("email", "activationUrl", validEmail, validUrl);
         PasswordActivationDto passwordActivationDto = new PasswordActivationDto(validEmail, validUrl);
 
-        Message validMessage = createMockMessage(validJson);
-
         try {
-            rabbitMQListeners.passwordActivationHandler(validMessage);
+            rabbitMQListeners.passwordActivationHandler(passwordActivationDto);
             verify(emailDtoMapper).activationEmail(passwordActivationDto);
         } catch (IOException e) {
             fail(e.getMessage());
@@ -68,10 +66,8 @@ public class RabbitMQListenersUnitTest {
         String validJson = generateJson("email", "urlLink", validEmail, validUrl);
         PasswordChangeDto passwordChangeDto = new PasswordChangeDto(validEmail, validUrl);
 
-        Message validMessage = createMockMessage(validJson);
-
         try {
-            rabbitMQListeners.passwordChangeHandler(validMessage);
+            rabbitMQListeners.passwordChangeHandler(passwordChangeDto);
             verify(emailDtoMapper).changePasswordEmail(passwordChangeDto);
         } catch (IOException e) {
             fail(e.getMessage());
@@ -82,17 +78,14 @@ public class RabbitMQListenersUnitTest {
     @Test
     void userProfileActivationCodeValidInput() {
 
-//        String validJson = generateJson("email", "code", validEmail, "1234567");
-//        ProfileActivationCodeDto profileActivationCodeDto = new ProfileActivationCodeDto(validEmail, Long.valueOf(1234567));
-//
-//        Message validMessage = createMockMessage(validJson);
-//
-//        try {
-//            rabbitMQListeners.userProfileActivationCodeHandler(validMessage);
-//            verify(emailDtoMapper).profileActivationEmail(profileActivationCodeDto);
-//        } catch (IOException e) {
-//            fail(e.getMessage());
-//        }
+        ProfileActivationCodeDto profileActivationCodeDto = new ProfileActivationCodeDto(validEmail, "1234567");
+
+        try {
+            rabbitMQListeners.userProfileActivationCodeHandler(profileActivationCodeDto);
+            verify(emailDtoMapper).profileActivationEmail(profileActivationCodeDto);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
 
     }
 
@@ -101,7 +94,7 @@ public class RabbitMQListenersUnitTest {
         List<Message> invalidMessages = createInvalidMessages("email", "activationUrl");
         try {
             for (Message message : invalidMessages) {
-                rabbitMQListeners.passwordActivationHandler(message);
+                rabbitMQListeners.passwordActivationHandler(new PasswordActivationDto("example@raf.rs","url"));
                 verify(emailDtoMapper, never()).activationEmail(any());
             }
         } catch (IOException e) {
@@ -114,7 +107,7 @@ public class RabbitMQListenersUnitTest {
         List<Message> invalidMessages = createInvalidMessages("email", "urlLink");
         try {
             for (Message message : invalidMessages) {
-                rabbitMQListeners.passwordChangeHandler(message);
+                rabbitMQListeners.passwordChangeHandler(new PasswordChangeDto("","url"));
                 verify(emailDtoMapper, never()).changePasswordEmail(any());
             }
         } catch (IOException e) {
@@ -124,20 +117,12 @@ public class RabbitMQListenersUnitTest {
 
     @Test
     void userProfileActivationCodeInvalidInputs() {
-//        List<Message> invalidMessages = new ArrayList<>();
-//        invalidMessages.add(createMockMessage(generateJson("email", "code", blankEmail, "1234567")));
-//        invalidMessages.add(createMockMessage(generateJson("email", "code", invalidEmail, "1234567")));
-//        invalidMessages.add(createMockMessage(generateJson("email", "code", validEmail, null)));
-//        invalidMessages.add(createMockMessage(generateJson("email", "code", validEmail, "")));
-//        invalidMessages.add(createMockMessage(generateJson("email", "code", blankEmail, "")));
-//        try {
-//            for (Message message : invalidMessages) {
-//                rabbitMQListeners.userProfileActivationCodeHandler(message);
-//                verify(emailDtoMapper, never()).profileActivationEmail(any());
-//            }
-//        } catch (IOException e) {
-//            fail(e.getMessage());
-//        }
+        try {
+            rabbitMQListeners.userProfileActivationCodeHandler(new ProfileActivationCodeDto("", "1234567"));
+            verify(emailDtoMapper, never()).profileActivationEmail(any());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     private List<Message> createInvalidMessages(String prop1, String prop2) {

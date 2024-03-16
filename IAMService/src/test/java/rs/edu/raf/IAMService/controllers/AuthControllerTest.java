@@ -7,56 +7,85 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PasswordDto;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;
+import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
+import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.services.UserService;
 
+import javax.naming.AuthenticationException;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class AuthControllerTest {
 
     @Mock
+    private UserMapper userMapper;
+
+    @Mock
+    private AuthenticationProvider authenticationProvider;
+
+    @Mock
     private UserService userService;
+
+    @Mock
+    private JwtUtil jwtUtil;
 
     @InjectMocks
     private AuthController authController;
 
     @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testActivateEmployee_Success() {
+    void testLogin() throws Exception {
         // Setup
-        PasswordDto passwordDto = new PasswordDto("test@user.com", "password");
-        EmployeeDto employeeDto = new EmployeeDto();
-        when(userService.activateEmployee(passwordDto.getEmail(), passwordDto.getPassword())).thenReturn(employeeDto);
+        LoginDto loginRequest = new LoginDto("user@example.com", "password");
+        User user = new User(); // Create a user object with the required fields.
+        String expectedToken = "token";
+        when(userService.findByEmail(loginRequest.getEmail())).thenReturn(userMapper.userToUserDto(user));
+        when(jwtUtil.generateToken(any(UserDto.class))).thenReturn(expectedToken);
 
-        // Execution
-        ResponseEntity<?> response = authController.activateEmployee(passwordDto);
+        // Act
+        ResponseEntity<?> response = authController.login(loginRequest);
 
-        // Assertion
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(employeeDto, response.getBody());
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        TokenDto responseBody = (TokenDto) response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(expectedToken, responseBody.getToken());
+
+        // Verify interactions
+        verify(authenticationProvider).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userService).findByEmail(loginRequest.getEmail());
+        verify(jwtUtil).generateToken(any(UserDto.class));
     }
 
     @Test
-    public void testActivateEmployee_EmailNotFound() {
+    void testUnsuccessfulLogin() {
         // Setup
-        PasswordDto passwordDto = new PasswordDto("test@user.com", "password");
-        when(userService.activateEmployee(passwordDto.getEmail(), passwordDto.getPassword())).thenThrow(new EmailNotFoundException("test@user.com"));
+        LoginDto loginRequest = new LoginDto("wrong@example.com", "wrongpassword");
+        when(authenticationProvider.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new AuthenticationException("Bad credentials") {});
 
-        // Execution
-        ResponseEntity<?> response = authController.activateEmployee(passwordDto);
+        // Act
+        ResponseEntity<?> response = authController.login(loginRequest);
 
-        // Assertion
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(
-                "User with email 'test@user.com' not found",
-                response.getBody()
-        );
+        // Assert
+        assertEquals(401, response.getStatusCodeValue());
+
+        // Verify interactions
+        verify(authenticationProvider).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userService, never()).findByEmail(anyString());
+        verify(jwtUtil, never()).generateToken(any(UserDto.class));
     }
+
+
 }
