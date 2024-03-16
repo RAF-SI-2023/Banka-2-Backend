@@ -122,7 +122,7 @@ public class CrudUserControllerTests {
         when(claims.get("email")).thenReturn(email);
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
-        when(userService.deleteUserByEmail(email)).thenReturn(true);
+        when(userService.deleteUserByEmail(email)).thenReturn(1);
         when(userService.findByEmail(email)).thenReturn(user);
         // Act
         ResponseEntity<?> response = controller.deleteUserByEmail(email);
@@ -145,7 +145,7 @@ public class CrudUserControllerTests {
         UserController controller = Mockito.spy(this.controller);
         doReturn(claims).when(controller).getClaims(request);
         when(userService.findByEmail(email)).thenReturn(user);
-        when(userService.deleteUserByEmail(email)).thenReturn(true);
+        when(userService.deleteUserByEmail(email)).thenReturn(1);
 
         // Act
         ResponseEntity<?> response = controller.deleteUserByEmail(email);

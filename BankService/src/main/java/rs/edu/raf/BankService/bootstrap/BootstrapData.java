@@ -23,6 +23,9 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_2}")
     private String myEmail2;
 
+    @Value("${MY_EMAIL_3}")
+    private String myEmail3;
+
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final AccountRepository accountRepository;
 
@@ -31,7 +34,7 @@ public class BootstrapData implements CommandLineRunner {
         logger.info("BankService: DATA LOADING IN PROGRESS...");
 
         DomesticCurrencyAccount domesticCurrencyAccount1 = new DomesticCurrencyAccount();
-        domesticCurrencyAccount1.setAccountNumber("123456789");
+        domesticCurrencyAccount1.setAccountNumber("3334444999999999");
         domesticCurrencyAccount1.setEmail(myEmail1);
         domesticCurrencyAccount1.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
         domesticCurrencyAccount1.setEmployeeId(2L);
@@ -41,14 +44,26 @@ public class BootstrapData implements CommandLineRunner {
         domesticCurrencyAccount1.setInterestRate(2.5);
         accountRepository.save((Account) domesticCurrencyAccount1);
 
+        DomesticCurrencyAccount domesticCurrencyAccount2 = new DomesticCurrencyAccount();
+        domesticCurrencyAccount2.setAccountNumber("3334444111111111");
+        domesticCurrencyAccount2.setEmail(myEmail2);
+        domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
+        domesticCurrencyAccount2.setEmployeeId(2L);
+        domesticCurrencyAccount2.setMaintenanceFee(220.00);
+        domesticCurrencyAccount2.setCurrencyCode("RSD");
+        domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
+        domesticCurrencyAccount2.setInterestRate(2.5);
+        accountRepository.save((Account) domesticCurrencyAccount2);
+
         ForeignCurrencyAccount foreignCurrencyAccount1 = new ForeignCurrencyAccount();
-        foreignCurrencyAccount1.setAccountNumber("987654321");
-        foreignCurrencyAccount1.setEmail(myEmail2);
+        foreignCurrencyAccount1.setAccountNumber("3334444777777777");
+        foreignCurrencyAccount1.setEmail(myEmail3);
         foreignCurrencyAccount1.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
         foreignCurrencyAccount1.setEmployeeId(2L);
         foreignCurrencyAccount1.setMaintenanceFee(220.00);
         foreignCurrencyAccount1.setCurrencyCode("USD");
         accountRepository.saveAndFlush(foreignCurrencyAccount1);
+
 
 
         logger.info("BankService: DATA LOADING IN PROGRESS...");

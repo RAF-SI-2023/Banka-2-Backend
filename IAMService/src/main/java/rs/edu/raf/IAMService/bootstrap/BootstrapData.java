@@ -75,18 +75,18 @@ public class BootstrapData implements CommandLineRunner {
         admin.setEmail(myEmail1);
         admin.setUsername(myEmail1);
         admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setRole(userRole);
+        admin.setRole(adminRole);
         admin.setPermissions(List.of(per1, per2));
         userRepository.save(admin);
 
-        Employee employee1 = new Employee();
-        employee1.setEmail(myEmail2);
-        employee1.setActive(true);
-        employee1.setUsername(myEmail2);
-        employee1.setPassword(passwordEncoder.encode("employee1"));
-        employee1.setRole(userRole);
-        employee1.setPermissions(List.of(per1, per2));
-        userRepository.save(employee1);
+//        Employee employee1 = new Employee();
+//        employee1.setEmail(myEmail2);
+//        employee1.setActive(true);
+//        employee1.setUsername(myEmail2);
+//        employee1.setPassword(passwordEncoder.encode("employee1"));
+//        employee1.setRole(userRole);
+//        employee1.setPermissions(List.of(per1, per2));
+//        userRepository.save(employee1);
 
         logger.info("DATA LOADING FINISHED...");
     }
