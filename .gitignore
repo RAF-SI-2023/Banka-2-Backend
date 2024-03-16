@@ -33,7 +33,4 @@ build/
 .vscode/
 
 ###
-.BankService/src/main/resources/application-local.properties
-.IAMService/src/main/resources/application-local.properties
-.NotificationService/src/main/resources/application-local.properties
-.StockService/src/main/resources/application-local.properties
+**/application-local.properties
