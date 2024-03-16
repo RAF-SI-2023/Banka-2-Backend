@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailTakenException;
@@ -24,9 +24,6 @@ import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import java.util.List;
 import java.util.Optional;
-
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
 
 @RestController
 @CrossOrigin
@@ -61,8 +58,18 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/password-forgot-initialization/{email}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@PathVariable String email) {
+    @PostMapping(path = "/password-change-initialization", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<PasswordChangeTokenDto> InitiatesChangePassword(@RequestBody LoginDto loginDto) {
+        String email = loginDto.getEmail();
+        String password = loginDto.getPassword();
+        Optional<User> userOptional = userService.findUserByEmail(email);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        if (!passwordEncoder.matches(password, userOptional.get().getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         if (!submitLimiter.allowRequest(email)) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
@@ -75,7 +82,7 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/password-forgot-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/password-change-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
         String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
         PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
@@ -280,8 +287,8 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
-    
-    @PutMapping(path = "/deactivateEmployee/{id}" )
+
+    @PutMapping(path = "/deactivateEmployee/{id}")
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> deactivateEmployee(@PathVariable int id) {
         try {
