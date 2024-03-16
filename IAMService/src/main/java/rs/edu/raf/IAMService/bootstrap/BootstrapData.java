@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import rs.edu.raf.IAMService.data.entites.Employee;
-import rs.edu.raf.IAMService.data.entites.Permission;
-import rs.edu.raf.IAMService.data.entites.Role;
-import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
+import rs.edu.raf.IAMService.repositories.CompanyRepository;
 import rs.edu.raf.IAMService.repositories.PermissionRepository;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
@@ -34,6 +32,7 @@ public class BootstrapData implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyRepository companyRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -87,6 +86,16 @@ public class BootstrapData implements CommandLineRunner {
 //        employee1.setRole(userRole);
 //        employee1.setPermissions(List.of(per1, per2));
 //        userRepository.save(employee1);
+        Company company = new Company();
+        company.setCompanyName("Example Ltd.");
+        company.setFaxNumber("123456");
+        company.setPhoneNumber("+38111236456");
+        company.setAddress("Trg Republike V/5, Beograd, Srbija");
+        company.setPib(123456789L);
+        company.setRegistryNumber(123456789);
+        company.setIdentificationNumber(123456);
+        company.setActivityCode(12345);
+        companyRepository.save(company);
 
         logger.info("DATA LOADING FINISHED...");
     }
