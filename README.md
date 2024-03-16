@@ -14,7 +14,7 @@
      - Da li stizete da odratite i testirate ispravnost odradjenih tiketa koji su vam dodeljeni `do cetvrtka u 12:00h`
 -------
  ## Sta je potrebno instalirati
- - Instalirati Docker Desktop ( link: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/) )
+ - Instalirati Docker Desktop ( [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/) )
      
 ## Sta je potrebno pokretanje servisa
 - Pokrenuti Docker Desktop
