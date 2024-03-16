@@ -21,13 +21,8 @@
 - u root folderu projekta pokrenuti komandu `docker-compose up --build`
 
 ## Sta je potrebno stopiranje servisa
-- u root folderu projekta pokrenuti komandu `docker-compose down`
-
-## Dodatne napomene
-Docker image-i mogu da se pokrenu i iz Docker Desktop aplikacije tako sto odete na tab `Images` or `Containtars` i u koloni `Actions` ih pokrenete 
-
+- u root folderu projekta pokrenuti komandu `docker-compose down`  
 ---
-
 ## Workflow - pogledati [vezbe2](https://learning.raf.edu.rs/mod/url/view.php?id=22203), [vezbe3](https://video.raf.edu.rs/stream.php?video=pLpaQR%2FYY%2FWtiUv0Wc%2BZqKKg9Y%2Ff%2BCPUns7Ny4LL0AdM7dVrVj2fLMkGJxz5sNiuXpS0FLZl8q1XXF7y2eP5irdsubKDUtAXvb9u66UvYVI14l%2FiP%2Bo3QrOCY31RZYeTKR8l0XIVN61xb0NPuoreEDuizA0Od4XXRXwx1Gv8uDmEooaQZrKrunRG9CSHdgY3&file=video.mp4), [Github prezentaciju](https://docs.google.com/presentation/d/1ehKYiWcBT7fCFnmboQ1N0RgnHzhgfs6xhIym-Ss3v-w/edit#slide=id.p)
 - Potrebno je forkovati (fork) `dev` granu glavnog projekata u vase lokalne repozitorijume i da radite na svom forku
 - Kada hocete da odradite merge sa glavnim projektom potrebno je da kreirate `Pull request` sa vaseg forka i da izaberete da hocete da mergujete sa `dev` granom glavnog projeta
