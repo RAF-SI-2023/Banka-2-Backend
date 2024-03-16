@@ -75,8 +75,13 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/password-forgot-confirmation/{token} ", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<?> changePasswordSubmit(String newPassword, PasswordChangeTokenDto passwordChangeTokenDto) {
+    @PostMapping(path = "/password-forgot-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changePasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
+        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
+        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
+        if (!token.equals(passwordChangeTokenDto.getToken())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
+        }
         String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
         Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
         Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
@@ -117,6 +122,7 @@ public class UserController {
         userService.addUserPermission(id, permission);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping(path = "/removeUserPermission/{id}")
     public ResponseEntity<?> removeUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
         userService.removeUserPermission(id, permission);
@@ -266,21 +272,21 @@ public class UserController {
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> activateEmployee(@PathVariable int id) {
 
-        try{
+        try {
             userService.employeeActivation(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
+    
     @PutMapping(path = "/deactivateEmployee/{id}" )
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> deactivateEmployee(@PathVariable int id) {
-
-        try{
+        try {
             userService.employeeDeactivation(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
         }
 
