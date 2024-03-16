@@ -15,18 +15,13 @@
 -------
  ## Sta je potrebno instalirati
  - Instalirati Docker Desktop ( link: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/) )
- - Pokrenuti Docker Desktop
- - Otvoriti terminal i skinuti Docker image-e sledecim komandama
-   - docker pull postgres
-   - docker pull mongo
-   - docker pull rabbitmq:3-management
      
-## Sta je potrebno za uspesno pokretanje servisa
+## Sta je potrebno pokretanje servisa
 - Pokrenuti Docker Desktop
--  Otvoriti terminal i pokrenuti Docker image-e  sledecim komandama
-   - docker run --name postgresDB -e POSTGRES_DB=postgresDB -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 -d postgres
-   - docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-   - docker run --name mongoDB -d -p 27017:27017 mongo
+- u root folderu projekta pokrenuti komandu `docker-compose up --build`
+
+## Sta je potrebno stopiranje servisa
+- u root folderu projekta pokrenuti komandu `docker-compose down`
 
 ## Dodatne napomene
 Docker image-i mogu da se pokrenu i iz Docker Desktop aplikacije tako sto odete na tab `Images` or `Containtars` i u koloni `Actions` ih pokrenete 
