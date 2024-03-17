@@ -24,4 +24,26 @@ public class Listing {
     private double low;
     private double change;
     private Integer volume;
+
+    public Listing(
+            String symbol,
+            String description,
+            String exchange,
+            Long lastRefresh,
+            double price,
+            double high,
+            double low,
+            double change,
+            Integer volume
+    ) {
+        this.symbol = symbol;
+        this.description = description;
+        this.exchange = exchange;
+        this.lastRefresh = lastRefresh;
+        this.price = price;
+        this.high = high;
+        this.low = low;
+        this.change = change;
+        this.volume = volume;
+    }
 }
