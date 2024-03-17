@@ -1,5 +1,6 @@
 package rs.edu.raf.IAMService.data.entites;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
@@ -15,7 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Agent extends User {
 
+    @Column(name = "_limit", columnDefinition = "DECIMAL(38, 2)")
     private BigDecimal limit;
+
+    @Column(name = "left_of_limit", columnDefinition = "DECIMAL(38, 2)")
     private BigDecimal leftOfLimit;
 
     public Agent(
