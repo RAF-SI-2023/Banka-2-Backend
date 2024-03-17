@@ -120,7 +120,7 @@ class PasswordChangeTest {
 
         when(changedPasswordTokenUtil.generateToken(any(), anyString())).thenReturn(passwordChangeTokenDto);
         // Test
-        ResponseEntity<PasswordChangeTokenDto> responseEntity = userController.InitiatesChangePassword(loginDto);
+        ResponseEntity<PasswordChangeTokenDto> responseEntity = userController.initiatesChangePassword(loginDto);
 
 
         // Verification
