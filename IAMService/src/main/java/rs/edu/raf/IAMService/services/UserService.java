@@ -75,4 +75,5 @@ public interface UserService extends UserDetailsService {
     UserDto updateUser(UserDto userDto);
 
 
+    void createAdmin(User adminUser);
 }

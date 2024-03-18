@@ -151,6 +151,11 @@ public class UserServiceImpl implements UserService {
         return checkInstance(userRepository.save(user));
     }
 
+    @Override
+    public void createAdmin(User adminUser) {
+        userRepository.save(adminUser);
+    }
+
     public UserDto checkInstance(User user) {
 
         if (user instanceof Employee)
