@@ -73,7 +73,4 @@ public interface UserService extends UserDetailsService {
      * @return UserDto - user that was updated
      */
     UserDto updateUser(UserDto userDto);
-
-
-    void createAdmin(User adminUser);
 }

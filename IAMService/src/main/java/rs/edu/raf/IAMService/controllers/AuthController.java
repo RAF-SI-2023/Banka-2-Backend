@@ -26,30 +26,11 @@ public class AuthController {
     private final AuthenticationProvider authenticationProvider;
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder encoder;
-    private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
 
     public AuthController(AuthenticationProvider authenticationProvider, UserService userService, JwtUtil jwtUtil, PasswordEncoder encoder, UserMapper userMapper, RoleService roleService, RoleRepository roleRepository, RoleMapper roleMapper) {
         this.authenticationProvider = authenticationProvider;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
-        this.encoder = encoder;
-        this.roleRepository = roleRepository;
-        this.roleMapper = roleMapper;
-    }
-
-    @GetMapping("/create-admin")
-    public ResponseEntity<?> createAdmin() {
-        User adminUser = new User();
-        adminUser.setEmail("admin@raf.rs");
-        adminUser.setUsername("admin@raf.rs");
-        adminUser.setPassword(encoder.encode("admin"));
-        adminUser.setRole(
-                roleRepository.findByRoleType(RoleType.ADMIN).get()
-        );
-        userService.createAdmin(adminUser);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
