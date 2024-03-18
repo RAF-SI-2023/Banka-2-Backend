@@ -75,4 +75,8 @@ public interface UserService extends UserDetailsService {
     UserDto updateUser(UserDto userDto);
 
 
+    void PasswordResetsendToQueue(String email,String urlLink);
+
+
+
 }
