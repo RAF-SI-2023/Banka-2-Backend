@@ -84,6 +84,8 @@ class PasswordChangeTest {
         Role role = new Role(RoleType.USER);
 
 
+
+
         User user1 = new User();
         user1.setUsername("lol");
         user1.setPassword(passwordEncoder.encode("lol"));
@@ -113,6 +115,7 @@ class PasswordChangeTest {
         passwordChangeTokenDto.setUrlLink("http://localhost:8000/api/users/changePasswordSubmit/");
         passwordChangeTokenDto.setToken("token");
         passwordChangeTokenDto.setExpireTime(1000L);
+
 
 
         when(changedPasswordTokenUtil.generateToken(any(), anyString())).thenReturn(passwordChangeTokenDto);
@@ -252,10 +255,13 @@ class PasswordChangeTest {
         claims.put("email", email);
 
 
+
+
         when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
         when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
         when(passwordValidator.isValid(newPassword)).thenReturn(true);
         when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+
 
 
         when(request.getHeader("authorization")).thenReturn("Bearer " + token);
@@ -273,7 +279,6 @@ class PasswordChangeTest {
         assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
 
     }
-
     @Test
     public void testSamePassword() {
         String newPassword = "lol";
@@ -302,11 +307,13 @@ class PasswordChangeTest {
         claims.put("email", email);
 
 
+
         when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
 
         when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(true);
         when(passwordValidator.isValid(newPassword)).thenReturn(true);
         when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+
 
 
         when(request.getHeader("authorization")).thenReturn("Bearer " + token);
@@ -353,11 +360,13 @@ class PasswordChangeTest {
         claims.put("email", email);
 
 
+
         when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
 
         when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(true);
         when(passwordValidator.isValid(newPassword)).thenReturn(false);
         when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(false);
+
 
 
         when(request.getHeader("authorization")).thenReturn("Bearer " + token);
@@ -404,11 +413,14 @@ class PasswordChangeTest {
         claims.put("email", email);
 
 
+
+
         when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
 
         when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
         when(passwordValidator.isValid(newPassword)).thenReturn(true);
         when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(false);
+
 
 
         when(request.getHeader("authorization")).thenReturn("Bearer " + token);

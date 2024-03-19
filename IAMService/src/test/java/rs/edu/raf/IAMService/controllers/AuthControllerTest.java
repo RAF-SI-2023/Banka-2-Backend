@@ -73,8 +73,7 @@ class AuthControllerTest {
         // Setup
         LoginDto loginRequest = new LoginDto("wrong@example.com", "wrongpassword");
         when(authenticationProvider.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new AuthenticationException("Bad credentials") {
-                });
+                .thenThrow(new AuthenticationException("Bad credentials") {});
 
         // Act
         ResponseEntity<?> response = authController.login(loginRequest);

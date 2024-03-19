@@ -17,17 +17,12 @@ import java.util.Optional;
 public interface UserService extends UserDetailsService {
 
     UserDto findById(Long id);
-
     UserDto findByEmail(String email);
-
     PrivateClientDto createPrivateClient(PrivateClientDto privateClientDtoDto);
-
     CorporateClientDto createCorporateClient(CorporateClientDto corporateClientDto);
-
     Long passwordActivation(String clientId, String password);
 
     EmployeeDto createEmployee(EmployeeDto employeeDto);
-
     EmployeeDto activateEmployee(String email, String password);
 
     User employeeActivation(int id);
@@ -45,7 +40,7 @@ public interface UserService extends UserDetailsService {
 
     void deleteAndSetUserPermissions(Long id, List<Permission> permissionList);
 
-    void sendToQueue(String email, String urlLink);
+    void sendToQueue(String email,String urlLink);
 
     /**
      * Updates the UserEntity, but should be only used for updating passwords,activation and such. For regular use

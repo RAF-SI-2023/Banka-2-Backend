@@ -6,7 +6,6 @@ import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.concurrent.TimeUnit;
 
 public class ChangedPasswordTokenUtilTest {

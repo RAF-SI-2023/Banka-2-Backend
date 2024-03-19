@@ -2,7 +2,6 @@ package rs.edu.raf.IAMService.utils;
 
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;

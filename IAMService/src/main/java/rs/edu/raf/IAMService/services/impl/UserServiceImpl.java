@@ -80,14 +80,14 @@ public class UserServiceImpl implements UserService {
         return checkInstance(user);
     }
 
-    public User employeeActivation(int id) {
+    public User employeeActivation(int id){
         Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(true);
         return updateEntity(employee);
     }
 
     @Override
-    public User employeeDeactivation(int id) {
+    public User employeeDeactivation(int id){
         Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(false);
         return updateEntity(employee);
@@ -101,19 +101,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer deleteUserByEmail(String email) {
-        if (SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")) {
+        if(SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")){
             return userRepository.removeUserByEmail(email);
         }
-        if (SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE")) {
+        if(SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE")) {
             Optional<User> userOptional = userRepository.findByEmail(email);
-            if (userOptional.isPresent()) {
+            if(userOptional.isPresent()){
                 User user = userOptional.get();
-                if (user.getRole().getRoleType() == RoleType.USER) {
+                if(user.getRole().getRoleType() == RoleType.USER){
                     return userRepository.removeUserByEmail(email);
                 }
             }
         }
-        if (SpringSecurityUtil.hasRoleRole("ROLE_USER")) {
+        if(SpringSecurityUtil.hasRoleRole("ROLE_USER")) {
             if (SpringSecurityUtil.getPrincipalEmail().equals(email)) {
                 return userRepository.removeUserByEmail(email);
             }
