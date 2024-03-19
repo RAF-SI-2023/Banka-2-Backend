@@ -32,6 +32,16 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public CompanyDto getCompanyByPib(Long pib) {
+        Optional<Company> company = companyRepository.findByPib(pib);
+        if(company.isPresent()){
+            return companyMapper.companyToCompanyDto(company.get());
+        }else{
+            throw new CompanyNotFoundException("Company with pib " + pib + " not found");
+        }
+    }
+
+    @Override
     public CompanyDto createCompany(CompanyDto companyDto) {
         Company company = companyMapper.companyDtoToCompany(companyDto);
         company = companyRepository.save(company);
