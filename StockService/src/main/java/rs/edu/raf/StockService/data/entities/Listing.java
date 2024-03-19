@@ -19,10 +19,10 @@ public class Listing {
     private String description;
     private String exchange;
     private Long lastRefresh;
-    private double price;
-    private double high;
-    private double low;
-    private double change;
+    private Double price;
+    private Double high;
+    private Double low;
+    private Double change;
     private Integer volume;
 
     public Listing(
