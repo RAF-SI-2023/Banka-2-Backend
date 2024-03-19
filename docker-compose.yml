@@ -27,6 +27,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5435:5432"
+
   stock-db:
     image: postgres
     container_name: stock-db
@@ -35,6 +36,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5436:5432"
+
   stock-redis:
     image: redis
     expose:
@@ -85,6 +87,7 @@ services:
     depends_on:
       - notification-db
       - rabbitmq
+
   stock-service:
     build: ./StockService
     container_name: stock-service
