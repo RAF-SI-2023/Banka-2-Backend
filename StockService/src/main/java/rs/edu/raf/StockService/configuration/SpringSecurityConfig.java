@@ -8,10 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

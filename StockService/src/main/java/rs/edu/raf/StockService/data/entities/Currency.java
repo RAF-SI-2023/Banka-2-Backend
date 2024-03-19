@@ -8,13 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-public class Currency {
+public class Currency implements Serializable {
     @Id
     @GeneratedValue
     private long id;
@@ -29,6 +31,14 @@ public class Currency {
     public Currency(String currencyName, String currencyCode) {
         this.currencyName = currencyName;
         this.currencyCode = currencyCode;
+    }
+
+    public Currency(String currencyName, String currencyCode, String currencySymbol, String currencyPolity) {
+        this.currencyName = currencyName;
+        this.currencyCode = currencyCode;
+        this.currencySymbol = currencySymbol;
+        this.currencyPolity = currencyPolity;
+        this.inflationList = new ArrayList<>();
     }
 
     public Currency(String currencyName, String currencyCode, String currencySymbol, String currencyPolity, List<CurrencyInflation> inflationList) {

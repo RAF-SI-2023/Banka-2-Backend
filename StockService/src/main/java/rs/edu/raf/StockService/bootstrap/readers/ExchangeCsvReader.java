@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class ExchangeCsvReader {
+    //  private static final String FILE_PATH = "StockService/src/main/resources/csvs/exchanges.csv";
     private BufferedReader reader;
     private Resource resource;
 
     public ExchangeCsvReader(ResourceLoader resourceLoader) {
-        this.resource = resourceLoader.getResource("classpath:csvs/exchanges.csv");;
+        resource = resourceLoader.getResource("classpath:csvs/exchanges.csv");
     }
 
     public void setReader(BufferedReader reader) {

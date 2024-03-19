@@ -2,9 +2,7 @@ package rs.edu.raf.StockService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.core.io.ResourceLoader;
 import rs.edu.raf.StockService.bootstrap.readers.ExchangeCsvReader;
 import rs.edu.raf.StockService.data.entities.Exchange;
 
@@ -22,7 +20,7 @@ public class ExchangeCSVReaderTests {
 
     @BeforeEach
     void setUp() {
-        exchangeCsvReader = new ExchangeCsvReader(Mockito.mock(ResourceLoader.class));
+        exchangeCsvReader = new ExchangeCsvReader(mock(org.springframework.core.io.ResourceLoader.class));
     }
 
     @Test
