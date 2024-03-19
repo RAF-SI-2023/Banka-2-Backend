@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import rs.edu.raf.IAMService.data.dto.CompanyDto;
 import rs.edu.raf.IAMService.services.CompanyService;
 
 @RestController
@@ -23,5 +25,12 @@ public class CompanyController {
         }
     }
 
-
+    @PutMapping("/update-company")
+    public ResponseEntity<?> updateCompany(@RequestBody CompanyDto companyDto){
+        try {
+            return ResponseEntity.ok(companyService.updateCompany(companyDto));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

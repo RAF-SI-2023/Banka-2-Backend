@@ -1,6 +1,8 @@
 package rs.edu.raf.IAMService.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
 import rs.edu.raf.IAMService.data.entites.Company;
 import rs.edu.raf.IAMService.exceptions.CompanyNotFoundException;
@@ -28,6 +30,15 @@ public class CompanyServiceImpl implements CompanyService {
             throw new CompanyNotFoundException("Company with id " + id + " not found");
         }
 
+    }
+
+    public CompanyDto updateCompany(CompanyDto companyDto){
+        if (!companyRepository.findById(companyDto.getId()).isPresent())
+            throw new CompanyNotFoundException("Company with id " + companyDto.getId() + " not found");
+        Company company = companyMapper.companyDtoToCompany(companyDto);
+
+        // save will not modify non updatable attributes and will return correct entity
+        return companyMapper.companyToCompanyDto(companyRepository.save(company));
     }
 
 }
