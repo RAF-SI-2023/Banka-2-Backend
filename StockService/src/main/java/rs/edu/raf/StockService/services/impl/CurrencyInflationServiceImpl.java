@@ -1,5 +1,6 @@
 package rs.edu.raf.StockService.services.impl;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 import rs.edu.raf.StockService.repositories.CurrencyInflationRepository;
@@ -20,10 +21,12 @@ public class CurrencyInflationServiceImpl implements CurrencyInflationService {
         this.currencyInflationRepository = currencyInflationRepository;
     }
 
+    @Cacheable(value = "currencyInflationId", key = "#currencyId")
     public List<CurrencyInflation> findInflationByCurrencyId(long currencyId) {
         return currencyInflationRepository.findByCurrencyId(currencyId).orElse(null);
     }
 
+    @Cacheable(value = "currencyInflationIdAndYear", key = "#currencyId && #year")
     public CurrencyInflation findInflationByCurrencyIdAndYear(long currencyId, long year) {
         return currencyInflationRepository.findByCurrencyIdAndYear(currencyId, year).orElse(null);
     }

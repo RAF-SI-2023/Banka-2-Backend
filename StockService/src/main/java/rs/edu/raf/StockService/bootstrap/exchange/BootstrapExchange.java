@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.bootstrap.readers.ExchangeCsvReader;
 import rs.edu.raf.StockService.data.entities.Exchange;
@@ -16,15 +17,17 @@ public class BootstrapExchange implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapExchange.class);
     @Autowired
     private final InMemoryExchangeServiceImpl exchangeService;
+    private final ResourceLoader resourceLoader;
 
-    public BootstrapExchange(InMemoryExchangeServiceImpl exchangeService) {
+    public BootstrapExchange(InMemoryExchangeServiceImpl exchangeService, ResourceLoader resourceLoader) {
         this.exchangeService = exchangeService;
+        this.resourceLoader = resourceLoader;
     }
 
     @Override
     public void run(String... args) throws Exception {
         logger.info("DATA LOADING IN PROGRESS...");
-        ExchangeCsvReader exchangeCsvReader = new ExchangeCsvReader();
+        ExchangeCsvReader exchangeCsvReader = new ExchangeCsvReader(resourceLoader);
         List<Exchange> exchanges = exchangeCsvReader.loadExchangeCsv();
         exchangeService.setExchangeList(exchanges);
         logger.info("DATA LOADING FINISHED...");

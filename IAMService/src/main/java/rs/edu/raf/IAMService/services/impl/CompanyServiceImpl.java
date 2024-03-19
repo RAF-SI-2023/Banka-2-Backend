@@ -10,6 +10,7 @@ import rs.edu.raf.IAMService.mapper.CompanyMapper;
 import rs.edu.raf.IAMService.repositories.CompanyRepository;
 import rs.edu.raf.IAMService.services.CompanyService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,20 @@ public class CompanyServiceImpl implements CompanyService {
             throw new CompanyNotFoundException("Company with id " + id + " not found");
         }
 
+    }
+
+    @Override
+    public CompanyDto createCompany(CompanyDto companyDto) {
+        Company company = companyMapper.companyDtoToCompany(companyDto);
+        company = companyRepository.save(company);
+        return companyMapper.companyToCompanyDto(company);
+    }
+
+    @Override
+    public List<CompanyDto> findAllCompanies() {
+        return companyMapper.companiesToCompanyDtos(
+                companyRepository.findAll()
+        );
     }
 
     public CompanyDto updateCompany(CompanyDto companyDto){
