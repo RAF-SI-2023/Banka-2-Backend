@@ -7,22 +7,15 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.bootstrap.readers.CurrencyCsvReader;
-import rs.edu.raf.StockService.data.entities.Currency;
-import rs.edu.raf.StockService.data.entities.CurrencyInflation;
-import rs.edu.raf.StockService.data.entities.Option;
+import rs.edu.raf.StockService.data.entities.*;
 import rs.edu.raf.StockService.data.enums.OptionType;
-import rs.edu.raf.StockService.repositories.CurrencyInflationRepository;
-import rs.edu.raf.StockService.repositories.CurrencyRepository;
-import rs.edu.raf.StockService.repositories.OptionRepository;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyInflationServiceImpl;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
+import rs.edu.raf.StockService.repositories.*;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class BootstrapData implements CommandLineRunner {
@@ -45,13 +38,19 @@ public class BootstrapData implements CommandLineRunner {
 
     private final OptionRepository optionRepository;
 
+    private final StockRepository stockRepository;
+
+    private final ForexRepository forexRepository;
+
     public BootstrapData(CurrencyRepository currencyRepository,
                          CurrencyInflationRepository currencyInflationRepository,
                          RedisTemplate<String, Currency> redisTemplate,
                          RedisTemplate<String, CurrencyInflation> redisCurrencyInflation,
                          ResourceLoader resourceLoader,
                          OptionServiceImpl optionServiceImpl,
-                         OptionRepository optionRepository) {
+                         OptionRepository optionRepository,
+                         StockRepository stockRepository,
+                         ForexRepository forexRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyInflationRepository = currencyInflationRepository;
         this.resourceLoader = resourceLoader;
@@ -59,6 +58,8 @@ public class BootstrapData implements CommandLineRunner {
         this.redisCurrencyInflation = redisCurrencyInflation;
         this.optionServiceImpl = optionServiceImpl;
         this.optionRepository = optionRepository;
+        this.stockRepository = stockRepository;
+        this.forexRepository = forexRepository;
     }
 
     /**
@@ -91,13 +92,13 @@ public class BootstrapData implements CommandLineRunner {
         LocalDate currentDate = LocalDate.now();
         LocalDateTime localDateTime = currentDate.atStartOfDay();
         long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        for (int i = 1; i <=3 ; i++) {
+        for (int i = 1; i <= 3; i++) {
             Option option = new Option();
             option.setStockListing("STOCK" + i);
             option.setOptionType(OptionType.PUT);
             option.setStrikePrice("100" + i);
             option.setImpliedVolatility("420" + i);
-            option.setOpenInterest(120+"i");
+            option.setOpenInterest(120 + "i");
             option.setSettlementDate(milliseconds);
 
             optionRepository.save(option);
@@ -108,9 +109,41 @@ public class BootstrapData implements CommandLineRunner {
         option.setOptionType(OptionType.PUT);
         option.setStrikePrice("100" + 1);
         option.setImpliedVolatility("420" + 1);
-        option.setOpenInterest(120+"i");
+        option.setOpenInterest(120 + "i");
         option.setSettlementDate(milliseconds);
         optionRepository.save(option);
+
+        for (int i = 0; i < 10; i++) {
+            Forex forex = new Forex();
+            forex.setSymbol("forex" + i);
+            forex.setDescription("description" + i);
+            forex.setExchange("exchange" + i);
+            forex.setLastRefresh((long) i);
+            forex.setPrice((double) i);
+            forex.setHigh((double) i);
+            forex.setLow((double) i);
+            forex.setChange((double) i);
+            forex.setVolume(i);
+            forex.setBaseCurrency("base" + i);
+            forex.setQuoteCurrency("quote" + i);
+            forexRepository.save(forex);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            Stock stock = new Stock();
+            stock.setSymbol("stock" + i);
+            stock.setDescription("description" + i);
+            stock.setExchange("exchange" + i);
+            stock.setLastRefresh((long) i);
+            stock.setPrice((double) i);
+            stock.setHigh((double) i);
+            stock.setLow((double) i);
+            stock.setChange((double) i);
+            stock.setVolume(i);
+            stock.setShares(i);
+            stock.setYield((double) i);
+            stockRepository.save(stock);
+        }
         logger.info("DATA LOADING FINISHED...");
     }
 
