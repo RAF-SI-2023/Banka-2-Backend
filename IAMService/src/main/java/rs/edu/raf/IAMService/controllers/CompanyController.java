@@ -40,4 +40,10 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/delete-company-by-id/{id}")
+    public ResponseEntity<?> deleteCompanyById(@PathVariable Long id) {
+        companyService.deleteCompanyById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
