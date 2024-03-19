@@ -32,6 +32,15 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/find-company-by-pib/{pib}")
+    public ResponseEntity<?> findCompanyByPib(@PathVariable Long pib){
+        try{
+            return ResponseEntity.ok(companyService.getCompanyByPib(pib));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createCompany(@RequestBody CompanyDto companyDto) {
         try {

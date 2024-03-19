@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface CompanyService {
     CompanyDto getCompanyById(Long id);
 
+    CompanyDto getCompanyByPib(Long pib);
+
     CompanyDto createCompany(CompanyDto companyDto);
 
     List<CompanyDto> findAllCompanies();
