@@ -27,6 +27,24 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5435:5432"
+  stock-db:
+    image: postgres
+    container_name: stock-db
+    environment:
+      POSTGRES_DB: StockServiceDB
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5436:5432"
+  stock-redis:
+    image: redis
+    expose:
+      - "6379"
+    container_name: stock-redis
+    environment:
+      REDIS_HOST_AUTH_METHOD: trust
+      ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "6379:6379"
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -67,3 +85,15 @@ services:
     depends_on:
       - notification-db
       - rabbitmq
+  stock-service:
+    build: ./StockService
+    container_name: stock-service
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stock-db:5432/StockServiceDB
+      - SPRING_REDIS_HOST=stock-redis
+    depends_on:
+      - stock-db
+      - rabbitmq
+      - stock-redis

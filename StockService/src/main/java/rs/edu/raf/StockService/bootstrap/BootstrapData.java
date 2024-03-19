@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.bootstrap.readers.CurrencyCsvReader;
 import rs.edu.raf.StockService.data.entities.Currency;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BootstrapData implements CommandLineRunner {
@@ -31,10 +33,13 @@ public class BootstrapData implements CommandLineRunner {
 
     private final CurrencyInflationRepository currencyInflationRepository;
 
-    private final InMemoryCurrencyServiceImpl currencyService;
-
-    private final InMemoryCurrencyInflationServiceImpl currencyInflationService;
     private final ResourceLoader resourceLoader;
+    /**
+     * za redis, ne koristiti ovde najverovatnije
+     */
+    private final RedisTemplate<String, Currency> redisCurrency;
+    private final RedisTemplate<String, CurrencyInflation> redisCurrencyInflation;
+
 
     private final OptionServiceImpl optionServiceImpl;
 
@@ -42,13 +47,16 @@ public class BootstrapData implements CommandLineRunner {
 
     public BootstrapData(CurrencyRepository currencyRepository,
                          CurrencyInflationRepository currencyInflationRepository,
-                         InMemoryCurrencyServiceImpl currencyService,
-                         InMemoryCurrencyInflationServiceImpl currencyInflationService, ResourceLoader resourceLoader, OptionServiceImpl optionServiceImpl, OptionRepository optionRepository) {
+                         RedisTemplate<String, Currency> redisTemplate,
+                         RedisTemplate<String, CurrencyInflation> redisCurrencyInflation,
+                         ResourceLoader resourceLoader,
+                         OptionServiceImpl optionServiceImpl,
+                         OptionRepository optionRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyInflationRepository = currencyInflationRepository;
-        this.currencyService = currencyService;
-        this.currencyInflationService = currencyInflationService;
         this.resourceLoader = resourceLoader;
+        this.redisCurrency = redisTemplate;
+        this.redisCurrencyInflation = redisCurrencyInflation;
         this.optionServiceImpl = optionServiceImpl;
         this.optionRepository = optionRepository;
     }
@@ -60,13 +68,25 @@ public class BootstrapData implements CommandLineRunner {
     public void run(String... args) {
         logger.info("DATA LOADING IN PROGRESS...");
         CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(resourceLoader);
-        List<Currency> currencyList = currencyCsvReader.loadCurrencyData();
-        List<CurrencyInflation> currencyInflationList = currencyCsvReader.pullCurrencyInflationData(currencyList);
-        /*
+        List<Currency> currencyList;
+        List<CurrencyInflation> currencyInflationList;
+         /* REDIS
+          cacheCurrencies(currencyList);
+        cacheCurrencyInflation(currencyInflationList);*/
+        if (currencyInflationRepository.count() == 0 || currencyRepository.count() == 0) {
+            currencyList = currencyCsvReader.loadCurrencyData();
+            currencyList = currencyRepository.saveAll(currencyList);
+            currencyInflationList = currencyCsvReader.pullCurrencyInflationData(currencyList);
+            currencyInflationRepository.saveAll(currencyInflationList);
+        }
+        /*za in memory
+        //  currencyService.setCurrencyList(currencyList);
+        //  currencyInflationService.setCurrencyInflationList(currencyInflationList);
+        */
+
+     /*
          * otkomentarisati ako cemo koristiti bazu, a ne in memory listu , slicno i za currencyInflation
          currencyRepository.saveAll(currencyList);    */
-        currencyService.setCurrencyList(currencyList);
-        currencyInflationService.setCurrencyInflationList(currencyInflationList);
 
         LocalDate currentDate = LocalDate.now();
         LocalDateTime localDateTime = currentDate.atStartOfDay();
@@ -93,4 +113,17 @@ public class BootstrapData implements CommandLineRunner {
         optionRepository.save(option);
         logger.info("DATA LOADING FINISHED...");
     }
+
+    //**Iskljucivo za redis, da se sve odmah kesira, nema nekog smisla.*/
+ /*   private void cacheCurrencies(List<Currency> currencies) {
+        for (Currency currency : currencies) {
+            redisCurrency.opsForValue().set("currency: code=" + currency.getCurrencyCode() + " id=" + currency.getId(), currency);
+        }
+    }
+
+    private void cacheCurrencyInflation(List<CurrencyInflation> currencyInflations) {
+        for (CurrencyInflation currencyInflation : currencyInflations) {
+            redisCurrencyInflation.opsForValue().set("currencyInflation:id=" + (currencyInflation.getId()) + " currencyId=" + currencyInflation.getCurrencyId(), currencyInflation);
+        }
+    }*/
 }

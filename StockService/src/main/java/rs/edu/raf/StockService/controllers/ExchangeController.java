@@ -11,7 +11,7 @@ import rs.edu.raf.StockService.services.ExchangeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/exchange")
+@RequestMapping("/api/exchange")
 public class ExchangeController {
 
     private final ExchangeService exchangeService;
