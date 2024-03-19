@@ -1,17 +1,14 @@
 package rs.edu.raf.IAMService.services.impl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
 import rs.edu.raf.IAMService.data.entites.Company;
 import rs.edu.raf.IAMService.mapper.CompanyMapper;
 import rs.edu.raf.IAMService.repositories.CompanyRepository;
-import rs.edu.raf.IAMService.services.CompanyService;
 
 import java.util.*;
 

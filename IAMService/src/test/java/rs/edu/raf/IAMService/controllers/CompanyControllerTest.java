@@ -169,7 +169,8 @@ class CompanyControllerTest {
     void updateCompany_CompanyExists() throws Exception{
         CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
 
-        doReturn(companyDto).when(companyService).updateCompany(companyDto);
+        //doReturn(companyDto).when(companyService).updateCompany(companyDto);
+        when(companyService.updateCompany(companyDto)).thenReturn(companyDto);
 
         mockMvc.perform(put("/api/companies/update-company")
             .contentType(MediaType.APPLICATION_JSON)
@@ -181,7 +182,7 @@ class CompanyControllerTest {
     void updateCompany_CompanyDoesNotExist_throwsException() throws Exception{
         CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
 
-        doThrow(CompanyNotFoundException.class).when(companyService).updateCompany(companyDto);
+        when(companyService.updateCompany(companyDto)).thenThrow(CompanyNotFoundException.class);
 
         mockMvc.perform(put("/api/companies/update-company")
             .contentType(MediaType.APPLICATION_JSON)

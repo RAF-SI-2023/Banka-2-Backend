@@ -47,13 +47,25 @@ public class CompanyServiceImpl implements CompanyService {
         );
     }
 
-    public CompanyDto updateCompany(CompanyDto companyDto){
-        if (!companyRepository.findById(companyDto.getId()).isPresent())
-            throw new CompanyNotFoundException("Company with id " + companyDto.getId() + " not found");
-        Company company = companyMapper.companyDtoToCompany(companyDto);
+    // Returns updated Company entity with only allowed modifications
+    private Company getModifiedCompanyEntity(Company companyToModify, CompanyDto companyDto){
+        companyToModify.setCompanyName(companyDto.getCompanyName());
+        companyToModify.setFaxNumber(companyDto.getFaxNumber());
+        companyToModify.setPhoneNumber(companyDto.getPhoneNumber());
+        companyToModify.setActivityCode(companyDto.getActivityCode());
 
-        // save will not modify non updatable attributes and will return correct entity
-        return companyMapper.companyToCompanyDto(companyRepository.save(company));
+        return companyToModify;
+    }
+
+    public CompanyDto updateCompany(CompanyDto companyDto){
+        var company = companyRepository.findById(companyDto.getId());
+        if (!company.isPresent())
+            throw new CompanyNotFoundException("Company with id " + companyDto.getId() + " not found");
+        
+        // save() return value may return incorrect data, so there is a need to call getModifiedCompanyEntity
+        // example: Identification Number should not be updated, save() will return UPDATED value here
+        Company modifiedCompany = getModifiedCompanyEntity(company.get(), companyDto);
+        return companyMapper.companyToCompanyDto(companyRepository.save(modifiedCompany));
     }
 
 }
