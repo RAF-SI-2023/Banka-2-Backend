@@ -10,9 +10,11 @@ import rs.edu.raf.IAMService.data.entites.Company;
 import rs.edu.raf.IAMService.mapper.CompanyMapper;
 import rs.edu.raf.IAMService.repositories.CompanyRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -100,6 +102,19 @@ class CompanyServiceImplTest {
         // Assert the result
         assertEquals(0, companyDtos.size()); // Assuming no companies are returned
     }
+
+    @Test
+    void deleteCompanieById_Success() {
+
+        Long id = Long.valueOf(1);
+
+        companyService.deleteCompanyById(id);
+
+        verify(companyRepository, times(1)).deleteById(id);
+
+    }
+
+
 
     @Test
     void updateCompany_CompanyExists(){

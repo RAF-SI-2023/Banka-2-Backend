@@ -255,6 +255,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void PasswordResetsendToQueue(String email, String urlLink) {
+        PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
+        passwordChangeDto.setEmail(email);
+        passwordChangeDto.setUrlLink(urlLink);
+        try {
+            String json = objectMapper.writeValueAsString(passwordChangeDto);
+            rabbitTemplate.convertAndSend("password-forgot", json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public User updateEntity(User user) {
         return this.userRepository.save(user);
     }

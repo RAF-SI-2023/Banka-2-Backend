@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.entites.PasswordChangeToken;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -27,6 +28,15 @@ public class ChangedPasswordTokenUtil {
 
 
         return new PasswordChangeTokenDto(Base64.getUrlEncoder().encodeToString(tokenBytes), System.currentTimeMillis(), userDto.getEmail(), baseURL + Base64.getUrlEncoder().encodeToString(tokenBytes));
+    }
+
+    public PasswordChangeToken generateTokenInDB(String email, String baseURL) {
+
+        SecureRandom random = new SecureRandom();
+        byte[] tokenBytes = new byte[tokenLength];
+        random.nextBytes(tokenBytes);
+
+        return new PasswordChangeToken(Base64.getUrlEncoder().encodeToString(tokenBytes), System.currentTimeMillis(), email, baseURL + Base64.getUrlEncoder().encodeToString(tokenBytes));
     }
 
     public boolean isTokenValid(PasswordChangeTokenDto passwordChangeTokenDto) {

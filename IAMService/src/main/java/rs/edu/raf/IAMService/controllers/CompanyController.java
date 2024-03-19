@@ -34,6 +34,15 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/find-company-by-pib/{pib}")
+    public ResponseEntity<?> findCompanyByPib(@PathVariable Long pib){
+        try{
+            return ResponseEntity.ok(companyService.getCompanyByPib(pib));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createCompany(@RequestBody CompanyDto companyDto) {
         try {
@@ -41,6 +50,12 @@ public class CompanyController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @DeleteMapping("/delete-company-by-id/{id}")
+    public ResponseEntity<?> deleteCompanyById(@PathVariable Long id) {
+        companyService.deleteCompanyById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PutMapping("/update-company")
