@@ -63,7 +63,6 @@ public class UserController {
 
     @PostMapping(path = "/password-change-initialization", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> initiatesChangePassword(@RequestBody LoginDto loginDto) {
-        System.out.println("Usao u password-change-initialization");
         String email = loginDto.getEmail();
         String password = loginDto.getPassword();
         Optional<User> userOptional = userService.findUserByEmail(email);

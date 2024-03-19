@@ -231,28 +231,6 @@ public class PasswordResetTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         // Add more assertions as needed
     }
-   /* @Test
-    void testResetPasswordSubmit_SamePassword() {
-        // Arrange
-        String token = "token";
-        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
-        passwordChangeTokenDto.setToken(token);
-        String newPassword = "user_current_password"; // Assuming the new password is the same as the current one
-        PasswordChangeToken passwordChangeToken = new PasswordChangeToken();
-        User user = new User();
-        user.setEmail(passwordChangeTokenDto.getEmail());
-        user.setPassword("user_current_password"); // Assuming the user's current password is "user_current_password"
-        when(passwordChangeTokenService.findByEmail(passwordChangeTokenDto.getEmail())).thenReturn(passwordChangeToken);
-        when(userService.findUserByEmail(passwordChangeTokenDto.getEmail())).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(newPassword, user.getPassword())).thenReturn(true);
-
-        // Act
-        ResponseEntity<?> response = userController.resetPasswordSubmit(token, new PasswordChangeTokenWithPasswordDto(newPassword, passwordChangeTokenDto));
-
-        // Assert
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Korisnik vec koristi tu sifru", response.getBody());
-    }*/
     @Test
     void testResetPasswordSubmit_SamePassword() {
         // Arrange
