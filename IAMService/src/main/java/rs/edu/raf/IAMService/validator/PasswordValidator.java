@@ -12,7 +12,7 @@ public class PasswordValidator {
     private static final int MAX_LENGTH = 32;
     private static final int MIN_DIGITS = 2;
 
-    public  boolean isValid(String password) {
+    public boolean isValid(String password) {
 
         if (password == null || password.length() < MIN_LENGTH || password.length() > MAX_LENGTH) {
             return false;

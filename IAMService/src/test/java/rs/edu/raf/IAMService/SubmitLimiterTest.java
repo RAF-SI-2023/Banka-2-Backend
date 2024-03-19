@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SubmitLimiterTest {
 
 
-
     @Test
     void testAllowRequestWithinLimit() {
         SubmitLimiter submitLimiter = new SubmitLimiter();
