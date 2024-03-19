@@ -39,7 +39,9 @@ public class CompanyController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-    }    @PutMapping("/update-company")
+    }
+    
+    @PutMapping("/update-company")
     public ResponseEntity<?> updateCompany(@RequestBody CompanyDto companyDto){
         try {
             return ResponseEntity.ok(companyService.updateCompany(companyDto));
