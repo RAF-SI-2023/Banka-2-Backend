@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface CompanyService {
@@ -15,4 +14,6 @@ public interface CompanyService {
     CompanyDto createCompany(CompanyDto companyDto);
 
     List<CompanyDto> findAllCompanies();
+
+    void deleteCompanyById(Long id);
 }
