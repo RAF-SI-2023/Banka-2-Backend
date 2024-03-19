@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.redis.core.RedisTemplate;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.repositories.CurrencyRepository;
 import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
@@ -12,15 +13,18 @@ import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class CurrencyServiceTests {
 
     @Mock
     private CurrencyRepository currencyRepository;
-
+    @Mock
+    private RedisTemplate<String, Currency> redisTemplate;
     @InjectMocks
     private CurrencyServiceImpl currencyService;
 
@@ -30,7 +34,7 @@ public class CurrencyServiceTests {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        inMemoryCurrencyService = new InMemoryCurrencyServiceImpl();
+        inMemoryCurrencyService = spy(new InMemoryCurrencyServiceImpl(redisTemplate));
         List<Currency> currencies = new ArrayList<>();
         currencies.add(new Currency(1L, "US Dollar", "USD", "$", "USA", null));
         currencies.add(new Currency(2L, "EURO", "EUR", "e", "EU", null));

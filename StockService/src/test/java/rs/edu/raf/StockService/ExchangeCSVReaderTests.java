@@ -20,7 +20,7 @@ public class ExchangeCSVReaderTests {
 
     @BeforeEach
     void setUp() {
-        exchangeCsvReader = new ExchangeCsvReader();
+        exchangeCsvReader = new ExchangeCsvReader(mock(org.springframework.core.io.ResourceLoader.class));
     }
 
     @Test

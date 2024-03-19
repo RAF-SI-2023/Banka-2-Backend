@@ -72,7 +72,7 @@ public class CurrencyCsvReader {
                 continue;
             }
             currency.setCurrencySymbol(currencySymbol);
-            currency.setId(i++);
+            //   currency.setId(i++);
         }
         return currencyList;
     }

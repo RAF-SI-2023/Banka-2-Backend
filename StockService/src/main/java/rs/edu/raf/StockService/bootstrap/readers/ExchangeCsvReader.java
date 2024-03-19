@@ -1,11 +1,10 @@
 package rs.edu.raf.StockService.bootstrap.readers;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import rs.edu.raf.StockService.data.entities.Exchange;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -13,8 +12,13 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class ExchangeCsvReader {
-    private static final String FILE_PATH = "StockService/src/main/resources/csvs/exchanges.csv";
+    //  private static final String FILE_PATH = "StockService/src/main/resources/csvs/exchanges.csv";
     private BufferedReader reader;
+    private Resource resource;
+
+    public ExchangeCsvReader(ResourceLoader resourceLoader) {
+        resource = resourceLoader.getResource("classpath:csvs/exchanges.csv");
+    }
 
     public void setReader(BufferedReader reader) {
         this.reader = reader;
@@ -25,8 +29,8 @@ public class ExchangeCsvReader {
             if (this.reader != null) {
                 return reader;
             }
-            reader = new BufferedReader(new FileReader(FILE_PATH));
-        } catch (FileNotFoundException e) {
+            reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return reader;
