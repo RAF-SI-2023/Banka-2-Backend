@@ -6,6 +6,7 @@ import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,5 +82,5 @@ public interface UserService extends UserDetailsService {
     void PasswordResetsendToQueue(String email,String urlLink);
 
 
-
+    User setAgentLimit(int id, BigDecimal limit);
 }

@@ -23,6 +23,7 @@ import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -367,5 +368,32 @@ class UserServiceImplTest {
 
         // Execution and Assertion
         assertThrows(EmailNotFoundException.class, () -> userService.activateEmployee(email, password));
+    }
+
+    @Test
+    public void setAgentLimitTest() {
+        // given
+        Agent agent = new Agent();
+        agent.setLimit(BigDecimal.ONE);
+        when(userRepository.findById(1)).thenReturn(Optional.of(agent));
+        when(userRepository.save(agent)).thenReturn(agent);
+
+        // when
+        userService.setAgentLimit(1, BigDecimal.TEN);
+
+        // then
+        assertEquals(agent.getLimit(), (BigDecimal.TEN));
+    }
+
+    @Test
+    public void setAgentLimit_doesNotExist_throwsException_Test() {
+        // given
+        Agent agent = new Agent();
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(NotFoundException.class,
+                () -> userService.setAgentLimit(1, BigDecimal.TEN));
+
     }
 }

@@ -24,6 +24,7 @@ import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -360,6 +361,18 @@ public class UserController {
     public ResponseEntity<Boolean> deactivateEmployee(@PathVariable int id) {
         try {
             userService.employeeDeactivation(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
+    }
+
+    @PutMapping(path = "/setAgentLimit/{id}")
+    @PreAuthorize(value = "hasRole('ROLE_SUPERVISOR')")
+    public ResponseEntity<Boolean> setAgentLimit(@PathVariable int id, @RequestBody BigDecimal limit) {
+        try {
+            userService.setAgentLimit(id, limit);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
         }
