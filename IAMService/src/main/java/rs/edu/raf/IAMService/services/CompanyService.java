@@ -16,4 +16,6 @@ public interface CompanyService {
     List<CompanyDto> findAllCompanies();
 
     void deleteCompanyById(Long id);
+
+    CompanyDto getCompanyByIdNumber(Integer idNumber);
 }
