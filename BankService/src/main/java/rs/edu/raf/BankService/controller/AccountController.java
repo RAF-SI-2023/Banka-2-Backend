@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.AccountNumberDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
+import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
 import rs.edu.raf.BankService.exception.UserAccountAlreadyAssociatedWithUserProfileException;
 import rs.edu.raf.BankService.service.AccountService;
 
@@ -44,14 +45,26 @@ public class AccountController {
 
     @PostMapping("/create-account/domestic")
     public ResponseEntity<?> createDomesticAccount(@RequestBody DomesticCurrencyAccountDto domesticCurrencyAccountDto) {
-
-        return ResponseEntity.badRequest().body("Account is not created.");
+        try {
+            DomesticCurrencyAccountDto createdAccount = accountService.createDomesticCurrencyAccount(domesticCurrencyAccountDto);
+            return ResponseEntity.ok(createdAccount);
+        } catch (AccountNumberAlreadyExistException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/create-account/foreign")
     public ResponseEntity<?> createForeignAccount(@RequestBody ForeignCurrencyAccountDto foreignCurrencyAccountDto) {
-
-        return ResponseEntity.badRequest().body("Account is not created.");
+        try {
+            ForeignCurrencyAccountDto createdAccount = accountService.createForeignCurrencyAccount(foreignCurrencyAccountDto);
+            return ResponseEntity.ok(createdAccount);
+        } catch (AccountNumberAlreadyExistException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 

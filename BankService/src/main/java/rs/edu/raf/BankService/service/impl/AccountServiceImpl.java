@@ -92,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
         if(account != null){
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
-        accountRepository.saveAndFlush(accountMapper.foreignAccountDtoToForeignAccount(dto));
+        accountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
         return dto;
     }
 
