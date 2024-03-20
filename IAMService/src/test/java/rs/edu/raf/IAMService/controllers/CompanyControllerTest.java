@@ -178,6 +178,7 @@ class CompanyControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
+  
     @Test
     void updateCompany_CompanyDoesNotExist_throwsException() throws Exception{
         CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
@@ -189,4 +190,45 @@ class CompanyControllerTest {
             .content(new ObjectMapper().writeValueAsString(companyDto)))
         .andExpect(status().isNotFound());
     } 
+
+    @Test
+    void findCompanyById_Success() throws Exception {
+        // Mocking data
+        CompanyDto company = new CompanyDto(
+                2L,
+                "Company B",
+                "Fax B",
+                "Phone B",
+                24680L,
+                24680,
+                24680,
+                24680,
+                "Address B"
+
+        );
+
+        when(companyService.getCompanyById(2L)).thenReturn(company);
+
+        // Perform GET request and validate response
+        mockMvc.perform(get("/api/companies/find-company-by-id/" + 2L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(9)) // Check if two companies are returned
+                .andExpect(jsonPath("$.companyName").value("Company B")); // Check the second company name
+    }
+
+    @Test
+    void findCompanyById_Exception() throws Exception {
+        // Mocking service to throw an exception
+        when(companyService.getCompanyById(1000L)).thenThrow(new RuntimeException("Some error occurred"));
+
+        // Perform GET request and validate response
+        mockMvc.perform(get("/api/companies/find-company-by-id/" + 1000L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andExpect(content().string("Some error occurred")); // Check the error message
+    }
 }
+

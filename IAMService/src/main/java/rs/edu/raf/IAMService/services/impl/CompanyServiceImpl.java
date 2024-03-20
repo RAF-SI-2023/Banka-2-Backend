@@ -62,7 +62,6 @@ public class CompanyServiceImpl implements CompanyService {
         companyRepository.deleteById(id);
     }
 
-
     // Returns updated Company entity with only allowed modifications
     private Company getModifiedCompanyEntity(Company companyToModify, CompanyDto companyDto){
         companyToModify.setCompanyName(companyDto.getCompanyName());
