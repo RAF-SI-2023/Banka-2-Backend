@@ -15,8 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+
+import java.util.Optional;
+import rs.edu.raf.IAMService.exceptions.CompanyNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class CompanyServiceImplTest {
@@ -99,6 +107,45 @@ class CompanyServiceImplTest {
     }
 
     @Test
+    void deleteCompanieById_Success() {
+
+        Long id = Long.valueOf(1);
+
+        companyService.deleteCompanyById(id);
+
+        verify(companyRepository, times(1)).deleteById(id);
+
+    }
+
+
+
+    @Test
+    void updateCompany_CompanyExists(){
+        Company company = new Company(1L, "name", "num", "num", "adr", 1L, 1, 1, 1);
+        CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
+
+        doReturn(Optional.of(company)).when(companyRepository).findById(1L);
+        doReturn(company).when(companyRepository).save(any());
+        doReturn(companyDto).when(companyMapper).companyToCompanyDto(company);
+
+        var res = companyService.updateCompany(companyDto);
+
+        assertEquals(company.getId(), res.getId());
+        verify(companyRepository).findById(anyLong());
+        verify(companyRepository).save(any());
+    }
+
+    @Test
+    void updateCompany_CompanyDoesNotExist_throwException(){
+        Company company = new Company(1L, "a", "a", "a", "a", 1L, 1, 1, 1);
+        CompanyDto companyDto = new CompanyDto(1L, "a", "a", "a", 1L, 1, 1, 1, "a");
+
+        doReturn(Optional.ofNullable(null)).when(companyRepository).findById(1L);
+
+        assertThrows(CompanyNotFoundException.class, () -> companyService.updateCompany(companyDto));
+        verify(companyRepository).findById(anyLong());
+    }
+  
     void getCompanyById_Success() {
         // Mocking data
         Optional<Company> company = Optional.of(new Company());

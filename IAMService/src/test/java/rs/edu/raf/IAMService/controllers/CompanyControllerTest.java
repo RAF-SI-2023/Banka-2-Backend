@@ -27,6 +27,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.mockito.Mockito.*;
+import rs.edu.raf.IAMService.exceptions.CompanyNotFoundException;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 class CompanyControllerTest {
 
@@ -159,6 +164,33 @@ class CompanyControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(content().string("Some error occurred")); // Check the error message
     }
+
+    @Test
+    void updateCompany_CompanyExists() throws Exception{
+        CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
+
+        //doReturn(companyDto).when(companyService).updateCompany(companyDto);
+        when(companyService.updateCompany(companyDto)).thenReturn(companyDto);
+
+        mockMvc.perform(put("/api/companies/update-company")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(companyDto)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+  
+    @Test
+    void updateCompany_CompanyDoesNotExist_throwsException() throws Exception{
+        CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
+
+        when(companyService.updateCompany(companyDto)).thenThrow(CompanyNotFoundException.class);
+
+        mockMvc.perform(put("/api/companies/update-company")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(companyDto)))
+        .andExpect(status().isNotFound());
+    } 
+
     @Test
     void findCompanyById_Success() throws Exception {
         // Mocking data
@@ -199,3 +231,4 @@ class CompanyControllerTest {
                 .andExpect(content().string("Some error occurred")); // Check the error message
     }
 }
+
