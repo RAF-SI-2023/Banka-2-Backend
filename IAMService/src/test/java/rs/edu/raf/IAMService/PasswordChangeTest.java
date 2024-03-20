@@ -79,13 +79,7 @@ class PasswordChangeTest {
 
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getServerPort()).thenReturn(port);
-
-
         Role role = new Role(RoleType.USER);
-
-
-
-
         User user1 = new User();
         user1.setUsername("lol");
         user1.setPassword(passwordEncoder.encode("lol"));
