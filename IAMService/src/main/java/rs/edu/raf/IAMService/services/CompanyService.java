@@ -6,4 +6,6 @@ import rs.edu.raf.IAMService.data.dto.CompanyDto;
 @Service
 public interface CompanyService {
     CompanyDto getCompanyById(Long id);
+
+    Integer deleteCompanyByPib(Long pib);
 }

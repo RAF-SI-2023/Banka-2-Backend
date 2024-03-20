@@ -27,7 +27,15 @@ public class CompanyServiceImpl implements CompanyService {
         } else {
             throw new CompanyNotFoundException("Company with id " + id + " not found");
         }
+    }
 
+    @Override
+    public Integer deleteCompanyByPib(Long pib) {
+        Long numberOfDeletedCompanies=companyRepository.deleteByPib(pib);
+        if(numberOfDeletedCompanies!=1){
+            throw new CompanyNotFoundException("Company with pib " + pib + "not found");
+        }
+        else return 1;
     }
 
 }

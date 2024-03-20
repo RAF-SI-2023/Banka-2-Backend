@@ -23,5 +23,14 @@ public class CompanyController {
         }
     }
 
+    @DeleteMapping("/delete/{pib}")
+    public ResponseEntity<?> deleteCompanyByPib(@PathVariable Long pib){
+        try{
+            return ResponseEntity.ok(companyService.deleteCompanyByPib(pib));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
 }

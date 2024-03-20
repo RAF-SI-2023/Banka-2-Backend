@@ -7,5 +7,5 @@ import rs.edu.raf.IAMService.data.entites.Company;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-
+    Long deleteByPib(Long pib);
 }
