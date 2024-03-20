@@ -7,6 +7,8 @@ import java.util.List;
 
 @Service
 public interface CompanyService {
+    void deleteCompanyByRegistryNumber(String registrationNumber);
+
     CompanyDto getCompanyById(Long id);
 
     CompanyDto getCompanyByPib(Long pib);
