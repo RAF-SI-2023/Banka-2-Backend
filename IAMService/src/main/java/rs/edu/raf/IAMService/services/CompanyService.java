@@ -8,6 +8,8 @@ import java.util.Optional;
 
 @Service
 public interface CompanyService {
+    void deleteCompanyByRegistryNumber(String registrationNumber);
+
     CompanyDto getCompanyById(Long id);
 
     CompanyDto createCompany(CompanyDto companyDto);

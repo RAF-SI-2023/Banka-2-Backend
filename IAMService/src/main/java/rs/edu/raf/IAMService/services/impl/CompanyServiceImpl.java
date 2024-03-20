@@ -21,6 +21,11 @@ public class CompanyServiceImpl implements CompanyService {
         this.companyMapper = companyMapper;
     }
 
+    @Override
+    public void deleteCompanyByRegistryNumber(String registrationNumber) {
+        companyRepository.deleteByregistryNumber(registrationNumber);
+    }
+
     public CompanyDto getCompanyById(Long id) {
         Optional<Company> company = companyRepository.findById(id);
         if (company.isPresent()) {
