@@ -2,6 +2,7 @@ package rs.edu.raf.BankService.service;
 
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.AccountNumberDto;
+import rs.edu.raf.BankService.data.dto.BusinessAccountDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
 import rs.edu.raf.BankService.exception.*;
@@ -20,5 +21,10 @@ public interface AccountService {
 
     ForeignCurrencyAccountDto createForeignCurrencyAccount(ForeignCurrencyAccountDto dto)
             throws AccountNumberAlreadyExistException;
+
+    BusinessAccountDto createBusinessAccount(BusinessAccountDto dto)
+            throws AccountNumberAlreadyExistException;
+
+
 
 }

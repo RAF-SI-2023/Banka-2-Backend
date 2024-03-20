@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.AccountNumberDto;
+import rs.edu.raf.BankService.data.dto.BusinessAccountDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
@@ -44,8 +45,7 @@ public class AccountController {
     @PostMapping("/create-account/domestic")
     public ResponseEntity<?> createDomesticAccount(@RequestBody DomesticCurrencyAccountDto domesticCurrencyAccountDto) {
         try {
-            DomesticCurrencyAccountDto createdAccount = accountService.createDomesticCurrencyAccount(domesticCurrencyAccountDto);
-            return ResponseEntity.ok(createdAccount);
+            return ResponseEntity.ok(accountService.createDomesticCurrencyAccount(domesticCurrencyAccountDto));
         } catch (AccountNumberAlreadyExistException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
@@ -56,8 +56,7 @@ public class AccountController {
     @PostMapping("/create-account/foreign")
     public ResponseEntity<?> createForeignAccount(@RequestBody ForeignCurrencyAccountDto foreignCurrencyAccountDto) {
         try {
-            ForeignCurrencyAccountDto createdAccount = accountService.createForeignCurrencyAccount(foreignCurrencyAccountDto);
-            return ResponseEntity.ok(createdAccount);
+            return ResponseEntity.ok(accountService.createForeignCurrencyAccount(foreignCurrencyAccountDto));
         } catch (AccountNumberAlreadyExistException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
@@ -65,6 +64,15 @@ public class AccountController {
         }
     }
 
-
+    @PostMapping("/create-account/business")
+    public ResponseEntity<?> createBusinessAccount(@RequestBody BusinessAccountDto businessAccountDto) {
+        try {
+            return ResponseEntity.ok(accountService.createBusinessAccount(businessAccountDto));
+        } catch (AccountNumberAlreadyExistException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
 }
