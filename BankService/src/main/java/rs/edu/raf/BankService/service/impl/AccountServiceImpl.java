@@ -6,10 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.bootstrap.BootstrapData;
-import rs.edu.raf.BankService.data.dto.AccountNumberDto;
-import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
-import rs.edu.raf.BankService.data.dto.EmailDto;
-import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
+import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Account;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
@@ -93,6 +90,16 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
+        return dto;
+    }
+
+    @Override
+    public BusinessAccountDto createBusinessAccount(BusinessAccountDto dto) throws AccountNumberAlreadyExistException {
+        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if(account != null){
+            throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
+        }
+        accountRepository.save(accountMapper.businessAccountDtoToBusinessAccount(dto));
         return dto;
     }
 
