@@ -34,7 +34,7 @@ public class CompanyController {
         }
     }
 
-    @DeleteMapping("/delete/{pib}")
+    @DeleteMapping("/delete-company-by-pib/{pib}")
     public ResponseEntity<?> deleteCompanyByPib(@PathVariable Long pib){
         try{
             return ResponseEntity.ok(companyService.deleteCompanyByPib(pib));
