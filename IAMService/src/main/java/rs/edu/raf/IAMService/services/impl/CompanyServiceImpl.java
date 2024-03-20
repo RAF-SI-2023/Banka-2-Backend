@@ -62,6 +62,16 @@ public class CompanyServiceImpl implements CompanyService {
         companyRepository.deleteById(id);
     }
 
+    @Override
+    public CompanyDto getCompanyByIdNumber(Integer idNumber) {
+        Optional<Company> company = companyRepository.findByIdentificationNumber(idNumber);
+        if(company.isPresent()){
+            return companyMapper.companyToCompanyDto(company.get());
+        }else{
+            throw new CompanyNotFoundException("Company with identification number " + idNumber+ " not found.");
+        }
+    }
+
     // Returns updated Company entity with only allowed modifications
     private Company getModifiedCompanyEntity(Company companyToModify, CompanyDto companyDto){
         companyToModify.setCompanyName(companyDto.getCompanyName());

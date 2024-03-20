@@ -57,6 +57,15 @@ public class CompanyController {
         companyService.deleteCompanyById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+  
+    @GetMapping("/find-company-by-id-number/{id}")
+    public ResponseEntity<?> findCompanyByIdNumber(@PathVariable Integer idNumber){
+        try {
+            return ResponseEntity.ok(companyService.getCompanyByIdNumber(idNumber));
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
     
     @PutMapping("/update-company")
     public ResponseEntity<?> updateCompany(@RequestBody CompanyDto companyDto){

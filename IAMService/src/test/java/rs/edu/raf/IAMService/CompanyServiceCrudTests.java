@@ -58,4 +58,32 @@ class CompanyServiceCrudTests {
 
         assertThrows(CompanyNotFoundException.class, () -> companyService.getCompanyByPib(companyPib));
     }
+
+    @Test
+    public void test_findByIdNumber_companyFound_returnsCompanyDto()
+    {
+        Integer companyIdNumber = 12345678;
+        Company company = new Company();
+        company.setIdentificationNumber(companyIdNumber);
+        company.setCompanyName("Test company");
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setIdentificationNumber(companyIdNumber);
+        companyDto.setCompanyName(company.getCompanyName());
+
+        when(companyRepository.findByIdentificationNumber(companyIdNumber)).thenReturn(Optional.of(company));
+        when(companyMapper.companyToCompanyDto(company)).thenReturn(companyDto);
+
+        CompanyDto companyDto1 = companyService.getCompanyByIdNumber(companyIdNumber);
+
+        assertEquals(company.getIdentificationNumber(), companyDto1.getIdentificationNumber());
+        assertEquals(company.getCompanyName(), companyDto1.getCompanyName());
+    }
+
+    @Test
+    public void test_findByIdNumber_companyNotFound_throwsCompanyNotFoundException(){
+        Integer companyIdNumber = 1234567;
+        when(companyRepository.findByIdentificationNumber(companyIdNumber)).thenReturn(Optional.empty());
+
+        assertThrows(CompanyNotFoundException.class, () -> companyService.getCompanyByIdNumber(companyIdNumber));
+    }
 }
