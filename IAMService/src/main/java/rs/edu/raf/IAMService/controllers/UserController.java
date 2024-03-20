@@ -60,6 +60,19 @@ public class UserController {
         }
     }
 
+    @PostMapping("/public/agent")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> createAgent(@RequestBody AgentDto agentDto) {
+        try {
+            AgentDto newAgentDto = userService.createAgent(agentDto);
+            return ResponseEntity.ok(newAgentDto.getId());
+        } catch (EmailTakenException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (MissingRoleException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
 
     @PostMapping(path = "/password-change-initialization", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<PasswordChangeTokenDto> initiatesChangePassword(@RequestBody LoginDto loginDto) {
