@@ -11,6 +11,7 @@ public interface CompanyService {
 
     CompanyDto getCompanyById(Long id);
 
+    Integer deleteCompanyByPib(Long pib);
     CompanyDto getCompanyByPib(Long pib);
 
     CompanyDto createCompany(CompanyDto companyDto);
@@ -22,5 +23,4 @@ public interface CompanyService {
     CompanyDto getCompanyByIdNumber(Integer idNumber);
 
     CompanyDto updateCompany(CompanyDto companyDto);
-
 }

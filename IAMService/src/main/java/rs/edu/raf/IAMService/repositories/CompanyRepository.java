@@ -8,6 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+
+    Long deleteByPib(Long pib);
     Integer deleteByregistryNumber(String registrationNumber);
     Optional<Company> findByPib(Long pib);
     Optional<Company> findByIdentificationNumber(Integer idNumber);
