@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
 import rs.edu.raf.IAMService.data.entites.Company;
+import rs.edu.raf.IAMService.exceptions.CompanyNotFoundException;
 import rs.edu.raf.IAMService.mapper.CompanyMapper;
 import rs.edu.raf.IAMService.repositories.CompanyRepository;
 
@@ -98,6 +99,43 @@ class CompanyServiceImplTest {
     }
 
     @Test
+    void getCompanyById_Success() {
+        // Mocking data
+        Optional<Company> company = Optional.of(new Company());
+        // Mocking repository findAll method
+        when(companyRepository.findById(2L)).thenReturn(company);
+
+        // Mocking mapper
+        when(companyMapper.companyToCompanyDto(company.get())).thenReturn(new CompanyDto());
+        // Call the service method
+        CompanyDto companyDto = companyService.getCompanyById(2L);
+        // Verify interactions
+        verify(companyRepository, times(1)).findById(2L);
+        verify(companyMapper, times(1)).companyToCompanyDto(company.get());
+
+        // Assert the result
+        assertNull(companyDto.getId());// Assuming no companies are returned
+    }
+
+    @Test
+    void getCompanyById_Exception() {
+        // Mocking data
+        Optional<Company> company = Optional.empty();
+        // Mocking repository findAll method
+        when(companyRepository.findById(2L)).thenReturn(company);
+
+        // Call the service method
+        Exception exception = assertThrows(CompanyNotFoundException.class, () -> {
+            CompanyDto companyDto = companyService.getCompanyById(2L);
+        });
+        String expectedMessage = "Company with id " + 2L + " not found";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+    }
+
+    @Test
     void deleteCompanieById_Success() {
 
         Long id = Long.valueOf(1);
@@ -107,6 +145,5 @@ class CompanyServiceImplTest {
         verify(companyRepository, times(1)).deleteById(id);
 
     }
-
 
 }
