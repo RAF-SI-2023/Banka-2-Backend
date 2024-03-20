@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.AccountNumberDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
+import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
 import rs.edu.raf.BankService.exception.UserAccountAlreadyAssociatedWithUserProfileException;
+import rs.edu.raf.BankService.exception.UserAccountInProcessOfBindingWithUserProfileException;
 import rs.edu.raf.BankService.service.AccountService;
 
 @RestController
@@ -24,23 +26,19 @@ public class AccountController {
     @PostMapping("/associate-profile-initialization")
     public ResponseEntity<?> login(@RequestBody AccountNumberDto accountNumberDto) {
         try {
-            boolean canAssociateProfile = accountService.userAccountUserProfileConnectionAttempt(accountNumberDto);
-            if(canAssociateProfile){
-                return ResponseEntity.ok(true);
-            }
-            return ResponseEntity.badRequest().body("Association is not possible.");
-        } catch (UserAccountAlreadyAssociatedWithUserProfileException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            return ResponseEntity.ok(accountService.userAccountUserProfileConnectionAttempt(accountNumberDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @PostMapping("/code-confirmation/{accountNumber}")
     public ResponseEntity<?> confirmActivationCode(@PathVariable String accountNumber, @RequestBody Integer code) {
-        boolean isConfirmed = accountService.confirmActivationCode(accountNumber, code);
-        if(isConfirmed){
-            return ResponseEntity.ok(true);
+        try {
+            return ResponseEntity.ok(accountService.confirmAcwtivationCode(accountNumber, code));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-        return ResponseEntity.badRequest().body("Code is not valid.");
     }
 
     @PostMapping("/create-account/domestic")
