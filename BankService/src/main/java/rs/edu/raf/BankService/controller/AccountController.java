@@ -35,7 +35,7 @@ public class AccountController {
     @PostMapping("/code-confirmation/{accountNumber}")
     public ResponseEntity<?> confirmActivationCode(@PathVariable String accountNumber, @RequestBody Integer code) {
         try {
-            return ResponseEntity.ok(accountService.confirmAcwtivationCode(accountNumber, code));
+            return ResponseEntity.ok(accountService.confirmActivationCode(accountNumber, code));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
