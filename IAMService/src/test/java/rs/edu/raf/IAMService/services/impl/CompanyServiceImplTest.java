@@ -14,17 +14,13 @@ import rs.edu.raf.IAMService.repositories.CompanyRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.util.Optional;
-import rs.edu.raf.IAMService.exceptions.CompanyNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class CompanyServiceImplTest {
@@ -107,7 +103,7 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void deleteCompanieById_Success() {
+    void deleteCompanyById_Success() {
 
         Long id = Long.valueOf(1);
 
@@ -179,17 +175,6 @@ class CompanyServiceImplTest {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
-
-    }
-
-    @Test
-    void deleteCompanieById_Success() {
-
-        Long id = Long.valueOf(1);
-
-        companyService.deleteCompanyById(id);
-
-        verify(companyRepository, times(1)).deleteById(id);
 
     }
 
