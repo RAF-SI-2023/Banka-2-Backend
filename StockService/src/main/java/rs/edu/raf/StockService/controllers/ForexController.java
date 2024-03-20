@@ -21,7 +21,7 @@ public class ForexController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Forex>> findAllExchanges() {
+    public ResponseEntity<List<Forex>> findAllForexes() {
         return ResponseEntity.ok(forexService.findAll());
     }
 

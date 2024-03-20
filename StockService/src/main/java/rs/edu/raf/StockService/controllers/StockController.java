@@ -21,7 +21,7 @@ public class StockController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Stock>> findAllExchanges() {
+    public ResponseEntity<List<Stock>> findAllStocks() {
         return ResponseEntity.ok(stockService.findAll());
     }
 
