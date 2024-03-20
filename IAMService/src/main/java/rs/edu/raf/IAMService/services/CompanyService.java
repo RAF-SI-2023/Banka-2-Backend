@@ -18,4 +18,7 @@ public interface CompanyService {
     void deleteCompanyById(Long id);
 
     CompanyDto getCompanyByIdNumber(Integer idNumber);
+
+    CompanyDto updateCompany(CompanyDto companyDto);
+
 }

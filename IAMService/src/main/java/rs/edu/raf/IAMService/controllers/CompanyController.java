@@ -1,6 +1,8 @@
 package rs.edu.raf.IAMService.controllers;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +57,7 @@ public class CompanyController {
         companyService.deleteCompanyById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+  
     @GetMapping("/find-company-by-id-number/{id}")
     public ResponseEntity<?> findCompanyByIdNumber(@PathVariable Integer idNumber){
         try {
@@ -64,4 +66,14 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    
+    @PutMapping("/update-company")
+    public ResponseEntity<?> updateCompany(@RequestBody CompanyDto companyDto){
+        try {
+            return ResponseEntity.ok(companyService.updateCompany(companyDto));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 }
