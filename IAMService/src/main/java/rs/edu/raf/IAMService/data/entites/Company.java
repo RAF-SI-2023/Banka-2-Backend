@@ -19,11 +19,11 @@ public class Company {
     private String faxNumber;
     private String phoneNumber;
     private String address;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private Long pib;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private Integer registryNumber;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private Integer identificationNumber; // matični broj
     private Integer activityCode; // 5 digit code (sifra delatnosti);
 

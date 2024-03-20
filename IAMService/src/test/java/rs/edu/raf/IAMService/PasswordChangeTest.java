@@ -1,26 +1,21 @@
 package rs.edu.raf.IAMService;
 
-import io.cucumber.java.Before;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
-import org.apache.catalina.filters.RateLimitFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rs.edu.raf.IAMService.controllers.UserController;
-import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
+import rs.edu.raf.IAMService.data.dto.LoginDto;
 import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenDto;
+import rs.edu.raf.IAMService.data.dto.PasswordChangeTokenWithPasswordDto;
 import rs.edu.raf.IAMService.data.dto.UserDto;
 import rs.edu.raf.IAMService.data.entites.Role;
 import rs.edu.raf.IAMService.data.entites.User;
@@ -33,8 +28,6 @@ import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import java.util.Optional;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -81,31 +74,35 @@ class PasswordChangeTest {
 
     @Test
     void testInitiatesChangePassword() {
-        String email = "test@example.com";
+        String email = "lol";
         int port = 8000;
 
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getServerPort()).thenReturn(port);
-
-
         Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("lol"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(null);
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setPassword("password");
+        user1.setId(1L);
 
-        UserDto userDto = new UserDto();
-        userDto.setUsername("lol");
-        userDto.setEmail("lol");
-        userDto.setAddress("lol");
-        userDto.setRole(null);
-        userDto.setPhone("lol");
-        userDto.setPermissions(null);
-        userDto.setDateOfBirth(null);
-        userDto.setRole(role.getRoleType());
-        userDto.setId(Long.valueOf(1));
-
+        LoginDto loginDto = new LoginDto();
+        loginDto.setEmail(email);
+        loginDto.setPassword("password");
         reset(submitLimiter);
 
         when(submitLimiter.allowRequest(anyString())).thenReturn(true);
 
-        when(userService.findByEmail(email)).thenReturn(userDto);
+        when(userService.findUserByEmail(email)).thenReturn(Optional.of(user1));
+
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 
         PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
         passwordChangeTokenDto.setEmail(email);
@@ -114,9 +111,10 @@ class PasswordChangeTest {
         passwordChangeTokenDto.setExpireTime(1000L);
 
 
+
         when(changedPasswordTokenUtil.generateToken(any(), anyString())).thenReturn(passwordChangeTokenDto);
         // Test
-        ResponseEntity<PasswordChangeTokenDto> responseEntity = userController.InitiatesChangePassword(email);
+        ResponseEntity<PasswordChangeTokenDto> responseEntity = userController.initiatesChangePassword(loginDto);
 
 
         // Verification
@@ -132,6 +130,7 @@ class PasswordChangeTest {
         String email = "lol";
         PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
         passwordChangeTokenDto.setEmail(email);
+        passwordChangeTokenDto.setToken(anyString());
 
         Role role = new Role(RoleType.USER);
         User user1 = new User();
@@ -163,13 +162,274 @@ class PasswordChangeTest {
         when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
 
         // Invoking the method
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        passwordChangeTokenWithPasswordDto.setNewPassword(newPassword);
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
 
 
-        //    ResponseEntity<?> responseEntity = userController.changePasswordSubmit(newPassword, passwordChangeTokenDto);
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(passwordChangeTokenDto.getToken(), passwordChangeTokenWithPasswordDto);
 
         // Verification
-        //  assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(userService).updateEntity(user1);
     }
 
+    @Test
+    public void testTokenMismatch() {
+        // Arrange
+
+        String validToken = "validToken";
+        String invalidToken = "invalidToken";
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setToken(validToken);
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
+
+        // Act
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(invalidToken, passwordChangeTokenWithPasswordDto);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Tokeni se ne poklapaju", responseEntity.getBody());
+    }
+
+    @Test
+    public void testUserNotFound() {
+        // Arrange
+        String email = "lol";
+        String validToken = "validToken";
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setToken(validToken);
+        passwordChangeTokenDto.setEmail("example@example.com");
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+        String token = "exampleToken";
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        when(userService.findUserByEmail(anyString())).thenReturn(Optional.empty());
+
+
+        // Act
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(validToken, passwordChangeTokenWithPasswordDto);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+
+    }
+
+    @Test
+    public void testUnauthorizedEmailChange() {
+        String newPassword = "Paaricefdsfghehe12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail("nestodrugo");
+        passwordChangeTokenDto.setToken(anyString());
+
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("lol"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(new Role(RoleType.ADMIN));
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+
+
+        when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        passwordChangeTokenWithPasswordDto.setNewPassword(newPassword);
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(passwordChangeTokenDto.getToken(), passwordChangeTokenWithPasswordDto);
+
+        // Verification
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+
+    }
+    @Test
+    public void testSamePassword() {
+        String newPassword = "lol";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail("lol");
+        passwordChangeTokenDto.setToken(anyString());
+
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("lol"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(new Role(RoleType.ADMIN));
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+
+        when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
+
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(true);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(true);
+
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        passwordChangeTokenWithPasswordDto.setNewPassword(newPassword);
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(passwordChangeTokenDto.getToken(), passwordChangeTokenWithPasswordDto);
+
+        // Verification
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+
+    }
+
+    @Test
+    public void testSamePasswordValidator() {
+        String newPassword = "Paaricefdsfghehe12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail("lol");
+        passwordChangeTokenDto.setToken(anyString());
+
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("lol"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(new Role(RoleType.ADMIN));
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+
+        when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
+
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(true);
+        when(passwordValidator.isValid(newPassword)).thenReturn(false);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(false);
+
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        passwordChangeTokenWithPasswordDto.setNewPassword(newPassword);
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(passwordChangeTokenDto.getToken(), passwordChangeTokenWithPasswordDto);
+
+        // Verification
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+
+    }
+
+    @Test
+    public void testSamePasswordTokenValidation() {
+        String newPassword = "Paaricefdsfghehe12";
+        String email = "lol";
+        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto();
+        passwordChangeTokenDto.setEmail("lol");
+        passwordChangeTokenDto.setToken(anyString());
+
+
+        Role role = new Role(RoleType.USER);
+        User user1 = new User();
+        user1.setUsername("lol");
+        user1.setPassword(passwordEncoder.encode("lol"));
+        user1.setEmail("lol");
+        user1.setAddress("lol");
+        user1.setRole(new Role(RoleType.ADMIN));
+        user1.setPhone("lol");
+        user1.setPermissions(null);
+        user1.setDateOfBirth(null);
+        user1.setRole(role);
+        user1.setId(1L);
+
+
+        String token = "exampleToken";
+        Claims claims = new DefaultClaims();
+        claims.put("email", email);
+
+
+
+
+        when(userService.findUserByEmail(anyString())).thenReturn(Optional.of(user1));
+
+        when(passwordEncoder.matches(newPassword, user1.getPassword())).thenReturn(false);
+        when(passwordValidator.isValid(newPassword)).thenReturn(true);
+        when(changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)).thenReturn(false);
+
+
+
+        when(request.getHeader("authorization")).thenReturn("Bearer " + token);
+        when(jwtUtil.extractAllClaims(token)).thenReturn(claims);
+
+        // Invoking the method
+        PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto = new PasswordChangeTokenWithPasswordDto();
+        passwordChangeTokenWithPasswordDto.setNewPassword(newPassword);
+        passwordChangeTokenWithPasswordDto.setPasswordChangeTokenDto(passwordChangeTokenDto);
+
+
+        ResponseEntity<?> responseEntity = userController.changePasswordSubmit(passwordChangeTokenDto.getToken(), passwordChangeTokenWithPasswordDto);
+
+        // Verification
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+
+    }
 }
