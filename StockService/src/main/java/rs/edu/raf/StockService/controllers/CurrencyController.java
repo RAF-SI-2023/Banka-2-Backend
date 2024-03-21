@@ -3,6 +3,7 @@ package rs.edu.raf.StockService.controllers;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 import java.util.List;
 
 @RestController("/api/currency")
+@CrossOrigin
 public class CurrencyController {
     private final CurrencyService currencyServiceImpl;
     private final CurrencyInflationService currencyInflationServiceImpl;

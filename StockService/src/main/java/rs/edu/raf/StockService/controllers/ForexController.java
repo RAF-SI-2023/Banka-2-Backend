@@ -1,10 +1,7 @@
 package rs.edu.raf.StockService.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.services.ForexService;
 
@@ -12,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/forex")
+@CrossOrigin
 public class ForexController {
 
     private final ForexService forexService;
