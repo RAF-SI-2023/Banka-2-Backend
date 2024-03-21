@@ -27,6 +27,12 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_2}")
     private String myEmail2;
 
+    @Value("${MY_EMAIL_4}")
+    private String myEmail4;
+
+    @Value("${MY_EMAIL_5}")
+    private String myEmail5;
+
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -78,14 +84,36 @@ public class BootstrapData implements CommandLineRunner {
         admin.setPermissions(List.of(per1, per2));
         userRepository.save(admin);
 
-//        Employee employee1 = new Employee();
-//        employee1.setEmail(myEmail2);
-//        employee1.setActive(true);
-//        employee1.setUsername(myEmail2);
-//        employee1.setPassword(passwordEncoder.encode("employee1"));
-//        employee1.setRole(userRole);
-//        employee1.setPermissions(List.of(per1, per2));
-//        userRepository.save(employee1);
+        Employee employee1 = new Employee();
+        employee1.setEmail(myEmail2);
+        employee1.setActive(true);
+        employee1.setUsername(myEmail2);
+        employee1.setPassword(passwordEncoder.encode("employee"));
+        employee1.setRole(employeeRole);
+        employee1.setPermissions(List.of(per1, per2));
+        userRepository.save(employee1);
+
+        CorporateClient corporateClient= new CorporateClient();
+        corporateClient.setEmail(myEmail4);
+        corporateClient.setUsername(myEmail4);
+        corporateClient.setPassword(passwordEncoder.encode("corporateClient"));
+        corporateClient.setRole(userRole);
+        corporateClient.setPermissions(List.of(per1, per2));
+        corporateClient.setName("Miladin");
+        corporateClient.setPrimaryAccountNumber("123456789");
+
+        PrivateClient privateClient = new PrivateClient();
+        privateClient.setEmail(myEmail5);
+        privateClient.setUsername(myEmail5);
+        privateClient.setPassword(passwordEncoder.encode("privateClient"));
+        privateClient.setRole(userRole);
+        privateClient.setPermissions(List.of(per1, per2));
+        privateClient.setName("Zvezdanko");
+        privateClient.setSurname("Zvezdankovic");
+        privateClient.setGender("M");
+        privateClient.setPrimaryAccountNumber("123456789");
+
+
         Company company = new Company();
         company.setCompanyName("Example Ltd.");
         company.setFaxNumber("123456");
