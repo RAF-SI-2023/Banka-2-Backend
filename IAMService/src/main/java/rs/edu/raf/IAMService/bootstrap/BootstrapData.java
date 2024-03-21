@@ -96,23 +96,24 @@ public class BootstrapData implements CommandLineRunner {
         CorporateClient corporateClient= new CorporateClient();
         corporateClient.setEmail(myEmail4);
         corporateClient.setUsername(myEmail4);
-        corporateClient.setPassword(passwordEncoder.encode("corporateClient"));
+        corporateClient.setPassword(passwordEncoder.encode("corporate"));
         corporateClient.setRole(userRole);
         corporateClient.setPermissions(List.of(per1, per2));
         corporateClient.setName("Miladin");
-        corporateClient.setPrimaryAccountNumber("123456789");
+        corporateClient.setPrimaryAccountNumber("3334444999999999");
+        userRepository.save(corporateClient);
 
         PrivateClient privateClient = new PrivateClient();
         privateClient.setEmail(myEmail5);
         privateClient.setUsername(myEmail5);
-        privateClient.setPassword(passwordEncoder.encode("privateClient"));
+        privateClient.setPassword(passwordEncoder.encode("private"));
         privateClient.setRole(userRole);
         privateClient.setPermissions(List.of(per1, per2));
         privateClient.setName("Zvezdanko");
         privateClient.setSurname("Zvezdankovic");
         privateClient.setGender("M");
-        privateClient.setPrimaryAccountNumber("123456789");
-
+        privateClient.setPrimaryAccountNumber("3334444111111111");
+        userRepository.save(privateClient);
 
         Company company = new Company();
         company.setCompanyName("Example Ltd.");
