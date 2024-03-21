@@ -24,9 +24,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void deleteCompanyByRegistryNumber(String registrationNumber) {
-        companyRepository.deleteByregistryNumber(registrationNumber);
+    public void deleteCompanyByIdentificationNumber(Integer identificationNumber) {
+
+        Company company= companyRepository.findByIdentificationNumber(identificationNumber).orElseThrow(() -> new NotFoundException("Company with identification number " + identificationNumber + " not found"));
+
+        companyRepository.delete(company);
     }
+
+
 
     public CompanyDto getCompanyById(Long id) {
         Optional<Company> company = companyRepository.findById(id);

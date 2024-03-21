@@ -9,7 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
@@ -229,6 +231,71 @@ class CompanyControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(content().string("Some error occurred")); // Check the error message
+    }
+
+    @Test
+    public void testDeleteCompanyByIdentificationNumber() {
+        Integer identificationNumber = 123456;
+
+        // Mock behavior of companyService.deleteCompanyByIdentificationNumber method
+        doNothing().when(companyService).deleteCompanyByIdentificationNumber(identificationNumber);
+
+        // Call the controller method
+        ResponseEntity<?> responseEntity = companyController.deleteCompanyByIdentificationNumber(identificationNumber);
+
+        // Verify that the service method was called once with the correct identification number
+        verify(companyService, times(1)).deleteCompanyByIdentificationNumber(identificationNumber);
+
+        // Verify that the response entity is as expected
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+    }
+    @Test
+    public void testFindCompanyByIdentificationNumber_Success() {
+        Integer identificationNumber = 123456;
+        CompanyDto company = new CompanyDto(
+                2L,
+                "Company B",
+                "Fax B",
+                "Phone B",
+                24680L,
+                24680,
+                123456,
+                24680,
+                "Address B"
+        );
+        // Mock behavior of companyService.getCompanyByIdNumber method
+        when(companyService.getCompanyByIdNumber(identificationNumber)).thenReturn(company);
+
+        // Call the controller method
+        ResponseEntity<?> responseEntity = companyController.findCompanyByIdentificationNumber(identificationNumber);
+
+        // Verify that the service method was called once with the correct identification number
+        verify(companyService, times(1)).getCompanyByIdNumber(identificationNumber);
+
+        // Verify that the response entity is as expected
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+        assert responseEntity.getBody().equals(company);
+    }
+
+    @Test
+    public void testFindCompanyByIdentificationNumber_NotFound() {
+        Integer identificationNumber = 123456;
+        String errorMessage = "Company not found";
+        // Mock behavior of companyService.getCompanyByIdNumber method to throw an exception
+        when(companyService.getCompanyByIdNumber(identificationNumber)).thenThrow(new RuntimeException(errorMessage));
+
+        // Call the controller method
+        ResponseEntity<?> responseEntity = companyController.findCompanyByIdentificationNumber(identificationNumber);
+
+        // Verify that the service method was called once with the correct identification number
+        verify(companyService, times(1)).getCompanyByIdNumber(identificationNumber);
+
+        // Verify that the response entity is as expected
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.NOT_FOUND;
+        assert responseEntity.getBody().equals(errorMessage);
     }
 }
 
