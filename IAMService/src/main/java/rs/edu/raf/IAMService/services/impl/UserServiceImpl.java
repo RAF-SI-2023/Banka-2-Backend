@@ -25,6 +25,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +71,7 @@ public class UserServiceImpl implements UserService {
         return checkInstance(user);
     }
 
+    @Override
     public User employeeActivation(int id) {
         Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(true);
@@ -312,5 +314,12 @@ public class UserServiceImpl implements UserService {
         rabbitTemplate.convertAndSend("password-activation", activationRequestDto);
 
         return userMapper.agentToAgentDto(agent);
+    }
+
+    @Override
+    public User setAgentLimit(int id, BigDecimal limit) {
+        Agent agent = (Agent) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with ID: " + id + " not found."));
+        agent.setLimit(limit);
+        return updateEntity(agent);
     }
 }
