@@ -53,7 +53,7 @@ public class RabbitMQListenersSpringTest {
 
     @Test
     void userProfileActivationCodeTest() {
-        ProfileActivationCodeDto dto = new ProfileActivationCodeDto("email@gmail.com", Long.valueOf(1234567890));
+        ProfileActivationCodeDto dto = new ProfileActivationCodeDto("email@gmail.com", String.valueOf(1234567890));
         try {
             String json = objectMapper.writeValueAsString(dto);
             template.convertAndSend("user-profile-activation-code", json);
