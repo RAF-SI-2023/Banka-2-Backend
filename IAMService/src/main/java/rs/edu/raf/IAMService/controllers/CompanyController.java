@@ -15,7 +15,7 @@ import rs.edu.raf.IAMService.services.CompanyService;
 public class CompanyController {
     private final CompanyService companyService;
 
-    @GetMapping("/find-all")
+    @GetMapping("/all")
     public ResponseEntity<?> findAllCompanies() {
         try {
             return ResponseEntity.ok(companyService.findAllCompanies());
@@ -24,7 +24,7 @@ public class CompanyController {
         }
     }
 
-    @GetMapping("/find-company-by-id/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> findCompanyById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(companyService.getCompanyById(id));
@@ -33,11 +33,11 @@ public class CompanyController {
         }
     }
 
-    @GetMapping("/find-company-by-pib/{pib}")
-    public ResponseEntity<?> findCompanyByPib(@PathVariable Long pib){
-        try{
+    @GetMapping("/pib/{pib}")
+    public ResponseEntity<?> findCompanyByPib(@PathVariable Long pib) {
+        try {
             return ResponseEntity.ok(companyService.getCompanyByPib(pib));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -47,36 +47,36 @@ public class CompanyController {
         try {
             return ResponseEntity.ok(companyService.createCompany(companyDto));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("kompanija sa tom identifikacijom vec postoji");
         }
     }
 
-    @DeleteMapping("/delete-company-by-id/{id}")
+    @DeleteMapping("/delete/id/{id}")
     public ResponseEntity<?> deleteCompanyById(@PathVariable Long id) {
         companyService.deleteCompanyById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete-company-by-identificationNumber/{identificationNumber}")
+    @DeleteMapping("/delete/identificationNumber/{identificationNumber}")
     public ResponseEntity<?> deleteCompanyByIdentificationNumber(@PathVariable Integer identificationNumber) {
         companyService.deleteCompanyByIdentificationNumber(identificationNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-  
-    @GetMapping("/find-company-by-id-identificationNumber/{id}")
-    public ResponseEntity<?> findCompanyByIdentificationNumber(@PathVariable Integer id){
+
+    @GetMapping("/identificationNumber/{id}")
+    public ResponseEntity<?> findCompanyByIdentificationNumber(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(companyService.getCompanyByIdNumber(id));
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    
-    @PutMapping("/update-company")
-    public ResponseEntity<?> updateCompany(@RequestBody CompanyDto companyDto){
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateCompany(@RequestBody CompanyDto companyDto) {
         try {
             return ResponseEntity.ok(companyService.updateCompany(companyDto));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

@@ -23,17 +23,19 @@ public class ForexController {
         return ResponseEntity.ok(forexService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Forex> findForexById(@PathVariable Long id) {
         return ResponseEntity.ok(forexService.findById(id));
     }
 
-    @GetMapping("/baseCurrency/{baseCurrency}")
+    //yikes not unique
+    @GetMapping("/base-currency/{baseCurrency}")
     public ResponseEntity<Forex> findForexByBaseCurrency(@PathVariable String baseCurrency) {
         return ResponseEntity.ok(forexService.findByBaseCurrency(baseCurrency));
     }
 
-    @GetMapping("/quoteCurrency/{quoteCurrency}")
+    //yikes not unique
+    @GetMapping("/quote-currency/{quoteCurrency}")
     public ResponseEntity<Forex> findForexByQuoteCurrency(@PathVariable String quoteCurrency) {
         return ResponseEntity.ok(forexService.findByQuoteCurrency(quoteCurrency));
     }

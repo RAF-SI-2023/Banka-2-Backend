@@ -22,6 +22,9 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
+    /**
+     * ne radi u swaggeru, radi u postmanu
+     */
     @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<?> getAll() {

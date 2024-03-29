@@ -22,6 +22,9 @@ public class RoleController {
         this.roleService = roleService;
     }
 
+    /**
+     * ne radi u swaggeru, radi u postmanu
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllRoles() {

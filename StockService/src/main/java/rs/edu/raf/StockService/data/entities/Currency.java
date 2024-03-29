@@ -48,4 +48,12 @@ public class Currency implements Serializable {
         this.currencyPolity = currencyPolity;
         this.inflationList = inflationList;
     }
+
+    public Currency(long id, String currencyName, String currencyCode, String currencySymbol, String currencyPolity) {
+        this.id = id;
+        this.currencyName = currencyName;
+        this.currencyCode = currencyCode;
+        this.currencySymbol = currencySymbol;
+        this.currencyPolity = currencyPolity;
+    }
 }

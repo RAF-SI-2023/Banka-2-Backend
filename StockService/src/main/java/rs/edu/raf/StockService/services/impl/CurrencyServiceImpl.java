@@ -30,7 +30,6 @@ public class CurrencyServiceImpl implements CurrencyService {
      */
     @Cacheable(value = "currency")
     public List<Currency> findAll() {
-        System.out.println("CurrencyServiceImpl.findAll");
         return currencyRepository.findAllWithoutInflation();
     }
 
