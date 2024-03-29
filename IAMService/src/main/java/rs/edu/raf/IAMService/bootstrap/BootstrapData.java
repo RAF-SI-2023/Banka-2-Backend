@@ -27,11 +27,11 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_2}")
     private String myEmail2;
 
+    @Value("${MY_EMAIL_3}")
+    private String myEmail3;
+
     @Value("${MY_EMAIL_4}")
     private String myEmail4;
-
-    @Value("${MY_EMAIL_5}")
-    private String myEmail5;
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final UserRepository userRepository;
@@ -94,8 +94,8 @@ public class BootstrapData implements CommandLineRunner {
         userRepository.save(employee1);
 
         CorporateClient corporateClient= new CorporateClient();
-        corporateClient.setEmail(myEmail4);
-        corporateClient.setUsername(myEmail4);
+        corporateClient.setEmail(myEmail3);
+        corporateClient.setUsername(myEmail3);
         corporateClient.setPassword(passwordEncoder.encode("corporate"));
         corporateClient.setRole(userRole);
         corporateClient.setPermissions(List.of(per1, per2));
@@ -104,8 +104,8 @@ public class BootstrapData implements CommandLineRunner {
         userRepository.save(corporateClient);
 
         PrivateClient privateClient = new PrivateClient();
-        privateClient.setEmail(myEmail5);
-        privateClient.setUsername(myEmail5);
+        privateClient.setEmail(myEmail4);
+        privateClient.setUsername(myEmail4);
         privateClient.setPassword(passwordEncoder.encode("private"));
         privateClient.setRole(userRole);
         privateClient.setPermissions(List.of(per1, per2));

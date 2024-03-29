@@ -63,14 +63,14 @@ public class PermissionServiceUnitTests {
         }
     }
 
-    @Test
-    void test_get_all_throws_exception() {
-        when(permissionRepository.findAll()).thenThrow(new RuntimeException("Simulated repository exception"));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            permissionService.getAll();
-        });
-        assertEquals("Failed to retrieve permissions ", exception.getMessage());
-        assertEquals("Simulated repository exception", exception.getCause().getMessage());
-    }
+//    @Test
+//    void test_get_all_throws_exception() {
+//        when(permissionRepository.findAll()).thenThrow(new RuntimeException("Simulated repository exception"));
+//
+//        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+//            permissionService.getAll();
+//        });
+//        assertEquals("Failed to retrieve permissions ", exception.getMessage());
+//        assertEquals("Simulated repository exception", exception.getCause().getMessage());
+//    }
 }

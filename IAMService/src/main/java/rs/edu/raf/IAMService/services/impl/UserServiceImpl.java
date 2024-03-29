@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -245,7 +247,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void PasswordResetsendToQueue(String email, String urlLink) {
+    public void PasswordResetSendToQueue(String email, String urlLink) {
         PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
         passwordChangeDto.setEmail(email);
         passwordChangeDto.setUrlLink(urlLink);
@@ -255,6 +257,20 @@ public class UserServiceImpl implements UserService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean setPassword(String email, String password) {
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -312,5 +328,27 @@ public class UserServiceImpl implements UserService {
         rabbitTemplate.convertAndSend("password-activation", activationRequestDto);
 
         return userMapper.agentToAgentDto(agent);
+    }
+
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */3 * * * *") //every 3 minute
+    @SchedulerLock(name = "tasksScheduler-1")
+    public void executeScheduledTasks1(){
+        userRepository.findAll().forEach(user -> {
+            if(user.getPassword() == null){
+                userRepository.delete(user);
+            }
+        });
+    }
+
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */5 * * * *") //every 5 minutes
+    @SchedulerLock(name = "tasksScheduler-2")
+    public void executeScheduledTasks2(){
+        userRepository.findAll().forEach(user -> {
+            if(user.getPassword() == null || user.getPassword().equals("$2a$10$2iiyd4uPEfWi2/f0WjuwIuGgBULyhWMzpV7vSLJceB8ZxZyCsAALW")){
+                userRepository.delete(user);
+            }
+        });
     }
 }

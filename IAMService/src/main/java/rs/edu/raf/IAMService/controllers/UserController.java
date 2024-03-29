@@ -11,9 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.IAMService.data.dto.*;
-import rs.edu.raf.IAMService.data.entites.PasswordChangeToken;
 import rs.edu.raf.IAMService.data.entites.Permission;
-import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailTakenException;
 import rs.edu.raf.IAMService.exceptions.MissingRoleException;
@@ -25,7 +23,6 @@ import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -75,115 +72,117 @@ public class UserController {
 
 
     @PostMapping(path = "/password-change-initialization", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<PasswordChangeTokenDto> initiatesChangePassword(@RequestBody LoginDto loginDto) {
-        String email = loginDto.getEmail();
-        String password = loginDto.getPassword();
-        Optional<User> userOptional = userService.findUserByEmail(email);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<?> initiatesChangePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        return ResponseEntity.ok().body(userService.setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword()));
 
-        if (!passwordEncoder.matches(password, userOptional.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        if (!submitLimiter.allowRequest(email)) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-        }
-        String baseURL = "uzeti od front-a rutu za promenu sifre";
-        PasswordChangeTokenDto passwordChangeTokenDto =
-                changedPasswordTokenUtil.generateToken(userService.findByEmail(email.toLowerCase()), baseURL);
-        userService.sendToQueue(email, passwordChangeTokenDto.getUrlLink());
-        return ResponseEntity.ok().body(passwordChangeTokenDto);
+//        String email = loginDto.getEmail();
+//        String password = loginDto.getPassword();
+//        Optional<User> userOptional = userService.findUserByEmail(email);
+//        if (userOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//
+//        if (!passwordEncoder.matches(password, userOptional.get().getPassword())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        if (!submitLimiter.allowRequest(email)) {
+//            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+//        }
+//        String baseURL = "uzeti od front-a rutu za promenu sifre";
+//        PasswordChangeTokenDto passwordChangeTokenDto =
+//                changedPasswordTokenUtil.generateToken(userService.findByEmail(email.toLowerCase()), baseURL);
+//        userService.sendToQueue(email, passwordChangeTokenDto.getUrlLink());
+//        return ResponseEntity.ok().body(passwordChangeTokenDto);
     }
 
-    @PostMapping(path = "/password-change-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changePasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
-        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
-        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
-        if (!token.equals(passwordChangeTokenDto.getToken())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
-        }
-        String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
-        Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
-        Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
-        }
+//    @PostMapping(path = "/password-change-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> changePasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
+//        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
+//        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
+//        if (!token.equals(passwordChangeTokenDto.getToken())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
+//        }
+//        String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
+//        Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
+//        Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
+//        if (userOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
+//        }
+//
+//        User user = userOptional.get();
+//        if (!extractedToken.get("email").toString().equalsIgnoreCase(passwordChangeTokenDto.getEmail())) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nemate autorizaciju da promenite mail: " + passwordChangeTokenDto.getEmail());
+//        }
+//
+//        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
+//        }
+//
+//        if (!passwordValidator.isValid(newPassword)) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
+//        }
+//
+//        if (changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)) {
+//            user.setPassword(passwordEncoder.encode(newPassword));
+//            userService.updateEntity(user);
+//            return ResponseEntity.ok().build();
+//        }
+//        return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
+//
+//    }
 
-        User user = userOptional.get();
-        if (!extractedToken.get("email").toString().equalsIgnoreCase(passwordChangeTokenDto.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nemate autorizaciju da promenite mail: " + passwordChangeTokenDto.getEmail());
-        }
-
-        if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
-        }
-
-        if (!passwordValidator.isValid(newPassword)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
-        }
-
-        if (changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userService.updateEntity(user);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
-
-    }
-
-    @PostMapping(path = "/public/password-reset-initialization/{email}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<PasswordChangeTokenDto> initiatesResetPassword(@PathVariable String email) {
-        Optional<User> userOptional = userService.findUserByEmail(email);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        String baseURL = "uzeti od front-a rutu za resetovanje sifre ";
-        PasswordChangeToken passwordChangeToken =
-                changedPasswordTokenUtil.generateTokenInDB(email, baseURL);
-        if (passwordChangeTokenService.findByEmail(email) != null) {
-            passwordChangeTokenService.updateEntity(passwordChangeToken);
-        } else {
-            passwordChangeTokenService.createEntity(passwordChangeToken);
-        }
-        userService.PasswordResetsendToQueue(email, passwordChangeToken.getUrlLink());
-
-        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto(passwordChangeToken.getToken(), passwordChangeToken.getExpireTime(), passwordChangeToken.getEmail(), passwordChangeToken.getUrlLink());
-        return ResponseEntity.ok().body(passwordChangeTokenDto);
-    }
-
-    @PostMapping(path = "/public/password-reset-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> resetPasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
-        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
-        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
-        PasswordChangeToken passwordChangeToken = passwordChangeTokenService.findByEmail(passwordChangeTokenDto.getEmail());
-        if (!token.equals(passwordChangeToken.getToken())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
-        }
-        Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
-        }
-        User user = userOptional.get();
-        if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
-        }
-
-        if (!passwordValidator.isValid(newPassword)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
-        }
-
-        if (changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userService.updateEntity(user);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
-
-    }
+//    @PostMapping(path = "/public/password-reset-initialization/{email}", consumes = MediaType.ALL_VALUE)
+//    public ResponseEntity<PasswordChangeTokenDto> initiatesResetPassword(@PathVariable String email) {
+//        Optional<User> userOptional = userService.findUserByEmail(email);
+//        if (userOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        String baseURL = "uzeti od front-a rutu za resetovanje sifre ";
+//        PasswordChangeToken passwordChangeToken =
+//                changedPasswordTokenUtil.generateTokenInDB(email, baseURL);
+//        if (passwordChangeTokenService.findByEmail(email) != null) {
+//            passwordChangeTokenService.updateEntity(passwordChangeToken);
+//        } else {
+//            passwordChangeTokenService.createEntity(passwordChangeToken);
+//        }
+//        userService.PasswordResetsendToQueue(email, passwordChangeToken.getUrlLink());
+//
+//        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto(passwordChangeToken.getToken(), passwordChangeToken.getExpireTime(), passwordChangeToken.getEmail(), passwordChangeToken.getUrlLink());
+//        return ResponseEntity.ok().body(passwordChangeTokenDto);
+//    }
+//
+//    @PostMapping(path = "/public/password-reset-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> resetPasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
+//        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
+//        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
+//        PasswordChangeToken passwordChangeToken = passwordChangeTokenService.findByEmail(passwordChangeTokenDto.getEmail());
+//        if (!token.equals(passwordChangeToken.getToken())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
+//        }
+//        Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
+//        if (userOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
+//        }
+//        User user = userOptional.get();
+//        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
+//        }
+//
+//        if (!passwordValidator.isValid(newPassword)) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
+//        }
+//
+//        if (changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)) {
+//            user.setPassword(passwordEncoder.encode(newPassword));
+//            userService.updateEntity(user);
+//            return ResponseEntity.ok().build();
+//        }
+//        return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
+//
+//    }
 
 
     @GetMapping(path = "/getUserPermissions/{id}")

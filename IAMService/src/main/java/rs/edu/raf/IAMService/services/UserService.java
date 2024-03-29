@@ -34,7 +34,6 @@ public interface UserService extends UserDetailsService {
 
     Optional<User> findUserByEmail(String email);
 
-
     List<Permission> getUserPermissions(Long id);
 
     void addUserPermission(Long id, Permission permission);
@@ -78,8 +77,8 @@ public interface UserService extends UserDetailsService {
     UserDto updateUser(UserDto userDto);
 
 
-    void PasswordResetsendToQueue(String email,String urlLink);
+    void PasswordResetSendToQueue(String email, String urlLink);
 
-
+    boolean setPassword(String email, String password);
 
 }

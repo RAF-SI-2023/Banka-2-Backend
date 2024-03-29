@@ -25,7 +25,7 @@ public class UserAccountUserProfileActivationCode {
         this.accountNumber = accountNumber;
         this.code = code;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 2);
+        calendar.add(Calendar.MINUTE, 5);
         this.expirationDateTime = String.valueOf(calendar.getTime().getTime());
     }
 

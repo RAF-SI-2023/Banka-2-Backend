@@ -3,6 +3,7 @@ package rs.edu.raf.IAMService.data.entites;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class Employee extends User {
             boolean active
     ) {
         super(dateOfBirth, email, username, phone, address, new Role(RoleType.EMPLOYEE), permissions);
+        setPassword("$2a$10$2iiyd4uPEfWi2/f0WjuwIuGgBULyhWMzpV7vSLJceB8ZxZyCsAALW");
         this.name = name;
         this.surname = surname;
         this.gender = gender;
@@ -43,4 +45,5 @@ public class Employee extends User {
         this.department = department;
         this.active = active;
     }
+
 }

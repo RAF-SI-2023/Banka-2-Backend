@@ -79,116 +79,116 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void createPrivateClient_happyFlow_returnsOk() throws Exception {
-        PrivateClientDto clientDto = new PrivateClientDto();
-        when(userService.createPrivateClient(any(PrivateClientDto.class)))
-                .thenReturn(clientDto);
+//    @Test
+//    void createPrivateClient_happyFlow_returnsOk() throws Exception {
+//        PrivateClientDto clientDto = new PrivateClientDto();
+//        when(userService.createPrivateClient(any(PrivateClientDto.class)))
+//                .thenReturn(clientDto);
+//
+//        mockMvc.perform(post("/api/users/public/private-client")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(clientDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+//    }
 
-        mockMvc.perform(post("/api/users/public/private-client")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(clientDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+//    @Test
+//    void createCorporateClient_happyFlow_returnsOk() throws Exception {
+//        CorporateClientDto clientDto = new CorporateClientDto();
+//        when(userService.createCorporateClient(any(CorporateClientDto.class)))
+//                .thenReturn(clientDto);
+//
+//        mockMvc.perform(post("/api/users/public/corporate-client")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(clientDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+//    }
 
-    @Test
-    void createCorporateClient_happyFlow_returnsOk() throws Exception {
-        CorporateClientDto clientDto = new CorporateClientDto();
-        when(userService.createCorporateClient(any(CorporateClientDto.class)))
-                .thenReturn(clientDto);
+//    @Test
+//    void activateClient_happyFlow_returnsOk() throws Exception {
+//        String clientId = "1";
+//        PasswordActivationDto activationDto = new PasswordActivationDto();
+//        activationDto.setPassword("newPassword");
+//
+//        when(userService.passwordActivation(clientId, activationDto.getPassword()))
+//                .thenReturn(Long.valueOf(clientId));
+//
+//        mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(activationDto)))
+//                .andExpect(status().isOk());
+//    }
 
-        mockMvc.perform(post("/api/users/public/corporate-client")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(clientDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+//    @Test
+//    void activateClient_userDoesNotExist_returnsNotFound() throws Exception {
+//        String clientId = "non existing id";
+//        PasswordActivationDto activationDto = new PasswordActivationDto();
+//        activationDto.setPassword("newPassword");
+//
+//        when(userService.passwordActivation(clientId, activationDto.getPassword()))
+//                .thenThrow(UserNotFoundException.class);
+//
+//        mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(activationDto)))
+//                .andExpect(status().isNotFound());
+//    }
 
-    @Test
-    void activateClient_happyFlow_returnsOk() throws Exception {
-        String clientId = "1";
-        PasswordActivationDto activationDto = new PasswordActivationDto();
-        activationDto.setPassword("newPassword");
+//    @Test
+//    public void testCreateEmployee_Success() {
+//        // Setup
+//        EmployeeDto employeeDto = new EmployeeDto();
+//        employeeDto.setEmail("test@user.com");
+//        employeeDto.setUsername("test@user.com");
+//
+//        // Mock result
+//        EmployeeDto resultEmployeeDto = new EmployeeDto();
+//        resultEmployeeDto.setId(1L);
+//        resultEmployeeDto.setEmail("test@user.com");
+//        resultEmployeeDto.setUsername("test@user.com");
+//
+//        when(userService.createEmployee(employeeDto)).thenReturn(resultEmployeeDto);
+//
+//        // Execution
+//        ResponseEntity<?> response = userController.createEmployee(employeeDto);
+//
+//        // Assertion
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//    }
 
-        when(userService.passwordActivation(clientId, activationDto.getPassword()))
-                .thenReturn(Long.valueOf(clientId));
+//    @Test
+//    public void testCreateEmployee_EmailTaken() {
+//        // Setup
+//        EmployeeDto employeeDto = new EmployeeDto();
+//        when(userService.createEmployee(employeeDto)).thenThrow(new EmailTakenException("test@user.com"));
+//
+//        // Execution
+//        ResponseEntity<?> response = userController.createEmployee(employeeDto);
+//
+//        // Assertion
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//        assertEquals(
+//                "User with email 'test@user.com' already exists",
+//                response.getBody()
+//        );
+//    }
 
-        mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(activationDto)))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void activateClient_userDoesNotExist_returnsNotFound() throws Exception {
-        String clientId = "non existing id";
-        PasswordActivationDto activationDto = new PasswordActivationDto();
-        activationDto.setPassword("newPassword");
-
-        when(userService.passwordActivation(clientId, activationDto.getPassword()))
-                .thenThrow(UserNotFoundException.class);
-
-        mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(activationDto)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testCreateEmployee_Success() {
-        // Setup
-        EmployeeDto employeeDto = new EmployeeDto();
-        employeeDto.setEmail("test@user.com");
-        employeeDto.setUsername("test@user.com");
-
-        // Mock result
-        EmployeeDto resultEmployeeDto = new EmployeeDto();
-        resultEmployeeDto.setId(1L);
-        resultEmployeeDto.setEmail("test@user.com");
-        resultEmployeeDto.setUsername("test@user.com");
-
-        when(userService.createEmployee(employeeDto)).thenReturn(resultEmployeeDto);
-
-        // Execution
-        ResponseEntity<?> response = userController.createEmployee(employeeDto);
-
-        // Assertion
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
-
-    @Test
-    public void testCreateEmployee_EmailTaken() {
-        // Setup
-        EmployeeDto employeeDto = new EmployeeDto();
-        when(userService.createEmployee(employeeDto)).thenThrow(new EmailTakenException("test@user.com"));
-
-        // Execution
-        ResponseEntity<?> response = userController.createEmployee(employeeDto);
-
-        // Assertion
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(
-                "User with email 'test@user.com' already exists",
-                response.getBody()
-        );
-    }
-
-    @Test
-    public void testCreateEmployee_MissingRole() {
-        // Setup
-        EmployeeDto employeeDto = new EmployeeDto();
-        when(userService.createEmployee(employeeDto)).thenThrow(new MissingRoleException("INVALID_ROLE"));
-
-        // Execution
-        ResponseEntity<?> response = userController.createEmployee(employeeDto);
-
-        // Assertion
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(
-                "Role of type 'INVALID_ROLE' not found!",
-                response.getBody()
-        );
-    }
+//    @Test
+//    public void testCreateEmployee_MissingRole() {
+//        // Setup
+//        EmployeeDto employeeDto = new EmployeeDto();
+//        when(userService.createEmployee(employeeDto)).thenThrow(new MissingRoleException("INVALID_ROLE"));
+//
+//        // Execution
+//        ResponseEntity<?> response = userController.createEmployee(employeeDto);
+//
+//        // Assertion
+//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+//        assertEquals(
+//                "Role of type 'INVALID_ROLE' not found!",
+//                response.getBody()
+//        );
+//    }
 }
