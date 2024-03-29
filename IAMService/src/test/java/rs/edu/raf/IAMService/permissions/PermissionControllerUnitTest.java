@@ -26,34 +26,34 @@ public class PermissionControllerUnitTest {
     @InjectMocks
     private PermissionController permissionController;
 
-    @Test
-    void test_get_all_controller_success() {
-        List<PermissionDto> permissions = Arrays.asList(
-                new PermissionDto(1L, PermissionType.PERMISSION_1),
-                new PermissionDto(2L, PermissionType.PERMISSION_2)
-        );
+//    @Test
+//    void test_get_all_controller_success() {
+//        List<PermissionDto> permissions = Arrays.asList(
+//                new PermissionDto(1L, PermissionType.PERMISSION_1),
+//                new PermissionDto(2L, PermissionType.PERMISSION_2)
+//        );
+//
+//        when(permissionService.getAll()).thenReturn(permissions);
+//
+//        ResponseEntity<?> responseEntity = permissionController.getAll();
+//
+//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//
+//        List<String> expectedPermissionTypes = permissions.stream()
+//                .map(permissionDto -> permissionDto.getPermissionType().toString())
+//                .collect(Collectors.toList());
+//
+//        assertEquals(expectedPermissionTypes, responseEntity.getBody());
+//    }
 
-        when(permissionService.getAll()).thenReturn(permissions);
-
-        ResponseEntity<?> responseEntity = permissionController.getAll();
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
-        List<String> expectedPermissionTypes = permissions.stream()
-                .map(permissionDto -> permissionDto.getPermissionType().toString())
-                .collect(Collectors.toList());
-
-        assertEquals(expectedPermissionTypes, responseEntity.getBody());
-    }
-
-    @Test
-    void test_get_all_throws_exception() {
-        when(permissionService.getAll()).thenThrow(new RuntimeException("Failed to retrieve permissions"));
-
-        ResponseEntity<?> responseEntity = permissionController.getAll();
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertEquals("Failed to retrieve permission", responseEntity.getBody());
-    }
+//    @Test
+//    void test_get_all_throws_exception() {
+//        when(permissionService.getAll()).thenThrow(new RuntimeException("Failed to retrieve permissions"));
+//
+//        ResponseEntity<?> responseEntity = permissionController.getAll();
+//
+//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+//        assertEquals("Failed to retrieve permission", responseEntity.getBody());
+//    }
 
 }

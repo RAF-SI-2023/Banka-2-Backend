@@ -41,7 +41,7 @@ public class BootstrapData implements CommandLineRunner {
 
         DomesticCurrencyAccount domesticCurrencyAccount1 = new DomesticCurrencyAccount();
         domesticCurrencyAccount1.setAccountNumber("3334444999999999");
-        domesticCurrencyAccount1.setEmail(myEmail4);
+        domesticCurrencyAccount1.setEmail(myEmail1);
         domesticCurrencyAccount1.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
         domesticCurrencyAccount1.setEmployeeId(2L);
         domesticCurrencyAccount1.setMaintenanceFee(220.00);
@@ -52,7 +52,7 @@ public class BootstrapData implements CommandLineRunner {
 
         DomesticCurrencyAccount domesticCurrencyAccount2 = new DomesticCurrencyAccount();
         domesticCurrencyAccount2.setAccountNumber("3334444111111111");
-        domesticCurrencyAccount2.setEmail(myEmail5);
+        domesticCurrencyAccount2.setEmail(myEmail2);
         domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
         domesticCurrencyAccount2.setEmployeeId(2L);
         domesticCurrencyAccount2.setMaintenanceFee(220.00);

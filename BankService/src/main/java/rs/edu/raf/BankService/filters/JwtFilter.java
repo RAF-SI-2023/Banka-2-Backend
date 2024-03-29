@@ -43,26 +43,24 @@ public class JwtFilter extends OncePerRequestFilter {
             userId = jwtUtil.extractUserId(jwt);
             permissions = jwtUtil.extractPermissions(jwt);
         }
-        if (permissions != null && SecurityContextHolder.getContext().getAuthentication().getAuthorities() == null) {
+        if (permissions != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = User
-                    .withUserDetails(new CustomUserPrincipal(userId,  permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())))
-                    .roles(role)
-                    .build();
+            CustomUserPrincipal customPrincipal = new CustomUserPrincipal(userId);
+
+            permissions.add("ROLE_" + role);
 
             if (jwtUtil.validateToken(jwt)) {
-                UsernamePasswordAuthenticationToken
-                        usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(
-                                                userDetails,
-                                                null,
-                                                userDetails.getAuthorities()
-                                            );
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(
+                                customPrincipal
+                                ,null,
+                                permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                        );
 
-                usernamePasswordAuthenticationToken
+                authenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 

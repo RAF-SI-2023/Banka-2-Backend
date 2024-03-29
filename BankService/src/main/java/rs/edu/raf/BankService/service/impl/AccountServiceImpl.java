@@ -1,9 +1,12 @@
 package rs.edu.raf.BankService.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.bootstrap.BootstrapData;
 import rs.edu.raf.BankService.data.dto.*;
@@ -103,6 +106,21 @@ public class AccountServiceImpl implements AccountService {
         return dto;
     }
 
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */5 * * * *") //every 5 minute
+    @SchedulerLock(name = "tasksScheduler-1")
+    public void executeScheduledTasks(){
+        logger.info("Executing scheduled tasks");
+        userAccountUserProfileActivationCodeRepository.findAll().forEach(token -> {
+            if(token.isExpired()){
+                userAccountUserProfileActivationCodeRepository.delete(token);
+                Account account = accountRepository.findByAccountNumber(token.getAccountNumber());
+                account.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
+                accountRepository.saveAndFlush(account);
+            }
+        });
+    }
+
     private void generateActivationCodeAndSendToQueue(String accountNumber, String email){
         String code = generateActivationCode();
         UserAccountUserProfileActivationCode token = new UserAccountUserProfileActivationCode(accountNumber, code);
@@ -117,4 +135,5 @@ public class AccountServiceImpl implements AccountService {
     private void sendActivationCodeToSendToQueue(EmailDto emailDto){
         rabbitTemplate.convertAndSend("user-profile-activation-code", emailDto);
     }
+
 }
