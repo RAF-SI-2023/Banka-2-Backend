@@ -3,10 +3,7 @@ package rs.edu.raf.StockService.controllers;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 import rs.edu.raf.StockService.services.CurrencyInflationService;
@@ -18,7 +15,8 @@ import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
 import java.util.List;
 
-@RestController("/api/currency")
+@RestController
+@RequestMapping("/api/currency")
 @CrossOrigin
 public class CurrencyController {
     private final CurrencyService currencyServiceImpl;
@@ -49,11 +47,12 @@ public class CurrencyController {
         return ResponseEntity.ok(currencyServiceImpl.findByCurrencyCode(currencyCode));
     }
 
-    @GetMapping("/inflation/{currencyId}")
+    @GetMapping("/inflation/currency-id/{currencyId}")
     public ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable long currencyId) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyId(currencyId));
     }
 
+    //videti ovo, trenutno ne funkiconise
     @GetMapping("/inflation")
     public ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") long currencyId, @Param("year") long year) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyIdAndYear(currencyId, year));

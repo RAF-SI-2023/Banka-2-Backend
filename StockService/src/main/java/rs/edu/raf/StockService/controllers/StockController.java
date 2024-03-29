@@ -23,11 +23,12 @@ public class StockController {
         return ResponseEntity.ok(stockService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Stock> findStockById(@PathVariable Long id) {
         return ResponseEntity.ok(stockService.findById(id));
     }
 
+    //unique violation
     @GetMapping("/stockSymbol/{symbol}")
     public ResponseEntity<Stock> findStockBySymbol(@PathVariable String symbol) {
         return ResponseEntity.ok(stockService.findBySymbol(symbol));

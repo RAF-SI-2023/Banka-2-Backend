@@ -2,17 +2,15 @@ package rs.edu.raf.StockService.controllers;
 
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
 import java.util.List;
 
-@RestController("/api/options")
+@RestController
 @CrossOrigin
+@RequestMapping("/api/options")
 public class OptionController {
 
     private final OptionServiceImpl optionServiceImpl;
@@ -21,24 +19,19 @@ public class OptionController {
         this.optionServiceImpl = optionServiceImpl;
     }
 
-    @GetMapping("/allOptions")
+    @GetMapping("/all")
     public ResponseEntity<List<Option>> findAllOptions() {
         return ResponseEntity.ok(optionServiceImpl.findAll());
     }
 
-    @GetMapping("/allStockOptions/{stockListing}")
+    @GetMapping("/stock-listing/{stockListing}")
     public ResponseEntity<List<Option>> findAllOptionsByStockListing(@PathVariable String stockListing) {
         return ResponseEntity.ok(optionServiceImpl.findAllByStockListing(stockListing));
     }
 
-    @GetMapping("options/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Option> findOptionById(@PathVariable Long id) {
         return ResponseEntity.ok(optionServiceImpl.findById(id));
-    }
-
-    @GetMapping("/stock/{stockListing}")
-    public ResponseEntity<Option> findOptionByStockListing(@PathVariable String stockListing) {
-        return ResponseEntity.ok(optionServiceImpl.findByStockListing(stockListing));
     }
 
 }

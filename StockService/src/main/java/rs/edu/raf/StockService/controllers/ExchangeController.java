@@ -23,17 +23,17 @@ public class ExchangeController {
         return ResponseEntity.ok(exchangeService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Exchange> findExchangeById(@PathVariable Long id) {
         return ResponseEntity.ok(exchangeService.findById(id));
     }
 
-    @GetMapping("/exchangeName/{exchangeName}")
+    @GetMapping("/exchange-name/{exchangeName}")
     public ResponseEntity<Exchange> findExchangeByName(@PathVariable String exchangeName) {
         return ResponseEntity.ok(exchangeService.findByExchangeName(exchangeName));
     }
 
-    @GetMapping("/miCode/{miCode}")
+    @GetMapping("/mi-code/{miCode}")
     public ResponseEntity<Exchange> findExchangeByMiCode(@PathVariable String miCode) {
         return ResponseEntity.ok(exchangeService.findByMICode(miCode));
     }

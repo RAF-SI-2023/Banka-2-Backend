@@ -44,7 +44,7 @@ public class UserController {
     private final PasswordChangeTokenServiceImpl passwordChangeTokenService;
 
 
-    @PostMapping
+    @PostMapping("/create/employee")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDto employeeDto) {
         try {
@@ -57,7 +57,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/public/agent")
+    @PostMapping("/create/agent")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createAgent(@RequestBody AgentDto agentDto) {
         try {
@@ -71,137 +71,41 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/password-change-initialization", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/password-change", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> initiatesChangePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return ResponseEntity.ok().body(userService.setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword()));
 
-//        String email = loginDto.getEmail();
-//        String password = loginDto.getPassword();
-//        Optional<User> userOptional = userService.findUserByEmail(email);
-//        if (userOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//
-//        if (!passwordEncoder.matches(password, userOptional.get().getPassword())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        if (!submitLimiter.allowRequest(email)) {
-//            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-//        }
-//        String baseURL = "uzeti od front-a rutu za promenu sifre";
-//        PasswordChangeTokenDto passwordChangeTokenDto =
-//                changedPasswordTokenUtil.generateToken(userService.findByEmail(email.toLowerCase()), baseURL);
-//        userService.sendToQueue(email, passwordChangeTokenDto.getUrlLink());
-//        return ResponseEntity.ok().body(passwordChangeTokenDto);
     }
 
-//    @PostMapping(path = "/password-change-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> changePasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
-//        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
-//        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
-//        if (!token.equals(passwordChangeTokenDto.getToken())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
-//        }
-//        String tokenWithoutBearer = request.getHeader("authorization").replace("Bearer ", "");
-//        Claims extractedToken = jwtUtil.extractAllClaims(tokenWithoutBearer);
-//        Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
-//        if (userOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
-//        }
-//
-//        User user = userOptional.get();
-//        if (!extractedToken.get("email").toString().equalsIgnoreCase(passwordChangeTokenDto.getEmail())) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nemate autorizaciju da promenite mail: " + passwordChangeTokenDto.getEmail());
-//        }
-//
-//        if (passwordEncoder.matches(newPassword, user.getPassword())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
-//        }
-//
-//        if (!passwordValidator.isValid(newPassword)) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
-//        }
-//
-//        if (changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)) {
-//            user.setPassword(passwordEncoder.encode(newPassword));
-//            userService.updateEntity(user);
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
-//
-//    }
-
-//    @PostMapping(path = "/public/password-reset-initialization/{email}", consumes = MediaType.ALL_VALUE)
-//    public ResponseEntity<PasswordChangeTokenDto> initiatesResetPassword(@PathVariable String email) {
-//        Optional<User> userOptional = userService.findUserByEmail(email);
-//        if (userOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//        String baseURL = "uzeti od front-a rutu za resetovanje sifre ";
-//        PasswordChangeToken passwordChangeToken =
-//                changedPasswordTokenUtil.generateTokenInDB(email, baseURL);
-//        if (passwordChangeTokenService.findByEmail(email) != null) {
-//            passwordChangeTokenService.updateEntity(passwordChangeToken);
-//        } else {
-//            passwordChangeTokenService.createEntity(passwordChangeToken);
-//        }
-//        userService.PasswordResetsendToQueue(email, passwordChangeToken.getUrlLink());
-//
-//        PasswordChangeTokenDto passwordChangeTokenDto = new PasswordChangeTokenDto(passwordChangeToken.getToken(), passwordChangeToken.getExpireTime(), passwordChangeToken.getEmail(), passwordChangeToken.getUrlLink());
-//        return ResponseEntity.ok().body(passwordChangeTokenDto);
-//    }
-//
-//    @PostMapping(path = "/public/password-reset-confirmation/{token}", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> resetPasswordSubmit(@PathVariable String token, @RequestBody PasswordChangeTokenWithPasswordDto passwordChangeTokenWithPasswordDto) {
-//        String newPassword = passwordChangeTokenWithPasswordDto.getNewPassword();
-//        PasswordChangeTokenDto passwordChangeTokenDto = passwordChangeTokenWithPasswordDto.getPasswordChangeTokenDto();
-//        PasswordChangeToken passwordChangeToken = passwordChangeTokenService.findByEmail(passwordChangeTokenDto.getEmail());
-//        if (!token.equals(passwordChangeToken.getToken())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tokeni se ne poklapaju");
-//        }
-//        Optional<User> userOptional = userService.findUserByEmail(passwordChangeTokenDto.getEmail());
-//        if (userOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Korisnik sa emailom: " + passwordChangeTokenDto.getEmail() + " ne postoji ili nije pronadjen");
-//        }
-//        User user = userOptional.get();
-//        if (passwordEncoder.matches(newPassword, user.getPassword())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisnik vec koristi tu sifru");
-//        }
-//
-//        if (!passwordValidator.isValid(newPassword)) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pogresan format lozinke");
-//        }
-//
-//        if (changedPasswordTokenUtil.isTokenValid(passwordChangeTokenDto)) {
-//            user.setPassword(passwordEncoder.encode(newPassword));
-//            userService.updateEntity(user);
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.status(401).body("Token za mail: " + passwordChangeTokenDto.getEmail() + " nije vise validan");
-//
-//    }
-
-
-    @GetMapping(path = "/getUserPermissions/{id}")
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
+    @GetMapping(path = "/getUserPermissions/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> getUserPermissions(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.getUserPermissions(id));
     }
 
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
     @PostMapping(path = "/addUserPermission/{id}")
     public ResponseEntity<?> addUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
         userService.addUserPermission(id, permission);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
     @PostMapping(path = "/removeUserPermission/{id}")
     public ResponseEntity<?> removeUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
         userService.removeUserPermission(id, permission);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
     @PatchMapping(path = "/deleteAndSetUserPermissions/{id}")
     public ResponseEntity<?> deleteAndSetUserPermissions(@PathVariable Long id, @RequestBody List<Permission> permissionList) {
         userService.deleteAndSetUserPermissions(id, permissionList);
@@ -209,23 +113,23 @@ public class UserController {
     }
 
 
-    @PostMapping("/public/private-client")
+    @PostMapping("/public/create/private-client")
     public PrivateClientDto createPrivateClient(@RequestBody PrivateClientDto clientDto) {
         return userService.createPrivateClient(clientDto);
     }
 
-    @PostMapping("/public/corporate-client")
+    @PostMapping("/public/create/corporate-client")
     public CorporateClientDto createCorporateClient(@RequestBody CorporateClientDto clientDto) {
         return userService.createCorporateClient(clientDto);
     }
 
-    @PostMapping("/public/{email}/password-activation")
+    @PostMapping("/public/password-activation/{email}")
     public Long activateClient(@PathVariable String email,
                                @RequestBody PasswordActivationDto dto) {
         return userService.passwordActivation(email, dto.getPassword());
     }
 
-    @GetMapping(path = "/findByEmail/{email}", consumes = MediaType.ALL_VALUE)
+    @GetMapping(path = "/email/{email}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findByEmail(@PathVariable String email) {
         UserDto userDto = userService.findByEmail(email);
         if (userDto == null) {
@@ -234,7 +138,7 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @GetMapping(path = "/findById/{id}", consumes = MediaType.ALL_VALUE)
+    @GetMapping(path = "/id/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findById(@PathVariable Long id) {
         UserDto userDto = userService.findById(id);
         if (userDto == null) {
@@ -250,25 +154,25 @@ public class UserController {
         return ResponseEntity.ok(userService.deleteUserByEmail(email));
     }
 
-    @PutMapping(path = "/updateEmployee", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/update/employee", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     public ResponseEntity<?> updateEmployee(@RequestBody EmployeeDto employeeDto) {
         return updateUser(employeeDto);
     }
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE','ROLE_USER')")
-    @PutMapping(path = "/updateCorporateClient", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/update/corporate-client", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCorporateClient(@RequestBody CorporateClientDto corporateClientDto) {
         return updateUser(corporateClientDto);
     }
 
-    @PutMapping(path = "/updatePrivateClient", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/update/private-client", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE','ROLE_USER')")
     public ResponseEntity<?> updatePrivateClient(@RequestBody PrivateClientDto privateClientDto) {
         return updateUser(privateClientDto);
     }
 
-    @GetMapping(path = "/findAll", consumes = MediaType.ALL_VALUE)
+    @GetMapping(path = "/all", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(userService.findAll());
@@ -341,26 +245,26 @@ public class UserController {
     }
 
 
-    @PutMapping(path = "/activateEmployee/{id}")
+    @PutMapping(path = "/employee-activate/{id}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> activateEmployee(@PathVariable int id) {
 
         try {
             userService.employeeActivation(id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Boolean.FALSE);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
 
-    @PutMapping(path = "/deactivateEmployee/{id}")
+    @PutMapping(path = "/employee-deactivate/{id}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> deactivateEmployee(@PathVariable int id) {
         try {
             userService.employeeDeactivation(id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Boolean.FALSE);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Boolean.FALSE);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
