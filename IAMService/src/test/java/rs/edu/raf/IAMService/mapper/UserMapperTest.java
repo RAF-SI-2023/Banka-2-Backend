@@ -1,17 +1,15 @@
 package rs.edu.raf.IAMService.mapper;
 
 import org.junit.jupiter.api.Test;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
-import rs.edu.raf.IAMService.data.entites.CorporateClient;
-import rs.edu.raf.IAMService.data.entites.Employee;
-import rs.edu.raf.IAMService.data.entites.PrivateClient;
-import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.*;
+import rs.edu.raf.IAMService.data.enums.PermissionType;
 
-import java.sql.Date;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -133,6 +131,134 @@ public class UserMapperTest {
 
         // Assert
         // Add assertions here to verify that the UserDto object is correctly mapped from the User
+    }
+
+    @Test
+    void testSupervisorDtoToSupervisor() {
+        // given
+        List<PermissionType> permissions = new ArrayList<>();
+        permissions.add(PermissionType.PERMISSION_1);
+        permissions.add(PermissionType.PERMISSION_2);
+        SupervisorDto dto = new SupervisorDto(
+                null,
+                LocalDate.now().toEpochDay(),
+                "email@example.com",
+                "email@example.com",
+                "555-1234",
+                "123 Main St",
+                permissions
+        );
+
+        // when
+        Supervisor supervisor = userMapper.supervisorDtoToSupervisor(dto);
+
+        // then
+        assertEquals(dto.getDateOfBirth(), supervisor.getDateOfBirth());
+        assertEquals(dto.getEmail(), supervisor.getEmail());
+        assertEquals(dto.getEmail(), supervisor.getUsername());
+        assertEquals(dto.getPhone(), supervisor.getPhone());
+        assertEquals(dto.getAddress(), supervisor.getAddress());
+        assertEquals(dto.getPermissions(), supervisor.getPermissions().stream().map(Permission::getPermissionType)
+                .collect(Collectors.toList()));
+    }
+
+    @Test
+    void testSupervisorToSupervisorDto() {
+        // given
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(new Permission(PermissionType.PERMISSION_1));
+        permissions.add(new Permission(PermissionType.PERMISSION_2));
+        Supervisor supervisor = new Supervisor(
+                LocalDate.now().toEpochDay(),
+                "email@example.com",
+                "email@example.com",
+                "555-1234",
+                "123 Main St",
+                permissions
+        );
+        supervisor.setId(1L);
+
+        // when
+        SupervisorDto dto = userMapper.supervisorToSupervisorDto(supervisor);
+
+        // then
+        assertEquals(supervisor.getId(), dto.getId());
+        assertEquals(supervisor.getDateOfBirth(), dto.getDateOfBirth());
+        assertEquals(supervisor.getEmail(), dto.getEmail());
+        assertEquals(supervisor.getUsername(), dto.getUsername());
+        assertEquals(supervisor.getPhone(), dto.getPhone());
+        assertEquals(supervisor.getAddress(), dto.getAddress());
+        assertEquals(permissions.stream().map(Permission::getPermissionType).toList(), dto.getPermissions());
+    }
+
+    @Test
+    void testAgentDtoToAgent() {
+        // given
+        List<PermissionType> permissions = new ArrayList<>();
+        permissions.add(PermissionType.PERMISSION_1);
+        permissions.add(PermissionType.PERMISSION_2);
+        BigDecimal limit = new BigDecimal("100.00");
+        BigDecimal leftOfLimit = new BigDecimal("50.00");
+        AgentDto dto = new AgentDto(
+                null,
+                LocalDate.now().toEpochDay(),
+                "agent@example.com",
+                "agent@example.com",
+                "555-6789",
+                "456 Another St",
+                permissions,
+                limit,
+                leftOfLimit
+        );
+
+        // when
+        Agent agent = userMapper.agentDtoToAgent(dto);
+
+        // then
+        assertEquals(dto.getDateOfBirth(), agent.getDateOfBirth());
+        assertEquals(dto.getEmail(), agent.getEmail());
+        assertEquals(dto.getUsername(), agent.getUsername());
+        assertEquals(dto.getPhone(), agent.getPhone());
+        assertEquals(dto.getAddress(), agent.getAddress());
+        assertEquals(dto.getPermissions(), agent.getPermissions().stream().map(Permission::getPermissionType)
+                .collect(Collectors.toList()));
+        assertEquals(dto.getLimit(), agent.getLimit());
+        assertEquals(dto.getLeftOfLimit(), agent.getLeftOfLimit());
+    }
+
+    @Test
+    void testAgentToAgentDto() {
+        // given
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(new Permission(PermissionType.PERMISSION_1));
+        permissions.add(new Permission(PermissionType.PERMISSION_2));
+        BigDecimal limit = new BigDecimal("100.00");
+        BigDecimal leftOfLimit = new BigDecimal("50.00");
+        Agent agent = new Agent(
+                LocalDate.now().toEpochDay(),
+                "agent@example.com",
+                "agentUser",
+                "555-6789",
+                "456 Another St",
+                permissions,
+                limit,
+                leftOfLimit
+        );
+        agent.setId(1L);
+
+        // when
+        AgentDto dto = userMapper.agentToAgentDto(agent);
+
+        // then
+        assertEquals(agent.getId(), dto.getId());
+        assertEquals(agent.getDateOfBirth(), dto.getDateOfBirth());
+        assertEquals(agent.getEmail(), dto.getEmail());
+        assertEquals(agent.getUsername(), dto.getUsername());
+        assertEquals(agent.getPhone(), dto.getPhone());
+        assertEquals(agent.getAddress(), dto.getAddress());
+        assertEquals(agent.getPermissions().stream().map(Permission::getPermissionType).collect(Collectors.toList()), dto.getPermissions());
+        assertEquals(agent.getLimit(), dto.getLimit());
+        assertEquals(agent.getLeftOfLimit(), dto.getLeftOfLimit());
     }
 }
 

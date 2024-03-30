@@ -3,19 +3,21 @@ package rs.edu.raf.StockService.controllers;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 import rs.edu.raf.StockService.services.CurrencyInflationService;
 import rs.edu.raf.StockService.services.CurrencyService;
+import rs.edu.raf.StockService.services.impl.CurrencyInflationServiceImpl;
+import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
 import rs.edu.raf.StockService.services.impl.InMemoryCurrencyInflationServiceImpl;
 import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
 import java.util.List;
 
-@RestController("/currency")
+@RestController
+@RequestMapping("/api/currency")
+@CrossOrigin
 public class CurrencyController {
     private final CurrencyService currencyServiceImpl;
     private final CurrencyInflationService currencyInflationServiceImpl;
@@ -24,8 +26,8 @@ public class CurrencyController {
      * dodati security anotacije, videti koje metode su jos potrebne,
      * i videti implementaciju CurrencyServisa u zavisnosti od db/InMemory, slicno i za CurrencyInflationService
      */
-    public CurrencyController(InMemoryCurrencyServiceImpl currencyServiceImpl,
-                              InMemoryCurrencyInflationServiceImpl currencyInflationServiceImpl) {
+    public CurrencyController(CurrencyServiceImpl currencyServiceImpl,
+                              CurrencyInflationServiceImpl currencyInflationServiceImpl) {
         this.currencyServiceImpl = currencyServiceImpl;
         this.currencyInflationServiceImpl = currencyInflationServiceImpl;
     }
@@ -45,11 +47,12 @@ public class CurrencyController {
         return ResponseEntity.ok(currencyServiceImpl.findByCurrencyCode(currencyCode));
     }
 
-    @GetMapping("/inflation/{currencyId}")
+    @GetMapping("/inflation/currency-id/{currencyId}")
     public ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable long currencyId) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyId(currencyId));
     }
 
+    //videti ovo, trenutno ne funkiconise
     @GetMapping("/inflation")
     public ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") long currencyId, @Param("year") long year) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyIdAndYear(currencyId, year));

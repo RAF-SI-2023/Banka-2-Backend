@@ -1,17 +1,15 @@
 package rs.edu.raf.StockService.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Exchange;
 import rs.edu.raf.StockService.services.ExchangeService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/exchange")
+@RequestMapping("/api/exchange")
+@CrossOrigin
 public class ExchangeController {
 
     private final ExchangeService exchangeService;
@@ -25,17 +23,17 @@ public class ExchangeController {
         return ResponseEntity.ok(exchangeService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Exchange> findExchangeById(@PathVariable Long id) {
         return ResponseEntity.ok(exchangeService.findById(id));
     }
 
-    @GetMapping("/exchangeName/{exchangeName}")
+    @GetMapping("/exchange-name/{exchangeName}")
     public ResponseEntity<Exchange> findExchangeByName(@PathVariable String exchangeName) {
         return ResponseEntity.ok(exchangeService.findByExchangeName(exchangeName));
     }
 
-    @GetMapping("/miCode/{miCode}")
+    @GetMapping("/mi-code/{miCode}")
     public ResponseEntity<Exchange> findExchangeByMiCode(@PathVariable String miCode) {
         return ResponseEntity.ok(exchangeService.findByMICode(miCode));
     }

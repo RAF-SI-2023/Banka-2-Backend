@@ -1,15 +1,15 @@
 package rs.edu.raf.BankService.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.bootstrap.BootstrapData;
-import rs.edu.raf.BankService.data.dto.AccountNumberDto;
-import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
-import rs.edu.raf.BankService.data.dto.EmailDto;
-import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
+import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Account;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
@@ -92,8 +92,33 @@ public class AccountServiceImpl implements AccountService {
         if(account != null){
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
-        accountRepository.saveAndFlush(accountMapper.foreignAccountDtoToForeignAccount(dto));
+        accountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
         return dto;
+    }
+
+    @Override
+    public BusinessAccountDto createBusinessAccount(BusinessAccountDto dto) throws AccountNumberAlreadyExistException {
+        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if(account != null){
+            throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
+        }
+        accountRepository.save(accountMapper.businessAccountDtoToBusinessAccount(dto));
+        return dto;
+    }
+
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */5 * * * *") //every 5 minute
+    @SchedulerLock(name = "tasksScheduler-1")
+    public void executeScheduledTasks(){
+        logger.info("Executing scheduled tasks");
+        userAccountUserProfileActivationCodeRepository.findAll().forEach(token -> {
+            if(token.isExpired()){
+                userAccountUserProfileActivationCodeRepository.delete(token);
+                Account account = accountRepository.findByAccountNumber(token.getAccountNumber());
+                account.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
+                accountRepository.saveAndFlush(account);
+            }
+        });
     }
 
     private void generateActivationCodeAndSendToQueue(String accountNumber, String email){
@@ -110,4 +135,5 @@ public class AccountServiceImpl implements AccountService {
     private void sendActivationCodeToSendToQueue(EmailDto emailDto){
         rabbitTemplate.convertAndSend("user-profile-activation-code", emailDto);
     }
+
 }

@@ -49,7 +49,7 @@ public class Account {
         this.email = email;
         this.status = true;
         this.accountType = accountType;
-        this.employeeId = ((CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        this.employeeId = ((CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         this.currencyCode = currencyCode;
         this.maintenanceFee = maintenanceFee;
     }

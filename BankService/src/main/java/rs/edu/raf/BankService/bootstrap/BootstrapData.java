@@ -26,6 +26,12 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_3}")
     private String myEmail3;
 
+    @Value("${MY_EMAIL_4}")
+    private String myEmail4;
+
+    @Value("${MY_EMAIL_5}")
+    private String myEmail5;
+
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final AccountRepository accountRepository;
 
@@ -53,7 +59,6 @@ public class BootstrapData implements CommandLineRunner {
         domesticCurrencyAccount2.setCurrencyCode("RSD");
         domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
         domesticCurrencyAccount2.setInterestRate(2.5);
-        accountRepository.save((Account) domesticCurrencyAccount2);
 
         ForeignCurrencyAccount foreignCurrencyAccount1 = new ForeignCurrencyAccount();
         foreignCurrencyAccount1.setAccountNumber("3334444777777777");
@@ -63,7 +68,6 @@ public class BootstrapData implements CommandLineRunner {
         foreignCurrencyAccount1.setMaintenanceFee(220.00);
         foreignCurrencyAccount1.setCurrencyCode("USD");
         accountRepository.saveAndFlush(foreignCurrencyAccount1);
-
 
 
         logger.info("BankService: DATA LOADING IN PROGRESS...");

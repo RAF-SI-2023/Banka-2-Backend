@@ -1,38 +1,30 @@
 package rs.edu.raf.IAMService.services.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PasswordChangeDto;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
-import rs.edu.raf.IAMService.data.entites.Permission;
-import rs.edu.raf.IAMService.data.entites.CorporateClient;
-import rs.edu.raf.IAMService.data.entites.Employee;
-import rs.edu.raf.IAMService.data.entites.PrivateClient;
 import rs.edu.raf.IAMService.data.dto.*;
-import rs.edu.raf.IAMService.data.entites.User;
-import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailNotFoundException;
 import rs.edu.raf.IAMService.exceptions.EmailTakenException;
 import rs.edu.raf.IAMService.exceptions.MissingRoleException;
+import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 
 import java.util.ArrayList;
@@ -80,14 +72,14 @@ public class UserServiceImpl implements UserService {
         return checkInstance(user);
     }
 
-    public User employeeActivation(int id){
+    public User employeeActivation(int id) {
         Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(true);
         return updateEntity(employee);
     }
 
     @Override
-    public User employeeDeactivation(int id){
+    public User employeeDeactivation(int id) {
         Employee employee = (Employee) userRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID: " + id + " not found."));
         employee.setActive(false);
         return updateEntity(employee);
@@ -101,19 +93,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer deleteUserByEmail(String email) {
-        if(SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")){
+        if (SpringSecurityUtil.hasRoleRole("ROLE_ADMIN")) {
             return userRepository.removeUserByEmail(email);
         }
-        if(SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE")) {
+        if (SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE")) {
             Optional<User> userOptional = userRepository.findByEmail(email);
-            if(userOptional.isPresent()){
+            if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                if(user.getRole().getRoleType() == RoleType.USER){
+                if (user.getRole().getRoleType() == RoleType.USER) {
                     return userRepository.removeUserByEmail(email);
                 }
             }
         }
-        if(SpringSecurityUtil.hasRoleRole("ROLE_USER")) {
+        if (SpringSecurityUtil.hasRoleRole("ROLE_USER")) {
             if (SpringSecurityUtil.getPrincipalEmail().equals(email)) {
                 return userRepository.removeUserByEmail(email);
             }
@@ -255,6 +247,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void PasswordResetSendToQueue(String email, String urlLink) {
+        PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
+        passwordChangeDto.setEmail(email);
+        passwordChangeDto.setUrlLink(urlLink);
+        try {
+            String json = objectMapper.writeValueAsString(passwordChangeDto);
+            rabbitTemplate.convertAndSend("password-forgot", json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean setPassword(String email, String password) {
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public User updateEntity(User user) {
         return this.userRepository.save(user);
     }
@@ -290,5 +309,46 @@ public class UserServiceImpl implements UserService {
         employee.setActive(true);
         employee = userRepository.save(employee);
         return userMapper.employeeToEmployeeDto(employee);
+    }
+
+    @Override
+    public AgentDto createAgent(AgentDto agentDto) {
+        if (userRepository.findByEmail(agentDto.getEmail()).isPresent())
+            throw new EmailTakenException(agentDto.getEmail());
+
+        Agent agent = userMapper.agentDtoToAgent(agentDto);
+        agent.setRole(roleRepository.findByRoleType(RoleType.AGENT)
+                .orElseThrow(() -> new MissingRoleException("AGENT")));
+
+        agent = userRepository.save(agent);
+
+        ActivationRequestDto activationRequestDto = new ActivationRequestDto();
+        activationRequestDto.setEmail(agent.getEmail());
+        activationRequestDto.setActivationUrl("https://google.com");
+        rabbitTemplate.convertAndSend("password-activation", activationRequestDto);
+
+        return userMapper.agentToAgentDto(agent);
+    }
+
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */3 * * * *") //every 3 minute
+    @SchedulerLock(name = "tasksScheduler-1")
+    public void executeScheduledTasks1(){
+        userRepository.findAll().forEach(user -> {
+            if(user.getPassword() == null){
+                userRepository.delete(user);
+            }
+        });
+    }
+
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */5 * * * *") //every 5 minutes
+    @SchedulerLock(name = "tasksScheduler-2")
+    public void executeScheduledTasks2(){
+        userRepository.findAll().forEach(user -> {
+            if(user.getPassword() == null || user.getPassword().equals("$2a$10$2iiyd4uPEfWi2/f0WjuwIuGgBULyhWMzpV7vSLJceB8ZxZyCsAALW")){
+                userRepository.delete(user);
+            }
+        });
     }
 }

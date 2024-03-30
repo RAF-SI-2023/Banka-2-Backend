@@ -1,14 +1,8 @@
 package rs.edu.raf.BankService.mapper;
 
 import org.springframework.stereotype.Component;
-import rs.edu.raf.BankService.data.dto.AccountDto;
-import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
-import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
-import rs.edu.raf.BankService.data.dto.ForeignCurrencyHolderDto;
-import rs.edu.raf.BankService.data.entities.Account;
-import rs.edu.raf.BankService.data.entities.DomesticCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.ForeignCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.ForeignCurrencyHolder;
+import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.*;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 
@@ -47,6 +41,18 @@ public class AccountMapper {
                 AccountType.FOREIGN_CURRENCY_ACCOUNT,
                 dto.getCurrencyCode(),
                 220.00
+        );
+    }
+
+    public BusinessAccount businessAccountDtoToBusinessAccount(BusinessAccountDto dto){
+        return new BusinessAccount(
+                dto.getAccountNumber(),
+                dto.getEmail(),
+                AccountType.BUSINESS_ACCOUNT,
+                dto.getCurrencyCode(),
+                220.00,
+                dto.getPIB(),
+                dto.getIdentificationNumber()
         );
     }
 
@@ -110,6 +116,25 @@ public class AccountMapper {
         );
     }
 
+    public BusinessAccountDto businessAccountToBusinessAccountDto(BusinessAccount account){
+        return new BusinessAccountDto(
+                account.getId(),
+                account.getAccountNumber(),
+                account.getLinkState(),
+                account.getEmail(),
+                account.isStatus(),
+                account.getAccountType().name(),
+                account.getAvailableBalance(),
+                account.getReservedFunds(),
+                account.getEmployeeId(),
+                account.getCreationDate(),
+                account.getExpirationDate(),
+                account.getCurrencyCode(),
+                account.getMaintenanceFee(),
+                account.getPIB(),
+                account.getIdentificationNumber()
+        );
+    }
 
     private List<ForeignCurrencyHolderDto> foreignCurrencyHolderListToForeignCurrencyHolderDtoList(List<ForeignCurrencyHolder> list){
         return list.stream()

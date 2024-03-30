@@ -1,8 +1,10 @@
 package rs.edu.raf.StockService.mapper;
 
+import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.data.dto.ExchangeDto;
 import rs.edu.raf.StockService.data.entities.Exchange;
 
+@Component
 public class ExchangeMapper {
     public ExchangeDto exchangeToExchangeDto(Exchange exchange) {
         return new ExchangeDto(

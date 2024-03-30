@@ -1,6 +1,7 @@
 package rs.edu.raf.StockService.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.repositories.CurrencyRepository;
@@ -22,21 +23,44 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
     //TODO neke metode findAll, findById, findByCurrencyCode, findByCurrencyName
 
-    //write findAll method
+    /**
+     * finds all currencies without their inflationLists, because of performance
+     *
+     * @return List of all currencies without inflationList
+     */
+    @Cacheable(value = "currency")
     public List<Currency> findAll() {
-        return currencyRepository.findAll();
+        return currencyRepository.findAllWithoutInflation();
     }
 
+    @Cacheable(value = "currencyId", key = "#id")
     public Currency findById(Long id) {
-        return currencyRepository.findById(id).orElse(null);
+        System.out.println("CurrencyServiceImpl.findById" + id);
+        Currency currency = currencyRepository.findById(id).orElse(null);
+        //zbog lazy load, da bi fetchovali, porblem kod kesiranja
+        if (currency != null) {
+            currency.getInflationList().size(); // Fetch the collection
+        }
+        return currency;
     }
 
+    @Cacheable(value = "currencyCode", key = "#currencyCode")
     public Currency findByCurrencyCode(String currencyCode) {
-        return currencyRepository.findByCurrencyCode(currencyCode);
+        Currency currency = currencyRepository.findByCurrencyCode(currencyCode);
+        System.out.println("CurrencyServiceImpl.findByCurrencyCode" + currencyCode);
+        if (currency != null) {
+            currency.getInflationList().size(); // Fetch the collection
+        }
+        return currency;
     }
 
+    @Cacheable(value = "currencyName", key = "#currencyName")
     public Currency findByCurrencyName(String currencyName) {
-        return currencyRepository.findByCurrencyName(currencyName);
+        Currency currency = currencyRepository.findByCurrencyName(currencyName);
+        if (currency != null) {
+            currency.getInflationList().size(); // Fetch the collection
+        }
+        return currency;
     }
 
 

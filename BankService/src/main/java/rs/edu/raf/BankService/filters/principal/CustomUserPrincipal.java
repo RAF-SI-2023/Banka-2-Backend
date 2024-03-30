@@ -5,22 +5,27 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
-public class CustomUserPrincipal extends User implements UserDetails{
-    private Long id;
+public class CustomUserPrincipal implements Principal {
+    private Long userId;
 
-    public CustomUserPrincipal(Long id, Collection<? extends GrantedAuthority> authorities) {
-        super(null, null, authorities);
-        this.id = id;
+    public CustomUserPrincipal(Long userId) {
+        this.userId = userId;
     }
 
-    public CustomUserPrincipal(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
+    // Standard getters and setters
+
+    // Možete dodati dodatne metode da vratite userId i permissions
+    public Long getUserId() {
+        return userId;
     }
 
-    public CustomUserPrincipal(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+    @Override
+    public String getName() {
+        return null;
     }
 }

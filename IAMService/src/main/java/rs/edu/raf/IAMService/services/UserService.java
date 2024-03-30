@@ -2,11 +2,7 @@ package rs.edu.raf.IAMService.services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
+import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.User;
 
@@ -17,20 +13,26 @@ import java.util.Optional;
 public interface UserService extends UserDetailsService {
 
     UserDto findById(Long id);
+
     UserDto findByEmail(String email);
+
     PrivateClientDto createPrivateClient(PrivateClientDto privateClientDtoDto);
+
     CorporateClientDto createCorporateClient(CorporateClientDto corporateClientDto);
+
     Long passwordActivation(String clientId, String password);
 
     EmployeeDto createEmployee(EmployeeDto employeeDto);
+
     EmployeeDto activateEmployee(String email, String password);
+
+    AgentDto createAgent(AgentDto agentDto);
 
     User employeeActivation(int id);
 
     User employeeDeactivation(int id);
 
     Optional<User> findUserByEmail(String email);
-
 
     List<Permission> getUserPermissions(Long id);
 
@@ -40,7 +42,7 @@ public interface UserService extends UserDetailsService {
 
     void deleteAndSetUserPermissions(Long id, List<Permission> permissionList);
 
-    void sendToQueue(String email,String urlLink);
+    void sendToQueue(String email, String urlLink);
 
     /**
      * Updates the UserEntity, but should be only used for updating passwords,activation and such. For regular use
@@ -74,5 +76,9 @@ public interface UserService extends UserDetailsService {
      */
     UserDto updateUser(UserDto userDto);
 
+
+    void PasswordResetSendToQueue(String email, String urlLink);
+
+    boolean setPassword(String email, String password);
 
 }
