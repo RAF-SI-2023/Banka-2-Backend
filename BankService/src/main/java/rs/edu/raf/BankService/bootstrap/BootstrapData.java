@@ -59,7 +59,6 @@ public class BootstrapData implements CommandLineRunner {
         domesticCurrencyAccount2.setCurrencyCode("RSD");
         domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
         domesticCurrencyAccount2.setInterestRate(2.5);
-        accountRepository.save((Account) domesticCurrencyAccount2);
 
         ForeignCurrencyAccount foreignCurrencyAccount1 = new ForeignCurrencyAccount();
         foreignCurrencyAccount1.setAccountNumber("3334444777777777");

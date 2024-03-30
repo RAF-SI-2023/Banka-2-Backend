@@ -35,7 +35,10 @@ public class RabbitMQListeners {
         if (!isValid(passwordActivationDto)) return;
 
         EmailDto activationEmail = emailDtoMapper.activationEmail(passwordActivationDto);
+
         logger.info("passwordActivationListener received message" + activationEmail);
+
+        emailService.sendSimpleMailMessage(passwordActivationDto.getEmail(), passwordActivationDto.getSubject(), passwordActivationDto.getActivationUrl());
 
     }
 
