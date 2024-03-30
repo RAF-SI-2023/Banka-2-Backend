@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,6 +28,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
 import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -328,6 +330,15 @@ public class UserServiceImpl implements UserService {
         rabbitTemplate.convertAndSend("password-activation", activationRequestDto);
 
         return userMapper.agentToAgentDto(agent);
+    }
+
+    @Override
+    public BigDecimal getAgentsLimit(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + "not found."));
+        if(user instanceof Agent agent){
+            return agent.getLimit();
+        }
+        throw new NotFoundException("Agent with id: " + id + "not found.");
     }
 
     @Transactional(dontRollbackOn = Exception.class)

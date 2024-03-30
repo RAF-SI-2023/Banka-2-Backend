@@ -6,6 +6,7 @@ import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.entites.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ public interface UserService extends UserDetailsService {
     EmployeeDto activateEmployee(String email, String password);
 
     AgentDto createAgent(AgentDto agentDto);
+
+    BigDecimal getAgentsLimit(Long id);
 
     User employeeActivation(int id);
 
