@@ -1,41 +1,20 @@
 version: '3.8'
-# Don`t touch unless u know what u are doing!
 services:
-  bank-db:
+  app-db:
     image: postgres
     container_name: bank-db
     environment:
-      POSTGRES_DB: BankServiceDB
+      POSTGRES_DB: bank-db
       POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
     ports:
-      - "5434:5432"
-
-  iam-db:
-    image: postgres
-    container_name: iam-db
-    environment:
-      POSTGRES_DB: IamServiceDB
-      POSTGRES_HOST_AUTH_METHOD: trust
-    ports:
-      - "5433:5432"
-
-  notification-db:
-    image: postgres
-    container_name: notification-db
-    environment:
-      POSTGRES_DB: NotificationServiceDB
-      POSTGRES_HOST_AUTH_METHOD: trust
-    ports:
-      - "5435:5432"
-
-  stock-db:
-    image: postgres
-    container_name: stock-db
-    environment:
-      POSTGRES_DB: StockServiceDB
-      POSTGRES_HOST_AUTH_METHOD: trust
-    ports:
-      - "5436:5432"
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bank-db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   stock-redis:
     image: redis
@@ -47,6 +26,11 @@ services:
       ALLOW_EMPTY_PASSWORD: "yes"
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -57,15 +41,6 @@ services:
       - "5672:5672"
     volumes:
       - "./rabbitdata:/var/lib/rabbitmq"
-
-#    image: rabbitmq:3-management
-#    container_name: rabbitmq
-#    environment:
-#      RABBITMQ_DEFAULT_USER: guest
-#      RABBITMQ_DEFAULT_PASSWORD: guest
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 5s
@@ -78,10 +53,13 @@ services:
     ports:
       - "8003:8003"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://bank-db:5432/BankServiceDB
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=bank_service_schema
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
-      - bank-db
-      - rabbitmq
+      app-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
 
   iam-service:
     build: ./IAMService
@@ -89,10 +67,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://iam-db:5432/IamServiceDB
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=iam_service_schema
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
-      - iam-db
-      - rabbitmq
+      app-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
 
   notification-service:
     build: ./NotificationService
@@ -100,23 +81,26 @@ services:
     ports:
       - "8002:8002"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://notification-db:5432/NotificationServiceDB
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=notification_service_schema
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on: #conditions for service to start, its a black magic dont touch unless u know what u are doing!
-      notification-db:
-        condition: service_started
       rabbitmq:
         condition: service_healthy
 
-  
   stock-service:
     build: ./StockService
     container_name: stock-service
     ports:
       - "8001:8001"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stock-db:5432/StockServiceDB
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=stock_service_schema
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_REDIS_HOST=stock-redis
     depends_on:
-      - stock-db
-      - rabbitmq
-      - stock-redis
+      app-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      stock-redis:
+        condition: service_started
+
