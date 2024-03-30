@@ -16,6 +16,7 @@ import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
 import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
 import rs.edu.raf.NotificationService.listener.RabbitMQListeners;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
+import rs.edu.raf.NotificationService.services.EmailService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,9 +32,6 @@ public class RabbitMQListenersUnitTest {
 
     private final String validEmail = "test@example.com";
     private final String validUrl = "http://example.com/activate";
-    private final String blankEmail = "";
-    private final String invalidEmail = "test";
-    private final String blankUrl = "";
     @Mock
     private Logger logger;
     @Spy
@@ -42,6 +40,8 @@ public class RabbitMQListenersUnitTest {
     private ObjectMapper objectMapper = new ObjectMapper();
     @Spy
     private EmailDtoMapper emailDtoMapper;
+    @Mock
+    private EmailService emailService;
     @InjectMocks
     private RabbitMQListeners rabbitMQListeners;
 
@@ -91,10 +91,14 @@ public class RabbitMQListenersUnitTest {
 
     @Test
     void passwordActivationInvalidInputs() {
-        List<Message> invalidMessages = createInvalidMessages("email", "activationUrl");
+        List<PasswordActivationDto> invalidDtos = new ArrayList<>();
+        invalidDtos.add(new PasswordActivationDto("", "url"));
+        invalidDtos.add(new PasswordActivationDto("email@gmail.com", ""));
+        invalidDtos.add(new PasswordActivationDto(null, "url"));
+        invalidDtos.add(new PasswordActivationDto("email@gmail.com", null));
         try {
-            for (Message message : invalidMessages) {
-                rabbitMQListeners.passwordActivationHandler(new PasswordActivationDto("example@raf.rs","url"));
+            for (PasswordActivationDto passwordActivationDto : invalidDtos) {
+                rabbitMQListeners.passwordActivationHandler(passwordActivationDto);
                 verify(emailDtoMapper, never()).activationEmail(any());
             }
         } catch (IOException e) {
@@ -104,10 +108,15 @@ public class RabbitMQListenersUnitTest {
 
     @Test
     void passwordChangeInvalidInputs() {
-        List<Message> invalidMessages = createInvalidMessages("email", "urlLink");
+        List<PasswordChangeDto> invalidDtos = new ArrayList<>();
+        invalidDtos.add(new PasswordChangeDto("", "url"));
+        invalidDtos.add(new PasswordChangeDto("email@gmail.com", ""));
+        invalidDtos.add(new PasswordChangeDto(null, "url"));
+        invalidDtos.add(new PasswordChangeDto("email@gmail.com", null));
+
         try {
-            for (Message message : invalidMessages) {
-                rabbitMQListeners.passwordChangeHandler(new PasswordChangeDto("","url"));
+            for (PasswordChangeDto passwordChangeDto : invalidDtos) {
+                rabbitMQListeners.passwordChangeHandler(passwordChangeDto);
                 verify(emailDtoMapper, never()).changePasswordEmail(any());
             }
         } catch (IOException e) {
@@ -125,23 +134,8 @@ public class RabbitMQListenersUnitTest {
         }
     }
 
-    private List<Message> createInvalidMessages(String prop1, String prop2) {
-        List<Message> invalidMessages = new ArrayList<>();
-        invalidMessages.add(createMockMessage(generateJson(prop1, prop2, blankEmail, validUrl)));
-        invalidMessages.add(createMockMessage(generateJson(prop1, prop2, invalidEmail, validUrl)));
-        invalidMessages.add(createMockMessage(generateJson(prop1, prop2, validEmail, blankUrl)));
-        invalidMessages.add(createMockMessage(generateJson(prop1, prop2, blankEmail, blankUrl)));
-        invalidMessages.add(null);
-        return invalidMessages;
-    }
-
     private String generateJson(String propName1, String propName2, String value1, String value2) {
         return "{\"" + propName1 + "\":\"" + value1 + "\",\"" + propName2 + "\":\"" + value2 + "\"}";
-    }
-
-    private Message createMockMessage(String content) {
-        byte[] body = content.getBytes();
-        return new Message(body);
     }
 
 }
