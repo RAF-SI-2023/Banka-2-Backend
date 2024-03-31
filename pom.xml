@@ -27,6 +27,7 @@
         <module>StockService</module>
         <module>NotificationService</module>
         <module>BankService</module>
+        <module>OTCService</module>
     </modules>
 
     <build>
