@@ -377,4 +377,14 @@ public class UserServiceImpl implements UserService {
             }
         });
     }
+
+    @Transactional(dontRollbackOn = Exception.class)
+    @Scheduled(cron = "0 */1 * * * *")//0 59 23 * * * every day at 23:59
+    @SchedulerLock(name = "tasksScheduler-3")
+    public void executeScheduledTasks3(){
+        userRepository.findAllAgents().forEach(agent -> {
+            agent.setLeftOfLimit(agent.getLimit());
+            userRepository.save(agent);
+        });
+    }
 }

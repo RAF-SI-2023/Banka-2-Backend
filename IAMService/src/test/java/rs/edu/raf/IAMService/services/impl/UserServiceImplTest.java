@@ -23,6 +23,7 @@ import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -371,5 +372,75 @@ class UserServiceImplTest {
 
         // Execution and Assertion
         assertThrows(EmailNotFoundException.class, () -> userService.activateEmployee(email, password));
+    }
+
+    @Test
+    public void getAgentsLimitTest(){
+        Long agentId = 1L;
+        BigDecimal agentLimit = new BigDecimal(1000);
+        Agent agent = new Agent();
+        agent.setId(agentId);
+        agent.setLimit(agentLimit);
+
+        when(userRepository.findById(agentId)).thenReturn(Optional.of(agent));
+
+        BigDecimal result = userService.getAgentsLimit(agentId);
+
+        assertEquals(agentLimit, result);
+    }
+
+    @Test
+    public void getAgentsLimitNotFoundTest(){
+        Long agentId = 1L;
+
+        when(userRepository.findById(agentId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> userService.getAgentsLimit(agentId));
+    }
+
+    @Test
+    public void getAgentsLimitNotAgentTest(){
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(NotFoundException.class, () -> userService.getAgentsLimit(userId));
+    }
+
+    @Test
+    public void resetAgentsLimitTest(){
+        Long agentId = 1L;
+        Agent agent = new Agent();
+        agent.setId(agentId);
+
+        when(userRepository.findById(agentId)).thenReturn(Optional.of(agent));
+
+        userService.resetAgentsLimit(agentId);
+
+        verify(userRepository, times(1)).save(agent);
+
+    }
+
+
+    @Test
+    public void resetAgentsLimitNotFoundTest(){
+        Long agentId = 1L;
+
+        when(userRepository.findById(agentId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> userService.resetAgentsLimit(agentId));
+    }
+
+    @Test
+    public void resetAgentsLimitNotAgentTest(){
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(NotFoundException.class, () -> userService.resetAgentsLimit(userId));
     }
 }

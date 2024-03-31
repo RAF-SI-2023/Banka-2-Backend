@@ -93,22 +93,38 @@ public class BootstrapData implements CommandLineRunner {
         employee1.setPermissions(List.of(per1, per2));
         userRepository.save(employee1);
 
-        Agent agent = new Agent();
-        agent.setEmail("agent@gmail.com");
-        agent.setUsername("agent@gmail.com");
-        agent.setPassword(passwordEncoder.encode("agent"));
-        agent.setRole(agentRole);
-        agent.setLimit(new BigDecimal("12345.67"));
-        agent.setLeftOfLimit(new BigDecimal("578.42"));
-        employee1.setPermissions(List.of(per1, per2));
-        userRepository.save(agent);
+        Agent agent1 = new Agent();
+        agent1.setEmail("agent1@gmail.com");
+        agent1.setUsername("agent1@gmail.com");
+        agent1.setPassword(passwordEncoder.encode("agent"));
+        agent1.setRole(agentRole);
+        agent1.setLimit(new BigDecimal("12345.67"));
+        agent1.setLeftOfLimit(new BigDecimal("578.42"));
+        userRepository.save(agent1);
+
+        Agent agent2 = new Agent();
+        agent2.setEmail("agent2@gmail.com");
+        agent2.setUsername("agent2@gmail.com");
+        agent2.setPassword(passwordEncoder.encode("agent"));
+        agent2.setRole(agentRole);
+        agent2.setLimit(new BigDecimal("22378.55"));
+        agent2.setLeftOfLimit(new BigDecimal("1063.31"));
+        userRepository.save(agent2);
+
+        Agent agent3 = new Agent();
+        agent3.setEmail("agent3@gmail.com");
+        agent3.setUsername("agent3@gmail.com");
+        agent3.setPassword(passwordEncoder.encode("agent"));
+        agent3.setRole(agentRole);
+        agent3.setLimit(new BigDecimal("36890.67"));
+        agent3.setLeftOfLimit(new BigDecimal("1578.87"));
+        userRepository.save(agent3);
 
         Supervisor supervisor = new Supervisor();
         supervisor.setEmail("supervisor@gmail.com");
         supervisor.setUsername("supervisor@gmail.com");
         supervisor.setPassword(passwordEncoder.encode("supervisor"));
         supervisor.setRole(supervisorRole);
-        employee1.setPermissions(List.of(per1, per2));
         userRepository.save(supervisor);
 
         CorporateClient corporateClient= new CorporateClient();
