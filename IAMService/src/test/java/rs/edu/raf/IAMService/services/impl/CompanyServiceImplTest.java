@@ -1,10 +1,25 @@
 package rs.edu.raf.IAMService.services.impl;
 
+import io.cucumber.java.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.Assert;
+import rs.edu.raf.IAMService.controllers.CompanyController;
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
 import rs.edu.raf.IAMService.data.entites.Company;
 import rs.edu.raf.IAMService.exceptions.CompanyNotFoundException;
@@ -22,6 +37,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.util.Optional;
 
+
 @ExtendWith(MockitoExtension.class)
 class CompanyServiceImplTest {
 
@@ -33,6 +49,8 @@ class CompanyServiceImplTest {
 
     @InjectMocks
     private CompanyServiceImpl companyService;
+
+
 
     @Test
     void createCompany_Success() {
@@ -103,12 +121,19 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void deleteCompanyById_Success() {
+    void deleteCompanyById_Success(){
 
         Long id = Long.valueOf(1);
 
         companyService.deleteCompanyById(id);
 
+        Company company = null;
+        Optional<Company> optionalCompany = companyRepository.findById(id);
+        if (optionalCompany.isPresent()){
+            company = optionalCompany.get();
+        }
+
+        org.assertj.core.api.Assertions.assertThat(company).isNull();
         verify(companyRepository, times(1)).deleteById(id);
 
     }
