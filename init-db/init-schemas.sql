@@ -6,5 +6,7 @@ CREATE SCHEMA IF NOT EXISTS notification_service_schema;
 
 CREATE SCHEMA IF NOT EXISTS stock_service_schema;
 
+CREATE SCHEMA IF NOT EXISTS otc_service_schema;
+
 
 
