@@ -15,6 +15,7 @@ import rs.edu.raf.IAMService.repositories.PermissionRepository;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -44,7 +45,6 @@ public class BootstrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         logger.info("DATA LOADING IN PROGRESS...");
-
 
         Role adminRole = new Role();
         adminRole.setRoleType(RoleType.ADMIN);
@@ -92,6 +92,24 @@ public class BootstrapData implements CommandLineRunner {
         employee1.setRole(employeeRole);
         employee1.setPermissions(List.of(per1, per2));
         userRepository.save(employee1);
+
+        Agent agent = new Agent();
+        agent.setEmail("agent@gmail.com");
+        agent.setUsername("agent@gmail.com");
+        agent.setPassword(passwordEncoder.encode("agent"));
+        agent.setRole(agentRole);
+        agent.setLimit(new BigDecimal("12345.67"));
+        agent.setLeftOfLimit(new BigDecimal("578.42"));
+        employee1.setPermissions(List.of(per1, per2));
+        userRepository.save(agent);
+
+        Supervisor supervisor = new Supervisor();
+        supervisor.setEmail("supervisor@gmail.com");
+        supervisor.setUsername("supervisor@gmail.com");
+        supervisor.setPassword(passwordEncoder.encode("supervisor"));
+        supervisor.setRole(supervisorRole);
+        employee1.setPermissions(List.of(per1, per2));
+        userRepository.save(supervisor);
 
         CorporateClient corporateClient= new CorporateClient();
         corporateClient.setEmail(myEmail3);

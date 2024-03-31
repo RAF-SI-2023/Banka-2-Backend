@@ -153,6 +153,13 @@ public class UserController {
         return ResponseEntity.ok(userService.getAgentsLimit(id));
     }
 
+    @PatchMapping(path = "/agent-limit/reset/{id}", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasAuthority('SUPERVISOR')")
+    public ResponseEntity<Void> resetAgentsLimit(@PathVariable Long id){
+        userService.resetAgentsLimit(id);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping(path = "/delete/{email}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Transactional

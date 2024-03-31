@@ -153,6 +153,10 @@ public class UserServiceImpl implements UserService {
             return userMapper.corporateClientToCorporateClientDto((CorporateClient) user);
         if (user instanceof PrivateClient)
             return userMapper.privateClientToPrivateClientDto((PrivateClient) user);
+        if(user instanceof Supervisor)
+            return userMapper.supervisorToSupervisorDto((Supervisor) user);
+        if(user instanceof Agent)
+            return userMapper.agentToAgentDto((Agent) user);
         return userMapper.userToUserDto(user);
     }
 
@@ -334,11 +338,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BigDecimal getAgentsLimit(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + "not found."));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
         if(user instanceof Agent agent){
             return agent.getLimit();
         }
-        throw new NotFoundException("Agent with id: " + id + "not found.");
+        throw new NotFoundException("Agent with id: " + id + " not found.");
+    }
+
+    @Override
+    public void resetAgentsLimit(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
+        if(user instanceof Agent agent){
+            agent.setLeftOfLimit(agent.getLimit());
+            userRepository.save(agent);
+            return;
+        }
+        throw new NotFoundException("Agent with id: " + id + " not found.");
     }
 
     @Transactional(dontRollbackOn = Exception.class)
