@@ -48,13 +48,13 @@ public class CurrencyController {
     }
 
     @GetMapping("/inflation/currency-id/{currencyId}")
-    public ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable long currencyId) {
+    public ResponseEntity<List<CurrencyInflation>> findInflationByCurrencyId(@PathVariable Long currencyId) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyId(currencyId));
     }
 
-    //videti ovo, trenutno ne funkiconise
+
     @GetMapping("/inflation")
-    public ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") long currencyId, @Param("year") long year) {
+    public ResponseEntity<CurrencyInflation> findInflationByCurrencyIdAndYear(@Param("currencyId") Long currencyId, @Param("year") long year) {
         return ResponseEntity.ok(currencyInflationServiceImpl.findInflationByCurrencyIdAndYear(currencyId, year));
     }
 
