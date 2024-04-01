@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import rs.edu.raf.StockService.controllers.CurrencyController;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
+import rs.edu.raf.StockService.services.impl.CurrencyInflationServiceImpl;
+import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
 import rs.edu.raf.StockService.services.impl.InMemoryCurrencyInflationServiceImpl;
 import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
@@ -23,10 +25,10 @@ import static org.mockito.Mockito.when;
 public class CurrencyControllerTests {
 
     @Mock
-    private InMemoryCurrencyServiceImpl currencyService;
+    private CurrencyServiceImpl currencyService;
 
     @Mock
-    private InMemoryCurrencyInflationServiceImpl currencyInflationService;
+    private CurrencyInflationServiceImpl currencyInflationService;
 
     @InjectMocks
     private CurrencyController currencyController;
