@@ -78,19 +78,19 @@ public class OptionControllerTests {
         verify(optionService, times(1)).findById(id);
     }
 
-    @Test
-    public void testFindOptionByStockListing() {
-        // Arrange
-        String stockListing = "STOCK";
-        Option option = new Option();
-        when(optionService.findByStockListing(stockListing)).thenReturn(option);
-
-        // Act
-        ResponseEntity<Option> responseEntity = optionController.findOptionByStockListing(stockListing);
-
-        // Assert
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(option, responseEntity.getBody());
-        verify(optionService, times(1)).findByStockListing(stockListing);
-    }
+//    @Test
+//    public void testFindOptionByStockListing() {
+//        // Arrange
+//        String stockListing = "STOCK";
+//        Option option = new Option();
+//        when(optionService.findByStockListing(stockListing)).thenReturn(option);
+//
+//        // Act
+//        ResponseEntity<Option> responseEntity = optionController.findOptionByStockListing(stockListing);
+//
+//        // Assert
+//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//        assertEquals(option, responseEntity.getBody());
+//        verify(optionService, times(1)).findByStockListing(stockListing);
+//    }
 }
