@@ -88,6 +88,7 @@ public class CompanyServiceImpl implements CompanyService {
         companyToModify.setFaxNumber(companyDto.getFaxNumber());
         companyToModify.setPhoneNumber(companyDto.getPhoneNumber());
         companyToModify.setActivityCode(companyDto.getActivityCode());
+        companyToModify.setAddress(companyDto.getAddress());
 
         return companyToModify;
     }
