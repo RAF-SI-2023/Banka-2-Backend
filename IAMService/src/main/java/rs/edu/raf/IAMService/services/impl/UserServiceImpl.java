@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -153,9 +152,9 @@ public class UserServiceImpl implements UserService {
             return userMapper.corporateClientToCorporateClientDto((CorporateClient) user);
         if (user instanceof PrivateClient)
             return userMapper.privateClientToPrivateClientDto((PrivateClient) user);
-        if(user instanceof Supervisor)
+        if (user instanceof Supervisor)
             return userMapper.supervisorToSupervisorDto((Supervisor) user);
-        if(user instanceof Agent)
+        if (user instanceof Agent)
             return userMapper.agentToAgentDto((Agent) user);
         return userMapper.userToUserDto(user);
     }
@@ -270,7 +269,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        if (optionalUser.isPresent()){
+        if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
@@ -339,7 +338,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public BigDecimal getAgentsLimit(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
-        if(user instanceof Agent agent){
+        if (user instanceof Agent agent) {
             return agent.getLimit();
         }
         throw new NotFoundException("Agent with id: " + id + " not found.");
@@ -348,7 +347,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetAgentsLimit(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
-        if(user instanceof Agent agent){
+        if (user instanceof Agent agent) {
             agent.setLeftOfLimit(agent.getLimit());
             userRepository.save(agent);
             return;
@@ -359,9 +358,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(dontRollbackOn = Exception.class)
     @Scheduled(cron = "0 */3 * * * *") //every 3 minute
     @SchedulerLock(name = "tasksScheduler-1")
-    public void executeScheduledTasks1(){
+    public void executeScheduledTasks1() {
         userRepository.findAll().forEach(user -> {
-            if(user.getPassword() == null){
+            if (user.getPassword() == null) {
                 userRepository.delete(user);
             }
         });
@@ -370,18 +369,18 @@ public class UserServiceImpl implements UserService {
     @Transactional(dontRollbackOn = Exception.class)
     @Scheduled(cron = "0 */5 * * * *") //every 5 minutes
     @SchedulerLock(name = "tasksScheduler-2")
-    public void executeScheduledTasks2(){
+    public void executeScheduledTasks2() {
         userRepository.findAll().forEach(user -> {
-            if(user.getPassword() == null || user.getPassword().equals("$2a$10$2iiyd4uPEfWi2/f0WjuwIuGgBULyhWMzpV7vSLJceB8ZxZyCsAALW")){
+            if (user.getPassword() == null || user.getPassword().equals("$2a$10$2iiyd4uPEfWi2/f0WjuwIuGgBULyhWMzpV7vSLJceB8ZxZyCsAALW")) {
                 userRepository.delete(user);
             }
         });
     }
 
     @Transactional(dontRollbackOn = Exception.class)
-    @Scheduled(cron = "0 */1 * * * *")//0 59 23 * * * every day at 23:59
+    @Scheduled(cron = "0 59 23 * * *")// every day at 23:59
     @SchedulerLock(name = "tasksScheduler-3")
-    public void executeScheduledTasks3(){
+    public void executeScheduledTasks3() {
         userRepository.findAllAgents().forEach(agent -> {
             agent.setLeftOfLimit(agent.getLimit());
             userRepository.save(agent);

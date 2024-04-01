@@ -375,7 +375,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void getAgentsLimitTest(){
+    public void getAgentsLimitTest() {
         Long agentId = 1L;
         BigDecimal agentLimit = new BigDecimal(1000);
         Agent agent = new Agent();
@@ -390,7 +390,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void getAgentsLimitNotFoundTest(){
+    public void getAgentsLimitNotFoundTest() {
         Long agentId = 1L;
 
         when(userRepository.findById(agentId)).thenReturn(Optional.empty());
@@ -399,7 +399,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void getAgentsLimitNotAgentTest(){
+    public void getAgentsLimitNotAgentTest() {
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
@@ -410,7 +410,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void resetAgentsLimitTest(){
+    public void resetAgentsLimitTest() {
         Long agentId = 1L;
         Agent agent = new Agent();
         agent.setId(agentId);
@@ -425,7 +425,7 @@ class UserServiceImplTest {
 
 
     @Test
-    public void resetAgentsLimitNotFoundTest(){
+    public void resetAgentsLimitNotFoundTest() {
         Long agentId = 1L;
 
         when(userRepository.findById(agentId)).thenReturn(Optional.empty());
@@ -434,7 +434,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void resetAgentsLimitNotAgentTest(){
+    public void resetAgentsLimitNotAgentTest() {
         Long userId = 1L;
         User user = new User();
         user.setId(userId);

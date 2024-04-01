@@ -22,24 +22,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1}")
-    private String myEmail1;
-
-    @Value("${MY_EMAIL_2}")
-    private String myEmail2;
-
-    @Value("${MY_EMAIL_3}")
-    private String myEmail3;
-
-    @Value("${MY_EMAIL_4}")
-    private String myEmail4;
-
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepository companyRepository;
+    @Value("${MY_EMAIL_1}")
+    private String myEmail1;
+    @Value("${MY_EMAIL_2}")
+    private String myEmail2;
+    @Value("${MY_EMAIL_3}")
+    private String myEmail3;
+    @Value("${MY_EMAIL_4}")
+    private String myEmail4;
 
     @Override
     public void run(String... args) throws Exception {
@@ -127,7 +123,7 @@ public class BootstrapData implements CommandLineRunner {
         supervisor.setRole(supervisorRole);
         userRepository.save(supervisor);
 
-        CorporateClient corporateClient= new CorporateClient();
+        CorporateClient corporateClient = new CorporateClient();
         corporateClient.setEmail(myEmail3);
         corporateClient.setUsername(myEmail3);
         corporateClient.setPassword(passwordEncoder.encode("corporate"));
