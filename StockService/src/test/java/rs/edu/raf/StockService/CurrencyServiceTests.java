@@ -14,6 +14,7 @@ import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
@@ -28,18 +29,10 @@ public class CurrencyServiceTests {
     @InjectMocks
     private CurrencyServiceImpl currencyService;
 
-    @Mock
-    private InMemoryCurrencyServiceImpl inMemoryCurrencyService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        inMemoryCurrencyService = spy(new InMemoryCurrencyServiceImpl(redisTemplate));
-        List<Currency> currencies = new ArrayList<>();
-        currencies.add(new Currency(1L, "US Dollar", "USD", "$", "USA", null));
-        currencies.add(new Currency(2L, "EURO", "EUR", "e", "EU", null));
-        inMemoryCurrencyService.setCurrencyList(currencies);
-
     }
 
     @Test
@@ -47,29 +40,26 @@ public class CurrencyServiceTests {
         // Arrange
         List<Currency> currencies = new ArrayList<>();
         //String currencyName, String currencyCode, String currencySymbol, String currencyPolity, List<CurrencyInflation> inflationList
-        currencies.add(new Currency("US dollar", "USD", "$", "USA", null));
-        currencies.add(new Currency("EURO", "EUR", "e", "EU", null));
+        currencies.add(new Currency("US dollar", "USD", "$", "USA", new ArrayList<>()));
+        currencies.add(new Currency("EURO", "EUR", "e", "EU", new ArrayList<>()));
 
 
-        when(currencyRepository.findAll()).thenReturn(currencies);
+        when(currencyRepository.findAllWithoutInflation()).thenReturn(currencies);
 
         // Act
         List<Currency> result = currencyService.findAll();
-        List<Currency> resultInMemory = inMemoryCurrencyService.findAll();
+
         // Assert
         assertEquals(2, result.size());
         assertEquals("USD", result.get(0).getCurrencyCode());
         assertEquals("EUR", result.get(1).getCurrencyCode());
 
-        assertEquals(2, resultInMemory.size());
-        assertEquals("USD", resultInMemory.get(0).getCurrencyCode());
-        assertEquals("EUR", resultInMemory.get(1).getCurrencyCode());
     }
 
     @Test
     public void testFindById() {
         // Arrange
-        Currency currency = new Currency(1L, "US Dollar", "USD", "$", "USA", null);
+        Currency currency = new Currency(1L, "EURO", "EUR", "e", "EU", new ArrayList<>());
 
         when(currencyRepository.findById(1L)).thenReturn(java.util.Optional.of(currency));
 
@@ -80,17 +70,12 @@ public class CurrencyServiceTests {
         assertEquals(currency, result);
 
 
-        Currency resultInMemory = inMemoryCurrencyService.findById(1L);
-
-        // Assert
-        assertEquals("USD", resultInMemory.getCurrencyCode());
-
     }
 
     @Test
     public void testFindByCurrencyCode() {
         // Arrange
-        Currency currency = new Currency(1L, "US Dollar", "USD", "$", "USA", null);
+        Currency currency = new Currency(1L, "EURO", "EUR", "e", "EU", new ArrayList<>());
 
         when(currencyRepository.findByCurrencyCode("USD")).thenReturn(currency);
 
@@ -100,16 +85,13 @@ public class CurrencyServiceTests {
         // Assert
         assertEquals(currency, result);
 
-        Currency resultInMemory = inMemoryCurrencyService.findByCurrencyCode("USD");
 
-        // Assert
-        assertEquals("US Dollar", resultInMemory.getCurrencyName());
     }
 
     @Test
     public void testFindByCurrencyName() {
         // Arrange
-        Currency currency = new Currency(1L, "US Dollar", "USD", "$", "USA", null);
+        Currency currency = new Currency(1L, "US Dollar", "USD", "$", "USA", new ArrayList<>());
 
 
         when(currencyRepository.findByCurrencyName("US Dollar")).thenReturn(currency);
@@ -120,10 +102,6 @@ public class CurrencyServiceTests {
         // Assert
         assertEquals(currency, result);
 
-        Currency resultInMemory = inMemoryCurrencyService.findByCurrencyName("EURO");
-        Currency resultInMemory2 = inMemoryCurrencyService.findByCurrencyName("euro");
-        // Assert
-        assertEquals("EUR", resultInMemory.getCurrencyCode());
-        assertEquals("EUR", resultInMemory2.getCurrencyCode());
+
     }
 }

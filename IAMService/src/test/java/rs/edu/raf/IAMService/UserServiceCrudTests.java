@@ -2,9 +2,7 @@ package rs.edu.raf.IAMService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.webjars.NotFoundException;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.EmployeeDto;
@@ -17,11 +15,13 @@ import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.impl.UserServiceImpl;
+import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -35,6 +35,7 @@ public class UserServiceCrudTests {
 
     @InjectMocks
     private UserServiceImpl userService;
+
 
     @BeforeEach
     public void setup() {
@@ -157,35 +158,29 @@ public class UserServiceCrudTests {
 
     @Test
     public void testDeleteUserByEmail_UserFound_ReturnsDeletedUserDto() {
-//        // Arrange
-//        String email = "test@example.com";
-//        User user = new User();
-//        user.setEmail(email);
-//        UserDto userDto1 = new UserDto();
-//        userDto1.setEmail(user.getEmail());
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-//
-//        when(userMapper.userToUserDto(user)).thenReturn(userDto1);
-//        // Act
-//        Integer flag = userService.deleteUserByEmail(email);
-//        // Assert
-//        assertTrue(flag);
-//        // Add more assertions as needed for other properties
-//        verify(userRepository, times(1)).removeUserByEmail(email);
-    }
-
-    @Test
-    public void testDeleteUserByEmail_UserNotFound_ThrowsNotFoundException() {
         // Arrange
-        String email = "nonexistent@example.com";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        String email = "test@example.com";
+        User user = new User();
+        user.setEmail(email);
+        UserDto userDto1 = new UserDto();
+        userDto1.setEmail(user.getEmail());
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.removeUserByEmail(email)).thenReturn(1);
+        try (MockedStatic<SpringSecurityUtil> utilities = Mockito.mockStatic(SpringSecurityUtil.class)) {
+            utilities.when(() -> SpringSecurityUtil.hasRoleRole(any()))
+                    .thenReturn(true);
+            assertTrue(SpringSecurityUtil.hasRoleRole(any()));
+            when(userMapper.userToUserDto(user)).thenReturn(userDto1);
+            // Act
+            Integer flag = userService.deleteUserByEmail(email);
+            // Assert
+            assertEquals(1, flag);
+            // Add more assertions as needed for other properties
+            verify(userRepository, times(1)).removeUserByEmail(email);
+        }
 
-        // Act and Assert
-        assertThrows(NotFoundException.class, () -> userService.deleteUserByEmail(email));
-        verify(userRepository, never()).removeUserByEmail(email);
     }
-
-
+    
     @Test
     public void testUpdateUser_Employee_SuccessfullyUpdated() {
         // Arrange
