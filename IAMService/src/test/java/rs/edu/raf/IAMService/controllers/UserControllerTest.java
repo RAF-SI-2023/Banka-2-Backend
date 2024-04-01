@@ -26,6 +26,7 @@ import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.filters.JwtFilter;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
+import rs.edu.raf.IAMService.services.impl.PasswordChangeTokenServiceImpl;
 import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
@@ -74,66 +75,69 @@ class UserControllerTest {
     @MockBean
     private JwtUtil jwtUtil;
 
+    @MockBean
+    private PasswordChangeTokenServiceImpl passwordChangeTokenService;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-//    @Test
-//    void createPrivateClient_happyFlow_returnsOk() throws Exception {
-//        PrivateClientDto clientDto = new PrivateClientDto();
-//        when(userService.createPrivateClient(any(PrivateClientDto.class)))
-//                .thenReturn(clientDto);
-//
-//        mockMvc.perform(post("/api/users/public/private-client")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(clientDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-//    }
+    @Test
+    void createPrivateClient_happyFlow_returnsOk() throws Exception {
+        PrivateClientDto clientDto = new PrivateClientDto();
+        when(userService.createPrivateClient(any(PrivateClientDto.class)))
+                .thenReturn(clientDto);
 
-//    @Test
-//    void createCorporateClient_happyFlow_returnsOk() throws Exception {
-//        CorporateClientDto clientDto = new CorporateClientDto();
-//        when(userService.createCorporateClient(any(CorporateClientDto.class)))
-//                .thenReturn(clientDto);
-//
-//        mockMvc.perform(post("/api/users/public/corporate-client")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(clientDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-//    }
+        mockMvc.perform(post("/api/users/public/create/private-client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clientDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-//    @Test
-//    void activateClient_happyFlow_returnsOk() throws Exception {
-//        String clientId = "1";
-//        PasswordActivationDto activationDto = new PasswordActivationDto();
-//        activationDto.setPassword("newPassword");
-//
-//        when(userService.passwordActivation(clientId, activationDto.getPassword()))
-//                .thenReturn(Long.valueOf(clientId));
-//
-//        mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(activationDto)))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void createCorporateClient_happyFlow_returnsOk() throws Exception {
+        CorporateClientDto clientDto = new CorporateClientDto();
+        when(userService.createCorporateClient(any(CorporateClientDto.class)))
+                .thenReturn(clientDto);
 
-//    @Test
-//    void activateClient_userDoesNotExist_returnsNotFound() throws Exception {
-//        String clientId = "non existing id";
-//        PasswordActivationDto activationDto = new PasswordActivationDto();
-//        activationDto.setPassword("newPassword");
-//
-//        when(userService.passwordActivation(clientId, activationDto.getPassword()))
-//                .thenThrow(UserNotFoundException.class);
-//
-//        mockMvc.perform(patch("/api/users/public/" + clientId + "/activate")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(activationDto)))
-//                .andExpect(status().isNotFound());
-//    }
+        mockMvc.perform(post("/api/users/public/create/corporate-client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clientDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void activateClient_happyFlow_returnsOk() throws Exception {
+        String email = "email";
+        PasswordActivationDto activationDto = new PasswordActivationDto();
+        activationDto.setPassword("newPassword");
+
+        when(userService.passwordActivation(email, activationDto.getPassword()))
+                .thenReturn(1L);
+
+        mockMvc.perform(post("/api/users/public/password-activation/" + email)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(activationDto)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void activateClient_userDoesNotExist_returnsNotFound() throws Exception {
+        String email = "email";
+        PasswordActivationDto activationDto = new PasswordActivationDto();
+        activationDto.setPassword("newPassword");
+
+        when(userService.passwordActivation(email, activationDto.getPassword()))
+                .thenThrow(UserNotFoundException.class);
+
+        mockMvc.perform(post("/api/users/public/password-activation/" + email)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(activationDto)))
+                .andExpect(status().isNotFound());
+    }
 
 //    @Test
 //    public void testCreateEmployee_Success() {
