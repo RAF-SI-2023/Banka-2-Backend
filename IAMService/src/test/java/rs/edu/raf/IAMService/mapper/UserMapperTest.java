@@ -222,7 +222,7 @@ public class UserMapperTest {
         assertEquals(dto.getAddress(), agent.getAddress());
         assertEquals(dto.getPermissions(), agent.getPermissions().stream().map(Permission::getPermissionType)
                 .collect(Collectors.toList()));
-        assertEquals(dto.getLimit(), agent.getLimit());
+        assertEquals(dto.getUserLimit(), agent.getLimit());
         assertEquals(dto.getLeftOfLimit(), agent.getLeftOfLimit());
     }
 
@@ -257,7 +257,7 @@ public class UserMapperTest {
         assertEquals(agent.getPhone(), dto.getPhone());
         assertEquals(agent.getAddress(), dto.getAddress());
         assertEquals(agent.getPermissions().stream().map(Permission::getPermissionType).collect(Collectors.toList()), dto.getPermissions());
-        assertEquals(agent.getLimit(), dto.getLimit());
+        assertEquals(agent.getLimit(), dto.getUserLimit());
         assertEquals(agent.getLeftOfLimit(), dto.getLeftOfLimit());
     }
 }

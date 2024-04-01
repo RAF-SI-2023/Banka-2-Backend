@@ -56,98 +56,102 @@ class UserServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
-//    @Test
-//    public void createPrivateClient_validDto_returnsSavedPrivateClient() {
-//        // given
-//        PrivateClientDto requestDto = getPrivateClientDto();
-//        PrivateClientDto responseDto = getPrivateClientDto();
-//        responseDto.setId(1L);
-//        PrivateClient client = getPrivateClient();
-//        when(userMapper.privateClientDtoToPrivateClient(any(PrivateClientDto.class))).thenReturn(client);
-//        when(userRepository.save(any(PrivateClient.class))).thenReturn(client);
-//        when(userMapper.privateClientToPrivateClientDto(any(PrivateClient.class))).thenReturn(responseDto);
-//
-//        // when
-//        PrivateClientDto result = userService.createPrivateClient(requestDto);
-//
-//        // then
-//        verify(userRepository, times(1)).save(any(PrivateClient.class));
-//        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ClientActivationMessageDto.class));
-//        assertNotNull(result.getId());
-//        assertEquals(requestDto.getName(), result.getName());
-//        assertEquals(requestDto.getSurname(), result.getSurname());
-//        assertEquals(requestDto.getUsername(), result.getUsername());
-//        assertEquals(requestDto.getGender(), result.getGender());
-//        assertEquals(requestDto.getAddress(), result.getAddress());
-//        assertEquals(requestDto.getEmail(), result.getEmail());
-//        assertEquals(requestDto.getPhone(), result.getPhone());
-//        assertEquals(requestDto.getPrimaryAccountNumber(), result.getPrimaryAccountNumber());
-//        assertEquals(requestDto.getRole().getRole(), result.getRole().getRole());
-//        assertEquals(requestDto.getPermissions().get(0).getAuthority(), result.getPermissions().get(0).getAuthority());
-//    }
+    @Test
+    public void createPrivateClient_validDto_returnsSavedPrivateClient() {
+        // given
+        PrivateClientDto requestDto = getPrivateClientDto();
+        PrivateClientDto responseDto = getPrivateClientDto();
+        responseDto.setId(1L);
+        PrivateClient client = getPrivateClient();
+        Role role = new Role();
+        when(userMapper.privateClientDtoToPrivateClient(any(PrivateClientDto.class))).thenReturn(client);
+        when(userRepository.save(any(PrivateClient.class))).thenReturn(client);
+        when(userMapper.privateClientToPrivateClientDto(any(PrivateClient.class))).thenReturn(responseDto);
+        when(roleRepository.findByRoleType(any())).thenReturn(Optional.of(role));
 
-//    @Test
-//    public void createCorporateClient_validDto_returnsSavedCorporateClient() {
-//        // given
-//        CorporateClientDto requestDto = getCorporateClientDto();
-//        CorporateClientDto responseDto = getCorporateClientDto();
-//        responseDto.setId(1L);
-//        CorporateClient client = new CorporateClient();
-//        when(userMapper.corporateClientDtoToCorporateClient(any(CorporateClientDto.class))).thenReturn(client);
-//        when(userRepository.save(any(CorporateClient.class))).thenReturn(client);
-//        when(userMapper.corporateClientToCorporateClientDto(any(CorporateClient.class))).thenReturn(responseDto);
-//
-//        // when
-//        CorporateClientDto result = userService.createCorporateClient(requestDto);
-//
-//        // then
-//        verify(userRepository, times(1)).save(client);
-//        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ClientActivationMessageDto.class));
-//        assertNotNull(result.getId());
-//        assertEquals(requestDto.getName(), result.getName());
-//        assertEquals(requestDto.getUsername(), result.getUsername());
-//        assertEquals(requestDto.getAddress(), result.getAddress());
-//        assertEquals(requestDto.getEmail(), result.getEmail());
-//        assertEquals(requestDto.getPhone(), result.getPhone());
-//        assertEquals(requestDto.getPrimaryAccountNumber(), result.getPrimaryAccountNumber());
-//        assertEquals(requestDto.getRole().getRole(), result.getRole().getRole());
-//        assertEquals(requestDto.getPermissions().get(0).getAuthority(), result.getPermissions().get(0).getAuthority());
-//    }
+        // when
+        PrivateClientDto result = userService.createPrivateClient(requestDto);
 
-//    @Test
-//    public void activateClient_userExists_updatePassword() {
-//        // given
-//        String clientId = "1";
-//        String password = "newPassword";
-//        User user = new User();
-//        when(userRepository.findById(Long.parseLong(clientId))).thenReturn(Optional.of(user));
-//        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-//        when(userRepository.save(any(User.class))).thenReturn(new User());
-//
-//        // when
-//        userService.passwordActivation(clientId, password);
-//
-//        // then
-//        assertEquals("encodedPassword", user.getPassword());
-//        verify(userRepository, times(1)).findById(any());
-//        verify(passwordEncoder, times(1)).encode(any());
-//        verify(userRepository, times(1)).save(any(User.class));
-//    }
+        // then
+        verify(userRepository, times(1)).save(any(PrivateClient.class));
+        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ClientActivationMessageDto.class));
+        assertNotNull(result.getId());
+        assertEquals(requestDto.getName(), result.getName());
+        assertEquals(requestDto.getSurname(), result.getSurname());
+        assertEquals(requestDto.getUsername(), result.getUsername());
+        assertEquals(requestDto.getGender(), result.getGender());
+        assertEquals(requestDto.getAddress(), result.getAddress());
+        assertEquals(requestDto.getEmail(), result.getEmail());
+        assertEquals(requestDto.getPhone(), result.getPhone());
+        assertEquals(requestDto.getPrimaryAccountNumber(), result.getPrimaryAccountNumber());
+        assertEquals(requestDto.getRole().getRole(), result.getRole().getRole());
+        assertEquals(requestDto.getPermissions().get(0).getAuthority(), result.getPermissions().get(0).getAuthority());
+    }
 
-//    @Test
-//    public void activateClient_userDoesNotExist_throwException() {
-//        // given
-//        String clientId = "1";
-//        String password = "newPassword";
-//        when(userRepository.findById(Long.parseLong(clientId))).thenReturn(Optional.empty());
-//
-//        // then
-//        assertThrows(UserNotFoundException.class,
-//                () -> userService.passwordActivation(clientId, password));
-//        verify(userRepository, times(1)).findById(any());
-//        verify(passwordEncoder, times(0)).encode(any());
-//        verify(userRepository, times(0)).save(any());
-//    }
+    @Test
+    public void createCorporateClient_validDto_returnsSavedCorporateClient() {
+        // given
+        CorporateClientDto requestDto = getCorporateClientDto();
+        CorporateClientDto responseDto = getCorporateClientDto();
+        responseDto.setId(1L);
+        CorporateClient client = new CorporateClient();
+        Role role = new Role();
+        when(userMapper.corporateClientDtoToCorporateClient(any(CorporateClientDto.class))).thenReturn(client);
+        when(userRepository.save(any(CorporateClient.class))).thenReturn(client);
+        when(userMapper.corporateClientToCorporateClientDto(any(CorporateClient.class))).thenReturn(responseDto);
+        when(roleRepository.findByRoleType(any())).thenReturn(Optional.of(role));
+
+        // when
+        CorporateClientDto result = userService.createCorporateClient(requestDto);
+
+        // then
+        verify(userRepository, times(1)).save(client);
+        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ClientActivationMessageDto.class));
+        assertNotNull(result.getId());
+        assertEquals(requestDto.getName(), result.getName());
+        assertEquals(requestDto.getUsername(), result.getUsername());
+        assertEquals(requestDto.getAddress(), result.getAddress());
+        assertEquals(requestDto.getEmail(), result.getEmail());
+        assertEquals(requestDto.getPhone(), result.getPhone());
+        assertEquals(requestDto.getPrimaryAccountNumber(), result.getPrimaryAccountNumber());
+        assertEquals(requestDto.getRole().getRole(), result.getRole().getRole());
+        assertEquals(requestDto.getPermissions().get(0).getAuthority(), result.getPermissions().get(0).getAuthority());
+    }
+
+    @Test
+    public void activateClient_userExists_updatePassword() {
+        // given
+        String email = "email";
+        String password = "newPassword";
+        User user = new User();
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(new User());
+
+        // when
+        userService.passwordActivation(email, password);
+
+        // then
+        assertEquals("encodedPassword", user.getPassword());
+        verify(userRepository, times(1)).findByEmail(any());
+        verify(passwordEncoder, times(1)).encode(any());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void activateClient_userDoesNotExist_throwException() {
+        // given
+        String email = "email";
+        String password = "newPassword";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // then
+        assertThrows(UserNotFoundException.class,
+                () -> userService.passwordActivation(email, password));
+        verify(userRepository, times(1)).findByEmail(any());
+        verify(passwordEncoder, times(0)).encode(any());
+        verify(userRepository, times(0)).save(any());
+    }
 
     @Test
     public void employeeActivationTest() {
