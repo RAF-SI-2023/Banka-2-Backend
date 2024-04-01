@@ -29,9 +29,9 @@ public interface UserService extends UserDetailsService {
 
     AgentDto createAgent(AgentDto agentDto);
 
-    BigDecimal getAgentsLimit(Long id);
+    BigDecimal getAgentsLeftLimit(Long id);
 
-    void resetAgentsLimit(Long id);
+    void resetAgentsLeftLimit(Long id);
 
     User employeeActivation(int id);
 

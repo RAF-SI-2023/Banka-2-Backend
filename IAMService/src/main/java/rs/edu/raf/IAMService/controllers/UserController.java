@@ -149,15 +149,15 @@ public class UserController {
     }
 
     @GetMapping(path = "/agent-limit/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<BigDecimal> getAgentsLimit(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getAgentsLimit(id));
+    public ResponseEntity<BigDecimal> getAgentsLeftLimit(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getAgentsLeftLimit(id));
     }
 
 
     @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
     @PatchMapping(path = "/agent-limit/reset/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<Void> resetAgentsLimit(@PathVariable Long id) {
-        userService.resetAgentsLimit(id);
+    public ResponseEntity<Void> resetAgentsLeftLimit(@PathVariable Long id) {
+        userService.resetAgentsLeftLimit(id);
         return ResponseEntity.ok().build();
     }
 

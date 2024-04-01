@@ -380,11 +380,11 @@ class UserServiceImplTest {
         BigDecimal agentLimit = new BigDecimal(1000);
         Agent agent = new Agent();
         agent.setId(agentId);
-        agent.setLimit(agentLimit);
+        agent.setLeftOfLimit(agentLimit);
 
         when(userRepository.findById(agentId)).thenReturn(Optional.of(agent));
 
-        BigDecimal result = userService.getAgentsLimit(agentId);
+        BigDecimal result = userService.getAgentsLeftLimit(agentId);
 
         assertEquals(agentLimit, result);
     }
@@ -395,7 +395,7 @@ class UserServiceImplTest {
 
         when(userRepository.findById(agentId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> userService.getAgentsLimit(agentId));
+        assertThrows(NotFoundException.class, () -> userService.getAgentsLeftLimit(agentId));
     }
 
     @Test
@@ -406,7 +406,7 @@ class UserServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        assertThrows(NotFoundException.class, () -> userService.getAgentsLimit(userId));
+        assertThrows(NotFoundException.class, () -> userService.getAgentsLeftLimit(userId));
     }
 
     @Test
@@ -417,7 +417,7 @@ class UserServiceImplTest {
 
         when(userRepository.findById(agentId)).thenReturn(Optional.of(agent));
 
-        userService.resetAgentsLimit(agentId);
+        userService.resetAgentsLeftLimit(agentId);
 
         verify(userRepository, times(1)).save(agent);
 
@@ -430,7 +430,7 @@ class UserServiceImplTest {
 
         when(userRepository.findById(agentId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> userService.resetAgentsLimit(agentId));
+        assertThrows(NotFoundException.class, () -> userService.resetAgentsLeftLimit(agentId));
     }
 
     @Test
@@ -441,6 +441,6 @@ class UserServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        assertThrows(NotFoundException.class, () -> userService.resetAgentsLimit(userId));
+        assertThrows(NotFoundException.class, () -> userService.resetAgentsLeftLimit(userId));
     }
 }

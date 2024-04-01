@@ -336,16 +336,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BigDecimal getAgentsLimit(Long id) {
+    public BigDecimal getAgentsLeftLimit(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
         if (user instanceof Agent agent) {
-            return agent.getLimit();
+            return agent.getLeftOfLimit();
         }
         throw new NotFoundException("Agent with id: " + id + " not found.");
     }
 
     @Override
-    public void resetAgentsLimit(Long id) {
+    public void resetAgentsLeftLimit(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
         if (user instanceof Agent agent) {
             agent.setLeftOfLimit(agent.getLimit());
