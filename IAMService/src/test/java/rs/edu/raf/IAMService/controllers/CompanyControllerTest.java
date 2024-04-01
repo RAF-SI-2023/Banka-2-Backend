@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import rs.edu.raf.IAMService.data.dto.CompanyDto;
 import rs.edu.raf.IAMService.data.entites.Company;
@@ -231,6 +233,16 @@ class CompanyControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(content().string("Some error occurred")); // Check the error message
+    }
+
+    @Test
+    public void testDeleteCompanyById() throws Exception {
+        Long id = Long.valueOf(1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/companies/delete/id/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
