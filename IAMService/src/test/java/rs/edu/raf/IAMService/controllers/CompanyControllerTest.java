@@ -87,7 +87,7 @@ class CompanyControllerTest {
         when(companyService.findAllCompanies()).thenReturn(companies);
 
         // Perform GET request and validate response
-        mockMvc.perform(get("/api/companies/find-all")
+        mockMvc.perform(get("/api/companies/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -102,7 +102,7 @@ class CompanyControllerTest {
         when(companyService.findAllCompanies()).thenThrow(new RuntimeException("Some error occurred"));
 
         // Perform GET request and validate response
-        mockMvc.perform(get("/api/companies/find-all")
+        mockMvc.perform(get("/api/companies/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
@@ -164,9 +164,9 @@ class CompanyControllerTest {
         mockMvc.perform(post("/api/companies/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(companyDto)))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
-                .andExpect(content().string("Some error occurred")); // Check the error message
+                .andExpect(content().string("kompanija sa tom identifikacijom vec postoji")); // Check the error message (Same message always, does not look at Exception Message currently)
     }
 
     @Test
@@ -176,7 +176,7 @@ class CompanyControllerTest {
         //doReturn(companyDto).when(companyService).updateCompany(companyDto);
         when(companyService.updateCompany(companyDto)).thenReturn(companyDto);
 
-        mockMvc.perform(put("/api/companies/update-company")
+        mockMvc.perform(put("/api/companies/update")
             .contentType(MediaType.APPLICATION_JSON)
             .content(new ObjectMapper().writeValueAsString(companyDto)))
         .andExpect(status().isOk())
@@ -189,7 +189,7 @@ class CompanyControllerTest {
 
         when(companyService.updateCompany(companyDto)).thenThrow(CompanyNotFoundException.class);
 
-        mockMvc.perform(put("/api/companies/update-company")
+        mockMvc.perform(put("/api/companies/update")
             .contentType(MediaType.APPLICATION_JSON)
             .content(new ObjectMapper().writeValueAsString(companyDto)))
         .andExpect(status().isNotFound());
@@ -214,7 +214,7 @@ class CompanyControllerTest {
         when(companyService.getCompanyById(2L)).thenReturn(company);
 
         // Perform GET request and validate response
-        mockMvc.perform(get("/api/companies/find-company-by-id/" + 2L)
+        mockMvc.perform(get("/api/companies/id/" + 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -228,7 +228,7 @@ class CompanyControllerTest {
         when(companyService.getCompanyById(1000L)).thenThrow(new RuntimeException("Some error occurred"));
 
         // Perform GET request and validate response
-        mockMvc.perform(get("/api/companies/find-company-by-id/" + 1000L)
+        mockMvc.perform(get("/api/companies/id/" + 1000L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
