@@ -113,37 +113,6 @@ public class BootstrapData implements CommandLineRunner {
         option.setSettlementDate(milliseconds);
         optionRepository.save(option);
 
-        for (int i = 0; i < 10; i++) {
-            Forex forex = new Forex();
-            forex.setSymbol("forex" + i);
-            forex.setDescription("description" + i);
-            forex.setExchange("exchange" + i);
-            forex.setLastRefresh((long) i);
-            forex.setPrice((double) i);
-            forex.setHigh((double) i);
-            forex.setLow((double) i);
-            forex.setChange((double) i);
-            forex.setVolume(i);
-            forex.setBaseCurrency("base" + i);
-            forex.setQuoteCurrency("quote" + i);
-            forexRepository.save(forex);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            Stock stock = new Stock();
-            stock.setSymbol("stock" + i);
-            stock.setDescription("description" + i);
-            stock.setExchange("exchange" + i);
-            stock.setLastRefresh((long) i);
-            stock.setPrice((double) i);
-            stock.setHigh((double) i);
-            stock.setLow((double) i);
-            stock.setChange((double) i);
-            stock.setVolume(i);
-            stock.setShares(i);
-            stock.setYield((double) i);
-            stockRepository.save(stock);
-        }
         logger.info("DATA LOADING FINISHED...");
     }
 
