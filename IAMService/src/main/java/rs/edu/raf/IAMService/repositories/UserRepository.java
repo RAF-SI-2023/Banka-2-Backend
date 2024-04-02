@@ -2,6 +2,7 @@ package rs.edu.raf.IAMService.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import rs.edu.raf.IAMService.data.entites.Agent;
 import rs.edu.raf.IAMService.data.entites.Employee;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
-  
+
     Optional<Employee> findEmployeeByEmail(String email);
 
     Optional<User> findByUsername(String username);
