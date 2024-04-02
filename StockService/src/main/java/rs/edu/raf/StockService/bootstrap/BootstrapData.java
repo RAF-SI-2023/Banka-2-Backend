@@ -92,26 +92,31 @@ public class BootstrapData implements CommandLineRunner {
         LocalDate currentDate = LocalDate.now();
         LocalDateTime localDateTime = currentDate.atStartOfDay();
         long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        for (int i = 1; i <= 3; i++) {
-            Option option = new Option();
-            option.setStockListing("STOCK" + i);
-            option.setOptionType(OptionType.PUT);
-            option.setStrikePrice("100" + i);
-            option.setImpliedVolatility("420" + i);
-            option.setOpenInterest(120 + "i");
-            option.setSettlementDate(milliseconds);
+//        for (int i = 1; i <= 3; i++) {
+//            Option option = new Option();
+//            option.setStockListing("STOCK" + i);
+//            option.setOptionType(OptionType.PUT);
+//            option.setStrikePrice("100" + i);
+//            option.setImpliedVolatility("420" + i);
+//            option.setOpenInterest(120 + "i");
+//            option.setSettlementDate(milliseconds);
+//
+//            optionRepository.save(option);
+//
+//        }
+//        Option option = new Option();
+//        option.setStockListing("STOCK" + 1);
+//        option.setOptionType(OptionType.PUT);
+//        option.setStrikePrice("100" + 1);
+//        option.setImpliedVolatility("420" + 1);
+//        option.setOpenInterest(120 + "i");
+//        option.setSettlementDate(milliseconds);
+//        optionRepository.save(option);
 
-            optionRepository.save(option);
 
-        }
-        Option option = new Option();
-        option.setStockListing("STOCK" + 1);
-        option.setOptionType(OptionType.PUT);
-        option.setStrikePrice("100" + 1);
-        option.setImpliedVolatility("420" + 1);
-        option.setOpenInterest(120 + "i");
-        option.setSettlementDate(milliseconds);
-        optionRepository.save(option);
+       // optionServiceImpl.loadOptions();
+
+        optionServiceImpl.loadOptions();
 
         for (int i = 0; i < 10; i++) {
             Forex forex = new Forex();

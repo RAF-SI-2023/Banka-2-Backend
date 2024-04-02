@@ -17,4 +17,8 @@ public interface OptionService {
     Option findById(Long id);
 
     Option findByStockListing(String stockListing);
+
+    void loadOptions();
+
+    public void checkIfOptionExistsAndUpdate(Option option);
 }

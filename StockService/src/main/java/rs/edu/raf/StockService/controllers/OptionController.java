@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.util.List;
 
 @RestController
@@ -21,6 +23,7 @@ public class OptionController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Option>> findAllOptions() {
+
         return ResponseEntity.ok(optionServiceImpl.findAll());
     }
 

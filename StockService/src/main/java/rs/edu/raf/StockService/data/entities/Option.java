@@ -20,19 +20,20 @@ public class Option {
     private Long id;
     private String stockListing;
     private OptionType optionType;
-    private String strikePrice;
-    private String impliedVolatility;
-    private String openInterest;
+    private Double strikePrice;
+    private Double impliedVolatility;
+    private Double openInterest;
     private Long settlementDate;
 
     public Option(
             String stockListing,
             OptionType optionType,
-            String strikePrice,
-            String impliedVolatility,
-            String openInterest,
+            Double strikePrice,
+            Double impliedVolatility,
+            Double openInterest,
             Long settlementDate
     ) {
+
         this.stockListing = stockListing;
         this.optionType = optionType;
         this.strikePrice = strikePrice;
