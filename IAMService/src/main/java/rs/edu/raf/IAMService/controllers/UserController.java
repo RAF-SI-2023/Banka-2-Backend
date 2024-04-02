@@ -22,6 +22,7 @@ import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
 import rs.edu.raf.IAMService.utils.SubmitLimiter;
 import rs.edu.raf.IAMService.validator.PasswordValidator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -147,6 +148,19 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @GetMapping(path = "/agent-limit/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<BigDecimal> getAgentsLeftLimit(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getAgentsLeftLimit(id));
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+    @PatchMapping(path = "/agent-limit/reset/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<Void> resetAgentsLeftLimit(@PathVariable Long id) {
+        userService.resetAgentsLeftLimit(id);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping(path = "/delete/{email}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Transactional
@@ -269,6 +283,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
+
 
 }
 
