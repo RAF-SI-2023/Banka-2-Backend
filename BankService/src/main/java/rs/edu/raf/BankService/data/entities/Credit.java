@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Credit {
+
+    private String creditName;                  // naziv kredita kao npr gotovinski kredit, stambeni kredit etc
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String creditName;                  // naziv kredita kao npr gotovinski kredit, stambeni kredit etc
     private Long creditNumber;            // broj kredita
     private Double creditAmount;              // iznos kredita
     private Long paymentPeriodMonths;      // period otplate u mesecima
@@ -28,7 +28,7 @@ public class Credit {
     private String currencyCode;                 // valuta kredita
     private String accountNumber;                // broj racuna na koji se kredit odnosi
 
-    public Credit(String creditName,
+   /* public Credit(String creditName,
                   Long creditNumber, Double creditAmount,
                   Long paymentPeriodMonths, Double nominalInterestRate,
                   Double effectiveInterestRate, Long creditCreationDate,
@@ -51,5 +51,5 @@ public class Credit {
         this.remainingAmount = remainingAmount;
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
-    }
+    }*/
 }

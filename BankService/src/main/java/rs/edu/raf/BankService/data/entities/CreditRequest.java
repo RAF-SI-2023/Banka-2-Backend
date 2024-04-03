@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
+import rs.edu.raf.BankService.data.enums.CreditType;
 
 @Entity
 @Table(name = "credit_request")
@@ -17,7 +18,8 @@ public class CreditRequest {
     @Id
     private Long id;
     private CreditRequestStatus status;
-    private String creditType;
+    @Enumerated(EnumType.STRING)
+    private CreditType creditType;
     private Double creditAmount;
     private String creditPurpose;
     private Long monthlySalary;
@@ -34,4 +36,5 @@ public class CreditRequest {
     private String maritalStatus;
     private String housingStatus;
     private Boolean ownCar;
+    private Long paymentPeriodMonths;
 }

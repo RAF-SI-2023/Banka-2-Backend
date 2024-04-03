@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
+import rs.edu.raf.BankService.data.enums.CreditType;
 
 @Data
 @AllArgsConstructor
@@ -11,7 +12,7 @@ import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 public class CreditRequestDto {
     private Long id;
     private CreditRequestStatus status;
-    private String creditType;
+    private CreditType creditType;
     private Double creditAmount;
     private String creditPurpose;
     private Long monthlySalary;
@@ -27,4 +28,6 @@ public class CreditRequestDto {
     private String maritalStatus;
     private String housingStatus;
     private Boolean ownCar;
+
+    private Long paymentPeriodMonths;
 }

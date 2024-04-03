@@ -11,7 +11,6 @@ import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 public class CreditMapper {
     public Credit creditDtoToCredit(CreditDto dto) {
         return new Credit(
-                dto.getId(),
                 dto.getCreditName(),
                 dto.getCreditNumber(),
                 dto.getCreditAmount(),
@@ -29,7 +28,6 @@ public class CreditMapper {
 
     public CreditDto creditToCreditDto(Credit credit) {
         return new CreditDto(
-                credit.getId(),
                 credit.getCreditName(),
                 credit.getCreditNumber(),
                 credit.getCreditAmount(),
@@ -65,7 +63,8 @@ public class CreditMapper {
                 dto.getEducationLevel(),
                 dto.getMaritalStatus(),
                 dto.getHousingStatus(),
-                dto.getOwnCar());
+                dto.getOwnCar(),
+                dto.getPaymentPeriodMonths());
     }
 
     public CreditRequestDto creditRequestToCreditRequestDto(CreditRequest creditRequest) {
@@ -87,7 +86,8 @@ public class CreditMapper {
                 creditRequest.getEducationLevel(),
                 creditRequest.getMaritalStatus(),
                 creditRequest.getHousingStatus(),
-                creditRequest.getOwnCar());
+                creditRequest.getOwnCar(),
+                creditRequest.getPaymentPeriodMonths());
     }
 
 

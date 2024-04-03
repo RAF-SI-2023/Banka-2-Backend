@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreditDto {
-    private Long id;
+
     private String creditName;                  // naziv kredita kao npr gotovinski kredit, stambeni kredit etc
     private Long creditNumber;            // broj kredita
     private Double creditAmount;              // iznos kredita
