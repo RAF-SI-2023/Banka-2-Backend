@@ -20,6 +20,6 @@ public interface CurrencyRepository extends JpaRepository<Currency, Long> {
      *
      * @return List of all currencies without inflationList
      */
-    @Query("SELECT new Currency(c.id,c.currencyCode,c.currencyName,c.currencyPolity,c.currencySymbol) FROM Currency c")
+    @Query("SELECT new Currency(c.id,c.currencyName,c.currencyCode,c.currencyPolity,c.currencySymbol) FROM Currency c")
     List<Currency> findAllWithoutInflation();
 }
