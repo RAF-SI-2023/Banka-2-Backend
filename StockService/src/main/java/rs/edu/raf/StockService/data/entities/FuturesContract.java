@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.StockService.data.enums.FuturesContractType;
 
 @Entity
 @Data
@@ -30,7 +31,5 @@ public class FuturesContract {
     @Column(updatable = false)
     private long settlementDate;
 
-    private float getMaintenanceMargin() {
-        return contractSize * 0.1f;
-    }
+    private FuturesContractType type;
 }

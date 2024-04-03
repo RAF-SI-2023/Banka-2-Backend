@@ -13,7 +13,8 @@ public class FuturesContractMapper {
                 futuresContract.getContractSize(),
                 futuresContract.getContractUnit(),
                 futuresContract.getOpenInterest(),
-                futuresContract.getSettlementDate()
+                futuresContract.getSettlementDate(),
+                futuresContract.getType()
         );
     }
 
@@ -25,7 +26,8 @@ public class FuturesContractMapper {
                 futuresContractDto.getContractSize(),
                 futuresContractDto.getContractUnit(),
                 futuresContractDto.getOpenInterest(),
-                futuresContractDto.getSettlementDate()
+                futuresContractDto.getSettlementDate(),
+                futuresContractDto.getType()
         );
     }
 }

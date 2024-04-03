@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
+import rs.edu.raf.StockService.data.enums.FuturesContractType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +27,8 @@ class FuturesContractMapperTest {
                 100,
                 "Unit",
                 200,
-                860379441
+                860379441,
+                FuturesContractType.AGRICULTURE
         );
 
         // When
@@ -40,6 +42,7 @@ class FuturesContractMapperTest {
         assertEquals("Unit", futuresContractDto.getContractUnit());
         assertEquals(200, futuresContractDto.getOpenInterest());
         assertEquals(860379441, futuresContractDto.getSettlementDate());
+        assertEquals(FuturesContractType.AGRICULTURE, futuresContractDto.getType());
     }
 
     @Test
@@ -52,7 +55,8 @@ class FuturesContractMapperTest {
                 100,
                 "Unit",
                 200,
-                860379441
+                860379441,
+                FuturesContractType.AGRICULTURE
         );
 
         // When
@@ -66,5 +70,6 @@ class FuturesContractMapperTest {
         assertEquals("Unit", futuresContract.getContractUnit());
         assertEquals(200, futuresContract.getOpenInterest());
         assertEquals(860379441, futuresContract.getSettlementDate());
+        assertEquals(FuturesContractType.AGRICULTURE, futuresContract.getType());
     }
 }
