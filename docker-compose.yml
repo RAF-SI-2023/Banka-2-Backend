@@ -68,7 +68,7 @@ services:
       - "8000:8000"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=iam_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on:
       app-db:
         condition: service_healthy
@@ -82,7 +82,7 @@ services:
       - "8002:8002"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=notification_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on: #conditions for service to start, its a black magic dont touch unless u know what u are doing!
       rabbitmq:
         condition: service_healthy
@@ -94,7 +94,7 @@ services:
       - "8001:8001"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=stock_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - SPRING_REDIS_HOST=stock-redis
     depends_on:
       app-db:
@@ -111,7 +111,7 @@ services:
       - "8004:8004"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=otc_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on:
       app-db:
         condition: service_healthy
