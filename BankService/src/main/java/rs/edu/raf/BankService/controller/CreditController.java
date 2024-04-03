@@ -56,7 +56,6 @@ public class CreditController {
         try {
             return ResponseEntity.ok(creditService.createCreditRequest(creditRequestDto));
         } catch (Exception e) {
-
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
@@ -68,7 +67,6 @@ public class CreditController {
         try {
             return ResponseEntity.ok(creditService.getAllCreditRequests());
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
 
         }
@@ -81,7 +79,6 @@ public class CreditController {
         try {
             return ResponseEntity.ok(creditService.approveCreditRequest(creditRequestId));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
