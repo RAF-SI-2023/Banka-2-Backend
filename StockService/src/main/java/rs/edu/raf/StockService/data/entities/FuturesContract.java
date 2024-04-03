@@ -31,5 +31,7 @@ public class FuturesContract {
     @Column(updatable = false)
     private long settlementDate;
 
+    private int maintenanceMargin;
+
     private FuturesContractType type;
 }

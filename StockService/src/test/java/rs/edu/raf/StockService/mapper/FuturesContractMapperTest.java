@@ -28,6 +28,7 @@ class FuturesContractMapperTest {
                 "Unit",
                 200,
                 860379441,
+                1200,
                 FuturesContractType.AGRICULTURE
         );
 
@@ -42,6 +43,7 @@ class FuturesContractMapperTest {
         assertEquals("Unit", futuresContractDto.getContractUnit());
         assertEquals(200, futuresContractDto.getOpenInterest());
         assertEquals(860379441, futuresContractDto.getSettlementDate());
+        assertEquals(1200, futuresContractDto.getMaintenanceMargin());
         assertEquals(FuturesContractType.AGRICULTURE, futuresContractDto.getType());
     }
 
@@ -56,6 +58,7 @@ class FuturesContractMapperTest {
                 "Unit",
                 200,
                 860379441,
+                1200,
                 FuturesContractType.AGRICULTURE
         );
 
@@ -70,6 +73,7 @@ class FuturesContractMapperTest {
         assertEquals("Unit", futuresContract.getContractUnit());
         assertEquals(200, futuresContract.getOpenInterest());
         assertEquals(860379441, futuresContract.getSettlementDate());
+        assertEquals(1200, futuresContract.getMaintenanceMargin());
         assertEquals(FuturesContractType.AGRICULTURE, futuresContract.getType());
     }
 }

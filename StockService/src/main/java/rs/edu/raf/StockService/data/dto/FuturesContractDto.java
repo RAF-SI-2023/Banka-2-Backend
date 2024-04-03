@@ -15,5 +15,6 @@ public class FuturesContractDto {
     private String contractUnit;
     private int openInterest;
     private long settlementDate;
+    private int maintenanceMargin;
     private FuturesContractType type;
 }
