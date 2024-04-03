@@ -3,6 +3,7 @@ package rs.edu.raf.StockService.services;
 import rs.edu.raf.StockService.data.entities.Option;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OptionService {
 
@@ -18,7 +19,7 @@ public interface OptionService {
 
     Option findByStockListing(String stockListing);
 
-    void loadOptions();
+    List<Option> loadOptions(String stockListing);
 
     public void checkIfOptionExistsAndUpdate(Option option);
 }

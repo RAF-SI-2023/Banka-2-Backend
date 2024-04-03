@@ -116,7 +116,7 @@ public class BootstrapData implements CommandLineRunner {
 
        // optionServiceImpl.loadOptions();
 
-        optionServiceImpl.loadOptions();
+      //  optionServiceImpl.loadOptions();
 
         for (int i = 0; i < 10; i++) {
             Forex forex = new Forex();

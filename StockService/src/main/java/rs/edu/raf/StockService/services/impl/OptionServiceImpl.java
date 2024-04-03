@@ -12,7 +12,7 @@ import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.mapper.OptionMapper;
 import rs.edu.raf.StockService.repositories.OptionRepository;
 import rs.edu.raf.StockService.services.OptionService;
-
+import org.springframework.cache.annotation.Cacheable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,6 +20,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,12 +42,19 @@ public class OptionServiceImpl implements OptionService {
         return optionRepository.findAll();
     }
 
+   @Cacheable(value = "stockListing", key = "#stockListing")
     @Override
     public List<Option> findAllByStockListing(String stockListing) {
 
-        List<Option> requestedOptions = optionRepository.findAllByStockListing(stockListing);
+       List<Option> requestedOptions =  loadOptions(stockListing);
+//        if (requestedOptions.isEmpty()) {
+//            requestedOptions =Optional.ofNullable(optionRepository.findAllByStockListing(stockListing));
+//        }
+//        if (requestedOptions.isEmpty()) {
+//            throw new NotFoundException("Options for stock listing: " + stockListing + " not found.");
+//        }
 
-        return optionRepository.findAllByStockListing(stockListing);
+        return requestedOptions;
     }
 
     @Override
@@ -60,11 +68,11 @@ public class OptionServiceImpl implements OptionService {
         return optionRepository.findByStockListing(stockListing);
     }
 
-       @Scheduled(cron = "0 */15 * * * *") //every 15 minute
-    public void loadOptions() {
+ //   @Scheduled(cron = "0 */15 * * * *") //every 15 minute
+    public  List<Option> loadOptions(String stockListing) {
 
-        //todo: Namestiti da uzima razlicite optione ne samo jedne
-        String url = "https://query1.finance.yahoo.com/v6/finance/options/E";
+
+        String url = "https://query1.finance.yahoo.com/v6/finance/options/" + stockListing;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -96,6 +104,7 @@ public class OptionServiceImpl implements OptionService {
             JSONArray options = option.getJSONArray("options");
             OptionDto optionDtoCall = new OptionDto();
             OptionDto optionDtoPut = new OptionDto();
+            List<Option> optionList = new ArrayList<>();
             for (int i = 0; i < options.length(); i++) {
                 JSONObject optionData = options.getJSONObject(i);
                 long expirationDate = optionData.getLong("expirationDate");
@@ -103,8 +112,6 @@ public class OptionServiceImpl implements OptionService {
                 // Access calls and puts arrays and extract data similarly
                 JSONArray calls = optionData.getJSONArray("calls");
                 JSONArray puts = optionData.getJSONArray("puts");
-
-
                 LocalDate localDate = LocalDate.now();
 
                 // Convert LocalDate to epoch time
@@ -125,7 +132,8 @@ public class OptionServiceImpl implements OptionService {
                     optionDtoCall.setOpenInterest(call.getDouble("openInterest"));
                     optionDtoCall.setOptionType(OptionType.CALL);
                     Option optionCall = optionMapper.optionDtoToOption(optionDtoCall);
-                    checkIfOptionExistsAndUpdate(optionCall);
+            //        checkIfOptionExistsAndUpdate(optionCall);
+                    optionList.add(optionCall);
                 }
                 for (int j = 0; j < puts.length(); j++) {
                     JSONObject put = puts.getJSONObject(j);
@@ -142,15 +150,18 @@ public class OptionServiceImpl implements OptionService {
 
 
                     Option optionPut = optionMapper.optionDtoToOption(optionDtoPut);
-                    checkIfOptionExistsAndUpdate(optionPut);
+              //      checkIfOptionExistsAndUpdate(optionPut);
+                    optionList.add(optionPut);
 
                 }
 
             }
-
+            return optionList;
 
         } catch (IOException | InterruptedException | JSONException e) {
-            throw new RuntimeException(e);
+          //  e.printStackTrace();
+
+            return new ArrayList<>();
         }
     }
 
@@ -162,7 +173,7 @@ public class OptionServiceImpl implements OptionService {
             option1.get().setOpenInterest(option.getOpenInterest());
             option1.get().setImpliedVolatility(option.getImpliedVolatility());
             optionRepository.save(option1.get());
-        } else{
+        } else {
             optionRepository.save(option);
         }
 

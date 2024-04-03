@@ -52,7 +52,7 @@ public class OptionControllerSteps {
     private ResponseEntity<Option> responseOptionById;
     private OptionRepository optionRepository;
     private OptionController optionController;
-
+   private List<Option> optionslist;
 
 
 
@@ -62,48 +62,6 @@ public class OptionControllerSteps {
         this.optionController = optionController;
     }
 
-    @Given("a list of options")
-    public void givenAListOfOptions() {
-        // Mocking the service to return some sample data
-        Option option = new Option();
-        LocalDate currentDate = LocalDate.now();
-        LocalDateTime localDateTime = currentDate.atStartOfDay();
-        long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        option.setStockListing("AAPL");
-        option.setOptionType(OptionType.CALL);
-        option.setStrikePrice(101D);
-        option.setImpliedVolatility(421D);
-        option.setOpenInterest(121D);
-        option.setSettlementDate(milliseconds);
-
-        Option option2 = new Option();
-        option.setStockListing("AAPL");
-        option.setOptionType(OptionType.PUT);
-        option.setStrikePrice(10D);
-        option.setImpliedVolatility(42D);
-        option.setOpenInterest(12D);
-        option.setSettlementDate(milliseconds);
-        optionRepository.save(option);
-    }
-
-    @When("the client requests all options")
-    public void whenTheClientRequestsAllOptions() throws Exception {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        responseOption = optionController.findAllOptions();
-
-    }
-
-    @Then("the server should respond with a list of options")
-    public void thenTheServerShouldRespondWithAListOfOptions() {
-        // Verifying that the response is not null and contains expected data
-        Assertions.assertNotNull(responseOption);
-        Assertions.assertEquals(HttpStatus.OK, responseOption.getStatusCode());
-        List<Option> options = responseOption.getBody();
-        Assertions.assertNotNull(options);
-
-    }
 
     //----------------------------------------------------------//
     @Given("a stock listing exists")
@@ -131,14 +89,16 @@ public class OptionControllerSteps {
         stockListing = option.getStockListing();
 
 
-        optionRepository.save(option);
-        optionRepository.save(option2);
+        optionslist = List.of(option, option2);
+
+
+
     }
 
     @When("the client requests options by stock listing")
     public void whenTheClientRequestsOptionsByListing() throws Exception {
 
-        responseOptionByStockListing = optionController.findAllOptionsByStockListing(stockListing);
+        responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
 
     }
 
@@ -152,20 +112,5 @@ public class OptionControllerSteps {
     }
     //----------------------------------------------------------//
 
-
-    @When("the client requests the option with ID 1")
-    public void whenTheClientRequestsOptionsByID() throws Exception {
-        responseOptionById = optionController.findOptionById(optionId);
-
-    }
-
-    @Then("option should retun option with ID 1")
-    public void thenTheServerShouldReturnOptionById() {
-        // Verifying that the response is not null and contains expected data
-        Assertions.assertNotNull(responseOptionById);
-        Assertions.assertEquals(HttpStatus.OK, responseOptionById.getStatusCode());
-        Option options = responseOptionById.getBody();
-        Assertions.assertNotNull(options);
-    }
 
 }

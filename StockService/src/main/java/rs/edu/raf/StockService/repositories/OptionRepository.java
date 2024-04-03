@@ -19,7 +19,8 @@ public interface OptionRepository extends JpaRepository<Option, Long> {
 
    // Option findByStockListingStrikePrice(String stockListing);
 
-    List<Option> findAllByStockListing(String stockListing);
+    @Query("SELECT o FROM Option o WHERE o.stockListing = :stockListing")
+    List<Option> findAllByStockListing(@Param("stockListing") String stockListing);
 
     @Query("SELECT o FROM Option o WHERE o.stockListing = :#{#option.stockListing} " +
             "AND o.settlementDate = :#{#option.settlementDate} " +

@@ -1,6 +1,7 @@
 package rs.edu.raf.StockService.controllers;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.entities.Option;
@@ -8,6 +9,7 @@ import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,20 +23,24 @@ public class OptionController {
         this.optionServiceImpl = optionServiceImpl;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Option>> findAllOptions() {
-
-        return ResponseEntity.ok(optionServiceImpl.findAll());
-    }
-
     @GetMapping("/stock-listing/{stockListing}")
     public ResponseEntity<List<Option>> findAllOptionsByStockListing(@PathVariable String stockListing) {
-        return ResponseEntity.ok(optionServiceImpl.findAllByStockListing(stockListing));
+
+
+
+        if (stockListing == null || stockListing.trim().isEmpty() ) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        List<Option> lista=optionServiceImpl.findAllByStockListing(stockListing.trim());
+
+        if (lista.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<Option> findOptionById(@PathVariable Long id) {
-        return ResponseEntity.ok(optionServiceImpl.findById(id));
-    }
 
 }

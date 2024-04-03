@@ -9,11 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import rs.edu.raf.StockService.data.enums.OptionType;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Option {
+public class Option implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

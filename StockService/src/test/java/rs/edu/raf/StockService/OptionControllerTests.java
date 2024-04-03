@@ -30,21 +30,6 @@ public class OptionControllerTests {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    public void testFindAllOptions() {
-        // Arrange
-        List<Option> options = Collections.singletonList(new Option());
-        when(optionService.findAll()).thenReturn(options);
-
-        // Act
-        ResponseEntity<List<Option>> responseEntity = optionController.findAllOptions();
-
-        // Assert
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(options, responseEntity.getBody());
-        verify(optionService, times(1)).findAll();
-
-    }
 
     @Test
     public void testFindAllOptionsByStockListing() {
@@ -62,36 +47,5 @@ public class OptionControllerTests {
         verify(optionService, times(1)).findAllByStockListing(stockListing);
     }
 
-    @Test
-    public void testFindOptionById() {
-        // Arrange
-        Long id = 1L;
-        Option option = new Option();
-        option.setId(id);
-        when(optionService.findById(id)).thenReturn(option);
 
-        // Act
-        ResponseEntity<Option> responseEntity = optionController.findOptionById(id);
-
-        // Assert
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(option, responseEntity.getBody());
-        verify(optionService, times(1)).findById(id);
-    }
-
-    @Test
-    public void testFindOptionByStockListing() {
-        // Arrange
-        String stockListing = "STOCK";
-        Option option = new Option();
-        when(optionService.findByStockListing(stockListing)).thenReturn(option);
-
-        // Act
-       /* ResponseEntity<Option> responseEntity = optionController.find(stockListing);
-
-        // Assert
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(option, responseEntity.getBody());
-        verify(optionService, times(1)).findByStockListing(stockListing);*/
-    }
 }
