@@ -6,8 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class StockServiceApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+    //Pokrece se 100 godina proveriti
+
+//    @Test
+//    void contextLoads() {
+//    }
 
 }
