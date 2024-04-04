@@ -7,8 +7,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import rs.edu.raf.StockService.StockServiceApplication;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
-@SpringBootTest(classes = StockServiceApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@CucumberContextConfiguration
+//@SpringBootTest(classes = StockServiceApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@CucumberContextConfiguration
 public class IntegrationTest {
 
 
