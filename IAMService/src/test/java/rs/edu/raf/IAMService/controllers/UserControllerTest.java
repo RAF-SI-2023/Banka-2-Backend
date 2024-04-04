@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.IAMService.TestSecurityConfig;
+import rs.edu.raf.IAMService.data.dto.AgentDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.PasswordActivationDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
@@ -115,5 +116,18 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(activationDto)))
                 .andExpect(status().isNotFound());
     }
-    
+
+    @Test
+    void createAgent_happyFlow_returnsOk() throws Exception {
+        AgentDto agentDto = new AgentDto();
+        when(userService.createAgent(any(AgentDto.class)))
+                .thenReturn(agentDto);
+
+        mockMvc.perform(post("/api/users/create/agent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(agentDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
 }
