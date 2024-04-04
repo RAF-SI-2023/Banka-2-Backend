@@ -12,8 +12,8 @@ public class OptionDto {
 
     private String stockListing;
     private OptionType optionType;
-    private String strikePrice;
-    private String impliedVolatility;
-    private String openInterest;
+    private Double strikePrice;
+    private Double impliedVolatility;
+    private Double openInterest;
     private Long settlementDate;
 }
