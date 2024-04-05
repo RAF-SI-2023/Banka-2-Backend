@@ -4,15 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
-import rs.edu.raf.IAMService.data.dto.UserDto;
-import rs.edu.raf.IAMService.data.entites.CorporateClient;
-import rs.edu.raf.IAMService.data.entites.Employee;
-import rs.edu.raf.IAMService.data.entites.PrivateClient;
-import rs.edu.raf.IAMService.data.entites.User;
+import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.*;
+import rs.edu.raf.IAMService.data.enums.RoleType;
+import rs.edu.raf.IAMService.exceptions.EmailTakenException;
+import rs.edu.raf.IAMService.exceptions.MissingRoleException;
 import rs.edu.raf.IAMService.mapper.UserMapper;
+import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.impl.UserServiceImpl;
 import rs.edu.raf.IAMService.utils.SpringSecurityUtil;
@@ -32,6 +30,9 @@ public class UserServiceCrudTests {
 
     @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private RoleRepository roleRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -265,5 +266,58 @@ public class UserServiceCrudTests {
         // Add more assertions as needed
     }
 
+    @Test
+    public void testCreateAgent_NewAgent_SuccessfullyCreated() {
+        // Arrange
+        AgentDto agentDto = new AgentDto();
+        agentDto.setEmail("test@example.com");
+
+        Agent agent = new Agent();
+        agent.setEmail(agentDto.getEmail());
+
+        Role role = new Role();
+        role.setRoleType(RoleType.AGENT);
+
+        when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.empty());
+        when(roleRepository.findByRoleType(RoleType.AGENT)).thenReturn(Optional.of(role));
+        when(userMapper.agentDtoToAgent(agentDto)).thenReturn(agent);
+        when(userRepository.save(agent)).thenReturn(agent);
+
+        // Act
+        AgentDto createdAgentDto = userService.createAgent(agentDto);
+
+        // Assert
+        assertNotNull(createdAgentDto);
+        assertEquals(agentDto.getEmail(), createdAgentDto.getEmail());
+        // Add more assertions as needed
+    }
+
+    @Test
+    public void testCreateAgent_ExistingAgent_ThrowsEmailTakenException() {
+        // Arrange
+        AgentDto agentDto = new AgentDto();
+        agentDto.setEmail("existing@example.com");
+
+        Agent existingAgent = new Agent();
+        existingAgent.setEmail(agentDto.getEmail());
+
+        when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.of(existingAgent));
+
+        // Act and Assert
+        assertThrows(EmailTakenException.class, () -> userService.createAgent(agentDto));
+    }
+
+    @Test
+    public void testCreateAgent_MissingRole_ThrowsMissingRoleException() {
+        // Arrange
+        AgentDto agentDto = new AgentDto();
+        agentDto.setEmail("test@example.com");
+
+        when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.empty());
+        when(roleRepository.findByRoleType(RoleType.AGENT)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        assertThrows(MissingRoleException.class, () -> userService.createAgent(agentDto));
+    }
 
 }
