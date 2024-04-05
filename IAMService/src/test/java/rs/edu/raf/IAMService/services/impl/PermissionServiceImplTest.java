@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService.permissions;
+package rs.edu.raf.IAMService.services.impl;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,17 +10,15 @@ import rs.edu.raf.IAMService.data.entites.Permission;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.mapper.PermissionMapper;
 import rs.edu.raf.IAMService.repositories.PermissionRepository;
-import rs.edu.raf.IAMService.services.impl.PermissionServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PermissionServiceUnitTests {
+public class PermissionServiceImplTest {
     @Mock
     private PermissionRepository permissionRepository;
 
@@ -31,7 +29,7 @@ public class PermissionServiceUnitTests {
     private PermissionServiceImpl permissionService;
 
     @Test
-    void test_get_all_success() {
+    void findAllPermissions_success() {
         List<Permission> permissions = new ArrayList<>();
         Permission permission1 = new Permission();
         permission1.setId(1L);
@@ -49,8 +47,6 @@ public class PermissionServiceUnitTests {
         when(permissionRepository.findAll()).thenReturn(permissions);
 
         List<PermissionDto> permissionDtos = permissionService.getAll();
-        System.out.println("permissions" + permissions);
-        System.out.println("perm dtos " + permissionDtos);
 
         assertEquals(permissions.size(), permissionDtos.size());
 

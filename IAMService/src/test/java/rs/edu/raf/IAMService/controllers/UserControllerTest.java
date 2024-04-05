@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.IAMService.TestSecurityConfig;
+import rs.edu.raf.IAMService.data.dto.AgentDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.PasswordActivationDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
@@ -21,10 +22,6 @@ import rs.edu.raf.IAMService.exceptions.UserNotFoundException;
 import rs.edu.raf.IAMService.filters.JwtFilter;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
-import rs.edu.raf.IAMService.services.impl.PasswordChangeTokenServiceImpl;
-import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
-import rs.edu.raf.IAMService.utils.SubmitLimiter;
-import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -50,16 +47,7 @@ class UserControllerTest {
     private UserService userService;
 
     @MockBean
-    private ChangedPasswordTokenUtil changedPasswordTokenUtil;
-
-    @MockBean
     private PasswordEncoder passwordEncoder;
-
-    @MockBean
-    private SubmitLimiter submitLimiter;
-
-    @MockBean
-    private PasswordValidator passwordValidator;
 
     @Autowired
     private UserController userController;
@@ -67,8 +55,6 @@ class UserControllerTest {
     @MockBean
     private JwtUtil jwtUtil;
 
-    @MockBean
-    private PasswordChangeTokenServiceImpl passwordChangeTokenService;
 
     @BeforeEach
     public void setup() {
@@ -131,60 +117,17 @@ class UserControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    public void testCreateEmployee_Success() {
-//        // Setup
-//        EmployeeDto employeeDto = new EmployeeDto();
-//        employeeDto.setEmail("test@user.com");
-//        employeeDto.setUsername("test@user.com");
-//
-//        // Mock result
-//        EmployeeDto resultEmployeeDto = new EmployeeDto();
-//        resultEmployeeDto.setId(1L);
-//        resultEmployeeDto.setEmail("test@user.com");
-//        resultEmployeeDto.setUsername("test@user.com");
-//
-//        when(userService.createEmployee(employeeDto)).thenReturn(resultEmployeeDto);
-//
-//        // Execution
-//        ResponseEntity<?> response = userController.createEmployee(employeeDto);
-//
-//        // Assertion
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotNull(response.getBody());
-//    }
+    @Test
+    void createAgent_happyFlow_returnsOk() throws Exception {
+        AgentDto agentDto = new AgentDto();
+        when(userService.createAgent(any(AgentDto.class)))
+                .thenReturn(agentDto);
 
-//    @Test
-//    public void testCreateEmployee_EmailTaken() {
-//        // Setup
-//        EmployeeDto employeeDto = new EmployeeDto();
-//        when(userService.createEmployee(employeeDto)).thenThrow(new EmailTakenException("test@user.com"));
-//
-//        // Execution
-//        ResponseEntity<?> response = userController.createEmployee(employeeDto);
-//
-//        // Assertion
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//        assertEquals(
-//                "User with email 'test@user.com' already exists",
-//                response.getBody()
-//        );
-//    }
+        mockMvc.perform(post("/api/users/create/agent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(agentDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-//    @Test
-//    public void testCreateEmployee_MissingRole() {
-//        // Setup
-//        EmployeeDto employeeDto = new EmployeeDto();
-//        when(userService.createEmployee(employeeDto)).thenThrow(new MissingRoleException("INVALID_ROLE"));
-//
-//        // Execution
-//        ResponseEntity<?> response = userController.createEmployee(employeeDto);
-//
-//        // Assertion
-//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-//        assertEquals(
-//                "Role of type 'INVALID_ROLE' not found!",
-//                response.getBody()
-//        );
-//    }
 }

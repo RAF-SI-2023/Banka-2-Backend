@@ -17,10 +17,6 @@ import rs.edu.raf.IAMService.exceptions.EmailTakenException;
 import rs.edu.raf.IAMService.exceptions.MissingRoleException;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
-import rs.edu.raf.IAMService.services.impl.PasswordChangeTokenServiceImpl;
-import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
-import rs.edu.raf.IAMService.utils.SubmitLimiter;
-import rs.edu.raf.IAMService.validator.PasswordValidator;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,16 +30,9 @@ import java.util.List;
         consumes = MediaType.APPLICATION_JSON_VALUE
 )
 public class UserController {
-
     private final HttpServletRequest request;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final SubmitLimiter submitLimiter;
-    private final ChangedPasswordTokenUtil changedPasswordTokenUtil;
-    private final PasswordValidator passwordValidator;
-    private final PasswordChangeTokenServiceImpl passwordChangeTokenService;
-
 
     @PostMapping("/create/employee")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -75,7 +64,6 @@ public class UserController {
     @PostMapping(path = "/password-change", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> initiatesChangePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return ResponseEntity.ok().body(userService.setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword()));
-
     }
 
     /**

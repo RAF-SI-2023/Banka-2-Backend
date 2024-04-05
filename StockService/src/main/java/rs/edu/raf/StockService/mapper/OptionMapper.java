@@ -1,10 +1,11 @@
 package rs.edu.raf.StockService.mapper;
 
+import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.data.dto.CurrencyDto;
 import rs.edu.raf.StockService.data.dto.OptionDto;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.Option;
-
+@Component
 public class OptionMapper {
     public OptionDto optionToOptionDto(Option option) {
         return new OptionDto(
