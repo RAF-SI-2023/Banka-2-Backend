@@ -1,14 +1,13 @@
-package rs.edu.raf.BankService;
+package rs.edu.raf.NotificationService.unit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BankServiceApplicationTests {
+class NotificationServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
-
 	}
 
 }
