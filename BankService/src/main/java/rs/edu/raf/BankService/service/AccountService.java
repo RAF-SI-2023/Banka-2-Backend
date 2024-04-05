@@ -5,7 +5,10 @@ import rs.edu.raf.BankService.data.dto.AccountNumberDto;
 import rs.edu.raf.BankService.data.dto.BusinessAccountDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
+import rs.edu.raf.BankService.data.entities.Account;
 import rs.edu.raf.BankService.exception.*;
+
+import java.util.List;
 
 @Service
 public interface AccountService {
@@ -26,5 +29,5 @@ public interface AccountService {
             throws AccountNumberAlreadyExistException;
 
 
-
+    List<Account> findAccountsByEmail(String email);
 }

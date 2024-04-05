@@ -1,5 +1,6 @@
 package rs.edu.raf.BankService.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CreditDto;
@@ -61,6 +62,7 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public CreditDto approveCreditRequest(Long creditRequestId) {
         CreditRequest creditRequest = creditRequestRepository.findById(creditRequestId).orElseThrow();
         if (creditRequest.getStatus() != CreditRequestStatus.PENDING) {

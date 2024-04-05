@@ -75,4 +75,13 @@ public class AccountController {
         }
     }
 
+    @GetMapping(value = "/find-by-email/{email}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<?> findAccountsByEmail(@PathVariable String email) {
+        try {
+            return ResponseEntity.ok(accountService.findAccountsByEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }
