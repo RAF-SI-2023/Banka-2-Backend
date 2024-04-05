@@ -5,12 +5,15 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+import org.mockito.Mockito;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.StockService.controllers.OptionController;
+import rs.edu.raf.StockService.cucumber.CucumberIntegrationTest;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.repositories.OptionRepository;
@@ -20,6 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.anyString;
 
 //@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -50,9 +55,15 @@ public class OptionControllerSteps {
     private ResponseEntity<List<Option>> responseOptionByStockListing;
 
     private ResponseEntity<Option> responseOptionById;
+
+    @MockBean
     private OptionRepository optionRepository;
+
+    @MockBean
     private OptionController optionController;
    private List<Option> optionslist;
+
+
 
 
 
@@ -88,9 +99,14 @@ public class OptionControllerSteps {
 
         stockListing = option.getStockListing();
 
+      //  optionRepository.save(option);
 
         optionslist = List.of(option, option2);
 
+        optionRepository.saveAll(optionslist);
+
+//        Mockito.when(optionController.findAllOptionsByStockListing(anyString()))
+//                .thenReturn((ResponseEntity<List<Option>>) List.of(option));
 
 
     }
@@ -98,7 +114,10 @@ public class OptionControllerSteps {
     @When("the client requests options by stock listing")
     public void whenTheClientRequestsOptionsByListing() throws Exception {
 
-        responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
+   //     optionController = new OptionController(optionService);
+        responseOptionByStockListing = optionController.findAllOptionsByStockListing(stockListing);
+  //      responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
+
 
     }
 
