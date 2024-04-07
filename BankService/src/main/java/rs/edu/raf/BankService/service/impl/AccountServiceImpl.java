@@ -9,7 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
-import rs.edu.raf.BankService.data.entities.Account;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;

@@ -3,8 +3,8 @@ package rs.edu.raf.BankService.mapper;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
-import rs.edu.raf.BankService.data.entities.Credit;
-import rs.edu.raf.BankService.data.entities.CreditRequest;
+import rs.edu.raf.BankService.data.entities.credit.Credit;
+import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 
 @Component
