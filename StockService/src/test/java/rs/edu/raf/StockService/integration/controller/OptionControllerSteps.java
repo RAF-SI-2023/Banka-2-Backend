@@ -49,10 +49,13 @@ public class OptionControllerSteps {
     private ResponseEntity<List<Option>> responseOptionByStockListing;
 
     private ResponseEntity<Option> responseOptionById;
-    private OptionRepository optionRepository;
-    private OptionController optionController;
-   private List<Option> optionslist;
 
+    @MockBean
+    private OptionRepository optionRepository;
+
+    @MockBean
+    private OptionController optionController;
+    private List<Option> optionslist;
 
 
     public OptionControllerSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
@@ -70,7 +73,7 @@ public class OptionControllerSteps {
         LocalDate currentDate = LocalDate.now();
         LocalDateTime localDateTime = currentDate.atStartOfDay();
         long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        option.setStockListing("AAPL");
+        option.setStockListing("TEST");
         option.setOptionType(OptionType.CALL);
         option.setStrikePrice(101D);
         option.setImpliedVolatility(421D);
@@ -78,7 +81,7 @@ public class OptionControllerSteps {
         option.setSettlementDate(milliseconds);
 
         Option option2 = new Option();
-        option.setStockListing("AAPL");
+        option.setStockListing("TEST");
         option.setOptionType(OptionType.PUT);
         option.setStrikePrice(10D);
         option.setImpliedVolatility(42D);
@@ -87,18 +90,21 @@ public class OptionControllerSteps {
 
         stockListing = option.getStockListing();
 
+        //  optionRepository.save(option);
 
         optionslist = List.of(option, option2);
 
 
-
     }
 
-    @When("the client requests options by stock listing")
-    public void whenTheClientRequestsOptionsByListing() throws Exception {
-
-        responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
-
+    @When("the client requests options by {string}")
+    public void whenTheClientRequestsOptionsByListing(String path) throws Exception {
+        if (path.equals("/stock-listing/TEST")) {
+            responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
+        }
+        //     optionController = new OptionController(optionService);
+        //     System.out.println(optionController.findAllOptionsByStockListing(stockListing));
+        //      responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
     }
 
     @Then("option should return list by stock listing")
