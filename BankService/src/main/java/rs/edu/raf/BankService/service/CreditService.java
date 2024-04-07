@@ -3,7 +3,7 @@ package rs.edu.raf.BankService.service;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
-import rs.edu.raf.BankService.data.entities.Credit;
+import rs.edu.raf.BankService.data.entities.credit.Credit;
 
 import java.util.List;
 

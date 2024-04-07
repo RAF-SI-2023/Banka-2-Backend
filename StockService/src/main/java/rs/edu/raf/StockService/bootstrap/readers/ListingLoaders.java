@@ -86,6 +86,7 @@ public class ListingLoaders implements CommandLineRunner {
 
                 }
             } catch (JsonProcessingException e) {
+                System.out.println("################## " + iexApiUrl);
                 throw new RuntimeException(e);
             }
 
