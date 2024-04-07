@@ -46,7 +46,9 @@ public class OptionServiceImpl implements OptionService {
     @Override
     public List<Option> findAllByStockListing(String stockListing) {
 
-       List<Option> requestedOptions =  loadOptions(stockListing);
+     //  List<Option> requestedOptions =  loadOptions(stockListing);
+
+       List<Option> requestedOptions =  optionRepository.findAllByStockListing(stockListing);
 //        if (requestedOptions.isEmpty()) {
 //            requestedOptions =Optional.ofNullable(optionRepository.findAllByStockListing(stockListing));
 //        }

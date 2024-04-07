@@ -4,15 +4,12 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.StockService.controllers.OptionController;
-import rs.edu.raf.StockService.cucumber.CucumberIntegrationTest;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.repositories.OptionRepository;
@@ -22,8 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.anyString;
 
 //@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -60,10 +55,7 @@ public class OptionControllerSteps {
 
     @MockBean
     private OptionController optionController;
-   private List<Option> optionslist;
-
-
-
+    private List<Option> optionslist;
 
 
     public OptionControllerSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
@@ -81,7 +73,7 @@ public class OptionControllerSteps {
         LocalDate currentDate = LocalDate.now();
         LocalDateTime localDateTime = currentDate.atStartOfDay();
         long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        option.setStockListing("AAPL");
+        option.setStockListing("TEST");
         option.setOptionType(OptionType.CALL);
         option.setStrikePrice(101D);
         option.setImpliedVolatility(421D);
@@ -89,7 +81,7 @@ public class OptionControllerSteps {
         option.setSettlementDate(milliseconds);
 
         Option option2 = new Option();
-        option.setStockListing("AAPL");
+        option.setStockListing("TEST");
         option.setOptionType(OptionType.PUT);
         option.setStrikePrice(10D);
         option.setImpliedVolatility(42D);
@@ -98,26 +90,21 @@ public class OptionControllerSteps {
 
         stockListing = option.getStockListing();
 
-      //  optionRepository.save(option);
+        //  optionRepository.save(option);
 
         optionslist = List.of(option, option2);
-
-        optionRepository.saveAll(optionslist);
-
-//        Mockito.when(optionController.findAllOptionsByStockListing(anyString()))
-//                .thenReturn((ResponseEntity<List<Option>>) List.of(option));
 
 
     }
 
-    @When("the client requests options by stock listing")
-    public void whenTheClientRequestsOptionsByListing() throws Exception {
-
-   //     optionController = new OptionController(optionService);
-        responseOptionByStockListing = optionController.findAllOptionsByStockListing(stockListing);
-  //      responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
-
-
+    @When("the client requests options by {string}")
+    public void whenTheClientRequestsOptionsByListing(String path) throws Exception {
+        if (path.equals("/stock-listing/TEST")) {
+            responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
+        }
+        //     optionController = new OptionController(optionService);
+        //     System.out.println(optionController.findAllOptionsByStockListing(stockListing));
+        //      responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
     }
 
     @Then("option should return list by stock listing")

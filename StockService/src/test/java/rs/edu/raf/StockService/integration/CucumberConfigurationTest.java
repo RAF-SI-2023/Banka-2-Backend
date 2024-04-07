@@ -1,4 +1,4 @@
-package rs.edu.raf.StockService.cucumber;
+package rs.edu.raf.StockService.integration;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
