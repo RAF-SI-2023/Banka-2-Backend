@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.entities.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.service.TransactionService;
 

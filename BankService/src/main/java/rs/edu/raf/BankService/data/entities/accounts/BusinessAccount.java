@@ -1,12 +1,12 @@
-package rs.edu.raf.BankService.data.entities;
+package rs.edu.raf.BankService.data.entities.accounts;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.enums.AccountType;
-import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 
 @Entity
 @DiscriminatorValue("BusinessAccount")
