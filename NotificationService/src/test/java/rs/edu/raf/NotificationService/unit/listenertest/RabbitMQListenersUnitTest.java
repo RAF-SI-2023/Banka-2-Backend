@@ -10,9 +10,15 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
+import rs.edu.raf.NotificationService.data.dto.EmailDto;
+import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
+import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
+import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
 import rs.edu.raf.NotificationService.listener.RabbitMQListeners;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
 import rs.edu.raf.NotificationService.services.EmailService;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,9 +26,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class RabbitMQListenersUnitTest {
-
-    private final String validEmail = "test@example.com";
-    private final String validUrl = "http://example.com/activate";
     @Mock
     private Logger logger;
     @Spy
@@ -38,45 +41,54 @@ public class RabbitMQListenersUnitTest {
 
     @Test
     void passwordActivationValidInput() {
+        String email = "email@gmail.com";
+        String subject = "Subject";
+        String url = "http://localhost:8000/link";
+        PasswordActivationDto passwordActivationDto = new PasswordActivationDto(email, subject, url);
 
-//        String validJson = generateJson("email", "activationUrl", validEmail, validUrl);
-//        PasswordActivationDto passwordActivationDto = new PasswordActivationDto(validEmail, validUrl);
-//
-//        try {
-//            rabbitMQListeners.passwordActivationHandler(passwordActivationDto);
-//            verify(emailDtoMapper).activationEmail(passwordActivationDto);
-//        } catch (IOException e) {
-//            fail(e.getMessage());
-//        }
+        try {
+            rabbitMQListeners.passwordActivationHandler(passwordActivationDto);
+            verify(emailDtoMapper).activationEmail(passwordActivationDto);
+            verify(emailService).sendSimpleMailMessage(email, subject, url);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
 
     }
 
     @Test
     void passwordChangeValidInput() {
+        String email = "email@gmail.com";
+        String subject = "Subject";
+        String url = "http://localhost:8000/link";
+        PasswordChangeDto passwordChangeDto = new PasswordChangeDto(email, subject, url);
 
-//        String validJson = generateJson("email", "urlLink", validEmail, validUrl);
-//        PasswordChangeDto passwordChangeDto = new PasswordChangeDto(validEmail, validUrl);
-//
-//        try {
-//            rabbitMQListeners.passwordChangeHandler(passwordChangeDto);
-//            verify(emailDtoMapper).changePasswordEmail(passwordChangeDto);
-//        } catch (IOException e) {
-//            fail(e.getMessage());
-//        }
+        try {
+            rabbitMQListeners.passwordChangeHandler(passwordChangeDto);
+            verify(emailDtoMapper).changePasswordEmail(passwordChangeDto);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
 
     }
 
     @Test
     void userProfileActivationCodeValidInput() {
 
-//        ProfileActivationCodeDto profileActivationCodeDto = new ProfileActivationCodeDto(validEmail, "1234567");
-//
-//        try {
-//            rabbitMQListeners.userProfileActivationCodeHandler(profileActivationCodeDto);
-//            verify(emailDtoMapper).profileActivationEmail(profileActivationCodeDto);
-//        } catch (IOException e) {
-//            fail(e.getMessage());
-//        }
+        String email = "email@gmail.com";
+        String subject = "Subject";
+        String url = "http://localhost:8000/link";
+
+        ProfileActivationCodeDto profileActivationCodeDto = new ProfileActivationCodeDto(email, subject, url);
+        EmailDto emailDto = emailDtoMapper.profileActivationEmail(profileActivationCodeDto);
+
+        try {
+            rabbitMQListeners.userProfileActivationCodeHandler(profileActivationCodeDto);
+            verify(emailDtoMapper).profileActivationEmail(profileActivationCodeDto);
+            verify(emailService).sendSimpleMailMessage(emailDto.getEmail(), emailDto.getSubject(), emailDto.getContent());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
 
     }
 
