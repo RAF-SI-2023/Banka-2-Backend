@@ -1,8 +1,8 @@
 package rs.edu.raf.BankService.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.exception.*;
 
 import java.util.List;
