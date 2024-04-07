@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import rs.edu.raf.BankService.bootstrap.BootstrapData;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Account;
+import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
@@ -19,6 +19,7 @@ import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.UserAccountUserProfileActivationCodeRepository;
 import rs.edu.raf.BankService.service.AccountService;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -34,23 +35,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean userAccountUserProfileConnectionAttempt(AccountNumberDto accountNumberDto) {
-       Account account = accountRepository.findByAccountNumber(accountNumberDto.getAccountNumber());
-        if(account != null){
+        Account account = accountRepository.findByAccountNumber(accountNumberDto.getAccountNumber());
+        if (account != null) {
             UserAccountUserProfileLinkState userAccountUserProfileLinkState = account.getLinkState();
-            if(userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.NOT_ASSOCIATED)){
-                generateActivationCodeAndSendToQueue(accountNumberDto.getAccountNumber(),account.getEmail());
+            if (userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.NOT_ASSOCIATED)) {
+                generateActivationCodeAndSendToQueue(accountNumberDto.getAccountNumber(), account.getEmail());
                 account.setLinkState(UserAccountUserProfileLinkState.IN_PROCESS);
                 accountRepository.saveAndFlush(account);
                 return true;
-            }
-            else if(userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.IN_PROCESS)){
+            } else if (userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.IN_PROCESS)) {
                 throw new UserAccountInProcessOfBindingWithUserProfileException(accountNumberDto.getAccountNumber());
-            }
-            else{
+            } else {
                 throw new UserAccountAlreadyAssociatedWithUserProfileException(accountNumberDto.getAccountNumber());
             }
-        }
-        else{
+        } else {
             throw new AccountNotFoundException(accountNumberDto.getAccountNumber());
         }
     }
@@ -58,18 +56,17 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean confirmActivationCode(String accountNumber, Integer code) throws ActivationCodeExpiredException {
         Account account = accountRepository.findByAccountNumber(accountNumber);
-        if(account != null){
+        if (account != null) {
             UserAccountUserProfileActivationCode token = userAccountUserProfileActivationCodeRepository.findByAccountNumber(accountNumber);
-            if(Integer.valueOf(token.getCode()).equals(code)){
-                if(token.isExpired()){
+            if (Integer.valueOf(token.getCode()).equals(code)) {
+                if (token.isExpired()) {
                     throw new ActivationCodeExpiredException();
                 }
                 userAccountUserProfileActivationCodeRepository.delete(token);
                 account.setLinkState(UserAccountUserProfileLinkState.ASSOCIATED);
                 accountRepository.saveAndFlush(account);
                 return true;
-            }
-            else{
+            } else {
                 throw new ActivationCodeDoesNotMatchException();
             }
         }
@@ -79,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public DomesticCurrencyAccountDto createDomesticCurrencyAccount(DomesticCurrencyAccountDto dto) throws AccountNumberAlreadyExistException {
         Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
-        if(account != null){
+        if (account != null) {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.saveAndFlush(accountMapper.domesticAccountDtoToDomesticAccount(dto));
@@ -89,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ForeignCurrencyAccountDto createForeignCurrencyAccount(ForeignCurrencyAccountDto dto) throws AccountNumberAlreadyExistException {
         Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
-        if(account != null){
+        if (account != null) {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
@@ -99,20 +96,29 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public BusinessAccountDto createBusinessAccount(BusinessAccountDto dto) throws AccountNumberAlreadyExistException {
         Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
-        if(account != null){
+        if (account != null) {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.save(accountMapper.businessAccountDtoToBusinessAccount(dto));
         return dto;
     }
 
+    @Override
+    public List<Account> findAccountsByEmail(String email) {
+        List<Account> accounts = accountRepository.findAllByEmail(email);
+        if (accounts.isEmpty()) {
+            throw new AccountNotFoundException(email);
+        }
+        return accounts;
+    }
+
     @Transactional(dontRollbackOn = Exception.class)
     @Scheduled(cron = "0 */5 * * * *") //every 5 minute
     @SchedulerLock(name = "tasksScheduler-1")
-    public void executeScheduledTasks(){
+    public void executeScheduledTasks() {
         logger.info("Executing scheduled tasks");
         userAccountUserProfileActivationCodeRepository.findAll().forEach(token -> {
-            if(token.isExpired()){
+            if (token.isExpired()) {
                 userAccountUserProfileActivationCodeRepository.delete(token);
                 Account account = accountRepository.findByAccountNumber(token.getAccountNumber());
                 account.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
@@ -121,19 +127,63 @@ public class AccountServiceImpl implements AccountService {
         });
     }
 
-    private void generateActivationCodeAndSendToQueue(String accountNumber, String email){
+
+    private void generateActivationCodeAndSendToQueue(String accountNumber, String email) {
         String code = generateActivationCode();
         UserAccountUserProfileActivationCode token = new UserAccountUserProfileActivationCode(accountNumber, code);
         userAccountUserProfileActivationCodeRepository.saveAndFlush(token);
         sendActivationCodeToSendToQueue(new EmailDto(email, code));
     }
 
-    private String generateActivationCode(){
+    private String generateActivationCode() {
         return String.valueOf(new Random().nextInt(100000, 999999));
     }
 
-    private void sendActivationCodeToSendToQueue(EmailDto emailDto){
+    private void sendActivationCodeToSendToQueue(EmailDto emailDto) {
         rabbitTemplate.convertAndSend("user-profile-activation-code", emailDto);
     }
 
+    @Transactional
+    @Override
+    public SavedAccountDto createSavedAccount(Long accountId, SavedAccountDto dto) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        SavedAccount savedAccount = new SavedAccount();
+        savedAccount.setName(dto.getName());
+        savedAccount.setAccountNumber(dto.getAccountNumber());
+
+        account.getSavedAccounts().add(savedAccount);
+        accountRepository.save(account);
+
+        return dto;
+    }
+
+    @Transactional
+    @Override
+    public SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        SavedAccount savedAccountToUpdate = account.getSavedAccounts().stream()
+                .filter(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber))
+                .findFirst()
+                .orElseThrow(() -> new AccountNotFoundException("Saved account not found"));
+
+        savedAccountToUpdate.setName(dto.getName());
+        savedAccountToUpdate.setAccountNumber(dto.getAccountNumber());
+
+        accountRepository.save(account);
+
+        return dto;
+    }
+
+    @Override
+    public void deleteSavedAccount(Long accountId, String savedAccountNumber) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        account.getSavedAccounts().removeIf(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber));
+        accountRepository.save(account);
+    }
 }

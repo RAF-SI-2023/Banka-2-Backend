@@ -1,15 +1,19 @@
-package rs.edu.raf.BankService.data.entities;
+package rs.edu.raf.BankService.data.entities.accounts;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import rs.edu.raf.BankService.data.entities.SavedAccount;
+import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.filters.principal.CustomUserPrincipal;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -36,6 +40,15 @@ public class Account {
     private Long expirationDate = expirationDate();
     private String currencyCode;
     private Double maintenanceFee = 0.0;
+
+    @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
+    private List<TransferTransaction> sentTransferTransactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiverAccount", fetch = FetchType.LAZY)
+    private List<TransferTransaction> receivedTransferTransactions = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<SavedAccount> savedAccounts;
 
     public Account(
             String accountNumber,
