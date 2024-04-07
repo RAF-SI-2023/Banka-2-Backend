@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/transaction")
 @RequiredArgsConstructor
 @CrossOrigin
-public class TransactionController {
+public class TransferTransactionController {
 
     private final TransactionService transactionService;
 

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionVerificationDto {
+public class TransferTransactionVerificationDto {
 
     private String email;
     private String verificationToken;
