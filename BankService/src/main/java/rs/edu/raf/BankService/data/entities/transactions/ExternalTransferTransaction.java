@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.data.entities;
+package rs.edu.raf.BankService.data.entities.transactions;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("ExternalTransferTransaction")
 @Data
 @NoArgsConstructor
-public class ExternalTransferTransaction extends Transaction {
+public class ExternalTransferTransaction extends TransferTransaction {
 
     private String transactionPurpose;
     private Long amount;

@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.data.entities;
+package rs.edu.raf.BankService.data.entities.accounts;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

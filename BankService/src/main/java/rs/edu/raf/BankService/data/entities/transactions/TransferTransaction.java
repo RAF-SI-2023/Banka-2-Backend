@@ -1,9 +1,10 @@
-package rs.edu.raf.BankService.data.entities;
+package rs.edu.raf.BankService.data.entities.transactions;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transaction {
+public class TransferTransaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
