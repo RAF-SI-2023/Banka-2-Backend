@@ -35,4 +35,4 @@ build/
 ###
 **/application-local.properties
 **/rabbitdata
-docker-compose.my.yml
+/docker-compose.my.yml
