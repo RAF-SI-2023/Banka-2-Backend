@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import rs.edu.raf.BankService.bootstrap.BootstrapData;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Account;
+import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
@@ -143,4 +143,47 @@ public class AccountServiceImpl implements AccountService {
         rabbitTemplate.convertAndSend("user-profile-activation-code", emailDto);
     }
 
+    @Transactional
+    @Override
+    public SavedAccountDto createSavedAccount(Long accountId, SavedAccountDto dto) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        SavedAccount savedAccount = new SavedAccount();
+        savedAccount.setName(dto.getName());
+        savedAccount.setAccountNumber(dto.getAccountNumber());
+
+        account.getSavedAccounts().add(savedAccount);
+        accountRepository.save(account);
+
+        return dto;
+    }
+
+    @Transactional
+    @Override
+    public SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        SavedAccount savedAccountToUpdate = account.getSavedAccounts().stream()
+                .filter(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber))
+                .findFirst()
+                .orElseThrow(() -> new AccountNotFoundException("Saved account not found"));
+
+        savedAccountToUpdate.setName(dto.getName());
+        savedAccountToUpdate.setAccountNumber(dto.getAccountNumber());
+
+        accountRepository.save(account);
+
+        return dto;
+    }
+
+    @Override
+    public void deleteSavedAccount(Long accountId, String savedAccountNumber) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        account.getSavedAccounts().removeIf(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber));
+        accountRepository.save(account);
+    }
 }

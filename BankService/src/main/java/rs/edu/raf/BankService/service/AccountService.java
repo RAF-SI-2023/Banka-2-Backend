@@ -1,11 +1,16 @@
 package rs.edu.raf.BankService.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+<<<<<<< HEAD
 import rs.edu.raf.BankService.data.dto.AccountNumberDto;
 import rs.edu.raf.BankService.data.dto.BusinessAccountDto;
 import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
 import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
 import rs.edu.raf.BankService.data.entities.Account;
+=======
+import rs.edu.raf.BankService.data.dto.*;
+>>>>>>> b23355a (#151 Podrzano placanje uz verifikaciju)
 import rs.edu.raf.BankService.exception.*;
 
 import java.util.List;
@@ -28,6 +33,10 @@ public interface AccountService {
     BusinessAccountDto createBusinessAccount(BusinessAccountDto dto)
             throws AccountNumberAlreadyExistException;
 
+    SavedAccountDto createSavedAccount(Long accountId, SavedAccountDto dto);
 
     List<Account> findAccountsByEmail(String email);
+    SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto);
+
+    void deleteSavedAccount(Long accountId, String savedAccountNumber);
 }
