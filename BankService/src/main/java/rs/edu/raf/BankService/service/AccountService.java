@@ -1,11 +1,11 @@
 package rs.edu.raf.BankService.service;
 
 import org.springframework.stereotype.Service;
-import rs.edu.raf.BankService.data.dto.AccountNumberDto;
-import rs.edu.raf.BankService.data.dto.BusinessAccountDto;
-import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
-import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
+import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.exception.*;
+
+import java.util.List;
 
 @Service
 public interface AccountService {
@@ -25,6 +25,10 @@ public interface AccountService {
     BusinessAccountDto createBusinessAccount(BusinessAccountDto dto)
             throws AccountNumberAlreadyExistException;
 
+    SavedAccountDto createSavedAccount(Long accountId, SavedAccountDto dto);
 
+    List<Account> findAccountsByEmail(String email);
+    SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto);
 
+    void deleteSavedAccount(Long accountId, String savedAccountNumber);
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AgentDto extends UserDto {
 
-    private BigDecimal limit;
+    private BigDecimal userLimit;
     private BigDecimal leftOfLimit;
 
     public AgentDto(Long id,
@@ -25,7 +25,7 @@ public class AgentDto extends UserDto {
                     BigDecimal limit,
                     BigDecimal leftOfLimit) {
         super(id, dateOfBirth, email, username, phone, address, RoleType.AGENT, permissions);
-        this.limit = limit;
+        this.userLimit = limit;
         this.leftOfLimit = leftOfLimit;
     }
 }

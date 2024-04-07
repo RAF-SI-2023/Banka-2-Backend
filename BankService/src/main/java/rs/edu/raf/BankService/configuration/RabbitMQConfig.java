@@ -22,6 +22,11 @@ public class RabbitMQConfig {
     public Queue userProfileUserAccountBindingConfirmation() { return new Queue("account-link-confirmation", false); }
 
     @Bean
+    public Queue transactionVerificationtQueue() {
+        return new Queue("transaction-verification", false);
+    }
+
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }

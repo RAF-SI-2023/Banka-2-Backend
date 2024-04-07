@@ -156,7 +156,7 @@ public class UserMapper {
                 dto.getPhone(),
                 dto.getAddress(),
                 dto.getPermissions().stream().map(Permission::new).toList(),
-                dto.getLimit(),
+                dto.getUserLimit(),
                 dto.getLeftOfLimit()
         );
     }

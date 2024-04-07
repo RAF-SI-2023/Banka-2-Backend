@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +19,7 @@ import rs.edu.raf.BankService.filters.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SpringSecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -46,6 +48,7 @@ public class SpringSecurityConfig {
                         requests -> requests
                                 .requestMatchers(new AntPathRequestMatcher("/api/accounts/associate-profile-initialization")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/accounts/code-confirmation/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/credit/**")).authenticated()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()

@@ -22,6 +22,8 @@ public class Agent extends User {
     @Column(name = "left_of_limit", columnDefinition = "DECIMAL(38, 2)")
     private BigDecimal leftOfLimit;
 
+    private boolean orderApprovalRequired = true;
+
     public Agent(
             Long dateOfBirth,
             String email,
