@@ -17,11 +17,8 @@ import rs.edu.raf.IAMService.exceptions.EmailTakenException;
 import rs.edu.raf.IAMService.exceptions.MissingRoleException;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
-import rs.edu.raf.IAMService.services.impl.PasswordChangeTokenServiceImpl;
-import rs.edu.raf.IAMService.utils.ChangedPasswordTokenUtil;
-import rs.edu.raf.IAMService.utils.SubmitLimiter;
-import rs.edu.raf.IAMService.validator.PasswordValidator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -33,16 +30,9 @@ import java.util.List;
         consumes = MediaType.APPLICATION_JSON_VALUE
 )
 public class UserController {
-
     private final HttpServletRequest request;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final SubmitLimiter submitLimiter;
-    private final ChangedPasswordTokenUtil changedPasswordTokenUtil;
-    private final PasswordValidator passwordValidator;
-    private final PasswordChangeTokenServiceImpl passwordChangeTokenService;
-
 
     @PostMapping("/create/employee")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -74,7 +64,6 @@ public class UserController {
     @PostMapping(path = "/password-change", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> initiatesChangePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return ResponseEntity.ok().body(userService.setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword()));
-
     }
 
     /**
@@ -145,6 +134,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping(path = "/agent-limit/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<BigDecimal> getAgentsLeftLimit(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getAgentsLeftLimit(id));
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+    @PatchMapping(path = "/agent-limit/reset/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<Void> resetAgentsLeftLimit(@PathVariable Long id) {
+        userService.resetAgentsLeftLimit(id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/delete/{email}", consumes = MediaType.ALL_VALUE)
@@ -269,6 +271,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
+
 
 }
 

@@ -26,7 +26,7 @@ public class CurrencyInflationServiceImpl implements CurrencyInflationService {
         return currencyInflationRepository.findByCurrencyId(currencyId).orElse(null);
     }
 
-    @Cacheable(value = "currencyInflationIdAndYear", key = "#currencyId && #year")
+    @Cacheable(value = "currencyInflationIdAndYear", key = "#currencyId +'_'+ #year")
     public CurrencyInflation findInflationByCurrencyIdAndYear(long currencyId, long year) {
         return currencyInflationRepository.findByCurrencyIdAndYear(currencyId, year).orElse(null);
     }

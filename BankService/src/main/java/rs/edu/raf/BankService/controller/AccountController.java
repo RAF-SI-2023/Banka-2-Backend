@@ -5,14 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rs.edu.raf.BankService.data.dto.AccountNumberDto;
-import rs.edu.raf.BankService.data.dto.BusinessAccountDto;
-import rs.edu.raf.BankService.data.dto.DomesticCurrencyAccountDto;
-import rs.edu.raf.BankService.data.dto.ForeignCurrencyAccountDto;
-import rs.edu.raf.BankService.exception.AccountNotFoundException;
+import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
-import rs.edu.raf.BankService.exception.UserAccountAlreadyAssociatedWithUserProfileException;
-import rs.edu.raf.BankService.exception.UserAccountInProcessOfBindingWithUserProfileException;
 import rs.edu.raf.BankService.service.AccountService;
 
 @RestController
@@ -75,4 +69,32 @@ public class AccountController {
         }
     }
 
+    @GetMapping(value = "/find-by-email/{email}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<?> findAccountsByEmail(@PathVariable String email) {
+        try {
+            return ResponseEntity.ok(accountService.findAccountsByEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/savedAccount/{accountId}/")
+    public SavedAccountDto createSavedAccount(@PathVariable Long accountId,
+                                              @RequestBody SavedAccountDto savedAccountDto) {
+        return accountService.createSavedAccount(accountId, savedAccountDto);
+
+    }
+
+    @PutMapping("/savedAccount/{accountId}/{savedAccountNumber}")
+    public SavedAccountDto updateSavedAccount(@PathVariable Long accountId,
+                                              @PathVariable String savedAccountNumber,
+                                              @RequestBody SavedAccountDto savedAccountDto) {
+        return accountService.updateSavedAccount(accountId, savedAccountNumber, savedAccountDto);
+    }
+
+    @DeleteMapping("/savedAccount/{accountId}/")
+    public void deleteSavedAccount(@PathVariable Long accountId,
+                                   @RequestBody String savedAccountNumber) {
+        accountService.deleteSavedAccount(accountId, savedAccountNumber);
+    }
 }

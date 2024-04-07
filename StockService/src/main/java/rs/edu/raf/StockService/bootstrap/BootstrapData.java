@@ -92,58 +92,32 @@ public class BootstrapData implements CommandLineRunner {
         LocalDate currentDate = LocalDate.now();
         LocalDateTime localDateTime = currentDate.atStartOfDay();
         long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        for (int i = 1; i <= 3; i++) {
-            Option option = new Option();
-            option.setStockListing("STOCK" + i);
-            option.setOptionType(OptionType.PUT);
-            option.setStrikePrice("100" + i);
-            option.setImpliedVolatility("420" + i);
-            option.setOpenInterest(120 + "i");
-            option.setSettlementDate(milliseconds);
+//        for (int i = 1; i <= 3; i++) {
+//            Option option = new Option();
+//            option.setStockListing("STOCK" + i);
+//            option.setOptionType(OptionType.PUT);
+//            option.setStrikePrice("100" + i);
+//            option.setImpliedVolatility("420" + i);
+//            option.setOpenInterest(120 + "i");
+//            option.setSettlementDate(milliseconds);
+//
+//            optionRepository.save(option);
+//
+//        }
+//        Option option = new Option();
+//        option.setStockListing("STOCK" + 1);
+//        option.setOptionType(OptionType.PUT);
+//        option.setStrikePrice("100" + 1);
+//        option.setImpliedVolatility("420" + 1);
+//        option.setOpenInterest(120 + "i");
+//        option.setSettlementDate(milliseconds);
+//        optionRepository.save(option);
 
-            optionRepository.save(option);
 
-        }
-        Option option = new Option();
-        option.setStockListing("STOCK" + 1);
-        option.setOptionType(OptionType.PUT);
-        option.setStrikePrice("100" + 1);
-        option.setImpliedVolatility("420" + 1);
-        option.setOpenInterest(120 + "i");
-        option.setSettlementDate(milliseconds);
-        optionRepository.save(option);
+       // optionServiceImpl.loadOptions();
 
-        for (int i = 0; i < 10; i++) {
-            Forex forex = new Forex();
-            forex.setSymbol("forex" + i);
-            forex.setDescription("description" + i);
-            forex.setExchange("exchange" + i);
-            forex.setLastRefresh((long) i);
-            forex.setPrice((double) i);
-            forex.setHigh((double) i);
-            forex.setLow((double) i);
-            forex.setChange((double) i);
-            forex.setVolume(i);
-            forex.setBaseCurrency("base" + i);
-            forex.setQuoteCurrency("quote" + i);
-            forexRepository.save(forex);
-        }
+      //  optionServiceImpl.loadOptions();
 
-        for (int i = 0; i < 10; i++) {
-            Stock stock = new Stock();
-            stock.setSymbol("stock" + i);
-            stock.setDescription("description" + i);
-            stock.setExchange("exchange" + i);
-            stock.setLastRefresh((long) i);
-            stock.setPrice((double) i);
-            stock.setHigh((double) i);
-            stock.setLow((double) i);
-            stock.setChange((double) i);
-            stock.setVolume(i);
-            stock.setShares(i);
-            stock.setYield((double) i);
-            stockRepository.save(stock);
-        }
         logger.info("DATA LOADING FINISHED...");
     }
 
