@@ -142,7 +142,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
     @PatchMapping(path = "/agent-limit/reset/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Void> resetAgentsLeftLimit(@PathVariable Long id) {
         userService.resetAgentsLeftLimit(id);
