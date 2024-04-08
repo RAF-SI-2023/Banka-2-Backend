@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
-import rs.edu.raf.BankService.data.entities.Account;
-import rs.edu.raf.BankService.data.entities.Credit;
-import rs.edu.raf.BankService.data.entities.CreditRequest;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.credit.Credit;
+import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 import rs.edu.raf.BankService.mapper.CreditMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
@@ -18,7 +18,6 @@ import rs.edu.raf.BankService.service.CreditService;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service

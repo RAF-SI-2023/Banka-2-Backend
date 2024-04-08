@@ -34,4 +34,6 @@ build/
 
 ###
 **/application-local.properties
+**/private-file
 **/rabbitdata
+

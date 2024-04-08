@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.entities.ExternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.InternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.Transaction;
+import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 
 import java.time.LocalDateTime;
 
@@ -61,17 +61,17 @@ public class TransactionMapper {
     }
 
     // mapira transakcije za prikaz u listi(po specifikaciji)
-    public GenericTransactionDto toGenericTransactionDto(Transaction transaction) {
+    public GenericTransactionDto toGenericTransactionDto(TransferTransaction transferTransaction) {
         GenericTransactionDto dto = new GenericTransactionDto();
-        dto.setId(transaction.getId().toString());
-        dto.setCreatedAt(transaction.getCreatedAt());
-        dto.setStatus(transaction.getStatus());
+        dto.setId(transferTransaction.getId().toString());
+        dto.setCreatedAt(transferTransaction.getCreatedAt());
+        dto.setStatus(transferTransaction.getStatus());
 
-        if (transaction instanceof ExternalTransferTransaction) {
-            dto.setAmount(((ExternalTransferTransaction) transaction).getAmount());
+        if (transferTransaction instanceof ExternalTransferTransaction) {
+            dto.setAmount(((ExternalTransferTransaction) transferTransaction).getAmount());
         }
-        else if (transaction instanceof InternalTransferTransaction) {
-            dto.setAmount(((InternalTransferTransaction) transaction).getAmount());
+        else if (transferTransaction instanceof InternalTransferTransaction) {
+            dto.setAmount(((InternalTransferTransaction) transferTransaction).getAmount());
         }
 
         return dto;

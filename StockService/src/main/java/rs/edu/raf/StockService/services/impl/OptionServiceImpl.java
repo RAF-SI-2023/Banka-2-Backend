@@ -47,6 +47,8 @@ public class OptionServiceImpl implements OptionService {
     public List<Option> findAllByStockListing(String stockListing) {
 
        List<Option> requestedOptions =  loadOptions(stockListing);
+
+  //     List<Option> requestedOptions =  optionRepository.findAllByStockListing(stockListing);
 //        if (requestedOptions.isEmpty()) {
 //            requestedOptions =Optional.ofNullable(optionRepository.findAllByStockListing(stockListing));
 //        }
@@ -78,7 +80,7 @@ public class OptionServiceImpl implements OptionService {
                 .uri(URI.create(url))
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-
+        List<Option> optionList = new ArrayList<>();
         try {
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
@@ -104,7 +106,7 @@ public class OptionServiceImpl implements OptionService {
             JSONArray options = option.getJSONArray("options");
             OptionDto optionDtoCall = new OptionDto();
             OptionDto optionDtoPut = new OptionDto();
-            List<Option> optionList = new ArrayList<>();
+
             for (int i = 0; i < options.length(); i++) {
                 JSONObject optionData = options.getJSONObject(i);
                 long expirationDate = optionData.getLong("expirationDate");
@@ -159,10 +161,12 @@ public class OptionServiceImpl implements OptionService {
             return optionList;
 
         } catch (IOException | InterruptedException | JSONException e) {
-          //  e.printStackTrace();
+            e.printStackTrace();
 
             return new ArrayList<>();
+           // return new ArrayList<>();
         }
+   //     return optionList;
     }
 
 

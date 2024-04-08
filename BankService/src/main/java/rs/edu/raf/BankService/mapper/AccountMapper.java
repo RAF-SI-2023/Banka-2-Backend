@@ -2,7 +2,7 @@ package rs.edu.raf.BankService.mapper;
 
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.*;
-import rs.edu.raf.BankService.data.entities.*;
+import rs.edu.raf.BankService.data.entities.accounts.*;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 
@@ -55,6 +55,7 @@ public class AccountMapper {
                 dto.getIdentificationNumber()
         );
     }
+
 
     public AccountDto accountToAccountDto(Account account){
         return new AccountDto(

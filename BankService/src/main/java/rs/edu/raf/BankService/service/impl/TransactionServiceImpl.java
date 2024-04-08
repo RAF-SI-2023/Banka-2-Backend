@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.dto.TransactionVerificationDto;
-import rs.edu.raf.BankService.data.entities.Account;
-import rs.edu.raf.BankService.data.entities.ExternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.InternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.Transaction;
+import rs.edu.raf.BankService.data.dto.TransferTransactionVerificationDto;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.InvalidInternalTransferException;
@@ -110,36 +110,36 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionStatus verifyTransaction(Long transactionId, String verificationToken) {
-        Transaction transaction = transactionRepository.findById(transactionId)
+        TransferTransaction transferTransaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
-        TransactionStatus transactionStatus = transaction.getStatus();
+        TransactionStatus transactionStatus = transferTransaction.getStatus();
 
-        if (transaction instanceof ExternalTransferTransaction) {
-            Long senderBalance = transaction.getSenderAccount().getAvailableBalance();
-            Long receiverBalance = transaction.getReceiverAccount().getAvailableBalance();
-            Long transferAmount = ((ExternalTransferTransaction) transaction).getAmount();
+        if (transferTransaction instanceof ExternalTransferTransaction) {
+            Long senderBalance = transferTransaction.getSenderAccount().getAvailableBalance();
+            Long receiverBalance = transferTransaction.getReceiverAccount().getAvailableBalance();
+            Long transferAmount = ((ExternalTransferTransaction) transferTransaction).getAmount();
 
             Account senderAccount = accountRepository
-                    .findByAccountNumber(transaction.getSenderAccount().getAccountNumber());
+                    .findByAccountNumber(transferTransaction.getSenderAccount().getAccountNumber());
             Account receiverAccount = accountRepository
-                    .findByAccountNumber(transaction.getReceiverAccount().getAccountNumber());
+                    .findByAccountNumber(transferTransaction.getReceiverAccount().getAccountNumber());
 
-            if (verificationToken.equals(((ExternalTransferTransaction) transaction).getVerificationToken())) {
+            if (verificationToken.equals(((ExternalTransferTransaction) transferTransaction).getVerificationToken())) {
                 senderAccount.setAvailableBalance(senderBalance - transferAmount);
                 receiverAccount.setAvailableBalance(receiverBalance + transferAmount);
 
                 transactionStatus = TransactionStatus.CONFIRMED;
-                transaction.setStatus(transactionStatus);
+                transferTransaction.setStatus(transactionStatus);
 
                 accountRepository.saveAll(List.of(senderAccount, receiverAccount));
             }
             else {
                 transactionStatus = TransactionStatus.DECLINED;
-                transaction.setStatus(transactionStatus);
+                transferTransaction.setStatus(transactionStatus);
             }
         }
 
-        transactionRepository.save(transaction);
+        transactionRepository.save(transferTransaction);
 
         return transactionStatus;
     }
@@ -149,7 +149,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccount = accountRepository.findById(senderAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("User not found"));
 
-        return senderAccount.getSentTransactions().stream()
+        return senderAccount.getSentTransferTransactions().stream()
                 .map(transactionMapper::toGenericTransactionDto)
                 .collect(Collectors.toList());
     }
@@ -164,6 +164,6 @@ public class TransactionServiceImpl implements TransactionService {
     private void sendVerificationMessage(String email, String token) {
         rabbitTemplate.convertAndSend(
                 "transaction-verification",
-                new TransactionVerificationDto(email, token));
+                new TransferTransactionVerificationDto(email, token));
     }
 }
