@@ -7,6 +7,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.bootstrap.readers.CurrencyCsvReader;
+import rs.edu.raf.StockService.bootstrap.readers.FuturesContractCsvReader;
 import rs.edu.raf.StockService.data.entities.*;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.repositories.*;
@@ -26,6 +27,8 @@ public class BootstrapData implements CommandLineRunner {
 
     private final CurrencyInflationRepository currencyInflationRepository;
 
+    private final FuturesContractRepository futuresContractRepository;
+
     private final ResourceLoader resourceLoader;
     /**
      * za redis, ne koristiti ovde najverovatnije
@@ -43,7 +46,7 @@ public class BootstrapData implements CommandLineRunner {
     private final ForexRepository forexRepository;
 
     public BootstrapData(CurrencyRepository currencyRepository,
-                         CurrencyInflationRepository currencyInflationRepository,
+                         CurrencyInflationRepository currencyInflationRepository, FuturesContractRepository futuresContractRepository,
                          RedisTemplate<String, Currency> redisTemplate,
                          RedisTemplate<String, CurrencyInflation> redisCurrencyInflation,
                          ResourceLoader resourceLoader,
@@ -53,6 +56,7 @@ public class BootstrapData implements CommandLineRunner {
                          ForexRepository forexRepository) {
         this.currencyRepository = currencyRepository;
         this.currencyInflationRepository = currencyInflationRepository;
+        this.futuresContractRepository = futuresContractRepository;
         this.resourceLoader = resourceLoader;
         this.redisCurrency = redisTemplate;
         this.redisCurrencyInflation = redisCurrencyInflation;
@@ -117,6 +121,12 @@ public class BootstrapData implements CommandLineRunner {
        // optionServiceImpl.loadOptions();
 
       //  optionServiceImpl.loadOptions();
+
+        if (futuresContractRepository.count() == 0) {
+            FuturesContractCsvReader futuresContractCsvReader = new FuturesContractCsvReader(resourceLoader);
+            List<FuturesContract> futuresContracts = futuresContractCsvReader.readFromFile();
+            futuresContractRepository.saveAll(futuresContracts);
+        }
 
         logger.info("DATA LOADING FINISHED...");
     }
