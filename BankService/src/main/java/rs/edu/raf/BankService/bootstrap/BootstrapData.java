@@ -9,13 +9,12 @@ import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
-import rs.edu.raf.BankService.data.enums.AccountType;
-import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
-import rs.edu.raf.BankService.data.enums.CreditType;
-import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
+import rs.edu.raf.BankService.data.enums.*;
 import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
@@ -45,6 +44,7 @@ public class BootstrapData implements CommandLineRunner {
     private final AccountRepository accountRepository;
     private final CreditRepository creditRepository;
     private final CreditRequestRepository creditRequestRepository;
+    private final CardRepository cardRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -110,7 +110,7 @@ public class BootstrapData implements CommandLineRunner {
             crd.setEmploymentPeriod(5L);
             crd.setHousingStatus("iznajmljen");
             crd.setMaritalStatus("neozenjen");
-            crd.setMobileNumber("0655555555");
+            crd.setMobileNumber("+381655555555");
             crd.setMonthlySalary(1000L);
             crd.setPermanentEmployment(true);
             crd.setOwnCar(false);
@@ -121,6 +121,22 @@ public class BootstrapData implements CommandLineRunner {
             crd.setNote("pls daj kredit");
             crd.setPaymentPeriodMonths(new Random().nextLong(12, 36));
             creditRequestRepository.save(crd);
+
+
+        }
+        if (cardRepository.count() == 0) {
+            Card card = new Card();
+            card.setAccountNumber("3334444999999999");
+            card.setCvvCode("133");
+            card.setIdentificationCardNumber(1000000000000000L);
+            card.setCardType(CardType.CREDIT);
+            card.setCreationDate(1712602820L);
+            card.setExpirationDate(1775682066000L);
+            card.setLimitCard(1111000L);
+            card.setStatus(true);
+            card.setNameOfCard("Visa");
+
+            cardRepository.save(card);
         }
         logger.info("BankService: DATA LOADING IN PROGRESS...");
     }
