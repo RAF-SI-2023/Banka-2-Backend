@@ -30,13 +30,13 @@ public class ForexController {
 
     //yikes not unique
     @GetMapping("/base-currency/{baseCurrency}")
-    public ResponseEntity<Forex> findForexByBaseCurrency(@PathVariable String baseCurrency) {
+    public ResponseEntity<List<Forex>> findForexByBaseCurrency(@PathVariable String baseCurrency) {
         return ResponseEntity.ok(forexService.findByBaseCurrency(baseCurrency));
     }
 
     //yikes not unique
     @GetMapping("/quote-currency/{quoteCurrency}")
-    public ResponseEntity<Forex> findForexByQuoteCurrency(@PathVariable String quoteCurrency) {
+    public ResponseEntity<List<Forex>> findForexByQuoteCurrency(@PathVariable String quoteCurrency) {
         return ResponseEntity.ok(forexService.findByQuoteCurrency(quoteCurrency));
     }
 

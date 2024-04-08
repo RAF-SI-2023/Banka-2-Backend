@@ -27,12 +27,12 @@ public class ForexServiceImpl implements ForexService {
     }
 
     @Override
-    public Forex findByBaseCurrency(String baseCurrency) {
-        return forexRepository.findForexByBaseCurrency(baseCurrency);
+    public List<Forex> findByBaseCurrency(String baseCurrency) {
+        return forexRepository.findForexesByBaseCurrency(baseCurrency);
     }
 
     @Override
-    public Forex findByQuoteCurrency(String quoteCurrency) {
-        return forexRepository.findForexByQuoteCurrency(quoteCurrency);
+    public List<Forex> findByQuoteCurrency(String quoteCurrency) {
+        return forexRepository.findForexesByQuoteCurrency(quoteCurrency);
     }
 }
