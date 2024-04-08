@@ -27,7 +27,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Stock findBySymbol(String symbol) {
-        return stockRepository.findStockBySymbol(symbol);
+    public List<Stock> findBySymbol(String symbol) {
+        return stockRepository.findStocksBySymbol(symbol);
     }
 }

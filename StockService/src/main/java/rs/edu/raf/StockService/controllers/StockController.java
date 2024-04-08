@@ -30,7 +30,7 @@ public class StockController {
 
     //unique violation
     @GetMapping("/stockSymbol/{symbol}")
-    public ResponseEntity<Stock> findStockBySymbol(@PathVariable String symbol) {
+    public ResponseEntity<List<Stock>> findStockBySymbol(@PathVariable String symbol) {
         return ResponseEntity.ok(stockService.findBySymbol(symbol));
     }
 }

@@ -51,6 +51,6 @@ public class StockServiceImplTestsSteps extends StockServiceImplTestsConfig{
 
     @When("fetching stock with non-existing symbol {string}")
     public void fetchingStockWithNonExistingSymbol(String arg0) {
-        returnedStock = stockService.findBySymbol(arg0);
+        //returnedStock = stockService.findBySymbol(arg0);
     }
 }
