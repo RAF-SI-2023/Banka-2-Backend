@@ -1,6 +1,7 @@
 package rs.edu.raf.StockService.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.repositories.ForexRepository;
 import rs.edu.raf.StockService.services.ForexService;
@@ -23,7 +24,7 @@ public class ForexServiceImpl implements ForexService {
 
     @Override
     public Forex findById(Long id) {
-        return forexRepository.findById(id).orElse(null);
+        return forexRepository.findById(id).orElseThrow(() -> new NotFoundException("Forex with id: " + id + "not found"));
     }
 
     @Override

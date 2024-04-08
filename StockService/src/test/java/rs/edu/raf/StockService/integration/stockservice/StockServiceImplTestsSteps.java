@@ -3,6 +3,7 @@ package rs.edu.raf.StockService.integration.stockservice;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.services.StockService;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StockServiceImplTestsSteps extends StockServiceImplTestsConfig{
+public class StockServiceImplTestsSteps extends StockServiceImplTestsConfig {
     @Autowired
     private StockService stockService;
     private List<Stock> returnedStocks;
@@ -38,19 +39,31 @@ public class StockServiceImplTestsSteps extends StockServiceImplTestsConfig{
         assertEquals(id, returnedStock.getId());
     }
 
-    @When("fetching stock with  non-existing id {string}")
-    public void fetchingStockWithNonExistingId(String arg0) {
+    @Then("fetching stock with  non-existing id {string} throws NotFoundException")
+    public void fetchingStockWithNonExistingIdThrowsNotFoundException(String arg0) {
         Long id = Long.parseLong(arg0);
-        returnedStock = stockService.findById(id);
+        assertThrows(NotFoundException.class, () -> stockService.findById(id));
     }
 
-    @Then("returns null")
-    public void returnsNull() {
-        assertNull(returnedStock);
+    @When("fetching stocks with existing symbol {string}")
+    public void fetchingStocksWithExistingSymbol(String symbol) {
+        returnedStocks = stockService.findBySymbol(symbol);
     }
 
-    @When("fetching stock with non-existing symbol {string}")
-    public void fetchingStockWithNonExistingSymbol(String arg0) {
-        //returnedStock = stockService.findBySymbol(arg0);
+    @Then("returned list contains only stocks with symbol {string}:")
+    public void returnedListContainsOnlyStocksWithSymbol(String symbol) {
+        for (Stock stock : returnedStocks) {
+            assertEquals(symbol, stock.getSymbol());
+        }
+    }
+
+    @When("fetching stocks with non-existing symbol {string}")
+    public void fetchingStocksWithNonExistingSymbol(String symbol) {
+        returnedStocks = stockService.findBySymbol(symbol);
+    }
+
+    @Then("returned list does not contain any stock")
+    public void returnedListDoesNotContainAnyStock() {
+        assertTrue(returnedStocks.isEmpty());
     }
 }
