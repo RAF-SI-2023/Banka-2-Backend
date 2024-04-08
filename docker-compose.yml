@@ -47,73 +47,73 @@ services:
       timeout: 20s
       retries: 5
 
-  bank-service:
-    build: ./BankService
-    container_name: bank-service
-    ports:
-      - "8003:8003"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=bank_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    depends_on:
-      app-db:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_started
-
-  iam-service:
-    build: ./IAMService
-    container_name: iam-service
-    ports:
-      - "8000:8000"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=iam_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-    depends_on:
-      app-db:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_started
-
-  notification-service:
-    build: ./NotificationService
-    container_name: notification-service
-    ports:
-      - "8002:8002"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=notification_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-    depends_on: #conditions for service to start, its a black magic dont touch unless u know what u are doing!
-      rabbitmq:
-        condition: service_healthy
-
-  stock-service:
-    build: ./StockService
-    container_name: stock-service
-    ports:
-      - "8001:8001"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=stock_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-      - SPRING_REDIS_HOST=stock-redis
-    depends_on:
-      app-db:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_started
-      stock-redis:
-        condition: service_started
-
-  otc-service:
-    build: ./OTCService
-    container_name: otc-service
-    ports:
-      - "8004:8004"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=otc_service_schema
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-    depends_on:
-      app-db:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_started
+#  bank-service:
+#    build: ./BankService
+#    container_name: bank-service
+#    ports:
+#      - "8003:8003"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=bank_service_schema
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#    depends_on:
+#      app-db:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_started
+#
+#  iam-service:
+#    build: ./IAMService
+#    container_name: iam-service
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=iam_service_schema
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+#    depends_on:
+#      app-db:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_started
+#
+#  notification-service:
+#    build: ./NotificationService
+#    container_name: notification-service
+#    ports:
+#      - "8002:8002"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=notification_service_schema
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+#    depends_on: #conditions for service to start, its a black magic dont touch unless u know what u are doing!
+#      rabbitmq:
+#        condition: service_healthy
+#
+#  stock-service:
+#    build: ./StockService
+#    container_name: stock-service
+#    ports:
+#      - "8001:8001"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=stock_service_schema
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+#      - SPRING_REDIS_HOST=stock-redis
+#    depends_on:
+#      app-db:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_started
+#      stock-redis:
+#        condition: service_started
+#
+#  otc-service:
+#    build: ./OTCService
+#    container_name: otc-service
+#    ports:
+#      - "8004:8004"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=otc_service_schema
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+#    depends_on:
+#      app-db:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_started

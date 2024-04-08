@@ -9,7 +9,7 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features/forexservice")
+@SelectClasspathResource("features/integration/forexservice")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.StockService.integration.forexservice")
 public class ForexServiceImplTests {
 }

@@ -1,4 +1,4 @@
-package rs.edu.raf.StockService.integration.forexcontroller;
+package rs.edu.raf.StockService.e2e.forexcontroller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

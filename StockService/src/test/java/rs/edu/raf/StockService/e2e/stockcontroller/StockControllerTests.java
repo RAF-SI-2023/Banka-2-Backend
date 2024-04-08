@@ -1,4 +1,4 @@
-package rs.edu.raf.StockService.integration.stockcontroller;
+package rs.edu.raf.StockService.e2e.stockcontroller;
 
 
 import org.junit.platform.suite.api.ConfigurationParameter;
@@ -10,7 +10,7 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features/stockcontroller")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.StockService.integration.stockcontroller")
+@SelectClasspathResource("features/e2e/stockcontroller")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.StockService.e2e.stockcontroller")
 public class StockControllerTests {
 }
