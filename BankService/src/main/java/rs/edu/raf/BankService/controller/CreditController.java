@@ -57,10 +57,10 @@ public class CreditController {
         }
     }
 
-    @GetMapping("/credit-requests/all")
+    @GetMapping("/credit-requests/all-pending")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     @ApiResponse(responseCode = "200", description = "Returns all credit requests, only admin and employee roles can do this")
-    public ResponseEntity<?> getAllCreditRequests() {
+    public ResponseEntity<?> getAllPendingCreditRequests() {
         try {
             return ResponseEntity.ok(creditService.getAllCreditRequests());
         } catch (Exception e) {

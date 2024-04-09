@@ -28,6 +28,5 @@ public class CreditRequestDto {
     private String maritalStatus;
     private String housingStatus;
     private Boolean ownCar;
-
     private Long paymentPeriodMonths;
 }
