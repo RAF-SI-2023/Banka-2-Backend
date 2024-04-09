@@ -1,11 +1,9 @@
-package rs.edu.raf.StockService.integration.controller;
+package rs.edu.raf.StockService.e2e.optioncontroller;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +19,8 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 //@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class OptionControllerSteps {
+//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+public class OptionControllerTestsSteps extends OptionControllerTestsConfig {
 
     //    @LocalServerPort
 //private String port
@@ -58,7 +56,7 @@ public class OptionControllerSteps {
     private List<Option> optionslist;
 
 
-    public OptionControllerSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
+    public OptionControllerTestsSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
         this.optionRepository = optionRepository;
         this.optionService = optionService;
         this.optionController = optionController;
