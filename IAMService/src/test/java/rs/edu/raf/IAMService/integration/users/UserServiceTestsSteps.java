@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserServiceTestsSteps extends UserServiceIntegrationTests {
+public class UserServiceTestsSteps extends UserServiceIntegrationTestsConfig {
 
     @Autowired
     private UserService userService;

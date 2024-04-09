@@ -1,7 +1,6 @@
 package rs.edu.raf.IAMService.e2e.users;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.jayway.jsonpath.JsonPath;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -18,7 +17,6 @@ import rs.edu.raf.IAMService.data.enums.RoleType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.http.MediaType;
@@ -26,7 +24,6 @@ import rs.edu.raf.IAMService.mapper.UserMapper;
 import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.repositories.UserRepository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +47,6 @@ public class UserControllerTestsSteps extends UserControllerE2ETestsConfig {
     private RoleRepository roleRepository;
 
     UserDto userDto;
-    Long employeeId;
 
     List<UserDto> users;
     String oldPhoneNumber;
