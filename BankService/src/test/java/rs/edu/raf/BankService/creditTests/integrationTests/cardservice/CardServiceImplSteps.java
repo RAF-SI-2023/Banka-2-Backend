@@ -5,12 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
+import rs.edu.raf.BankService.creditTests.integrationTests.credit.CucumberSpringConfig;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.service.CardService;
 
 import static org.junit.Assert.assertEquals;
 
-public class CardServiceImplSteps {
+public class CardServiceImplSteps extends CucumberSpringConfig {
 
 
     private CardService cardService;
