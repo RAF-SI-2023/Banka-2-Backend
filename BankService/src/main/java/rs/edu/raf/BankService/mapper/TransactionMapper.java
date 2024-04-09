@@ -4,9 +4,11 @@ import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
+import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
+import rs.edu.raf.BankService.data.enums.TransactionType;
 
 import java.time.LocalDateTime;
 
@@ -69,9 +71,11 @@ public class TransactionMapper {
 
         if (transferTransaction instanceof ExternalTransferTransaction) {
             dto.setAmount(((ExternalTransferTransaction) transferTransaction).getAmount());
-        }
-        else if (transferTransaction instanceof InternalTransferTransaction) {
+        } else if (transferTransaction instanceof InternalTransferTransaction) {
             dto.setAmount(((InternalTransferTransaction) transferTransaction).getAmount());
+        } else if (transferTransaction instanceof ExchangeTransferTransactionDetails) {
+            dto.setAmount((long) ((ExchangeTransferTransactionDetails) transferTransaction).getAmount());
+            dto.setType(TransactionType.EXCHANGE);
         }
 
         return dto;
