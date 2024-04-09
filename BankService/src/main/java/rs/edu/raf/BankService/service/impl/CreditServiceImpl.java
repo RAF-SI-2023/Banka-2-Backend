@@ -57,7 +57,7 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public List<CreditRequestDto> getAllCreditRequests() {
-        return creditRequestRepository.findAll().stream().map(creditMapper::creditRequestToCreditRequestDto).toList();
+        return creditRequestRepository.findAllByStatusIs(CreditRequestStatus.PENDING).stream().map(creditMapper::creditRequestToCreditRequestDto).toList();
     }
 
     @Override
