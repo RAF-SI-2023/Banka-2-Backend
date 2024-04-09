@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.integrationTests;
+package rs.edu.raf.BankService.creditTests.integrationTests.cardservice;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -6,13 +6,12 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.service.CardService;
-import rs.edu.raf.BankService.service.CreditService;
-import rs.edu.raf.BankService.service.impl.CardServiceImpl;
 
 import static org.junit.Assert.assertEquals;
 
-public class CardIntegrationSteps {
+public class CardServiceImplSteps extends CardServiceImplTestsConfig {
 
 
     private CardService cardService;
@@ -20,7 +19,7 @@ public class CardIntegrationSteps {
 
     String accountNumber;
 
-    public CardIntegrationSteps(CardService cardService) {
+    public CardServiceImplSteps(CardService cardService) {
         this.cardService = cardService;
 
     }
@@ -66,10 +65,9 @@ public class CardIntegrationSteps {
 
     @When("the bank creates a new card with given acount number")
     public void the_user_creates_a_new_card() throws Exception {
-        CardDto cardDto = new CardDto();
+        CreateCardDto cardDto = new CreateCardDto();
         cardDto.setAccountNumber(accountNumber);
-        cardDto.setIdentificationCardNumber(9999999999999999L);
-        cardDto.setCvvCode("111");
+
 
         responseEntity = new ResponseEntity<>(cardService.createCard(cardDto), null, 200);
     }
