@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests;
+package rs.edu.raf.BankService.creditTests.unit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,14 +93,14 @@ class CreditControllerTests {
         when(creditService.getAllCreditRequests()).thenReturn(Collections.singletonList(creditRequestDto));
 
         // When
-        ResponseEntity<?> responseEntity = creditController.getAllCreditRequests();
+        ResponseEntity<?> responseEntity = creditController.getAllPendingCreditRequests();
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(Collections.singletonList(creditRequestDto), responseEntity.getBody());
         verify(creditService, times(1)).getAllCreditRequests();
         when(creditService.getAllCreditRequests()).thenThrow(new RuntimeException("Error"));
-        ResponseEntity<?> responseEntityError = creditController.getAllCreditRequests();
+        ResponseEntity<?> responseEntityError = creditController.getAllPendingCreditRequests();
         assertEquals(HttpStatus.FORBIDDEN, responseEntityError.getStatusCode());
     }
 
