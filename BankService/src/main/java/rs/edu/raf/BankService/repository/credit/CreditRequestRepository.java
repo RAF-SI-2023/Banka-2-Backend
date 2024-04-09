@@ -6,5 +6,5 @@ import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 
 @Repository
 public interface CreditRequestRepository extends JpaRepository<CreditRequest, Long> {
-
+    CreditRequest findCreditRequestById(Long id);
 }

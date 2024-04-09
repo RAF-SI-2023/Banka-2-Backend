@@ -61,6 +61,11 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
+    public CreditRequestDto getCreditRequestById(Long id) {
+        return creditMapper.creditRequestToCreditRequestDto(creditRequestRepository.findCreditRequestById(id));
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public CreditDto approveCreditRequest(Long creditRequestId) {
         CreditRequest creditRequest = creditRequestRepository.findById(creditRequestId).orElseThrow();
