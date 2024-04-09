@@ -48,14 +48,6 @@ public class OptionServiceImpl implements OptionService {
 
        List<Option> requestedOptions =  loadOptions(stockListing);
 
-  //     List<Option> requestedOptions =  optionRepository.findAllByStockListing(stockListing);
-//        if (requestedOptions.isEmpty()) {
-//            requestedOptions =Optional.ofNullable(optionRepository.findAllByStockListing(stockListing));
-//        }
-//        if (requestedOptions.isEmpty()) {
-//            throw new NotFoundException("Options for stock listing: " + stockListing + " not found.");
-//        }
-
         return requestedOptions;
     }
 
