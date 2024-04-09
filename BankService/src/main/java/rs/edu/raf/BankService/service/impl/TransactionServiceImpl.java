@@ -42,13 +42,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (senderAccount == null || receiverAccount == null) {
             throw new AccountNotFoundException("Account not found");
-        }
-        else if (!senderAccount.getEmployeeId().equals(receiverAccount.getEmployeeId())) {
+        } else if (!senderAccount.getEmail().equals(receiverAccount.getEmail())) {
             throw new InvalidInternalTransferException("Account not from same user");
-        }
-        else if (internalTransferTransactionDto.getSenderAccountNumber()
+        } else if (internalTransferTransactionDto.getSenderAccountNumber()
                 .equals(internalTransferTransactionDto.getReceiverAccountNumber())) {
             throw new InvalidInternalTransferException("Same account number provided");
+        } else if (senderAccount.getAccountType() != receiverAccount.getAccountType()) {
+            throw new InvalidInternalTransferException("Different account types selected");
+        } else if (!senderAccount.getCurrencyCode().equals(receiverAccount.getCurrencyCode())) {
+            throw new InvalidInternalTransferException("Different currencies between accounts sent");
         }
 
         InternalTransferTransaction transaction = transactionMapper
