@@ -49,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new InvalidInternalTransferException("Same account number provided");
         } else if (senderAccount.getAccountType() != receiverAccount.getAccountType()) {
             throw new InvalidInternalTransferException("Different account types selected");
-        } else if (senderAccount.getCurrencyCode().equals(receiverAccount.getCurrencyCode())) {
+        } else if (!senderAccount.getCurrencyCode().equals(receiverAccount.getCurrencyCode())) {
             throw new InvalidInternalTransferException("Different currencies between accounts sent");
         }
 
