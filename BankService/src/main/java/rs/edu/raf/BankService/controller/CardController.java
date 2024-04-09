@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.service.CardService;
 
 @RestController
@@ -20,7 +21,7 @@ public class CardController {
 
     @PostMapping("/create-card")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
-    public ResponseEntity<?> createCard(@RequestBody CardDto cardDto) {
+    public ResponseEntity<?> createCard(@RequestBody CreateCardDto cardDto) {
         try {
             return ResponseEntity.ok(cardService.createCard(cardDto));
         } catch (Exception e) {

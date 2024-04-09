@@ -8,14 +8,12 @@ import rs.edu.raf.BankService.data.enums.CardType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardDto {
+public class CreateCardDto {
 
-    private Long identificationCardNumber;
+
     private CardType cardType;
     private String nameOfCard;
     private String accountNumber;
-    private String cvvCode;
     private Long limitCard;
-    private Boolean status;
 
 }

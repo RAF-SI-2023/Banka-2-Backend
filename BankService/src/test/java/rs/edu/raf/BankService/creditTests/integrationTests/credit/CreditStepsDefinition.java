@@ -16,7 +16,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class CreditStepsDefinition extends CucumberSpringConfig{
+public class CreditStepsDefinition{
     private CreditService creditService;
 
 

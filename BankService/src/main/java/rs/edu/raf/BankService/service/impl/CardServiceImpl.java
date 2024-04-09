@@ -4,8 +4,11 @@ package rs.edu.raf.BankService.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
+import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.mapper.CardMapper;
+import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.service.CardService;
 
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -21,24 +26,62 @@ public class CardServiceImpl implements CardService {
 
     private final CardMapper cardMapper;
     private final CardRepository cardRepository;
+    private final AccountRepository accountRepository;
 
     @Override
-    public CardDto createCard(CardDto cardDto) {
-        if (cardDto.getCvvCode().length() != 3) {
+    public CardDto createCard(CreateCardDto cardDto) {
+
+        Card createdCard = cardMapper.createCardDtoToCard(cardDto);
+
+        long cardNumber = generateCardNumber(1000000000000000L, 9999999999999999L);
+
+        createdCard.setCvvCode(String.valueOf(generateCVVNumber(100, 999)));
+
+        createdCard.setIdentificationCardNumber(cardNumber);
+
+        if (createdCard.getCvvCode().length() != 3) {
             throw new RuntimeException("CVV code must have 3 digits");
         }
-        if (cardDto.getIdentificationCardNumber().toString().length() != 16) {
+        if (createdCard.getIdentificationCardNumber().toString().length() != 16) {
             throw new RuntimeException("Card number must have 16 digits");
         }
-        List<Card> cardList = cardRepository.findActiveCardsAccountNumber(cardDto.getAccountNumber(), true);
+
+//        try {
+//
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException("Card number must have 16 digits");
+//        }
+        Account account = accountRepository.findByAccountNumber(createdCard.getAccountNumber());
+        if (account == null) {
+            throw new RuntimeException("Account with account number " + createdCard.getAccountNumber() + " not found");
+        }
+
+        List<Card> cardList = cardRepository.findActiveCardsAccountNumber(createdCard.getAccountNumber(), true);
 
         if (cardList.size() >= 3) {
             throw new RuntimeException("You can't have more than 3 cards");
         }
-        Card card = cardMapper.cardDtoToCard(cardDto);
-        cardRepository.save(card);
-        return cardMapper.cardToCardDto(card);
+        cardRepository.save(createdCard);
+        return cardMapper.cardToCardDto(createdCard);
         //    return null;
+    }
+
+    private int generateCVVNumber(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+
+    private long generateCardNumber(long min, long max) {
+        boolean exists = true;
+        long randomNum = ThreadLocalRandom.current().nextLong(min, max + 1);
+        while (exists) {
+            if (cardRepository.findByIdentificationCardNumber(randomNum).isEmpty()) {
+                exists = false;
+            } else {
+                randomNum = ThreadLocalRandom.current().nextLong(min, max + 1);
+            }
+        }
+        return randomNum;
     }
 
     @Override
@@ -102,7 +145,7 @@ public class CardServiceImpl implements CardService {
     public CardDto changeCardLimit(CardDto cardDto) {
         Optional<Card> cardOpt = cardRepository.findByIdentificationCardNumber(cardDto.getIdentificationCardNumber());
         if (cardOpt.isEmpty()) {
-        return null;
+            return null;
         }
         Card card = cardOpt.get();
         card.setLimitCard(cardDto.getLimitCard());

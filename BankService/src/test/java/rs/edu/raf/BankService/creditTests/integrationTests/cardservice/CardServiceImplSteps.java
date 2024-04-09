@@ -5,13 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
-import rs.edu.raf.BankService.creditTests.integrationTests.credit.CucumberSpringConfig;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.service.CardService;
 
 import static org.junit.Assert.assertEquals;
 
-public class CardServiceImplSteps extends CucumberSpringConfig {
+public class CardServiceImplSteps extends CardServiceImplTestsConfig {
 
 
     private CardService cardService;
@@ -65,10 +65,9 @@ public class CardServiceImplSteps extends CucumberSpringConfig {
 
     @When("the bank creates a new card with given acount number")
     public void the_user_creates_a_new_card() throws Exception {
-        CardDto cardDto = new CardDto();
+        CreateCardDto cardDto = new CreateCardDto();
         cardDto.setAccountNumber(accountNumber);
-        cardDto.setIdentificationCardNumber(9999999999999999L);
-        cardDto.setCvvCode("111");
+
 
         responseEntity = new ResponseEntity<>(cardService.createCard(cardDto), null, 200);
     }

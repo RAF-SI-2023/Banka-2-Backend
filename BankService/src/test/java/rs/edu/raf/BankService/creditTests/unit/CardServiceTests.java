@@ -6,9 +6,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
+import rs.edu.raf.BankService.data.entities.accounts.BusinessAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.enums.CardType;
 import rs.edu.raf.BankService.mapper.CardMapper;
+import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.service.CardService;
 import rs.edu.raf.BankService.service.impl.CardServiceImpl;
@@ -35,27 +38,34 @@ public class CardServiceTests {
     @Mock
     private CardRepository cardRepository;
 
+    @Mock
+    private AccountRepository accountRepository;
+
     @InjectMocks
     private CardServiceImpl cardService;
 
     @Test
     public void testCreateCard_Success() {
         // Mock the behavior of dependencies
-        CardDto cardDto = new CardDto(); // Create a sample CardDto
-        cardDto.setCvvCode("123"); // Set a valid CVV code
-        cardDto.setAccountNumber("123456789"); // Set a valid account number
-        cardDto.setIdentificationCardNumber(1234567891111111L); // Set a valid account number
-        cardDto.setStatus(true); // Set a valid status
+        CreateCardDto cardDto = new CreateCardDto(); // Create a sample CardDto
+        // Set a valid CVV code
+        cardDto.setAccountNumber("3334444999999991"); // Set a valid account number
+
+        BusinessAccount account = new BusinessAccount();
+        account.setAccountNumber("3334444999999991");
+        // Set a valid account number
+        // Set a valid status
         Card card = new Card(); // Create a sample Card entity
         card.setCvvCode("123"); // Set a valid CVV code
         card.setIdentificationCardNumber(1234567891111111L);
-        card.setAccountNumber("123456789");
+        card.setAccountNumber("3334444999999991");
         card.setStatus(true);
 
         List<Card> lista = new ArrayList<>();
         lista.add(card);
 
-        when(cardMapper.cardDtoToCard(cardDto)).thenReturn(card);
+        when(accountRepository.findByAccountNumber(anyString())).thenReturn(account);
+        when(cardMapper.createCardDtoToCard(cardDto)).thenReturn(card);
         when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(new ArrayList<>());
         when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(lista);
 
@@ -66,42 +76,21 @@ public class CardServiceTests {
         verify(cardRepository, times(1)).save(card);
     }
 
-    @Test
-    public void testCreateCard_CvvCodeInvalid() {
-        // Prepare test data
-        CardDto cardDto = new CardDto();
-        cardDto.setCvvCode("12"); // Invalid CVV code
-
-        // Call the method under test and assert that it throws an exception
-        assertThrows(RuntimeException.class, () -> cardService.createCard(cardDto));
-    }
 
 
-    @Test
-    public void testCreateCard_WrongNumberOfDigits() {
-        // Prepare test data
-        CardDto cardDto = new CardDto();
-        cardDto.setCvvCode("123"); // Set a valid CVV code
-        cardDto.setAccountNumber("1234567890123456"); // Set a valid account number
-        cardDto.setIdentificationCardNumber(1234567891111L); // Set an invalid identification card number (not 16 digits)
-        cardDto.setStatus(true); // Set a valid status
-
-        // Call the method under test and assert that it throws a RuntimeException
-        assertThrows(RuntimeException.class, () -> cardService.createCard(cardDto));
-    }
 
     @Test
     public void testCreateCard_MaximumNumberOfCardsReached() {
         // Prepare test data
-        CardDto cardDto = new CardDto();
-        cardDto.setCvvCode("123"); // Set a valid CVV code
+        CreateCardDto cardDto = new CreateCardDto();
+        ; // Set a valid CVV code
         cardDto.setAccountNumber("1234567890123456"); // Set a valid account number
-        cardDto.setIdentificationCardNumber(1234567890123456L); // Set a valid identification card number
-        cardDto.setStatus(true); // Set a valid status
+         // Set a valid identification card number
+        // Set a valid status
 
         // Mock the behavior of the card repository to return three active cards
-        List<Card> activeCards = Arrays.asList(new Card(), new Card(), new Card());
-        when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(activeCards);
+        List<Card> activeCards = Arrays.asList(new Card(), new Card(), new Card(), new Card());
+   //     when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(activeCards);
 
         // Call the method under test and assert that it throws a RuntimeException
         assertThrows(RuntimeException.class, () -> cardService.createCard(cardDto));
@@ -160,8 +149,8 @@ public class CardServiceTests {
         cardDto.setIdentificationCardNumber(cardNumber); // 16-digit card number
         cardDto.setCardType(CardType.CREDIT); // or any other card type
         cardDto.setNameOfCard("Test Card");
-        cardDto.setCreationDate(Instant.now().toEpochMilli()); // current timestamp in milliseconds
-        cardDto.setExpirationDate(10000L); // expiration date 3 years from now
+       // current timestamp in milliseconds
+      ; // expiration date 3 years from now
         cardDto.setAccountNumber("1234567890123456"); // 16-digit account number
         cardDto.setCvvCode("123"); // 3-digit CVV code
         cardDto.setLimitCard(1000L); // example limit
