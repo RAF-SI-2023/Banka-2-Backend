@@ -9,7 +9,7 @@ public interface ForexService {
 
     Forex findById(Long id);
 
-    Forex findByBaseCurrency(String baseCurrency);
+    List<Forex> findByBaseCurrency(String baseCurrency);
 
-    Forex findByQuoteCurrency(String quoteCurrency);
+    List<Forex> findByQuoteCurrency(String quoteCurrency);
 }

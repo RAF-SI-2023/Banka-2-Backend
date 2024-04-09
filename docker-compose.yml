@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  app-db:
+  postgres-db:
     image: postgres
     container_name: bank-db
     environment:
@@ -53,10 +53,10 @@ services:
     ports:
       - "8003:8003"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=bank_service_schema
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/bank-db?currentSchema=bank_service_schema
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
-      app-db:
+      postgres-db:
         condition: service_healthy
       rabbitmq:
         condition: service_started
@@ -67,10 +67,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=iam_service_schema
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/bank-db?currentSchema=iam_service_schema
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on:
-      app-db:
+      postgres-db:
         condition: service_healthy
       rabbitmq:
         condition: service_started
@@ -81,7 +81,7 @@ services:
     ports:
       - "8002:8002"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=notification_service_schema
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/bank-db?currentSchema=notification_service_schema
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on: #conditions for service to start, its a black magic dont touch unless u know what u are doing!
       rabbitmq:
@@ -93,11 +93,11 @@ services:
     ports:
       - "8001:8001"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=stock_service_schema
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/bank-db?currentSchema=stock_service_schema
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - SPRING_REDIS_HOST=stock-redis
     depends_on:
-      app-db:
+      postgres-db:
         condition: service_healthy
       rabbitmq:
         condition: service_started
@@ -110,10 +110,10 @@ services:
     ports:
       - "8004:8004"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://app-db:5432/bank-db?currentSchema=otc_service_schema
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/bank-db?currentSchema=otc_service_schema
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on:
-      app-db:
+      postgres-db:
         condition: service_healthy
       rabbitmq:
         condition: service_started
