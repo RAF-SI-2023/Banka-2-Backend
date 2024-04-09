@@ -50,8 +50,6 @@ public class BootstrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info("BankService: DATA LOADING IN PROGRESS...");
         if (accountRepository.count() == 0) {
-
-
             DomesticCurrencyAccount domesticCurrencyAccount1 = new DomesticCurrencyAccount();
             domesticCurrencyAccount1.setAccountNumber("3334444999999999");
             domesticCurrencyAccount1.setEmail(myEmail1);
@@ -106,10 +104,10 @@ public class BootstrapData implements CommandLineRunner {
             crd.setCreditAmount(36000.0);
             crd.setCreditPurpose("STAMBENI");
             crd.setCurrency("EUR");
-            crd.setEducationLevel("srednja");
+            crd.setEducationLevel("TRECI");
             crd.setEmploymentPeriod(5L);
-            crd.setHousingStatus("iznajmljen");
-            crd.setMaritalStatus("neozenjen");
+            crd.setHousingStatus("IZNAJMLJEN");
+            crd.setMaritalStatus("NEOZENJEN");
             crd.setMobileNumber("+381655555555");
             crd.setMonthlySalary(1000L);
             crd.setPermanentEmployment(true);
