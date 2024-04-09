@@ -31,6 +31,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue transactionVerification() {
+        return new Queue("transaction-verification", false);
+    }
+
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
