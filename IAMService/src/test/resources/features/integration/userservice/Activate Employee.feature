@@ -10,5 +10,6 @@ Feature: Activate employees
     Then employee isActive status is false
 
   Scenario:
+    # User is not an employee so activate should fail
     Given user exists
     Then activating user will fail

@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService.integration;
+package rs.edu.raf.IAMService.integration.users;
 
 // Objasnjenje anotacija:
 //  - @Suite: JUnit anotacija za grupisanje testova, u ovom slucaju Cucumber testova
@@ -16,7 +16,7 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features/users/integration")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.IAMService.integration")
+@SelectClasspathResource("features/integration/userservice")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.IAMService.integration.users")
 public class UserServiceIntegrationTests {
 }

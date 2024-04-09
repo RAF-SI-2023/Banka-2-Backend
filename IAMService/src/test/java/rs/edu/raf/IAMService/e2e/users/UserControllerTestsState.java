@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService.e2e;
+package rs.edu.raf.IAMService.e2e.users;
 
 import io.cucumber.spring.ScenarioScope;
 import lombok.AllArgsConstructor;
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @ScenarioScope
-public class IAMTestsState {
+public class UserControllerTestsState {
     String jwtToken;
 }

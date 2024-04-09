@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService.e2e;
+package rs.edu.raf.IAMService.e2e.users;
 
 // Objasnjenje anotacija:
 //  - @Suite: JUnit anotacija za grupisanje testova, u ovom slucaju Cucumber testova
@@ -16,7 +16,7 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features/users/e2e")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.IAMService.e2e")
+@SelectClasspathResource("features/e2e/usercontroller")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.IAMService.e2e.users")
 public class UserControllerE2ETests {
 }
