@@ -173,8 +173,8 @@ public class ListingLoaders implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info("DATA LOADING IN PROGRESS...");
 
-        loadStocks();
-        loadForexes();
+//        loadStocks();
+//        loadForexes();
 
         logger.info("DATA LOADING FINISHED...");
     }

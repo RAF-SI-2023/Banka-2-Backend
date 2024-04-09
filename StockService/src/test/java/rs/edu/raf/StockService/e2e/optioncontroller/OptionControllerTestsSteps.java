@@ -1,12 +1,17 @@
 package rs.edu.raf.StockService.e2e.optioncontroller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 import rs.edu.raf.StockService.controllers.OptionController;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.OptionType;
@@ -18,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 //@AutoConfigureMockMvc
 //@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class OptionControllerTestsSteps extends OptionControllerTestsConfig {
@@ -26,34 +33,25 @@ public class OptionControllerTestsSteps extends OptionControllerTestsConfig {
 //private String port
     private String Stockport = "8001";
 
-
-    //    @Autowired
-//    private TestRestTemplate restTemplate;
-    private ResponseEntity<List<Option>> allOptionsResponseEntity;
-    private ResponseEntity<List<Option>> optionsByStockListingResponseEntity;
-    private ResponseEntity<Option> optionByIdResponseEntity;
-    private Long optionId = 1L;
-    private String stockListing = "AAPL";
-
-//    @Autowired
-//    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
+    private final RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    private final String baseUrl = "http://localhost:8001/api/options/stock-listing/";
+
+    private ResponseEntity<Object[]> response;
     @MockBean
     private OptionServiceImpl optionService;
 
-    private ResponseEntity<List<Option>> responseOption;
-
-    private ResponseEntity<List<Option>> responseOptionByStockListing;
-
-    private ResponseEntity<Option> responseOptionById;
 
     @MockBean
     private OptionRepository optionRepository;
 
     @MockBean
     private OptionController optionController;
-    private List<Option> optionslist;
+
 
 
     public OptionControllerTestsSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
@@ -63,55 +61,17 @@ public class OptionControllerTestsSteps extends OptionControllerTestsConfig {
     }
 
 
-    //----------------------------------------------------------//
-    @Given("a stock listing exists")
-    public void stockListingExists() {
-        // Mocking the service to return some sample data
-        Option option = new Option();
-        LocalDate currentDate = LocalDate.now();
-        LocalDateTime localDateTime = currentDate.atStartOfDay();
-        long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        option.setStockListing("TEST");
-        option.setOptionType(OptionType.CALL);
-        option.setStrikePrice(101D);
-        option.setImpliedVolatility(421D);
-        option.setOpenInterest(121D);
-        option.setSettlementDate(milliseconds);
 
-        Option option2 = new Option();
-        option.setStockListing("TEST");
-        option.setOptionType(OptionType.PUT);
-        option.setStrikePrice(10D);
-        option.setImpliedVolatility(42D);
-        option.setOpenInterest(12D);
-        option.setSettlementDate(milliseconds);
-
-        stockListing = option.getStockListing();
-
-        //  optionRepository.save(option);
-
-        optionslist = List.of(option, option2);
-
-
+    @When("the client wants to requests options for root {string}")
+    public void whenTheClientRequestsOptions(String stockListing) {
+        String url = baseUrl + stockListing;
+        response = restTemplate.getForEntity(url, Object[].class);
     }
 
-    @When("the client requests options by {string}")
-    public void whenTheClientRequestsOptionsByListing(String path) throws Exception {
-        if (path.equals("/stock-listing/TEST")) {
-            responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
-        }
-        //     optionController = new OptionController(optionService);
-        //     System.out.println(optionController.findAllOptionsByStockListing(stockListing));
-        //      responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
-    }
-
-    @Then("option should return list by stock listing")
-    public void thenTheServerShouldReturnOptionByStockListing() {
-        // Verifying that the response is not null and contains expected data
-        Assertions.assertNotNull(responseOptionByStockListing);
-        Assertions.assertEquals(HttpStatus.OK, responseOptionByStockListing.getStatusCode());
-        List<Option> options = responseOptionByStockListing.getBody();
-        Assertions.assertNotNull(options);
+    @Then("option should return value list by stock listing")
+    public void thenTheServerShouldReturnOptions() {
+        assertEquals(200, response.getStatusCodeValue()); // Assuming 200 is the expected status code for success
+        // Add more assertions based on your response structure
     }
     //----------------------------------------------------------//
 
