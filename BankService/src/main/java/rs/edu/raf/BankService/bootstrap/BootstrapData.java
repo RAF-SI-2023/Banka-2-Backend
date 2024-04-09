@@ -6,19 +6,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
+import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyHolder;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
+import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.data.enums.*;
 import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
+import rs.edu.raf.BankService.repository.ExchangeRateRepository;
+import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Component
@@ -45,6 +53,8 @@ public class BootstrapData implements CommandLineRunner {
     private final CreditRepository creditRepository;
     private final CreditRequestRepository creditRequestRepository;
     private final CardRepository cardRepository;
+    private final ExchangeRateRepository exchangeRateRepository;
+    private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -57,6 +67,7 @@ public class BootstrapData implements CommandLineRunner {
             domesticCurrencyAccount1.setEmployeeId(2L);
             domesticCurrencyAccount1.setMaintenanceFee(220.00);
             domesticCurrencyAccount1.setCurrencyCode("RSD");
+            domesticCurrencyAccount1.setAvailableBalance(100000L);
             domesticCurrencyAccount1.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
             domesticCurrencyAccount1.setInterestRate(2.5);
             accountRepository.save((Account) domesticCurrencyAccount1);
@@ -67,6 +78,7 @@ public class BootstrapData implements CommandLineRunner {
             domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
             domesticCurrencyAccount2.setEmployeeId(2L);
             domesticCurrencyAccount2.setMaintenanceFee(220.00);
+            domesticCurrencyAccount2.setAvailableBalance(100000L);
             domesticCurrencyAccount2.setCurrencyCode("RSD");
             domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
             domesticCurrencyAccount2.setInterestRate(2.5);
@@ -80,6 +92,67 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount1.setMaintenanceFee(220.00);
             foreignCurrencyAccount1.setCurrencyCode("USD");
             accountRepository.saveAndFlush(foreignCurrencyAccount1);
+
+            ForeignCurrencyAccount foreignCurrencyAccount2 = new ForeignCurrencyAccount();
+            foreignCurrencyAccount2.setAccountNumber("3334444888888888");
+            foreignCurrencyAccount2.setEmail(myEmail1);
+            foreignCurrencyAccount2.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
+            foreignCurrencyAccount2.setEmployeeId(2L);
+            foreignCurrencyAccount2.setMaintenanceFee(220.00);
+            foreignCurrencyAccount2.setCurrencyCode("EUR");
+            //  foreignCurrencyAccount2.setForeignCurrencyHolders(List.of());
+
+            accountRepository.saveAndFlush(foreignCurrencyAccount2);
+            ForeignCurrencyHolder foreignCurrencyHolder = new ForeignCurrencyHolder();
+            foreignCurrencyHolder.setCurrencyCode("EUR");
+            foreignCurrencyHolder.setAvailableBalance(500L);
+            foreignCurrencyHolder.setReservedFunds(0L);
+            foreignCurrencyHolder.setAccount(foreignCurrencyAccount2);
+            foreignCurrencyHolderRepository.saveAndFlush(foreignCurrencyHolder);
+
+            ForeignCurrencyHolder foreignCurrencyHolder2 = new ForeignCurrencyHolder();
+            foreignCurrencyHolder2.setCurrencyCode("USD");
+            foreignCurrencyHolder2.setAvailableBalance(500L);
+            foreignCurrencyHolder2.setReservedFunds(0L);
+            foreignCurrencyHolder2.setAccount(foreignCurrencyAccount2);
+
+            foreignCurrencyHolderRepository.saveAndFlush(foreignCurrencyHolder2);
+
+
+            // Create bank accounts for all allowed currencies
+            int i = 0;
+            for (String currency : ExchangeRateBootstrapUtil.allowedCurrencies) {
+                if (currency.equals("RSD")) {
+                    DomesticCurrencyAccount domesticBankAccount = new DomesticCurrencyAccount();
+                    domesticBankAccount.setAccountNumber("000000000000000" + i);
+                    domesticBankAccount.setEmail("bankAccount@bank.rs");
+                    domesticBankAccount.setAccountType(AccountType.BANK_ACCOUNT);
+                    domesticBankAccount.setEmployeeId(2L);
+                    domesticBankAccount.setMaintenanceFee(0.00);
+                    domesticBankAccount.setLinkState(UserAccountUserProfileLinkState.ASSOCIATED);
+                    domesticBankAccount.setInterestRate(0.0);
+                    domesticBankAccount.setCurrencyCode(currency);
+                    domesticBankAccount.setAvailableBalance(999999999L);
+                    accountRepository.saveAndFlush(domesticBankAccount);
+                    i++;
+                    continue;
+                }
+                ;
+                ForeignCurrencyAccount foreignCurrencyAccount = new ForeignCurrencyAccount();
+                foreignCurrencyAccount.setAccountNumber("000000000000000" + i);
+                foreignCurrencyAccount.setEmail("bankAccount@bank.rs");
+                foreignCurrencyAccount.setAccountType(AccountType.BANK_ACCOUNT);
+                foreignCurrencyAccount.setEmployeeId(2L);
+                foreignCurrencyAccount.setMaintenanceFee(0.00);
+                foreignCurrencyAccount.setDefaultCurrencyCode(currency);
+                foreignCurrencyAccount.setLinkState(UserAccountUserProfileLinkState.ASSOCIATED);
+                foreignCurrencyAccount.setInterestRate(0.0);
+                foreignCurrencyAccount.setCurrencyCode(currency);
+                foreignCurrencyAccount.setAvailableBalance(999999999L);
+                accountRepository.saveAndFlush(foreignCurrencyAccount);
+                i++;
+            }
+
         }
         if (creditRepository.count() == 0) {
             Credit c = new Credit();
@@ -99,27 +172,33 @@ public class BootstrapData implements CommandLineRunner {
             creditRepository.save(c);
         }
         if (creditRequestRepository.count() == 0) {
-            CreditRequest crd = new CreditRequest();
-            crd.setAccountNumber("3334444111111111");
-            crd.setCreditAmount(36000.0);
-            crd.setCreditPurpose("STAMBENI");
-            crd.setCurrency("EUR");
-            crd.setEducationLevel("TRECI");
-            crd.setEmploymentPeriod(5L);
-            crd.setHousingStatus("IZNAJMLJEN");
-            crd.setMaritalStatus("NEOZENJEN");
-            crd.setMobileNumber("+381655555555");
-            crd.setMonthlySalary(1000L);
-            crd.setPermanentEmployment(true);
-            crd.setOwnCar(false);
-            crd.setBranch("Novi Sad");
-            crd.setMaturity(12L);
-            crd.setCreditType(CreditType.STAMBENI);
-            crd.setStatus(CreditRequestStatus.APPROVED);
-            crd.setNote("pls daj kredit");
-            crd.setPaymentPeriodMonths(new Random().nextLong(12, 36));
-            creditRequestRepository.save(crd);
-
+            String[] purposes = {"STAMBENI", "AUTO", "POTROŠAČKI", "REFINANSIRANJE", "EDUKACIJA"};
+            String[] notes = {"pls daj kredit", "kupujem auto", "kupujem televizor", "refinansiram dugove", "studiram"};
+            String[] accNumbs = {"3334444999999999", "3334444111111111", "3334444888888888"};
+            String[] educations = {"OSNOVNA", "SREDNJA", "VIŠA", "TRECI", "MASTER", "DOKTOR"};
+            String[] maritalStatuses = {"NEOZENJEN", "OŽENJEN", "RAZVEDEN", "UDOVAC"};
+            for (int i = 0; i < 10; i++) {
+                CreditRequest crd = new CreditRequest();
+                crd.setAccountNumber(accNumbs[new Random().nextInt(3)]);
+                crd.setCreditAmount(new Random().nextDouble(1000L, 10000L));
+                crd.setCreditPurpose(purposes[new Random().nextInt(5)]);
+                crd.setCurrency("EUR");
+                crd.setEducationLevel(educations[new Random().nextInt(6)]);
+                crd.setEmploymentPeriod(5L);
+                crd.setHousingStatus("IZNAJMLJEN");
+                crd.setMaritalStatus(maritalStatuses[new Random().nextInt(4)]);
+                crd.setMobileNumber("+381655555555");
+                crd.setMonthlySalary(1000L);
+                crd.setPermanentEmployment(true);
+                crd.setOwnCar(false);
+                crd.setBranch("Novi Sad");
+                crd.setMaturity(12L);
+                crd.setCreditType(CreditType.STAMBENI);
+                crd.setStatus(CreditRequestStatus.PENDING);
+                crd.setNote(notes[new Random().nextInt(5)]);
+                crd.setPaymentPeriodMonths(new Random().nextLong(12, 36));
+                creditRequestRepository.save(crd);
+            }
 
         }
         if (cardRepository.count() == 0) {
@@ -136,6 +215,35 @@ public class BootstrapData implements CommandLineRunner {
 
             cardRepository.save(card);
         }
-        logger.info("BankService: DATA LOADING IN PROGRESS...");
+        if (exchangeRateRepository.count() != 0) {
+            if (exchangeRateRepository.findAll().get(0).getTimeNextUpdate() < System.currentTimeMillis()) {
+                exchangeRateRepository.deleteAll();
+            }
+        }
+        if (exchangeRateRepository.count() == 0) {
+            List<ExchangeRateApiResponse> responseList = ExchangeRateBootstrapUtil.getDataFromApi();
+            for (ExchangeRateApiResponse response : responseList) {
+                Map<String, Double> conversionRates = response.getConversion_rates();
+                conversionRates.forEach((k, v) -> {
+                    if (k.equals(response.getBase_code())) return;
+                    if (response.getBase_code().equals("EUR")) {
+                        v = v * 0.98; //satro provizija hehe
+                    } else {
+                        v = v * 1.02;
+                    }
+
+                    exchangeRateRepository.save(new ExchangeRates(
+                            null,
+                            response.getTime_last_update_unix(),
+                            response.getTime_next_update_unix(),
+                            response.getBase_code(),
+                            k,
+                            v));
+
+                });
+            }
+        }
+
+        logger.info("BankService: DATA LOADING FINISHED...");
     }
 }

@@ -104,12 +104,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> findAccountsByEmail(String email) {
+    public List<AccountDto> findAccountsByEmail(String email) {
         List<Account> accounts = accountRepository.findAllByEmail(email);
         if (accounts.isEmpty()) {
             throw new AccountNotFoundException(email);
         }
-        return accounts;
+        return accounts.stream().map(accountMapper::accountToAccountDto).toList();
     }
 
     @Transactional(dontRollbackOn = Exception.class)
