@@ -19,6 +19,8 @@ public interface CreditService {
 
     List<CreditRequestDto> getAllCreditRequests();
 
+    CreditRequestDto getCreditRequestById(Long id);
+
     CreditDto approveCreditRequest(Long creditRequestId);
 
     Boolean denyCreditRequest(Long creditRequestId);

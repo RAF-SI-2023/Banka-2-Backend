@@ -107,13 +107,15 @@ public class ForexControllerTests {
                 "Forex1 baseCurrency",
                 "Forex1 quoteCurrency"
         );
-        when(forexService.findByBaseCurrency("Forex1 baseCurrency")).thenReturn(forex);
+        List<Forex> forexes = new ArrayList<>();
+        forexes.add(forex);
+        when(forexService.findByBaseCurrency("Forex1 baseCurrency")).thenReturn(forexes);
 
-        ResponseEntity<Forex> response = forexController.findForexByBaseCurrency("Forex1 baseCurrency");
+        ResponseEntity<List<Forex>> response = forexController.findForexByBaseCurrency("Forex1 baseCurrency");
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(forex, response.getBody());
+        assertEquals(forex, response.getBody().get(0));
     }
 
     @Test
@@ -131,13 +133,15 @@ public class ForexControllerTests {
                 "Forex1 baseCurrency",
                 "Forex1 quoteCurrency"
         );
-        when(forexService.findByQuoteCurrency("Forex1 quoteCurrency")).thenReturn(forex);
+        List<Forex> forexes = new ArrayList<>();
+        forexes.add(forex);
+        when(forexService.findByQuoteCurrency("Forex1 quoteCurrency")).thenReturn(forexes);
 
-        ResponseEntity<Forex> response = forexController.findForexByQuoteCurrency("Forex1 quoteCurrency");
+        ResponseEntity<List<Forex>> response = forexController.findForexByQuoteCurrency("Forex1 quoteCurrency");
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(forex, response.getBody());
+        assertEquals(forex, response.getBody().get(0));
     }
 
 }

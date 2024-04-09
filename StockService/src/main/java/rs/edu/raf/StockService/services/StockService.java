@@ -9,5 +9,5 @@ public interface StockService {
 
     Stock findById(Long id);
 
-    Stock findBySymbol(String symbol);
+    List<Stock> findBySymbol(String symbol);
 }

@@ -1,4 +1,4 @@
-package rs.edu.raf.StockService.integration.controller;
+package rs.edu.raf.StockService.integration.optionservice;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -13,27 +13,23 @@ import rs.edu.raf.StockService.controllers.OptionController;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.repositories.OptionRepository;
+import rs.edu.raf.StockService.services.OptionService;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 //@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class OptionControllerSteps {
-
-    //    @LocalServerPort
-//private String port
+public class OptionServiceImplSteps extends OptionServiceImplTestsConfig {
     private String Stockport = "8001";
 
 
     //    @Autowired
 //    private TestRestTemplate restTemplate;
-    private ResponseEntity<List<Option>> allOptionsResponseEntity;
-    private ResponseEntity<List<Option>> optionsByStockListingResponseEntity;
-    private ResponseEntity<Option> optionByIdResponseEntity;
     private Long optionId = 1L;
     private String stockListing = "AAPL";
 
@@ -42,13 +38,11 @@ public class OptionControllerSteps {
 
 
     @MockBean
-    private OptionServiceImpl optionService;
+    private OptionService optionService;
 
-    private ResponseEntity<List<Option>> responseOption;
 
     private ResponseEntity<List<Option>> responseOptionByStockListing;
 
-    private ResponseEntity<Option> responseOptionById;
 
     @MockBean
     private OptionRepository optionRepository;
@@ -58,7 +52,7 @@ public class OptionControllerSteps {
     private List<Option> optionslist;
 
 
-    public OptionControllerSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
+    public OptionServiceImplSteps(OptionRepository optionRepository, OptionServiceImpl optionService, OptionController optionController) {
         this.optionRepository = optionRepository;
         this.optionService = optionService;
         this.optionController = optionController;
@@ -97,11 +91,14 @@ public class OptionControllerSteps {
 
     }
 
-    @When("the client requests options by {string}")
-    public void whenTheClientRequestsOptionsByListing(String path) throws Exception {
-        if (path.equals("/stock-listing/TEST")) {
-            responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);
-        }
+    @When("the client requests options for root {string}")
+    public void whenTheClientRequestsOptionsByListing(String stock) throws Exception {
+
+        ArrayList<Option> options = new ArrayList<>();
+        options= (ArrayList<Option>) optionService.findAllByStockListing(stock);
+
+            responseOptionByStockListing = new ResponseEntity<>(options, HttpStatus.OK);
+
         //     optionController = new OptionController(optionService);
         //     System.out.println(optionController.findAllOptionsByStockListing(stockListing));
         //      responseOptionByStockListing = new ResponseEntity<>(optionslist, HttpStatus.OK);

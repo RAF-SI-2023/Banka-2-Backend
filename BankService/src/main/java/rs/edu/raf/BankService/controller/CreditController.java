@@ -4,15 +4,12 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.service.CreditService;
 
@@ -60,15 +57,25 @@ public class CreditController {
         }
     }
 
-    @GetMapping("/credit-requests/all")
+    @GetMapping("/credit-requests/all-pending")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     @ApiResponse(responseCode = "200", description = "Returns all credit requests, only admin and employee roles can do this")
-    public ResponseEntity<?> getAllCreditRequests() {
+    public ResponseEntity<?> getAllPendingCreditRequests() {
         try {
             return ResponseEntity.ok(creditService.getAllCreditRequests());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
 
+    @GetMapping("/credit-requests/id/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
+    @ApiResponse(responseCode = "200", description = "Returns a credit request by its ID, only admin and employee roles can do this")
+    public ResponseEntity<?> getCreditRequestById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(creditService.getCreditRequestById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

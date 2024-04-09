@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.IAMService.controllers.UserController;
 import rs.edu.raf.IAMService.unit.TestSecurityConfig;
-import rs.edu.raf.IAMService.data.dto.AgentDto;
 import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
 import rs.edu.raf.IAMService.data.dto.PasswordActivationDto;
 import rs.edu.raf.IAMService.data.dto.PrivateClientDto;

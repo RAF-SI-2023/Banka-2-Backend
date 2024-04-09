@@ -262,12 +262,19 @@ public class BootstrapData implements CommandLineRunner {
         // ##############################
         // #          COMPANIES         #
         // ##############################
-        if (companyRepository.count() != 0) {
-            return;
+        if (companyRepository.count() == 0) {
+            Company company = new Company();
+            company.setCompanyName("Example Ltd.");
+            company.setFaxNumber("123456");
+            company.setPhoneNumber("+38111236456");
+            company.setAddress("Trg Republike V/5, Beograd, Srbija");
+            company.setPib(123456789L);
+            company.setRegistryNumber(123456789);
+            company.setIdentificationNumber(123456);
+            company.setActivityCode(12345);
+            companyRepository.save(company);
         }
-        Company company = new Company();
-        company.setCompanyName("Example Ltd.");
-        company.setFaxNumber("123456");
+
     }
 
 }

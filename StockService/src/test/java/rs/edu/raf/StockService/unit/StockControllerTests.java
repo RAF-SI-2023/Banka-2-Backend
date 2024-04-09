@@ -107,12 +107,14 @@ public class StockControllerTests {
                 1,
                 1.0
         );
-        when(stockService.findBySymbol("Stock1 Symbol")).thenReturn(stock);
+        List<Stock> stocks = new ArrayList<>();
+        stocks.add(stock);
+        when(stockService.findBySymbol("Stock1 Symbol")).thenReturn(stocks);
 
-        ResponseEntity<Stock> response = stockController.findStockBySymbol("Stock1 Symbol");
+        ResponseEntity<List<Stock>> response = stockController.findStockBySymbol("Stock1 Symbol");
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(stock, response.getBody());
+        assertEquals(stock, response.getBody().get(0));
     }
 }
