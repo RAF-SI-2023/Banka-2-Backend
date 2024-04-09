@@ -1,6 +1,7 @@
 package rs.edu.raf.IAMService.bootstrap;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.usertype.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -61,7 +63,16 @@ public class BootstrapData implements CommandLineRunner {
         Role userRole = new Role();
         userRole.setRoleType(RoleType.USER);
         roles.add(userRole);
-        if (roleRepository.count() == 0) {
+
+//        Role adminRoleT = roleRepository.findByRoleType(RoleType.ADMIN).orElse(null);
+//        if (adminRoleT == null) {
+//            // If the ROLE_ADMIN doesn't exist, create and save it
+//            adminRoleT = new Role();
+//            adminRoleT.setRoleType(RoleType.ADMIN);
+//            roleRepository.save(adminRole);
+//        }
+
+        if (roleRepository.count() == 0){
             roleRepository.saveAll(roles);
         }
         // ##############################
@@ -82,6 +93,41 @@ public class BootstrapData implements CommandLineRunner {
         // #           USERS            #
         // ##############################
 
+
+        // NE BRISATI OVOG USERA
+
+
+
+        User userTest = new User();
+        userTest.setEmail("test@gmail.com");
+        userTest.setUsername("test@gmail.com");
+        userTest.setPassword(passwordEncoder.encode("Test123!"));
+        Role wow =roleRepository.findByRoleType(RoleType.USER).orElse(null);
+        if(wow==null) {
+            userTest.setRole(userRole);
+        }else{
+        userTest.setRole(wow);
+        }
+        userTest.setPermissions(null);
+        userTest.setPhone("+38111236456");
+        userTest.setDateOfBirth(336779146L);
+        userTest.setAddress("Trg Republike V/5, Beograd, Srbija");
+
+        Optional<User> userTest2 =userRepository.findByEmail("test@gmail.com");
+        if (userTest2.isEmpty()) {
+            System.out.println("Nema test usera");
+            userRepository.save(userTest);
+        } else {
+            System.out.println("Ima test usera");
+            User userToUpdate = userTest2.get();
+            userRepository.delete(userToUpdate);
+            // Update user attributes if needed
+            userRepository.save(userToUpdate);
+        }
+
+        //-----------------------------
+
+
         List<User> users = new ArrayList<>();
         User admin = new User();
         admin.setEmail(myEmail1);
@@ -90,6 +136,7 @@ public class BootstrapData implements CommandLineRunner {
         admin.setRole(adminRole);
         admin.setPermissions(List.of(per1, per2));
         users.add(admin);
+
 
         User user = new User();
         user.setEmail("nikola@gmail.com");
@@ -254,7 +301,7 @@ public class BootstrapData implements CommandLineRunner {
         privateClient.setPrimaryAccountNumber("3334444111111111");
         users.add(privateClient);
 
-        if (userRepository.count() == 0) {
+        if (userRepository.count() == 1) {
             userRepository.saveAll(users);
         }
 

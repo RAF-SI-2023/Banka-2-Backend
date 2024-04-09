@@ -19,6 +19,7 @@ import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 @Component
@@ -122,7 +123,12 @@ public class BootstrapData implements CommandLineRunner {
 
 
         }
-        if (cardRepository.count() == 0) {
+
+
+
+        Optional<Card> cardTest = cardRepository.findByIdentificationCardNumber(1000000000000000L);
+
+        if (cardTest.isEmpty()) {
             Card card = new Card();
             card.setAccountNumber("3334444999999999");
             card.setCvvCode("133");
@@ -132,10 +138,25 @@ public class BootstrapData implements CommandLineRunner {
             card.setExpirationDate(1775682066000L);
             card.setLimitCard(1111000L);
             card.setStatus(true);
-            card.setNameOfCard("Visa");
+            card.setNameOfCard("TEST");
+            cardRepository.save(card);
+        } else{
+
+            Card card = cardTest.get();
+            card.setAccountNumber("3334444999999999");
+            card.setCvvCode("133");
+            card.setIdentificationCardNumber(1000000000000000L);
+            card.setCardType(CardType.CREDIT);
+            card.setCreationDate(1712602820L);
+            card.setExpirationDate(1775682066000L);
+            card.setLimitCard(1111000L);
+            card.setStatus(true);
+            card.setNameOfCard("TEST");
 
             cardRepository.save(card);
+
         }
+
         logger.info("BankService: DATA LOADING IN PROGRESS...");
     }
 }
