@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.integrationTests;
+package rs.edu.raf.BankService.creditTests.integrationTests.cardservice;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -7,12 +7,10 @@ import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.service.CardService;
-import rs.edu.raf.BankService.service.CreditService;
-import rs.edu.raf.BankService.service.impl.CardServiceImpl;
 
 import static org.junit.Assert.assertEquals;
 
-public class CardIntegrationSteps {
+public class CardServiceImplSteps {
 
 
     private CardService cardService;
@@ -20,7 +18,7 @@ public class CardIntegrationSteps {
 
     String accountNumber;
 
-    public CardIntegrationSteps(CardService cardService) {
+    public CardServiceImplSteps(CardService cardService) {
         this.cardService = cardService;
 
     }
