@@ -94,7 +94,7 @@ class CreditServiceTests {
     @Test
     void testGetAllCreditRequests() {
         // Given
-        when(creditRequestRepository.findAll()).thenReturn(Collections.emptyList());
+        when(creditRequestRepository.findAllByStatusIs(CreditRequestStatus.PENDING)).thenReturn(Collections.emptyList());
 
         // When
         var result = creditService.getAllCreditRequests();
@@ -102,7 +102,7 @@ class CreditServiceTests {
         // Then
         assertNotNull(result);
         assertEquals(0, result.size());
-        verify(creditRequestRepository, times(1)).findAll();
+        verify(creditRequestRepository, times(1)).findAllByStatusIs(CreditRequestStatus.PENDING);
     }
 
     @Test

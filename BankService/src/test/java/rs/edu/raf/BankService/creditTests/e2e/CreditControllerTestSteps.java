@@ -69,7 +69,7 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
     public void creditRequestIsCreatedAndWeCanSeeItInTheListOfCreditRequests() {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("http://localhost:8003/api/credit/credit-requests/all")
+                    get("http://localhost:8003/api/credit/credit-requests/all-pending")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + userControllerTestsState.jwt)
