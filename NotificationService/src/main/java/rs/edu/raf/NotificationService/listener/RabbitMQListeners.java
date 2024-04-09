@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import rs.edu.raf.NotificationService.data.dto.EmailDto;
-import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
-import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
-import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
+import rs.edu.raf.NotificationService.data.dto.*;
 import rs.edu.raf.NotificationService.mapper.EmailDtoMapper;
 import rs.edu.raf.NotificationService.services.EmailService;
 
@@ -67,6 +64,21 @@ public class RabbitMQListeners {
     public void passwordForgotHandler(Message message) {
         logger.info("passwordForgotListener received message");
     }
+
+    @RabbitListener(queues = "transaction-verification")
+    public void transactionVerification(TransferTransactionVerificationDto transferTransactionVerificationDto) throws IOException {
+
+        if (!isValid(transferTransactionVerificationDto)) return;
+
+        EmailDto transactionVerification = emailDtoMapper.transactionVerification(transferTransactionVerificationDto);
+
+        emailService.sendSimpleMailMessage(transactionVerification.getEmail(), transactionVerification.getSubject(), transactionVerification.getContent());
+
+        logger.info("transaction-verification received message: " + transactionVerification);
+    }
+
+
+
 
     private <T> boolean isValid(T dto) {
         Set<ConstraintViolation<T>> violations = validator.validate(dto);
