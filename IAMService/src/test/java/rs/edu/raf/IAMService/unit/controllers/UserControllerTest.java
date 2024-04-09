@@ -136,6 +136,19 @@ class UserControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+//    @Test
+//    void createAgent_happyFlow_returnsOk1() throws Exception {
+//        AgentDto agentDto = new AgentDto();
+//        when(userService.createAgent(any(AgentDto.class)))
+//                .thenReturn(agentDto);
+//
+//        mockMvc.perform(post("/api/users/create/agent")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(agentDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+//    }
+
     @Test
     void createEmployee_happyFlow_returnsOk(){
         EmployeeDto employeeDto = new EmployeeDto();
