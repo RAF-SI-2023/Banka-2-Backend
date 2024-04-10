@@ -1,10 +1,9 @@
-package rs.edu.raf.BankService.integration.creditTests;
+package rs.edu.raf.BankService.integration.credit;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.security.test.context.support.WithMockUser;
-import rs.edu.raf.BankService.controller.AccountController;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
@@ -16,7 +15,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class CreditStepsDefinition {
+public class CreditStepsDefinition{
     private CreditService creditService;
 
 

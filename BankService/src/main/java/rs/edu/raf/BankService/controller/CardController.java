@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.service.CardService;
 
 @RestController
@@ -18,9 +19,9 @@ public class CardController {
 
     private final CardService cardService;
 
-    @PostMapping("/createCard")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_AGENT','ROLE_SUPERVISOR')")
-    public ResponseEntity<?> createCard(@RequestBody CardDto cardDto) {
+    @PostMapping("/create-card")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
+    public ResponseEntity<?> createCard(@RequestBody CreateCardDto cardDto) {
         try {
             return ResponseEntity.ok(cardService.createCard(cardDto));
         } catch (Exception e) {
@@ -29,8 +30,8 @@ public class CardController {
 
     }
 
-    @GetMapping(value = "/getCardByIdentificationCardNumber/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER','ROLE_AGENT','ROLE_SUPERVISOR')")
+    @GetMapping(value = "/id/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER')")
     public ResponseEntity<?> getCardByIdentificationCardNumber(@PathVariable Long identificationCardNumber) {
         try {
             return ResponseEntity.ok(cardService.getCardByIdentificationCardNumber(identificationCardNumber));
@@ -40,7 +41,7 @@ public class CardController {
     }
 
     @PutMapping(value = "/change-status/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     public ResponseEntity<?> changeCardStatus(@PathVariable Long identificationCardNumber) {
         try {
             return ResponseEntity.ok(cardService.changeCardStatus(identificationCardNumber));
@@ -51,7 +52,7 @@ public class CardController {
 
     }
 
-    @GetMapping(value = "/getCardsByAccountNumber/{accountNumber}",consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/account-number/{accountNumber}",consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER','ROLE_AGENT','ROLE_SUPERVISOR')")
     public ResponseEntity<?> getCardsByAccountNumber(@PathVariable String accountNumber) {
         try {
@@ -61,7 +62,8 @@ public class CardController {
         }
     }
 
-    @PutMapping(value = "/changeCardLimit",consumes = MediaType.ALL_VALUE)
+    @PutMapping(value = "/change-card-limit",consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     public ResponseEntity<?> changeCardLimit(@RequestBody CardDto cardDto) {
         CardDto cardDto1 = cardService.changeCardLimit(cardDto);
         if(cardDto1 == null){
