@@ -2,6 +2,7 @@ package rs.edu.raf.StockService.services.impl;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.entities.Exchange;
 import rs.edu.raf.StockService.services.ExchangeService;
 
@@ -24,16 +25,16 @@ public class InMemoryExchangeServiceImpl implements ExchangeService {
 
     @Override
     public Exchange findById(Long id) {
-        return exchanges.stream().filter(currency -> currency.getId() == (id)).findFirst().orElse(null);
+        return exchanges.stream().filter(currency -> currency.getId() == (id)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with id: " + id + "not found"));
     }
 
     @Override
     public Exchange findByExchangeName(String exchangeName) {
-        return exchanges.stream().filter(currency -> currency.getExchangeName().equals(exchangeName)).findFirst().orElse(null);
+        return exchanges.stream().filter(currency -> currency.getExchangeName().equals(exchangeName)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with exchangeName: " + exchangeName + "not found"));
     }
 
     @Override
     public Exchange findByMICode(String miCode) {
-        return exchanges.stream().filter(currency -> currency.getExchangeMICode().equals(miCode)).findFirst().orElse(null);
+        return exchanges.stream().filter(currency -> currency.getExchangeMICode().equals(miCode)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with miCode: " + miCode + "not found"));
     }
 }

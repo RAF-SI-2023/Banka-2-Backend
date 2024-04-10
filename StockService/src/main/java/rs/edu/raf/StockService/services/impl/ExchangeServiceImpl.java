@@ -1,6 +1,7 @@
 package rs.edu.raf.StockService.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.entities.Exchange;
 import rs.edu.raf.StockService.repositories.ExchangeRepository;
 import rs.edu.raf.StockService.services.ExchangeService;
@@ -23,7 +24,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public Exchange findById(Long id) {
-        return exchangeRepository.findById(id).orElse(null);
+        return exchangeRepository.findById(id).orElseThrow(() -> new NotFoundException("Exchange with id: " + id + "not found"));
     }
 
     @Override
