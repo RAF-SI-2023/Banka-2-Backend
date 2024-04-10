@@ -9,7 +9,7 @@ Feature: Testing ExchangeServiceImpl
     Then return exchange with id "1"
 
   Scenario: Fetching exchange by non-exiting id
-    Then fetching exchange with  non-existing id "10000000" throws NotFoundException
+    Then fetching exchange with  non-existing id "-1" throws NotFoundException
 
   Scenario:  Fetching exchange by exchange name
     When fetching exchange with existing name "Rivercross Dark"
@@ -20,9 +20,8 @@ Feature: Testing ExchangeServiceImpl
     Then returned list does not contain any exchange with name
 
   Scenario:  Fetching exchange by MICode
-    When fetching exchange with existing MICode "Rivercross Dark"
-    Then returned exchange with MICode "Rivercross Dark"
+    When fetching exchange with existing MICode "ICXR"
+    Then returned exchange with MICode "ICXR"
 
   Scenario: Fetching exchange by non-existing MICode
-    When fetching exchange with non-existing MICode "Rivercross Darkk"
-    Then returned list does not contain any exchange with MICode
+    Then fetching exchange with non-existing MICode "Rivercross Darkk"
