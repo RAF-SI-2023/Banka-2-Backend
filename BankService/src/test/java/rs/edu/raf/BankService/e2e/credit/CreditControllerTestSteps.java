@@ -11,7 +11,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import rs.edu.raf.BankService.e2e.credit.generators.JwtTokenGenerator;
+import rs.edu.raf.BankService.e2e.generators.JwtTokenGenerator;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.enums.CreditType;

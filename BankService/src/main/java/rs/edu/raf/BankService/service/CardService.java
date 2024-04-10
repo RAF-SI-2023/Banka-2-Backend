@@ -25,4 +25,6 @@ public interface CardService {
     void checkExpirationDate();
 
     CardDto changeCardLimit(CardDto cardDto);
+
+    void deleteCard(Long identificationCardNumber);
 }

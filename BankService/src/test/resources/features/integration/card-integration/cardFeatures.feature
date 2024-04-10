@@ -25,7 +25,7 @@ Feature: User interacting with cards
   Scenario: user creates a new card
     Given user has an account with account number "3334444999999999" for the card
     When the bank creates a new card with given acount number
-    Then the user should return 200
+    Then the user should return 200 for creation
 
 
 
