@@ -8,10 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.webjars.NotFoundException;
-import rs.edu.raf.IAMService.data.dto.ClientActivationMessageDto;
-import rs.edu.raf.IAMService.data.dto.CorporateClientDto;
-import rs.edu.raf.IAMService.data.dto.EmployeeDto;
-import rs.edu.raf.IAMService.data.dto.PrivateClientDto;
+import rs.edu.raf.IAMService.data.dto.*;
 import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
@@ -338,6 +335,138 @@ class UserServiceImplTest {
         assertThrows(MissingRoleException.class, () -> userService.createEmployee(employeeDto));
     }
 
+
+    @Test
+    public void testCreateAgent_Success(){
+        AgentDto agentDto = new AgentDto();
+        agentDto.setEmail("agent@gmail.com");
+
+        Agent agent = new Agent();
+
+        when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.empty());
+
+        when(userMapper.agentDtoToAgent(agentDto)).thenReturn(agent);
+
+        Role role = new Role(RoleType.AGENT);
+        when(roleRepository.findByRoleType(RoleType.AGENT)).thenReturn(Optional.of(role));
+
+        when(userRepository.save(any(Agent.class))).thenReturn(agent);
+
+
+        when(userMapper.agentToAgentDto(agent)).thenReturn(agentDto);
+
+
+        AgentDto result = userService.createAgent(agentDto);
+
+        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ActivationRequestDto.class));
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testCreateAgent_EmailTaken(){
+        AgentDto agentDto = new AgentDto();
+        when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.of(new Agent()));
+        assertThrows(EmailTakenException.class, () -> userService.createAgent(agentDto));
+    }
+
+    @Test
+    public void testCreateAgent_MissingRole() {
+        AgentDto agentDto = new AgentDto();
+        when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.empty());
+        when(roleRepository.findByRoleType(RoleType.AGENT)).thenReturn(Optional.empty());
+
+        assertThrows(MissingRoleException.class, () -> userService.createAgent(agentDto));
+    }
+
+    @Test
+    public void setPassword_success(){
+        String mail = "email@gmail.com";
+        String password = "password";
+        User user = new User();
+        user.setEmail(mail);
+        user.setPassword(password);
+
+        when(userRepository.findByEmail(mail)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(password)).thenReturn(password);
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        assertTrue(userService.setPassword(mail, password));
+    }
+
+    @Test
+    public void setPassword_notSuccess(){
+        String mail = "email@gmail.com";
+        String password = "password";
+        User user = new User();
+        user.setEmail(mail);
+        user.setPassword(password);
+
+        when(userRepository.findByEmail(mail)).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(password)).thenReturn(password);
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        assertFalse(userService.setPassword(mail, password));
+    }
+
+
+    @Test
+    public void findByEmail_Success(){
+        String email = "user@gmail.com";
+        User user = new User();
+        UserDto userDto = new UserDto();
+        user.setEmail(email);
+
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userMapper.userToUserDto(user)).thenReturn(userDto);
+
+        UserDto userDto1 = userService.findByEmail(email);
+
+        assertNotNull(userDto1);
+    }
+
+    @Test
+    public void findByEmail_NotFound(){
+        String email = "user@gmail.com";
+        User user = new User();
+        user.setEmail(email);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> userService.findByEmail(email));
+
+    }
+
+    @Test
+    public void findById_Success(){
+        Long id = 1L;
+        User user = new User();
+        UserDto userDto = new UserDto();
+        user.setId(id);
+
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userMapper.userToUserDto(user)).thenReturn(userDto);
+
+        UserDto userDto1 = userService.findById(id);
+
+        assertNotNull(userDto1);
+    }
+
+    @Test
+    public void findById_NotFound(){
+        Long id = 1L;
+        User user = new User();
+        user.setId(id);
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> userService.findById(id));
+    }
+
     @Test
     public void testActivateEmployee_Success() {
         // Setup
@@ -444,4 +573,8 @@ class UserServiceImplTest {
 
         assertThrows(NotFoundException.class, () -> userService.resetAgentsLeftLimit(userId));
     }
+
+
+
+
 }

@@ -240,10 +240,14 @@ class CompanyControllerTest {
     public void testDeleteCompanyById() throws Exception {
         Long id = Long.valueOf(1);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/companies/delete/id/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+       doNothing().when(companyService).deleteCompanyById(id);
+
+        ResponseEntity<?> responseEntity = companyController.deleteCompanyById(id);
+
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+
+        verify(companyService, times(1)).deleteCompanyById(id);
     }
 
     @Test
