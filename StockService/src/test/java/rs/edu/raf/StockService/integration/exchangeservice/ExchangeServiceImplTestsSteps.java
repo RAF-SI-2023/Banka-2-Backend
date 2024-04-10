@@ -42,8 +42,7 @@ public class ExchangeServiceImplTestsSteps extends ExchangeServiceImplTestsConfi
     @Then("fetching exchange with  non-existing id {string} throws NotFoundException")
     public void fetchingExchangeWithNonExistingIdThrowsNotFoundException(String arg0) {
         Long id = Long.parseLong(arg0);
-        returnedExchange = exchangeService.findById(id);
-        assertNull(returnedExchange);
+        assertThrows(NotFoundException.class, () -> exchangeService.findById(id));
     }
 
     @When("fetching exchange with existing name {string}")
@@ -56,14 +55,9 @@ public class ExchangeServiceImplTestsSteps extends ExchangeServiceImplTestsConfi
         assertEquals(name, returnedExchange.getExchangeName());
     }
 
-    @When("fetching exchange with non-existing name {string}")
+    @Then("fetching exchange with non-existing name {string}")
     public void fetchingExchangeWithNonExistingName(String name) {
-        returnedExchange = exchangeService.findByExchangeName(name);
-    }
-
-    @Then("returned list does not contain any exchange with name")
-    public void returnedDoesNotContainAnyExchangeWithName() {
-        assertTrue(returnedExchange == null);
+        assertThrows(NotFoundException.class, () -> exchangeService.findByExchangeName(name));
     }
 
     @When("fetching exchange with existing MICode {string}")
@@ -78,8 +72,7 @@ public class ExchangeServiceImplTestsSteps extends ExchangeServiceImplTestsConfi
 
     @Then("fetching exchange with non-existing MICode {string}")
     public void fetchingExchangeWithNonExistingMICode(String MICode) {
-        returnedExchange = exchangeService.findByMICode(MICode);
-        assertNull(returnedExchange);
+        assertThrows(NotFoundException.class, () -> exchangeService.findByMICode(MICode));
     }
 
 }

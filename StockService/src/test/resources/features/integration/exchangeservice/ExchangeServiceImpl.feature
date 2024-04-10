@@ -16,8 +16,7 @@ Feature: Testing ExchangeServiceImpl
     Then returned exchange with name "Rivercross Dark"
 
   Scenario: Fetching exchange by non-existing name
-    When fetching exchange with non-existing name "Rivercross Darkk"
-    Then returned list does not contain any exchange with name
+    Then fetching exchange with non-existing name "Rivercross Darkk"
 
   Scenario:  Fetching exchange by MICode
     When fetching exchange with existing MICode "ICXR"
