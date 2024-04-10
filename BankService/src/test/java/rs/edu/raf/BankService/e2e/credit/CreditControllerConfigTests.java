@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.e2e;
+package rs.edu.raf.BankService.e2e.credit;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

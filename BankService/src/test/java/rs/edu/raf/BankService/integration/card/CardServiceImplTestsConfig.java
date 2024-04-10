@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.integrationTests.cardservice;
+package rs.edu.raf.BankService.integration.card;
 
 
 import io.cucumber.spring.CucumberContextConfiguration;

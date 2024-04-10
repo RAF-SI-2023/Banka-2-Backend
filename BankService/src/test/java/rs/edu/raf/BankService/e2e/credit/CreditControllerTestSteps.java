@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.e2e;
+package rs.edu.raf.BankService.e2e.credit;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import rs.edu.raf.BankService.creditTests.e2e.generators.JwtTokenGenerator;
+import rs.edu.raf.BankService.e2e.credit.generators.JwtTokenGenerator;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.enums.CreditType;

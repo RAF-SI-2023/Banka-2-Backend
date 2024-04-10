@@ -1,10 +1,9 @@
-package rs.edu.raf.BankService.creditTests.integrationTests.credit;
+package rs.edu.raf.BankService.integration.credit;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.security.test.context.support.WithMockUser;
-import rs.edu.raf.BankService.controller.AccountController;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;

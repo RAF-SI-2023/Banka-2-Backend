@@ -1,11 +1,10 @@
-package rs.edu.raf.BankService.creditTests.integrationTests.cardservice;
+package rs.edu.raf.BankService.integration.card;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
-import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.service.CardService;
 
