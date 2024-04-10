@@ -24,7 +24,7 @@ public class EmailDtoMapper {
     private static final String TRANSACTION_VERIFICATION = """
             To ensure the security of your account, we require you to verify the transaction you have just created. Please use the following verification token to complete the process:
                         
-            Verification Token: [&verificationToken]
+            Verification Token: [$verificationToken]
             """;
 
     public EmailDto activationEmail(PasswordActivationDto passwordActivationDto) {
