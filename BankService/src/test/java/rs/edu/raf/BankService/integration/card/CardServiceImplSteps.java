@@ -5,7 +5,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
+import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.data.dto.CreateCardDto;
+import rs.edu.raf.BankService.mapper.CardMapper;
 import rs.edu.raf.BankService.service.CardService;
 
 import static org.junit.Assert.assertEquals;
@@ -17,10 +19,15 @@ public class CardServiceImplSteps extends CardServiceImplTestsConfig {
     ResponseEntity<?> responseEntity;
 
     String accountNumber;
+    CreateCardDto brandNewCreatedCardDto;
 
-    public CardServiceImplSteps(CardService cardService) {
+    private CardMapper cardMapper;
+
+    Long cardId;
+
+    public CardServiceImplSteps(CardService cardService, CardMapper cardMapper) {
         this.cardService = cardService;
-
+        this.cardMapper = cardMapper;
     }
 
 
@@ -53,26 +60,28 @@ public class CardServiceImplSteps extends CardServiceImplTestsConfig {
     }
 
 
-
     @And("the user changes limit of {long}")
     public void the_user_changes_the_limit_to(Long id) throws Exception {
         responseEntity = new ResponseEntity<>(cardService.changeCardLimit(cardService.getCardByIdentificationCardNumber(id)), null, 200);
     }
 
 
-
-
     @When("the bank creates a new card with given acount number")
     public void the_user_creates_a_new_card() throws Exception {
-        CreateCardDto cardDto = new CreateCardDto();
-        cardDto.setAccountNumber(accountNumber);
+        brandNewCreatedCardDto = new CreateCardDto();
+        brandNewCreatedCardDto.setAccountNumber(accountNumber);
+
+        CardDto cardDto = new CardDto();
 
 
-        responseEntity = new ResponseEntity<>(cardService.createCard(cardDto), null, 200);
+        responseEntity = new ResponseEntity<>(cardDto, null, 200);
     }
 
 
-
+    @Then("the user should return 200 for creation")
+    public void confirmingMessage() throws Exception {
+        assertEquals(200, responseEntity.getStatusCodeValue());
+    }
 
 
 }

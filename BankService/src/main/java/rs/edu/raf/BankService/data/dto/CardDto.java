@@ -13,9 +13,12 @@ public class CardDto {
     private Long identificationCardNumber;
     private CardType cardType;
     private String nameOfCard;
+    private Long creationDate;
+    private Long expirationDate;
     private String accountNumber;
     private String cvvCode;
     private Long limitCard;
     private Boolean status;
+
 
 }

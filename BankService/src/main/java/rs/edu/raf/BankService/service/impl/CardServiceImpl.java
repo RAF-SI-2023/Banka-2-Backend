@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -46,12 +45,6 @@ public class CardServiceImpl implements CardService {
             throw new RuntimeException("Card number must have 16 digits");
         }
 
-//        try {
-//
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException("Card number must have 16 digits");
-//        }
         Account account = accountRepository.findByAccountNumber(createdCard.getAccountNumber());
         if (account == null) {
             throw new RuntimeException("Account with account number " + createdCard.getAccountNumber() + " not found");
@@ -152,6 +145,19 @@ public class CardServiceImpl implements CardService {
         cardRepository.save(card);
 
         return cardMapper.cardToCardDto(card);
+    }
+
+    @Override
+    public void deleteCard(Long identificationCardNumber) {
+
+        Optional<Card> cardOpt = cardRepository.findByIdentificationCardNumber(identificationCardNumber);
+
+        if (cardOpt.isEmpty()) {
+            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " not found");
+        }
+        Card card = cardOpt.get();
+        cardRepository.delete(card);
+
     }
 
 
