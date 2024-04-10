@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.e2e.credit.generators;
+package rs.edu.raf.IAMService.e2e.generators;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
