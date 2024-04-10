@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.e2e;
+package rs.edu.raf.BankService.e2e.creditTests;
 
 
 import io.cucumber.core.options.Constants;
@@ -10,6 +10,6 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features/e2e/creditController")
-@ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "rs.edu.raf.BankService.creditTests.e2e")
+@ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "rs.edu.raf.BankService.e2e.creditTests")
 public class CreditControllerTests {
 }

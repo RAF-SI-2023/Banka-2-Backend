@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.e2e;
+package rs.edu.raf.BankService.e2e.creditTests;
 
 
 import io.cucumber.spring.ScenarioScope;

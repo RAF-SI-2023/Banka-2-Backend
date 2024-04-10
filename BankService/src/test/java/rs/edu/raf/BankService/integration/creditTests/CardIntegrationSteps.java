@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.integrationTests;
+package rs.edu.raf.BankService.integration.creditTests;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -7,8 +7,6 @@ import io.cucumber.java.en.When;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.service.CardService;
-import rs.edu.raf.BankService.service.CreditService;
-import rs.edu.raf.BankService.service.impl.CardServiceImpl;
 
 import static org.junit.Assert.assertEquals;
 

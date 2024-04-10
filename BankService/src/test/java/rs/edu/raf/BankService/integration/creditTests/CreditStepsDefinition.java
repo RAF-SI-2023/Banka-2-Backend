@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.integrationTests;
+package rs.edu.raf.BankService.integration.creditTests;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

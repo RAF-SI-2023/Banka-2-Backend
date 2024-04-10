@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.integrationTests;
+package rs.edu.raf.BankService.integration.creditTests;
 
 import io.cucumber.core.options.Constants;
 import io.cucumber.junit.Cucumber;
@@ -12,6 +12,6 @@ import io.cucumber.junit.CucumberOptions;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features/integration/credit-integration")
-@ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "rs.edu.raf.BankService.creditTests.integrationTests")
+@ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "rs/edu/raf/BankService/integration/creditTests")
 public class CreditIntegrationTests {
 }
