@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.unit;
+package rs.edu.raf.BankService.unit.exchangeTests;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

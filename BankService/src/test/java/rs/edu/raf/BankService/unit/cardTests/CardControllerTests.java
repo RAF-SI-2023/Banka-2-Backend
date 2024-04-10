@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.creditTests.unit;
+package rs.edu.raf.BankService.unit.cardTests;
 
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.webjars.NotFoundException;
 import rs.edu.raf.BankService.controller.CardController;
 import rs.edu.raf.BankService.controller.CreditController;
 import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.service.CardService;
@@ -35,20 +36,21 @@ public class CardControllerTests {
 
     @Test
     void testCreateCard() {
-        CardDto cardDto = new CardDto();
-        when(cardService.createCard(cardDto)).thenReturn(cardDto);
+        CreateCardDto cardDto = new CreateCardDto();
+        CardDto newcardDto = new CardDto();
+        when(cardService.createCard(cardDto)).thenReturn(newcardDto);
 
         // When
         ResponseEntity<?> responseEntity = cardController.createCard(cardDto);
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(cardDto, responseEntity.getBody());
+        assertEquals(newcardDto, responseEntity.getBody());
     }
 
     @Test
     public void testCreateCard_Forbidden() {
         // Mock the response from the cardService when an exception occurs
-        CardDto cardDto = new CardDto(); // Assuming CardDto is your DTO class
+        CreateCardDto cardDto = new CreateCardDto(); // Assuming CardDto is your DTO class
         when(cardService.createCard(cardDto)).thenThrow(new RuntimeException("Creation failed"));
 
         // Call the controller method
