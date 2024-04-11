@@ -9,7 +9,7 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("transaction-integration")
+@SelectClasspathResource("features/integration/transaction-integration")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "rs.edu.raf.BankService.integration.transactionservice")
 public class TransactionServiceIntegrationTest {
 }
