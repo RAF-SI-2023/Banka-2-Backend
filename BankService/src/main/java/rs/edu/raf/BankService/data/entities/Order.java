@@ -22,15 +22,13 @@ public class Order {
 
     private String stockSymbol;
 
-    private Integer unitePrice;
-
     @Enumerated(EnumType.STRING)
     private OrderActionType orderActionType;
 
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.PENDING;
+    private OrderStatus orderStatus = OrderStatus.APPROVED;
 
     private Long settlementDate = -1L;
 

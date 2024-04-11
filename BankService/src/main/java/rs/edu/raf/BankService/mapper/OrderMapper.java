@@ -19,4 +19,18 @@ public class OrderMapper {
         order.setMargin(orderDto.isMargin());
         return order;
     }
+
+    public OrderDto orderToOrderDto(Order order){
+        OrderDto orderDto = new OrderDto();
+        orderDto.setOrderStatus(order.getOrderStatus());
+        orderDto.setOrderType(order.getOrderActionType().toString());
+        orderDto.setStockSymbol(order.getStockSymbol());
+        orderDto.setQuantity(order.getQuantity());
+        orderDto.setSettlementDate(order.getSettlementDate());
+        orderDto.setLimitPrice(order.getLimitPrice());
+        orderDto.setStopPrice(order.getStopPrice());
+        orderDto.setAllOrNone(order.isAllOrNone());
+        orderDto.setMargin(order.isMargin());
+        return orderDto;
+    }
 }
