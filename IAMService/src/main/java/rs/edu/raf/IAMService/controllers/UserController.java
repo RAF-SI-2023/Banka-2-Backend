@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "{http://localhost:8003}", allowedHeaders = "*")
 @RequiredArgsConstructor
 @RequestMapping(
         value = "/api/users",
@@ -127,7 +127,7 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @GetMapping(path = "/id/{id}", consumes = MediaType.ALL_VALUE)
+    @GetMapping(path = "/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findById(@PathVariable Long id) {
         UserDto userDto = userService.findById(id);
         if (userDto == null) {
@@ -141,11 +141,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getAgentsLeftLimit(id));
     }
 
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
     @PatchMapping(path = "/agent-limit/reset/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Void> resetAgentsLeftLimit(@PathVariable Long id) {
         userService.resetAgentsLeftLimit(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "/decrease-limit/{id}/{amount}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<Void> decreaseAgentLimit(@PathVariable Long id, @PathVariable Double amount) {
+        userService.decreaseAgentLimit(id, amount);
         return ResponseEntity.ok().build();
     }
 

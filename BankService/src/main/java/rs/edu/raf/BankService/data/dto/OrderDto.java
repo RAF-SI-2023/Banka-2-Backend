@@ -3,11 +3,14 @@ package rs.edu.raf.BankService.data.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.enums.OrderStatus;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
+
+    private OrderStatus orderStatus;
 
     private String orderType;
 
