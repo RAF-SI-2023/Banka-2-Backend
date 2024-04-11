@@ -23,4 +23,9 @@ public class FuturesContractImpl implements FuturesContractService {
     public FuturesContract save(FuturesContract futuresContract) {
         return futuresContractRepository.save(futuresContract);
     }
+
+    @Override
+    public FuturesContract findById(Long id) {
+        return futuresContractRepository.findById(id).orElseThrow(() -> new RuntimeException("Futures contract with " + id + " not found"));
+    }
 }

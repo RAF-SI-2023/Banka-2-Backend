@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface FuturesContractService {
     List<FuturesContract> findAll();
+
     FuturesContract save(FuturesContract futuresContract);
+
+    FuturesContract findById(Long id);
 }
