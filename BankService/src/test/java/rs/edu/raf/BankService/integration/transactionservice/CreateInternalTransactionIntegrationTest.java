@@ -106,7 +106,7 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
 
     @Given("a receiver account with number {string} with a balance of {long} for internal transaction - insufficientFunds")
     public void a_receiver_account_with_number_with_a_balance_of_insufficientFunds(String accountNumber, Long balance) {
-        testReceiverAccount = createTestAccount(accountNumber, "receiver@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
+        testReceiverAccount = createTestAccount(accountNumber, "sender@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
         accountRepository.save(testReceiverAccount);
     }
 
