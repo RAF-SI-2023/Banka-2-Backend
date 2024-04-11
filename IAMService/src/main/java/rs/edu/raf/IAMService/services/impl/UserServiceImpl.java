@@ -51,7 +51,6 @@ public class UserServiceImpl implements UserService {
         this.rabbitTemplate = rabbitTemplate;
         this.objectMapper = objectMapper;
         this.passwordEncoder = passwordEncoder;
-
     }
 
     @Override
@@ -353,6 +352,15 @@ public class UserServiceImpl implements UserService {
             return;
         }
         throw new NotFoundException("Agent with id: " + id + " not found.");
+    }
+
+    @Override
+    public void decreaseAgentLimit(Long id, Double amount) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Agent with id: " + id + " not found."));
+        if (user instanceof Agent agent) {
+            agent.setLeftOfLimit(agent.getLeftOfLimit().subtract(BigDecimal.valueOf(amount)));
+            userRepository.save(agent);
+        }
     }
 
     @Transactional(dontRollbackOn = Exception.class)

@@ -33,6 +33,8 @@ public interface UserService extends UserDetailsService {
 
     void resetAgentsLeftLimit(Long id);
 
+    void decreaseAgentLimit(Long id, Double amount);
+
     User employeeActivation(int id);
 
     User employeeDeactivation(int id);
