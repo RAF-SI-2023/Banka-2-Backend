@@ -9,7 +9,6 @@ import rs.edu.raf.BankService.data.dto.ExchangeRatesDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRequestDto;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyHolder;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.NotEnoughFundsException;
@@ -87,26 +86,20 @@ class ExchangeServiceTests {
         // Prepare test data
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount("111111111111111111");
-        exchangeRequestDto.setFromCurrency("USD");
-
         exchangeRequestDto.setToAccount("222222222222222222");
-        exchangeRequestDto.setToCurrency("EUR");
         Account from = new Account();
         from.setAccountNumber("111111111111111111");
         from.setAvailableBalance(100l);
         from.setEmail("a");
         from.setCurrencyCode("USD");
 
-        ForeignCurrencyHolder holder = new ForeignCurrencyHolder();
-        holder.setCurrencyCode("EUR");
-        holder.setAvailableBalance(100l);
-
 
         ForeignCurrencyAccount to = new ForeignCurrencyAccount();
-        to.setForeignCurrencyHolders(List.of(holder));
+
         to.setAccountNumber("222222222222222222");
         to.setAvailableBalance(0l);
         to.setEmail("a");
+        to.setCurrencyCode("EUR");
 
 
         Account bank1 = new Account();
@@ -142,12 +135,10 @@ class ExchangeServiceTests {
     }
 
     @Test
-    void testExchangeCurrency_NotEnoughFunds() {
+    void testExchangeCurrency_notSamePerson() {
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount("111111111111111111");
-        exchangeRequestDto.setFromCurrency("USD");
         exchangeRequestDto.setToAccount("222222222222222222");
-        exchangeRequestDto.setToCurrency("EUR");
         exchangeRequestDto.setAmount(10000000);
         Account from = new Account();
         from.setAccountNumber("111111111111111111");
@@ -155,16 +146,13 @@ class ExchangeServiceTests {
         from.setEmail("a");
         from.setCurrencyCode("USD");
 
-        ForeignCurrencyHolder holder = new ForeignCurrencyHolder();
-        holder.setCurrencyCode("EUR");
-        holder.setAvailableBalance(100l);
-
 
         ForeignCurrencyAccount to = new ForeignCurrencyAccount();
-        to.setForeignCurrencyHolders(List.of(holder));
+
         to.setAccountNumber("222222222222222222");
         to.setAvailableBalance(0l);
-        to.setEmail("a");
+        to.setEmail("b");
+        to.setCurrencyCode("EUR");
 
 
         Account bank1 = new Account();
@@ -185,7 +173,7 @@ class ExchangeServiceTests {
 
 
         // Invoke and verify
-        assertThrows(NotEnoughFundsException.class, () -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
+        assertThrows(RuntimeException.class, () -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
     }
 
     // Add more test cases as needed

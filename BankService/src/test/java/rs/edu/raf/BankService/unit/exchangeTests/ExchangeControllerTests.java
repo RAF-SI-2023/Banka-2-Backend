@@ -62,7 +62,7 @@ public class ExchangeControllerTests {
         ResponseEntity<?> response = currencyExchangeController.getAllExchangeRates(fromCurrency);
 
         // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(errorMessage, response.getBody());
         verify(currencyExchangeService, times(1)).getExchangeRatesForCurrency(fromCurrency);
     }
@@ -70,8 +70,8 @@ public class ExchangeControllerTests {
     @Test
     void testExchangeCurrency_Success() {
         // Arrange
-        ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto("111111111111111111", "EUR",
-                "111111111111111111", "USD", 100.0);
+        ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto("111111111111111111",
+                "111111111111111111", 100.0);
         ExchangeTransferDetailsDto exchangeResultDto = new ExchangeTransferDetailsDto(
                 1l, "111111111111111111", "111111111111111111", "USD",
                 "EUR",
@@ -95,8 +95,8 @@ public class ExchangeControllerTests {
     @Test
     void testExchangeCurrency_Exception() {
         // Arrange
-        ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto("111111111111111111", "EUR",
-                "111111111111111111", "US", 100.0);
+        ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto("111111111111111111",
+                "111111111111111111", 100.0);
         String errorMessage = "Currency not found";
         when(currencyExchangeService.exchangeCurrency(exchangeRequestDto)).thenThrow(new RuntimeException(errorMessage));
 
@@ -104,7 +104,7 @@ public class ExchangeControllerTests {
         ResponseEntity<?> response = currencyExchangeController.exchangeCurrency(exchangeRequestDto);
 
         // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(errorMessage, response.getBody());
         verify(currencyExchangeService, times(1)).exchangeCurrency(exchangeRequestDto);
     }

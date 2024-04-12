@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExchangeRequestDto {
     private String fromAccount;
-    private String fromCurrency;
     private String toAccount;
-    private String toCurrency;
     private double amount;
 }

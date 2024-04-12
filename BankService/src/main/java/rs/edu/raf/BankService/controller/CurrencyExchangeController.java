@@ -23,7 +23,7 @@ public class CurrencyExchangeController {
         try {
             return ResponseEntity.ok(currencyExchangeService.getExchangeRatesForCurrency(fromCurrency));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
@@ -32,7 +32,7 @@ public class CurrencyExchangeController {
         try {
             return ResponseEntity.ok(currencyExchangeService.exchangeCurrency(exchangeRequestDto));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 }

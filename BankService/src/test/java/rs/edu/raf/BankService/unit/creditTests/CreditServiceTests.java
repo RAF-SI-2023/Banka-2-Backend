@@ -9,14 +9,12 @@ import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyHolder;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 import rs.edu.raf.BankService.data.enums.CreditType;
 import rs.edu.raf.BankService.mapper.CreditMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
-import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 import rs.edu.raf.BankService.service.impl.CreditServiceImpl;
@@ -43,8 +41,7 @@ class CreditServiceTests {
     @Mock
     private AccountRepository accountRepository;
 
-    @Mock
-    private ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
+
     @InjectMocks
     private CreditServiceImpl creditService;
 
@@ -176,7 +173,6 @@ class CreditServiceTests {
         CreditRequest creditRequest = new CreditRequest();
         ForeignCurrencyAccount account = new ForeignCurrencyAccount();
         account.setCurrencyCode("EUR");
-        account.setForeignCurrencyHolders(Collections.singletonList(new ForeignCurrencyHolder(1L, "EUR", 1000L, 0L, account)));
         creditRequest.setId(123L);
         creditRequest.setCreditType(CreditType.GOTOVINSKI);
         creditRequest.setCurrency("EUR");
@@ -206,7 +202,6 @@ class CreditServiceTests {
         creditRequest.setCreditAmount(1000.0);
         creditRequest.setCreditType(CreditType.GOTOVINSKI);
         ForeignCurrencyAccount account = new ForeignCurrencyAccount();
-        account.setForeignCurrencyHolders(Collections.singletonList(new ForeignCurrencyHolder(1L, "EUR", 1000L, 0L, account)));
 
         account.setAccountNumber("123456789");
         account.setCurrencyCode("EUR");
