@@ -15,7 +15,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class CreditStepsDefinition{
+public class CreditStepsDefinition {
     private CreditService creditService;
 
 
@@ -60,7 +60,7 @@ public class CreditStepsDefinition{
         creditRequestDto.setAccountNumber(arg0);
         creditRequestDto.setCreditAmount(36000.0);
         creditRequestDto.setCreditPurpose("STAMBENI");
-        creditRequestDto.setCurrency("EUR");
+        creditRequestDto.setCurrency("RSD");
         creditRequestDto.setEducationLevel("srednja");
         creditRequestDto.setEmploymentPeriod(5L);
         creditRequestDto.setHousingStatus("iznajmljen");

@@ -12,6 +12,9 @@ import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
+import rs.edu.raf.BankService.data.entities.accounts.BusinessAccount;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
@@ -109,7 +112,18 @@ public class AccountServiceImpl implements AccountService {
         if (accounts.isEmpty()) {
             throw new AccountNotFoundException(email);
         }
-        return accounts.stream().map(accountMapper::accountToAccountDto).toList();
+        //     return accounts.stream().map(accountMapper::accountToAccountDto).toList();
+        return accounts.stream().map((account) -> {
+            if (account instanceof DomesticCurrencyAccount) {
+                return accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto((DomesticCurrencyAccount) account);
+            } else if (account instanceof ForeignCurrencyAccount) {
+                return accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto((ForeignCurrencyAccount) account);
+            } else if (account instanceof BusinessAccount) {
+                return accountMapper.businessAccountToBusinessAccountDto((BusinessAccount) account);
+            }
+            return null;
+        }).toList();
+
     }
 
     @Transactional(dontRollbackOn = Exception.class)
