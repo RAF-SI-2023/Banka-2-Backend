@@ -218,11 +218,11 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + jwtToken)
                             .content(objectMapper.writeValueAsString(exchangeRequestDto))
-            ).andExpect(status().isNotFound());
+            ).andExpect(status().isBadRequest());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-            assertEquals(MockHttpServletResponse.SC_NOT_FOUND, responseEntity.getStatus());
+            assertEquals(MockHttpServletResponse.SC_BAD_REQUEST, responseEntity.getStatus());
 
         } catch (Exception e) {
             fail(e.getMessage());
