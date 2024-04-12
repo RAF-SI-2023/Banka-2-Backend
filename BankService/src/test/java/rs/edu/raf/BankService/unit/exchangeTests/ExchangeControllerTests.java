@@ -62,7 +62,7 @@ public class ExchangeControllerTests {
         ResponseEntity<?> response = currencyExchangeController.getAllExchangeRates(fromCurrency);
 
         // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(errorMessage, response.getBody());
         verify(currencyExchangeService, times(1)).getExchangeRatesForCurrency(fromCurrency);
     }
@@ -104,7 +104,7 @@ public class ExchangeControllerTests {
         ResponseEntity<?> response = currencyExchangeController.exchangeCurrency(exchangeRequestDto);
 
         // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(errorMessage, response.getBody());
         verify(currencyExchangeService, times(1)).exchangeCurrency(exchangeRequestDto);
     }
