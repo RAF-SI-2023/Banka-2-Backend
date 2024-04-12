@@ -102,6 +102,17 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount2.setCurrencyCode("EUR");
             foreignCurrencyAccount2.setAvailableBalance(450L);
             accountRepository.saveAndFlush(foreignCurrencyAccount2);
+
+            ForeignCurrencyAccount fac4 = new ForeignCurrencyAccount();
+            fac4.setAccountNumber("3333444401010101");
+            fac4.setEmail(myEmail1);
+            fac4.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
+            fac4.setEmployeeId(2L);
+            fac4.setMaintenanceFee(22.00);
+            fac4.setCurrencyCode("EUR");
+            fac4.setAvailableBalance(450L);
+            accountRepository.saveAndFlush(fac4);
+
             ForeignCurrencyAccount foreignCurrencyAccount3 = new ForeignCurrencyAccount();
             foreignCurrencyAccount3.setAccountNumber("3330000000000000");
             foreignCurrencyAccount3.setEmail(myEmail2);
@@ -110,7 +121,6 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount3.setMaintenanceFee(20.00);
             foreignCurrencyAccount3.setCurrencyCode("EUR");
             foreignCurrencyAccount3.setAvailableBalance(550L);
-
             accountRepository.saveAndFlush(foreignCurrencyAccount3);
             // Create bank accounts for all allowed currencies
 
