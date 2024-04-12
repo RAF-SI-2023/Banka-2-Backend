@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "{http://localhost:8003}", allowedHeaders = "*")
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping(
         value = "/api/users",
