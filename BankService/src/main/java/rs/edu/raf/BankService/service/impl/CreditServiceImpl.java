@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyHolder;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 import rs.edu.raf.BankService.mapper.CreditMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 import rs.edu.raf.BankService.service.CreditService;
@@ -27,6 +30,7 @@ public class CreditServiceImpl implements CreditService {
     private final CreditRequestRepository creditRequestRepository;
     private final CreditMapper creditMapper;
     private final AccountRepository accountRepository;
+    private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
 
     @Override
     public CreditDto createCredit(Credit credit) {
@@ -34,6 +38,35 @@ public class CreditServiceImpl implements CreditService {
         if (credit1 != null) {
             throw new RuntimeException("Credit already exists");
         }
+        Account a = accountRepository.findByAccountNumber(credit.getAccountNumber());
+        if (a == null) {
+            throw new RuntimeException("Account not found");
+        }
+        if (a instanceof ForeignCurrencyAccount) {
+
+            ForeignCurrencyAccount foreignCurrencyAccount = (ForeignCurrencyAccount) a;
+            ForeignCurrencyHolder holder = null;
+            for (ForeignCurrencyHolder holders : foreignCurrencyAccount.getForeignCurrencyHolders()) {
+                if (!holders.getCurrencyCode().equals(credit.getCurrencyCode())) {
+                    continue;
+                } else {
+                    holder = holders;
+                }
+            }
+            if (holder == null) {
+                throw new RuntimeException("Currency not found in account");
+            }
+            holder.setAvailableBalance((long) (holder.getAvailableBalance() + credit.getCreditAmount()));
+            foreignCurrencyHolderRepository.save(holder);
+
+        } else {
+            if (!a.getCurrencyCode().equals(credit.getCurrencyCode())) {
+                throw new RuntimeException("Currency not found in account");
+            }
+            a.setAvailableBalance((long) (a.getAvailableBalance() + credit.getCreditAmount()));
+            accountRepository.save(a);
+        }
+
         credit = creditRepository.save(credit);
         return creditMapper.creditToCreditDto(credit);
     }
@@ -50,6 +83,29 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public CreditRequestDto createCreditRequest(CreditRequestDto creditRequestDto) {
+        Account account = accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
+        if (account == null) {
+            throw new RuntimeException("Account not found");
+        }
+        if (account instanceof ForeignCurrencyAccount) {
+            ForeignCurrencyAccount foreignCurrencyAccount = (ForeignCurrencyAccount) account;
+            ForeignCurrencyHolder holder = null;
+            for (ForeignCurrencyHolder holders : foreignCurrencyAccount.getForeignCurrencyHolders()) {
+                if (!holders.getCurrencyCode().equals(creditRequestDto.getCurrency())) {
+                    continue;
+                } else {
+                    holder = holders;
+                }
+            }
+            if (holder == null) {
+                throw new RuntimeException("Currency not found in account");
+            }
+        }
+        if (!account.getCurrencyCode().equals(creditRequestDto.getCurrency())) {
+            throw new RuntimeException("Currency is not the same as account currency");
+        }
+
+
         CreditRequest creditRequest = creditMapper.creditRequestDtoToCreditRequest(creditRequestDto);
         creditRequest = creditRequestRepository.save(creditRequest);
         return creditMapper.creditRequestToCreditRequestDto(creditRequest);

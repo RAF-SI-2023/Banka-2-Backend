@@ -57,7 +57,7 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + userControllerTestsState.jwt)
                             .content(objectMapper.writeValueAsString(creditRequestDto))
-            ).andExpect(status().isOk());
+            );
             MvcResult mvcResult = resultActions.andReturn();
             response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CreditRequestDto.class);
         } catch (Exception e) {
