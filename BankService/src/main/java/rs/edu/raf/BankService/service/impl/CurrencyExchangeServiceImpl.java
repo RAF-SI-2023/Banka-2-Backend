@@ -88,6 +88,10 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         double exchangeRateValue = exchangeRate.getExchangeRate();
         Double amountToSubtract = exchangeRequestDto.getAmount() * exchangeRateValue;
+        if (from.getAvailableBalance() < exchangeRequestDto.getAmount()) {
+            throw new NotEnoughFundsException();
+        }
+
 
         from.setAvailableBalance((long) (from.getAvailableBalance() - exchangeRequestDto.getAmount()));
         accountRepository.save(from);
