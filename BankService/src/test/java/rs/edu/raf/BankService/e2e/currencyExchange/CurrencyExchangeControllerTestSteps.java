@@ -152,8 +152,6 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount(fromAccount);
         exchangeRequestDto.setToAccount(toAccount);
-        exchangeRequestDto.setFromCurrency(fromCurrency);
-        exchangeRequestDto.setToCurrency(toCurrency);
         exchangeRequestDto.setAmount(amount);
 
         try {
@@ -174,15 +172,13 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
     }
 
 
-
     @Then("it should return a success response for account {string} to account {string} and from {string} to {string} amount of {long}")
     public void itShouldReturnASuccessResponseWithTheExchangeRatesForTheCurrency(String fromAccount, String toAccount, String fromCurrency, String toCurrency, Long amount) {
 
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount(fromAccount);
         exchangeRequestDto.setToAccount(toAccount);
-        exchangeRequestDto.setFromCurrency(fromCurrency);
-        exchangeRequestDto.setToCurrency(toCurrency);
+
         exchangeRequestDto.setAmount(amount);
 
         String jwtToken = currencyExchangeControllerStateTests.jwt;
@@ -214,8 +210,6 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount(fromAccount);
         exchangeRequestDto.setToAccount(toAccount);
-        exchangeRequestDto.setFromCurrency(fromCurrency);
-        exchangeRequestDto.setToCurrency(toCurrency);
         exchangeRequestDto.setAmount(amount);
         try {
             ResultActions resultActions = mockMvc.perform(
@@ -224,11 +218,11 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + jwtToken)
                             .content(objectMapper.writeValueAsString(exchangeRequestDto))
-            ).andExpect(status().isNotFound());
+            ).andExpect(status().isBadRequest());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-            assertEquals(MockHttpServletResponse.SC_NOT_FOUND, responseEntity.getStatus());
+            assertEquals(MockHttpServletResponse.SC_BAD_REQUEST, responseEntity.getStatus());
 
         } catch (Exception e) {
             fail(e.getMessage());
