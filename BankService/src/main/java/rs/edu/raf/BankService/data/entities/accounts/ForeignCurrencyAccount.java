@@ -18,7 +18,7 @@ public class ForeignCurrencyAccount extends Account {
 
     private Double interestRate = 1.0;
     private String defaultCurrencyCode;
-    private Integer numberOfAllowedCurrencies = 4;
+    private Integer numberOfAllowedCurrencies = 1;
     @OneToMany(
             mappedBy = "account",
             cascade = CascadeType.ALL,
@@ -33,7 +33,7 @@ public class ForeignCurrencyAccount extends Account {
             AccountType accountType,
             String currencyCode,
             Double maintenanceFee
-    ){
+    ) {
         super(accountNumber, email, accountType, currencyCode, maintenanceFee);
 
         this.defaultCurrencyCode = currencyCode;

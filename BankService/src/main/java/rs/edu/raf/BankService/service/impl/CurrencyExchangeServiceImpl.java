@@ -6,8 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.accounts.Account;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyHolder;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
@@ -67,32 +66,21 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             throw new RuntimeException("Accounts are not owned by the same user");
         }
 
-        if (exchangeRequestDto.getFromCurrency().equals(exchangeRequestDto.getToCurrency())) {
+        if (from.getCurrencyCode().equals(to.getCurrencyCode())) {
             throw new RuntimeException("Cannot exchange same currency");
         }
-        ForeignCurrencyHolder fcHolderFrom = null;
-        ForeignCurrencyHolder fcHolderTo = null;
-        if (from instanceof ForeignCurrencyAccount foreignCurrencyAccount) {
-            fcHolderFrom = foreignCurrencyAccount.getForeignCurrencyHolders().stream()
-                    .filter(foreignCurrencyHolder -> foreignCurrencyHolder.getCurrencyCode().equals(exchangeRequestDto.getFromCurrency())).
-                    findFirst().orElseThrow(() -> new RuntimeException("Currency not found"));
-        }
-        if (to instanceof ForeignCurrencyAccount foreignCurrencyAccount) {
-            fcHolderTo = foreignCurrencyAccount.getForeignCurrencyHolders().stream()
-                    .filter(foreignCurrencyHolder -> foreignCurrencyHolder.getCurrencyCode().equals(exchangeRequestDto.getToCurrency())).
-                    findFirst().orElseThrow(() -> new RuntimeException("Currency not found"));
-        }
-        if (fcHolderFrom == null && fcHolderTo == null) {
-            throw new RuntimeException("Both accounts are domestic");
+
+        if (from instanceof DomesticCurrencyAccount && to instanceof DomesticCurrencyAccount) {
+            throw new RuntimeException("Cannot exchange between domestic currency accounts");
         }
 
-        ExchangeRates exchangeRate = exchangeRateRepository.findByFromCurrencyAndToCurrency(exchangeRequestDto.getFromCurrency(), exchangeRequestDto.getToCurrency());
+        ExchangeRates exchangeRate = exchangeRateRepository.findByFromCurrencyAndToCurrency(from.getCurrencyCode(), to.getCurrencyCode());
         if (exchangeRate == null) {
             throw new RuntimeException("Exchange rate not found");
         }
 
-        Account bankAccountReceiver = bankAccounts.stream().filter(account -> account.getCurrencyCode().equals(exchangeRequestDto.getFromCurrency())).findFirst().orElse(null);
-        Account bankAccountSender = bankAccounts.stream().filter(account -> account.getCurrencyCode().equals(exchangeRequestDto.getToCurrency())).findFirst().orElse(null);
+        Account bankAccountReceiver = bankAccounts.stream().filter(account -> account.getCurrencyCode().equals(from.getCurrencyCode())).findFirst().orElse(null);
+        Account bankAccountSender = bankAccounts.stream().filter(account -> account.getCurrencyCode().equals(to.getCurrencyCode())).findFirst().orElse(null);
 
         if (bankAccountReceiver == null || bankAccountSender == null) {
             throw new AccountNotFoundException("Bank account not found");
@@ -100,33 +88,17 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         double exchangeRateValue = exchangeRate.getExchangeRate();
         Double amountToSubtract = exchangeRequestDto.getAmount() * exchangeRateValue;
-        if (fcHolderFrom != null) {
-            if (fcHolderFrom.getAvailableBalance() < exchangeRequestDto.getAmount()) {
-                throw new NotEnoughFundsException();
-            }
-        } else if (from.getAvailableBalance() < exchangeRequestDto.getAmount()) {
-            throw new NotEnoughFundsException();
-        }
 
+        from.setAvailableBalance((long) (from.getAvailableBalance() - exchangeRequestDto.getAmount()));
+        accountRepository.save(from);
 
-        if (fcHolderFrom != null) {
-            fcHolderFrom.setAvailableBalance((long) (fcHolderFrom.getAvailableBalance() - exchangeRequestDto.getAmount()));
-            foreignCurrencyHolderRepository.save(fcHolderFrom);
-        } else {
-            from.setAvailableBalance((long) (from.getAvailableBalance() - exchangeRequestDto.getAmount()));
-            accountRepository.save(from);
-        }
         bankAccountReceiver.setAvailableBalance((long) (bankAccountReceiver.getAvailableBalance() + exchangeRequestDto.getAmount()));
         accountRepository.save(bankAccountReceiver);
 
 
-        if (fcHolderTo != null) {
-            fcHolderTo.setAvailableBalance((long) (fcHolderTo.getAvailableBalance() + amountToSubtract));
-            foreignCurrencyHolderRepository.save(fcHolderTo);
-        } else {
-            to.setAvailableBalance((long) (to.getAvailableBalance() + amountToSubtract));
-            accountRepository.save(to);
-        }
+        to.setAvailableBalance((long) (to.getAvailableBalance() + amountToSubtract));
+        accountRepository.save(to);
+
         bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - amountToSubtract));
         accountRepository.save(bankAccountSender);
 

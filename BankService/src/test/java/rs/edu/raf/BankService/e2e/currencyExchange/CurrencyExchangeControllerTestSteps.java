@@ -152,8 +152,6 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount(fromAccount);
         exchangeRequestDto.setToAccount(toAccount);
-        exchangeRequestDto.setFromCurrency(fromCurrency);
-        exchangeRequestDto.setToCurrency(toCurrency);
         exchangeRequestDto.setAmount(amount);
 
         try {
@@ -174,15 +172,13 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
     }
 
 
-
     @Then("it should return a success response for account {string} to account {string} and from {string} to {string} amount of {long}")
     public void itShouldReturnASuccessResponseWithTheExchangeRatesForTheCurrency(String fromAccount, String toAccount, String fromCurrency, String toCurrency, Long amount) {
 
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount(fromAccount);
         exchangeRequestDto.setToAccount(toAccount);
-        exchangeRequestDto.setFromCurrency(fromCurrency);
-        exchangeRequestDto.setToCurrency(toCurrency);
+
         exchangeRequestDto.setAmount(amount);
 
         String jwtToken = currencyExchangeControllerStateTests.jwt;
@@ -214,8 +210,6 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount(fromAccount);
         exchangeRequestDto.setToAccount(toAccount);
-        exchangeRequestDto.setFromCurrency(fromCurrency);
-        exchangeRequestDto.setToCurrency(toCurrency);
         exchangeRequestDto.setAmount(amount);
         try {
             ResultActions resultActions = mockMvc.perform(
