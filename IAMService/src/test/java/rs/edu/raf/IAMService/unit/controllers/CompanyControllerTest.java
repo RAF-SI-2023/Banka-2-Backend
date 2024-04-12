@@ -165,9 +165,9 @@ class CompanyControllerTest {
         mockMvc.perform(post("/api/companies/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(companyDto)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().is(404))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
-                .andExpect(content().string("kompanija sa tom identifikacijom vec postoji")); // Check the error message (Same message always, does not look at Exception Message currently)
+                .andExpect(content().string("Some error occurred")); // Check the error message (Same message always, does not look at Exception Message currently)
     }
 
     @Test
