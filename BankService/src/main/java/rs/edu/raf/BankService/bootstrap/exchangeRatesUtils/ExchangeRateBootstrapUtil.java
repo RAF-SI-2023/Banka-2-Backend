@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ExchangeRateBootstrapUtil {
     //GET https://v6.exchangerate-api.com/v6/YOUR-API-KEY/latest/USD
-    private static final String api_key = "75b19553b164fb7108e973fc";
+    private static final String api_key = "373353669fbb609262613fc8";
     private static final String API_URL = "https://v6.exchangerate-api.com/v6/" + api_key + "/latest/";
     public static final String[] allowedCurrencies = {"USD", "EUR", "GBP", "CHF", "JPY", "RSD", "CAD", "AUD"};
 

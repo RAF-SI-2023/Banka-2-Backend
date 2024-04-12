@@ -11,7 +11,6 @@ import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrap
 import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyHolder;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
@@ -55,7 +54,6 @@ public class BootstrapData implements CommandLineRunner {
     private final CreditRequestRepository creditRequestRepository;
     private final CardRepository cardRepository;
     private final ExchangeRateRepository exchangeRateRepository;
-    private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -87,11 +85,12 @@ public class BootstrapData implements CommandLineRunner {
 
             ForeignCurrencyAccount foreignCurrencyAccount1 = new ForeignCurrencyAccount();
             foreignCurrencyAccount1.setAccountNumber("3334444777777777");
-            foreignCurrencyAccount1.setEmail(myEmail3);
+            foreignCurrencyAccount1.setEmail(myEmail1);
             foreignCurrencyAccount1.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
             foreignCurrencyAccount1.setEmployeeId(2L);
             foreignCurrencyAccount1.setMaintenanceFee(220.00);
             foreignCurrencyAccount1.setCurrencyCode("USD");
+            foreignCurrencyAccount1.setAvailableBalance(500L);
             accountRepository.saveAndFlush(foreignCurrencyAccount1);
 
             ForeignCurrencyAccount foreignCurrencyAccount2 = new ForeignCurrencyAccount();
@@ -101,26 +100,11 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount2.setEmployeeId(2L);
             foreignCurrencyAccount2.setMaintenanceFee(220.00);
             foreignCurrencyAccount2.setCurrencyCode("EUR");
-            //  foreignCurrencyAccount2.setForeignCurrencyHolders(List.of());
+            foreignCurrencyAccount2.setAvailableBalance(450L);
 
             accountRepository.saveAndFlush(foreignCurrencyAccount2);
-            ForeignCurrencyHolder foreignCurrencyHolder = new ForeignCurrencyHolder();
-            foreignCurrencyHolder.setCurrencyCode("EUR");
-            foreignCurrencyHolder.setAvailableBalance(500L);
-            foreignCurrencyHolder.setReservedFunds(0L);
-            foreignCurrencyHolder.setAccount(foreignCurrencyAccount2);
-            foreignCurrencyHolderRepository.saveAndFlush(foreignCurrencyHolder);
-
-            ForeignCurrencyHolder foreignCurrencyHolder2 = new ForeignCurrencyHolder();
-            foreignCurrencyHolder2.setCurrencyCode("USD");
-            foreignCurrencyHolder2.setAvailableBalance(500L);
-            foreignCurrencyHolder2.setReservedFunds(0L);
-            foreignCurrencyHolder2.setAccount(foreignCurrencyAccount2);
-
-            foreignCurrencyHolderRepository.saveAndFlush(foreignCurrencyHolder2);
-
-
             // Create bank accounts for all allowed currencies
+
             int i = 0;
             for (String currency : ExchangeRateBootstrapUtil.allowedCurrencies) {
                 if (currency.equals("RSD")) {
