@@ -103,7 +103,7 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount2.setAvailableBalance(450L);
             accountRepository.saveAndFlush(foreignCurrencyAccount2);
             ForeignCurrencyAccount foreignCurrencyAccount3 = new ForeignCurrencyAccount();
-            foreignCurrencyAccount3.setAccountNumber("3334444888888888");
+            foreignCurrencyAccount3.setAccountNumber("3330000000000000");
             foreignCurrencyAccount3.setEmail(myEmail2);
             foreignCurrencyAccount3.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
             foreignCurrencyAccount3.setEmployeeId(2L);
