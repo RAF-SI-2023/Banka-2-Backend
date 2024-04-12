@@ -41,7 +41,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR')")
-    @GetMapping("/non-approved")
+    @GetMapping("/approved")
     public ResponseEntity<?> getApprovedOrders(){
         return ResponseEntity.ok().body(orderService.getAll().stream().filter(orderDto -> orderDto.getOrderStatus().equals(OrderStatus.APPROVED)).collect(Collectors.toList()));
     }

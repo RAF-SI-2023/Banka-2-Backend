@@ -12,17 +12,17 @@ Feature: User Controller
 
 
   Scenario: user changing password
-    Given user gives paramethers email "dusan@gmail.com" and password "user"
+    Given user gives paramethers email "lukapavlovic032@gmail.com" and password "admin"
     When  user send request for changing password
     Then  response status ok and body true
 
 
   Scenario: user want to get some other user with his email
-    Given user gives paramethers email "dusan@gmail.com"
+    Given user gives paramethers email "lukapavlovic032@gmail.com"
     When user send request for geting user
     Then response status ok and body user
 
   Scenario: user want to get some other user with his id
-    Given user gives paramethers id "1"
+    Given user gives paramethers id "2"
     When user send request to get user
     Then response status ok and body user for user geting id
