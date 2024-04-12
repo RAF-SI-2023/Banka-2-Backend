@@ -183,7 +183,10 @@ public class BootstrapData implements CommandLineRunner {
                 crd.setAccountNumber(accNumbs[new Random().nextInt(3)]);
                 crd.setCreditAmount(new Random().nextDouble(1000L, 10000L));
                 crd.setCreditPurpose(purposes[new Random().nextInt(5)]);
-                crd.setCurrency("EUR");
+                if (crd.getAccountNumber().equals("3334444999999999") || crd.getAccountNumber().equals("3334444111111111"))
+                    crd.setCurrency("RSD");
+                else
+                    crd.setCurrency("EUR");
                 crd.setEducationLevel(educations[new Random().nextInt(6)]);
                 crd.setEmploymentPeriod(5L);
                 crd.setHousingStatus("IZNAJMLJEN");
@@ -204,7 +207,6 @@ public class BootstrapData implements CommandLineRunner {
         }
 
 
-
         Optional<Card> cardTest = cardRepository.findByIdentificationCardNumber(1000000000000000L);
 
         if (cardTest.isEmpty()) {
@@ -219,7 +221,7 @@ public class BootstrapData implements CommandLineRunner {
             card.setStatus(true);
             card.setNameOfCard("TEST");
             cardRepository.save(card);
-        } else{
+        } else {
 
             Card card = cardTest.get();
             card.setAccountNumber("3334444999999999");
