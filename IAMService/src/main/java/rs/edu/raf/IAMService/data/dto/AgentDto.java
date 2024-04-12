@@ -14,6 +14,7 @@ public class AgentDto extends UserDto {
 
     private BigDecimal userLimit;
     private BigDecimal leftOfLimit;
+    private boolean orderApprovalRequired = true;
 
     public AgentDto(Long id,
                     Long dateOfBirth,

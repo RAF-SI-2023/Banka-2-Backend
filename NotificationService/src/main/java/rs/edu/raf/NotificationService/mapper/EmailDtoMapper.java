@@ -1,10 +1,7 @@
 package rs.edu.raf.NotificationService.mapper;
 
 import org.springframework.stereotype.Component;
-import rs.edu.raf.NotificationService.data.dto.EmailDto;
-import rs.edu.raf.NotificationService.data.dto.PasswordActivationDto;
-import rs.edu.raf.NotificationService.data.dto.PasswordChangeDto;
-import rs.edu.raf.NotificationService.data.dto.ProfileActivationCodeDto;
+import rs.edu.raf.NotificationService.data.dto.*;
 
 @Component
 public class EmailDtoMapper {
@@ -22,6 +19,12 @@ public class EmailDtoMapper {
             To ensure the security of your account, we require you to verify your email address. Please use the following verification code to complete the process:
                         
             Verification Code: [$verificationCode]
+            """;
+
+    private static final String TRANSACTION_VERIFICATION = """
+            To ensure the security of your account, we require you to verify the transaction you have just created. Please use the following verification token to complete the process:
+                        
+            Verification Token: [$verificationToken]
             """;
 
     public EmailDto activationEmail(PasswordActivationDto passwordActivationDto) {
@@ -45,6 +48,14 @@ public class EmailDtoMapper {
         emailDto.setEmail(profileActivationCodeDto.getEmail());
         emailDto.setSubject("Activate Your Account");
         emailDto.setContent(PROFILE_ACTIVATION_CONTENT.replaceAll("\\$verificationCode", profileActivationCodeDto.getCode() + ""));
+        return emailDto;
+    }
+
+    public EmailDto transactionVerification(TransferTransactionVerificationDto transferTransactionVerificationDto) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setEmail(transferTransactionVerificationDto.getEmail());
+        emailDto.setSubject("Verify Your Transaction");
+        emailDto.setContent(TRANSACTION_VERIFICATION.replaceAll("\\$verificationToken", transferTransactionVerificationDto.getVerificationToken() + ""));
         return emailDto;
     }
 

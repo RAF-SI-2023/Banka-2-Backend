@@ -134,11 +134,12 @@ public class StockServiceTests {
                 1,
                 1.0
         );
+        List<Stock> stocks = new ArrayList<>();
+        stocks.add(stock);
+        when(stockRepository.findStocksBySymbol("Stock1 Symbol")).thenReturn(stocks);
 
-        when(stockRepository.findStockBySymbol("Stock1 Symbol")).thenReturn(stock);
 
-
-        Stock result = stockService.findBySymbol("Stock1 Symbol");
-        assertEquals(stock, result);
+        List<Stock> result = stockService.findBySymbol("Stock1 Symbol");
+        assertEquals(stock, result.get(0));
     }
 }

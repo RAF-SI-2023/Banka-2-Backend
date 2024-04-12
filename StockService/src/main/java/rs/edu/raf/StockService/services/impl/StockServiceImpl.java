@@ -1,6 +1,7 @@
 package rs.edu.raf.StockService.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.repositories.StockRepository;
 import rs.edu.raf.StockService.services.StockService;
@@ -23,11 +24,11 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Stock findById(Long id) {
-        return stockRepository.findById(id).orElse(null);
+        return stockRepository.findById(id).orElseThrow(() -> new NotFoundException("Stock with id: " + id + "not found"));
     }
 
     @Override
-    public Stock findBySymbol(String symbol) {
-        return stockRepository.findStockBySymbol(symbol);
+    public List<Stock> findBySymbol(String symbol) {
+        return stockRepository.findStocksBySymbol(symbol);
     }
 }

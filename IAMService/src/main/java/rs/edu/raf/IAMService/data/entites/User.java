@@ -31,7 +31,7 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role = new Role(RoleType.USER);
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_permissions", // intermediate table name
             joinColumns = @JoinColumn(name = "user_id"), // column name in the intermediate table pointing to User primary key

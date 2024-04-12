@@ -22,7 +22,6 @@ import jakarta.mail.internet.MimeMessage;
 import rs.edu.raf.NotificationService.services.EmailService;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EmailServiceTests {
     
     private GreenMail testSmtp;
@@ -67,19 +66,20 @@ public class EmailServiceTests {
         assertEquals("test text", GreenMailUtil.getBody(message));
     }
 
+    // Debug Console shows exceptions on green mail server which should be ok
     @Test
     void testSendEmailThrowsExceptions(){
         EmailService emailService = new EmailService(mailSender);
         assertThrows(
             MailParseException.class,
-           () -> emailService.sendSimpleMailMessage(
+            () -> emailService.sendSimpleMailMessage(
             "", "", ""
            )
         );
         String arr[] = {"fileName"};
         assertThrows(
             MailSendException.class,
-           () -> emailService.sendMimeMessageWithAttachments(
+            () -> emailService.sendMimeMessageWithAttachments(
             "test@receiver.com", "test subject", "test text",
             arr
            )

@@ -133,12 +133,13 @@ public class ForexServiceTests {
                 "Forex1 baseCurrency",
                 "Forex1 quoteCurrency"
         );
+        List<Forex> forexes = new ArrayList<>();
+        forexes.add(forex);
+        when(forexRepository.findForexesByBaseCurrency("Forex1 baseCurrency")).thenReturn(forexes);
 
-        when(forexRepository.findForexByBaseCurrency("Forex1 baseCurrency")).thenReturn(forex);
 
-
-        Forex result = forexService.findByBaseCurrency("Forex1 baseCurrency");
-        assertEquals(forex, result);
+        List<Forex> result = forexService.findByBaseCurrency("Forex1 baseCurrency");
+        assertEquals(forex, result.get(0));
     }
 
     @Test
@@ -156,11 +157,12 @@ public class ForexServiceTests {
                 "Forex1 baseCurrency",
                 "Forex1 quoteCurrency"
         );
+        List<Forex> forexes = new ArrayList<>();
+        forexes.add(forex);
+        when(forexRepository.findForexesByQuoteCurrency("Forex1 quoteCurrency")).thenReturn(forexes);
 
-        when(forexRepository.findForexByQuoteCurrency("Forex1 quoteCurrency")).thenReturn(forex);
 
-
-        Forex result = forexService.findByQuoteCurrency("Forex1 quoteCurrency");
-        assertEquals(forex, result);
+        List<Forex> result = forexService.findByQuoteCurrency("Forex1 quoteCurrency");
+        assertEquals(forex, result.get(0));
     }
 }

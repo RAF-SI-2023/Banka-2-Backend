@@ -3,6 +3,7 @@ package rs.edu.raf.BankService.data.entities.credit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Credit {
 
     private String creditName;                  // naziv kredita kao npr gotovinski kredit, stambeni kredit etc
@@ -52,4 +54,5 @@ public class Credit {
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
     }*/
+
 }

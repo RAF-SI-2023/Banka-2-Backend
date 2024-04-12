@@ -165,9 +165,9 @@ class CompanyControllerTest {
         mockMvc.perform(post("/api/companies/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(companyDto)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().is(404))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
-                .andExpect(content().string("kompanija sa tom identifikacijom vec postoji")); // Check the error message (Same message always, does not look at Exception Message currently)
+                .andExpect(content().string("Some error occurred")); // Check the error message (Same message always, does not look at Exception Message currently)
     }
 
     @Test
@@ -240,10 +240,14 @@ class CompanyControllerTest {
     public void testDeleteCompanyById() throws Exception {
         Long id = Long.valueOf(1);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/companies/delete/id/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+       doNothing().when(companyService).deleteCompanyById(id);
+
+        ResponseEntity<?> responseEntity = companyController.deleteCompanyById(id);
+
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+
+        verify(companyService, times(1)).deleteCompanyById(id);
     }
 
     @Test

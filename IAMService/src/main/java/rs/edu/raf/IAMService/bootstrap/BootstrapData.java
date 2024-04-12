@@ -1,6 +1,7 @@
 package rs.edu.raf.IAMService.bootstrap;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.usertype.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +40,6 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_4}")
     private String myEmail4;
 
-    @Override
     public void run(String... args) throws Exception {
 
         logger.info("DATA LOADING IN PROGRESS...");
@@ -62,7 +63,16 @@ public class BootstrapData implements CommandLineRunner {
         Role userRole = new Role();
         userRole.setRoleType(RoleType.USER);
         roles.add(userRole);
-        if (roleRepository.count() == 0) {
+
+//        Role adminRoleT = roleRepository.findByRoleType(RoleType.ADMIN).orElse(null);
+//        if (adminRoleT == null) {
+//            // If the ROLE_ADMIN doesn't exist, create and save it
+//            adminRoleT = new Role();
+//            adminRoleT.setRoleType(RoleType.ADMIN);
+//            roleRepository.save(adminRole);
+//        }
+
+        if (roleRepository.count() == 0){
             roleRepository.saveAll(roles);
         }
         // ##############################
@@ -82,6 +92,42 @@ public class BootstrapData implements CommandLineRunner {
         // ##############################
         // #           USERS            #
         // ##############################
+
+
+        // NE BRISATI OVOG USERA
+
+
+
+        User userTest = new User();
+        userTest.setEmail("test@gmail.com");
+        userTest.setUsername("test@gmail.com");
+        userTest.setPassword(passwordEncoder.encode("Test123!"));
+        Role wow =roleRepository.findByRoleType(RoleType.USER).orElse(null);
+        if(wow==null) {
+            userTest.setRole(userRole);
+        }else{
+        userTest.setRole(wow);
+        }
+        userTest.setPermissions(null);
+        userTest.setPhone("+38111236456");
+        userTest.setDateOfBirth(336779146L);
+        userTest.setAddress("Trg Republike V/5, Beograd, Srbija");
+
+        Optional<User> userTest2 =userRepository.findByEmail("test@gmail.com");
+        if (userTest2.isEmpty()) {
+            System.out.println("Nema test usera");
+            userRepository.save(userTest);
+        } else {
+            System.out.println("Ima test usera");
+            User userToUpdate = userTest2.get();
+            userRepository.delete(userToUpdate);
+            // Update user attributes if needed
+            userRepository.save(userToUpdate);
+        }
+
+        //-----------------------------
+
+
         List<User> users = new ArrayList<>();
         User admin = new User();
         admin.setEmail(myEmail1);
@@ -91,36 +137,101 @@ public class BootstrapData implements CommandLineRunner {
         admin.setPermissions(List.of(per1, per2));
         users.add(admin);
 
+
+        User user = new User();
+        user.setEmail("nikola@gmail.com");
+        user.setUsername("nikola@gmail.com");
+        user.setPassword(passwordEncoder.encode("Nikola123!"));
+        user.setRole(userRole);
+        user.setPermissions(null);
+        user.setPhone("+38111236456");
+        user.setDateOfBirth(336779146L);
+        user.setAddress("Trg Republike V/5, Beograd, Srbija");
+        users.add(user);
+
         Employee employee1 = new Employee();
-        employee1.setEmail(myEmail2);
+        employee1.setEmail("lazar@gmail.com");
+        employee1.setSurname("Jankovic");
         employee1.setActive(true);
-        employee1.setUsername(myEmail2);
+        employee1.setUsername("lazar@gmail.com");
+        employee1.setName("Lazar");
+        employee1.setDateOfBirth(511739146L);
         employee1.setPassword(passwordEncoder.encode("employee"));
         employee1.setRole(employeeRole);
         employee1.setPermissions(List.of(per1, per2));
+        employee1.setGender("M");
+        employee1.setDepartment("IT");
+        employee1.setPhone("+38111236456");
+        employee1.setAddress("Pariske komune 5, Beograd, Srbija");
+        employee1.setPosition("Software Developer");
         users.add(employee1);
 
+
+        Employee employee2 = new Employee();
+        employee2.setEmail("mirkomail@gmail.com");
+        employee2.setName("Mirko");
+        employee2.setSurname("Markovic");
+        employee2.setGender("M");
+        employee2.setActive(false);
+        employee2.setDateOfBirth(606433546L);
+        employee2.setUsername("mirkomail@gmail.com");
+        employee2.setPassword(passwordEncoder.encode("Mirko123!"));
+        employee2.setRole(employeeRole);
+        employee2.setPermissions(List.of(per1));
+        employee2.setDepartment("HR");
+        employee2.setPosition("HR Manager");
+        employee2.setPhone("+38111239531");
+        employee2.setAddress("Dr Huga Klana 1, Beograd, Srbija");
+        users.add(employee2);
+
+
         Agent agent1 = new Agent();
-        agent1.setEmail("agent1@gmail.com");
-        agent1.setUsername("agent1@gmail.com");
-        agent1.setPassword(passwordEncoder.encode("agent"));
+        agent1.setEmail("dusan@gmail.com");
+        agent1.setUsername("dusan@gmail.com");
+        agent1.setPassword(passwordEncoder.encode("Dusan123!"));
         agent1.setRole(agentRole);
+        agent1.setPhone("+38111317456");
+        agent1.setAddress("Juriga Gargarina 3, Beograd, Srbija");
+        agent1.setDateOfBirth(204155146L);
         agent1.setLimit(new BigDecimal("12345.67"));
         agent1.setLeftOfLimit(new BigDecimal("578.42"));
         users.add(agent1);
 
+        Employee employee3 = new Employee();
+        employee3.setEmail("ana@gmail.com");
+        employee3.setSurname("Petrovic");
+        employee3.setActive(true);
+        employee3.setUsername("ana@gmail.com");
+        employee3.setName("Ana");
+        employee3.setDateOfBirth(473765600L);
+        employee3.setPassword(passwordEncoder.encode("employee"));
+        employee3.setRole(employeeRole);
+        employee3.setPermissions(List.of(per1, per2));
+        employee3.setGender("F");
+        employee3.setDepartment("Marketing");
+        employee3.setPhone("+38111236457");
+        employee3.setAddress("Nemanjina 5, Beograd, Srbija");
+        employee3.setPosition("Marketing Specialist");
+        users.add(employee3);
+
         Agent agent2 = new Agent();
-        agent2.setEmail("agent2@gmail.com");
-        agent2.setUsername("agent2@gmail.com");
+        agent2.setEmail("lana@gmail.com");
+        agent2.setDateOfBirth(216596746L);
+        agent2.setPhone("+38111236456");
+        agent2.setUsername("lana@gmail.com");
         agent2.setPassword(passwordEncoder.encode("agent"));
         agent2.setRole(agentRole);
         agent2.setLimit(new BigDecimal("22378.55"));
         agent2.setLeftOfLimit(new BigDecimal("1063.31"));
+        agent2.setAddress("Bulevar Kralja Aleksandra 5, Beograd, Srbija");
         users.add(agent2);
 
         Agent agent3 = new Agent();
-        agent3.setEmail("agent3@gmail.com");
-        agent3.setUsername("agent3@gmail.com");
+        agent3.setEmail("peri@gmail.com");
+        agent3.setUsername("peri@gmail.com");
+        agent3.setPhone("+38111435156");
+        agent3.setDateOfBirth(344555146L);
+        agent3.setAddress("Kralja Petra 11, Beograd, Srbija");
         agent3.setPassword(passwordEncoder.encode("agent"));
         agent3.setRole(agentRole);
         agent3.setLimit(new BigDecimal("36890.67"));
@@ -128,35 +239,69 @@ public class BootstrapData implements CommandLineRunner {
         users.add(agent3);
 
         Supervisor supervisor = new Supervisor();
-        supervisor.setEmail("supervisor@gmail.com");
-        supervisor.setUsername("supervisor@gmail.com");
+        supervisor.setEmail("milos@gmail.com");
+        supervisor.setUsername("milos@gmail.com");
+        supervisor.setPhone("+38695380456");
+        supervisor.setDateOfBirth(511739146L);
+        supervisor.setAddress("Fontana V/5, Beograd, Srbija");
         supervisor.setPassword(passwordEncoder.encode("supervisor"));
         supervisor.setRole(supervisorRole);
+        supervisor.setPermissions(List.of(per1, per2));
         users.add(supervisor);
 
+        Supervisor supervisor2 = new Supervisor();
+        supervisor2.setEmail("andrej@gmail.com");
+        supervisor2.setUsername("andrej@gmail.com");
+        supervisor2.setPassword(passwordEncoder.encode("Andrej123!"));
+        supervisor2.setRole(supervisorRole);
+        supervisor2.setDateOfBirth(925940746L);
+        supervisor2.setPhone("+3811111637");
+        supervisor2.setPermissions(List.of(per1));
+        supervisor2.setAddress("Glavna 5, Zemun, Srbija");
+        users.add(supervisor2);
+
         CorporateClient corporateClient = new CorporateClient();
-        corporateClient.setEmail(myEmail3);
-        corporateClient.setUsername(myEmail3);
-        corporateClient.setPassword(passwordEncoder.encode("corporate"));
+        corporateClient.setEmail("vladimir@gmail.com");
+        corporateClient.setUsername("vladimir@gmail.com");
+        corporateClient.setPassword(passwordEncoder.encode("Vladimir123!"));
         corporateClient.setRole(userRole);
+        corporateClient.setPhone("+38111236456");
+        corporateClient.setDateOfBirth(915227146L);
+        corporateClient.setAddress("Tosin bunar 21, Beograd, Srbija");
         corporateClient.setPermissions(List.of(per1, per2));
-        corporateClient.setName("Miladin");
+        corporateClient.setName("Corporate");
         corporateClient.setPrimaryAccountNumber("3334444999999999");
         users.add(corporateClient);
 
+        CorporateClient corporateClient1 = new CorporateClient();
+        corporateClient1.setEmail("milica@gmail.com");
+        corporateClient1.setUsername("milica@gmail.com");
+        corporateClient1.setPassword(passwordEncoder.encode("Milica123!"));
+        corporateClient1.setDateOfBirth(954711946L);
+        corporateClient1.setRole(userRole);
+        corporateClient1.setPermissions(List.of(per2));
+        corporateClient1.setPhone("+38111239905");
+        corporateClient1.setName("Milica");
+        corporateClient1.setAddress("Svetog Save 52, Beograd, Srbija");
+        corporateClient1.setPrimaryAccountNumber("3334444999991234");
+        users.add(corporateClient1);
+
         PrivateClient privateClient = new PrivateClient();
-        privateClient.setEmail(myEmail4);
-        privateClient.setUsername(myEmail4);
+        privateClient.setEmail("andrija@gmail.com");
+        privateClient.setUsername("andrija@gmail.com");
         privateClient.setPassword(passwordEncoder.encode("private"));
         privateClient.setRole(userRole);
+        privateClient.setPhone("+38111234972");
+        privateClient.setAddress("Bulevar Kralja Aleksandra 5, Beograd, Srbija");
+        privateClient.setDateOfBirth(852241546L);
         privateClient.setPermissions(List.of(per1, per2));
-        privateClient.setName("Zvezdanko");
-        privateClient.setSurname("Zvezdankovic");
+        privateClient.setName("Andrija");
+        privateClient.setSurname("Lekic");
         privateClient.setGender("M");
         privateClient.setPrimaryAccountNumber("3334444111111111");
         users.add(privateClient);
 
-        if (userRepository.count() == 0) {
+        if (userRepository.count() == 1) {
             userRepository.saveAll(users);
         }
 
@@ -164,20 +309,19 @@ public class BootstrapData implements CommandLineRunner {
         // ##############################
         // #          COMPANIES         #
         // ##############################
-        if (companyRepository.count() != 0) {
-            return;
+        if (companyRepository.count() == 0) {
+            Company company = new Company();
+            company.setCompanyName("Example Ltd.");
+            company.setFaxNumber("123456");
+            company.setPhoneNumber("+38111236456");
+            company.setAddress("Trg Republike V/5, Beograd, Srbija");
+            company.setPib(123456789L);
+            company.setRegistryNumber(123456789);
+            company.setIdentificationNumber(123456);
+            company.setActivityCode(12345);
+            companyRepository.save(company);
         }
-        Company company = new Company();
-        company.setCompanyName("Example Ltd.");
-        company.setFaxNumber("123456");
-        company.setPhoneNumber("+38111236456");
-        company.setAddress("Trg Republike V/5, Beograd, Srbija");
-        company.setPib(123456789L);
-        company.setRegistryNumber(123456789);
-        company.setIdentificationNumber(123456);
-        company.setActivityCode(12345);
-        companyRepository.save(company);
 
-        logger.info("DATA LOADING FINISHED...");
     }
+
 }

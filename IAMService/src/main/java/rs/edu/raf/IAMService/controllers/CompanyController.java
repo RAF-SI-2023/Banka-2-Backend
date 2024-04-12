@@ -47,7 +47,7 @@ public class CompanyController {
         try {
             return ResponseEntity.ok(companyService.createCompany(companyDto));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("kompanija sa tom identifikacijom vec postoji");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -57,7 +57,7 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/identificationNumber/{identificationNumber}")
+    @DeleteMapping("/delete-company-by-identificationNumber/{identificationNumber}")
     public ResponseEntity<?> deleteCompanyByIdentificationNumber(@PathVariable Integer identificationNumber) {
         companyService.deleteCompanyByIdentificationNumber(identificationNumber);
         return new ResponseEntity<>(HttpStatus.OK);
