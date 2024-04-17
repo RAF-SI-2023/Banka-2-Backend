@@ -17,6 +17,9 @@ import java.util.List;
 public class ForeignCurrencyAccount extends Account {
 
     private Double interestRate = 1.0;
+    /**
+     * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
+     */
     private String defaultCurrencyCode;
     private Integer numberOfAllowedCurrencies = 1;
     @OneToMany(
@@ -26,6 +29,11 @@ public class ForeignCurrencyAccount extends Account {
             orphanRemoval = true
     )
     private List<ForeignCurrencyHolder> foreignCurrencyHolders = new ArrayList<>();
+
+    /**
+     * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
+     */
+
 
     public ForeignCurrencyAccount(
             String accountNumber,
