@@ -110,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountDto> findAccountsByEmail(String email) {
         List<Account> accounts = accountRepository.findAllByEmail(email);
         if (accounts.isEmpty()) {
-            throw new AccountNotFoundException(email);
+            return List.of();
         }
         //     return accounts.stream().map(accountMapper::accountToAccountDto).toList();
         return accounts.stream().map((account) -> {
