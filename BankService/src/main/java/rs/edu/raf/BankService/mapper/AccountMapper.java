@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 @Component
 public class AccountMapper {
 
-    public Account accountDtoToAccount(AccountDto dto){
-        return new Account(
+    public CashAccount accountDtoToAccount(AccountDto dto){
+        return new CashAccount(
                 dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.valueOf(dto.getAccountType()),
@@ -23,8 +23,8 @@ public class AccountMapper {
         );
     }
 
-    public DomesticCurrencyAccount domesticAccountDtoToDomesticAccount(DomesticCurrencyAccountDto dto){
-        return new DomesticCurrencyAccount(
+    public DomesticCurrencyCashAccount domesticAccountDtoToDomesticAccount(DomesticCurrencyAccountDto dto){
+        return new DomesticCurrencyCashAccount(
                 dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
@@ -34,8 +34,8 @@ public class AccountMapper {
         );
     }
 
-    public ForeignCurrencyAccount foreignAccountDtoToForeignAccount(ForeignCurrencyAccountDto dto){
-        return new ForeignCurrencyAccount(
+    public ForeignCurrencyCashAccount foreignAccountDtoToForeignAccount(ForeignCurrencyAccountDto dto){
+        return new ForeignCurrencyCashAccount(
                 dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.FOREIGN_CURRENCY_ACCOUNT,
@@ -44,8 +44,8 @@ public class AccountMapper {
         );
     }
 
-    public BusinessAccount businessAccountDtoToBusinessAccount(BusinessAccountDto dto){
-        return new BusinessAccount(
+    public BusinessCashAccount businessAccountDtoToBusinessAccount(BusinessAccountDto dto){
+        return new BusinessCashAccount(
                 dto.getAccountNumber(),
                 dto.getEmail(),
                 AccountType.BUSINESS_ACCOUNT,
@@ -57,25 +57,25 @@ public class AccountMapper {
     }
 
 
-    public AccountDto accountToAccountDto(Account account){
+    public AccountDto accountToAccountDto(CashAccount cashAccount){
         return new AccountDto(
-                account.getId(),
-                account.getAccountNumber(),
-                account.getLinkState(),
-                account.getEmail(),
-                account.isStatus(),
-                account.getAccountType().name(),
-                account.getAvailableBalance(),
-                account.getReservedFunds(),
-                account.getEmployeeId(),
-                account.getCreationDate(),
-                account.getExpirationDate(),
-                account.getCurrencyCode(),
-                account.getMaintenanceFee()
+                cashAccount.getId(),
+                cashAccount.getAccountNumber(),
+                cashAccount.getLinkState(),
+                cashAccount.getEmail(),
+                cashAccount.isStatus(),
+                cashAccount.getAccountType().name(),
+                cashAccount.getAvailableBalance(),
+                cashAccount.getReservedFunds(),
+                cashAccount.getEmployeeId(),
+                cashAccount.getCreationDate(),
+                cashAccount.getExpirationDate(),
+                cashAccount.getCurrencyCode(),
+                cashAccount.getMaintenanceFee()
         );
     }
 
-    public DomesticCurrencyAccountDto domesticCurrencyAccountToDomesticCurrencyAccountDtoDto(DomesticCurrencyAccount account){
+    public DomesticCurrencyAccountDto domesticCurrencyAccountToDomesticCurrencyAccountDtoDto(DomesticCurrencyCashAccount account){
         return new DomesticCurrencyAccountDto(
                 account.getId(),
                 account.getAccountNumber(),
@@ -95,7 +95,7 @@ public class AccountMapper {
         );
     }
 
-    public ForeignCurrencyAccountDto foreignCurrencyAccountToForeignCurrencyAccountDtoDto(ForeignCurrencyAccount account){
+    public ForeignCurrencyAccountDto foreignCurrencyAccountToForeignCurrencyAccountDtoDto(ForeignCurrencyCashAccount account){
         return new ForeignCurrencyAccountDto(
                 account.getId(),
                 account.getAccountNumber(),
@@ -117,7 +117,7 @@ public class AccountMapper {
         );
     }
 
-    public BusinessAccountDto businessAccountToBusinessAccountDto(BusinessAccount account){
+    public BusinessAccountDto businessAccountToBusinessAccountDto(BusinessCashAccount account){
         return new BusinessAccountDto(
                 account.getId(),
                 account.getAccountNumber(),

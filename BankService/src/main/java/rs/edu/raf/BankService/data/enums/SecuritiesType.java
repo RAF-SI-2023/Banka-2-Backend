@@ -1,6 +1,9 @@
 package rs.edu.raf.BankService.data.enums;
 
-public enum OrderType {
+/**
+ * Hartije od vrednosti koje se mogu trgovati
+ */
+public enum SecuritiesType {
     STOCK,
     FUTURE,
     FOREX,

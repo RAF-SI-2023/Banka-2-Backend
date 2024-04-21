@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.AccountType;
@@ -78,11 +78,11 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.CONFIRMED);
 
-        Account updatedSenderAccount = accountRepository.findByAccountNumber("111");
-        Account updatedReceiverAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
 
-        assertEquals(updatedSenderAccount.getAvailableBalance(), 9000L);
-        assertEquals(updatedReceiverAccount.getAvailableBalance(), 11000L);
+        assertEquals(updatedSenderCashAccount.getAvailableBalance(), 9000L);
+        assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 11000L);
 
         Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
@@ -116,11 +116,11 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.DECLINED);
 
-        Account updatedSenderAccount = accountRepository.findByAccountNumber("111");
-        Account updatedReceiverAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
 
-        assertEquals(updatedSenderAccount.getAvailableBalance(), 10000);
-        assertEquals(updatedReceiverAccount.getAvailableBalance(), 10000L);
+        assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000);
+        assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
         Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
@@ -154,11 +154,11 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.PENDING);
 
-        Account updatedSenderAccount = accountRepository.findByAccountNumber("111");
-        Account updatedReceiverAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
 
-        assertEquals(updatedSenderAccount.getAvailableBalance(), 10000);
-        assertEquals(updatedReceiverAccount.getAvailableBalance(), 10000L);
+        assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000);
+        assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
         Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
@@ -193,11 +193,11 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.DECLINED);
 
-        Account updatedSenderAccount = accountRepository.findByAccountNumber("111");
-        Account updatedReceiverAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
 
-        assertEquals(updatedSenderAccount.getAvailableBalance(), 1000L);
-        assertEquals(updatedReceiverAccount.getAvailableBalance(), 10000L);
+        assertEquals(updatedSenderCashAccount.getAvailableBalance(), 1000L);
+        assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
         Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
@@ -222,11 +222,11 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto, TransactionStatus.CONFIRMED);
 
-        Account updatedSenderAccount = accountRepository.findByAccountNumber("111");
-        Account updatedReceiverAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
 
-        assertEquals(updatedSenderAccount.getAvailableBalance(), 5000L);
-        assertEquals(updatedReceiverAccount.getAvailableBalance(), 15000L);
+        assertEquals(updatedSenderCashAccount.getAvailableBalance(), 5000L);
+        assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 15000L);
 
         Optional<TransferTransaction> transaction = transactionRepository.findById(transactionId);
         assertTrue(transaction.isPresent());
@@ -251,11 +251,11 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto, TransactionStatus.DECLINED);
 
-        Account updatedSenderAccount = accountRepository.findByAccountNumber("111");
-        Account updatedReceiverAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
 
-        assertEquals(updatedSenderAccount.getAvailableBalance(), 10000L);
-        assertEquals(updatedReceiverAccount.getAvailableBalance(), 10000L);
+        assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000L);
+        assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
         Optional<TransferTransaction> transaction = transactionRepository.findById(transactionId);
         assertTrue(transaction.isPresent());
@@ -266,7 +266,7 @@ public class TransferTransactionE2ETests {
                                           Long receiverBalance,
                                           String senderEmail,
                                           String receiverEmail) {
-        Account testSenderAccount = createTestAccount(
+        CashAccount testSenderCashAccount = createTestAccount(
                 "111",
                 senderEmail,
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
@@ -274,7 +274,7 @@ public class TransferTransactionE2ETests {
                 0.0,
                 senderBalance);
 
-        Account testReceiverAccount = createTestAccount(
+        CashAccount testReceiverCashAccount = createTestAccount(
                 "222",
                 receiverEmail,
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
@@ -282,32 +282,32 @@ public class TransferTransactionE2ETests {
                 0.0,
                 receiverBalance);
 
-        accountRepository.saveAll(List.of(testSenderAccount, testReceiverAccount));
+        accountRepository.saveAll(List.of(testSenderCashAccount, testReceiverCashAccount));
     }
 
-    private Account createTestAccount(String accountNumber,
-                                      String email,
-                                      AccountType accountType,
-                                      String currencyCode,
-                                      Double maintenanceFee,
-                                      Long balance) {
-        Account account = new Account();
-        account.setAccountNumber(accountNumber);
-        account.setEmail(email);
-        account.setAvailableBalance(balance);
-        account.setAccountType(accountType);
-        account.setCurrencyCode(currencyCode);
-        account.setMaintenanceFee(maintenanceFee);
-        account.setAvailableBalance(balance);
-        account.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
-        account.setEmployeeId(1L);
-        return account;
+    private CashAccount createTestAccount(String accountNumber,
+                                          String email,
+                                          AccountType accountType,
+                                          String currencyCode,
+                                          Double maintenanceFee,
+                                          Long balance) {
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAccountNumber(accountNumber);
+        cashAccount.setEmail(email);
+        cashAccount.setAvailableBalance(balance);
+        cashAccount.setAccountType(accountType);
+        cashAccount.setCurrencyCode(currencyCode);
+        cashAccount.setMaintenanceFee(maintenanceFee);
+        cashAccount.setAvailableBalance(balance);
+        cashAccount.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
+        cashAccount.setEmployeeId(1L);
+        return cashAccount;
     }
 
     private void verificationSetup() {
         ExternalTransferTransaction transaction = new ExternalTransferTransaction();
 
-        Account senderAccount = createTestAccount(
+        CashAccount senderCashAccount = createTestAccount(
                 "111",
                 "email1",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
@@ -315,7 +315,7 @@ public class TransferTransactionE2ETests {
                 0.0,
                 10000L);
 
-        Account receiverAccount = createTestAccount(
+        CashAccount receiverCashAccount = createTestAccount(
                 "222",
                 "email2",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
@@ -323,10 +323,10 @@ public class TransferTransactionE2ETests {
                 0.0,
                 10000L);
 
-        accountRepository.saveAll(List.of(senderAccount, receiverAccount));
+        accountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
 
-        transaction.setSenderAccount(senderAccount);
-        transaction.setReceiverAccount(receiverAccount);
+        transaction.setSenderCashAccount(senderCashAccount);
+        transaction.setReceiverCashAccount(receiverCashAccount);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setVerificationToken("11111");
         transaction.setAmount(5000L);

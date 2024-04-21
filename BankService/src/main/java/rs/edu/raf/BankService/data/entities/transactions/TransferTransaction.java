@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 
 import java.time.LocalDateTime;
@@ -24,11 +24,11 @@ public class TransferTransaction {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_account")
-    private Account senderAccount;
+    private CashAccount senderCashAccount;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receiver_account")
-    private Account receiverAccount;
+    private CashAccount receiverCashAccount;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;

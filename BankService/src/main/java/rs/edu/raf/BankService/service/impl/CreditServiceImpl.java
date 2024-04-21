@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
@@ -35,7 +35,7 @@ public class CreditServiceImpl implements CreditService {
         if (credit1 != null) {
             throw new RuntimeException("Credit already exists");
         }
-        Account a = accountRepository.findByAccountNumber(credit.getAccountNumber());
+        CashAccount a = accountRepository.findByAccountNumber(credit.getAccountNumber());
         if (a == null) {
             throw new RuntimeException("Account not found");
         }
@@ -60,11 +60,11 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public CreditRequestDto createCreditRequest(CreditRequestDto creditRequestDto) {
-        Account account = accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
-        if (account == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
-        creditRequestDto.setCurrency(account.getCurrencyCode());
+        creditRequestDto.setCurrency(cashAccount.getCurrencyCode());
         CreditRequest creditRequest = creditMapper.creditRequestDtoToCreditRequest(creditRequestDto);
         creditRequest = creditRequestRepository.save(creditRequest);
         return creditMapper.creditRequestToCreditRequestDto(creditRequest);
@@ -87,8 +87,8 @@ public class CreditServiceImpl implements CreditService {
         if (creditRequest.getStatus() != CreditRequestStatus.PENDING) {
             throw new RuntimeException("Credit request is not pending");
         }
-        Account account = accountRepository.findByAccountNumber(creditRequest.getAccountNumber());
-        if (account == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(creditRequest.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
 
