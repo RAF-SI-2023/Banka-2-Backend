@@ -47,5 +47,18 @@ public class OptionControllerTests {
         verify(optionService, times(1)).findAllByStockListing(stockListing);
     }
 
+    @Test
+    public void testFindAllOptionsByStockListingException() {
+        // Arrange
+        String stockListing = "NON-EXISTENT";
+        List<Option> options = List.of();
+        when(optionService.findAllByStockListing(stockListing)).thenReturn(options);
+        // Act
+        ResponseEntity<List<Option>> responseEntity = optionController.findAllOptionsByStockListing(stockListing);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
 
 }

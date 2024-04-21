@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.controllers.StockController;
 import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.services.impl.StockServiceImpl;
@@ -90,6 +91,17 @@ public class StockControllerTests {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(stock, response.getBody());
+    }
+
+    @Test
+    public void testFindStockByIdException() {
+
+        when(stockService.findById(99999L)).thenThrow(new NotFoundException("Stock with id: 99999 not found"));
+
+        ResponseEntity<Stock> response = stockController.findStockById(99999L);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test

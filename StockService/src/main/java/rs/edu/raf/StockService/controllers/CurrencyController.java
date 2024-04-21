@@ -10,8 +10,6 @@ import rs.edu.raf.StockService.services.CurrencyInflationService;
 import rs.edu.raf.StockService.services.CurrencyService;
 import rs.edu.raf.StockService.services.impl.CurrencyInflationServiceImpl;
 import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyInflationServiceImpl;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
 import java.util.List;
 

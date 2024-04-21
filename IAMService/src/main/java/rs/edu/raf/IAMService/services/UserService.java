@@ -41,15 +41,15 @@ public interface UserService extends UserDetailsService {
 
     Optional<User> findUserByEmail(String email);
 
-    List<Permission> getUserPermissions(Long id);
+  /*  List<Permission> getUserPermissions(Long id);
 
     void addUserPermission(Long id, Permission permission);
 
     void removeUserPermission(Long id, Permission permission);
 
-    void deleteAndSetUserPermissions(Long id, List<Permission> permissionList);
+    void deleteAndSetUserPermissions(Long id, List<Permission> permissionList)
 
-    void sendToQueue(String email, String urlLink);
+    void sendToQueue(String email, String urlLink);*/
 
     /**
      * Updates the UserEntity, but should be only used for updating passwords,activation and such. For regular use
@@ -84,8 +84,9 @@ public interface UserService extends UserDetailsService {
     UserDto updateUser(UserDto userDto);
 
 
-    void PasswordResetSendToQueue(String email, String urlLink);
+    // void PasswordResetSendToQueue(String email, String urlLink);
 
     boolean setPassword(String email, String password);
 
+    CompanyEmployeeDto createCompanyEmployee(CompanyEmployeeDto clientDto);
 }

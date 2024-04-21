@@ -9,7 +9,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.repositories.CurrencyRepository;
 import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
