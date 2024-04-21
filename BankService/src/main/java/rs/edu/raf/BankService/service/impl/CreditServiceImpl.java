@@ -43,7 +43,18 @@ public class CreditServiceImpl implements CreditService {
             throw new RuntimeException("Currency is not the same as account currency");
         }
 
+        List<CashAccount> bankCashAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
+        CashAccount bankAccountSender = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(a.getCurrencyCode())).findFirst().orElse(null);
+        if (bankAccountSender == null) {
+            throw new RuntimeException("Bank account not found");
+        }
+        if (a.getAvailableBalance() < credit.getCreditAmount()) {
+            throw new RuntimeException("Not enough funds");
+        }
+        bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - credit.getCreditAmount()));
+
         a.setAvailableBalance((long) (a.getAvailableBalance() + credit.getCreditAmount()));
+        accountRepository.saveAll(List.of(a, bankAccountSender));
         credit = creditRepository.save(credit);
         return creditMapper.creditToCreditDto(credit);
     }
