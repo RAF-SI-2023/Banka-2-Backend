@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.controllers.ForexController;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.services.impl.ForexServiceImpl;
@@ -90,6 +91,14 @@ public class ForexControllerTests {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(forex, response.getBody());
+    }
+
+    @Test
+    public void testFindForexByIdException() {
+        when(forexService.findById(0L)).thenThrow(new NotFoundException("Forex with id 0 not found"));
+        ResponseEntity<Forex> response = forexController.findForexById(0L);
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test

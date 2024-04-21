@@ -66,41 +66,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword()));
     }
 
-    /**
-     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
-     */
-    @GetMapping(path = "/getUserPermissions/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<?> getUserPermissions(@PathVariable Long id) {
-        return ResponseEntity.ok().body(userService.getUserPermissions(id));
-    }
-
-    /**
-     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
-     */
-    @PostMapping(path = "/addUserPermission/{id}")
-    public ResponseEntity<?> addUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
-        userService.addUserPermission(id, permission);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
-     */
-    @PostMapping(path = "/removeUserPermission/{id}")
-    public ResponseEntity<?> removeUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
-        userService.removeUserPermission(id, permission);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
-     */
-    @PatchMapping(path = "/deleteAndSetUserPermissions/{id}")
-    public ResponseEntity<?> deleteAndSetUserPermissions(@PathVariable Long id, @RequestBody List<Permission> permissionList) {
-        userService.deleteAndSetUserPermissions(id, permissionList);
-        return ResponseEntity.ok().build();
-    }
-
 
     @PostMapping("/public/create/private-client")
     public PrivateClientDto createPrivateClient(@RequestBody PrivateClientDto clientDto) {
@@ -110,6 +75,11 @@ public class UserController {
     @PostMapping("/public/create/corporate-client")
     public CorporateClientDto createCorporateClient(@RequestBody CorporateClientDto clientDto) {
         return userService.createCorporateClient(clientDto);
+    }
+
+    @PostMapping("/public/create/company-employee")
+    public ResponseEntity<?> createCompanyEmployee(@RequestBody CompanyEmployeeDto clientDto) {
+        return ResponseEntity.ok(userService.createCompanyEmployee(clientDto));
     }
 
     @PostMapping("/public/password-activation/{email}")
@@ -276,6 +246,45 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Boolean.TRUE);
     }
+
+
+    //TODO videti da li cemo uopste raditi sa permisijama
+    // za sad ne radimo, ovo ne radi kako treba i ne vidim poentu da ispravljam
+    // ispravicu ako krenemo da radimo sa permisijama.
+
+    /**  ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
+  /*  @GetMapping(path = "/getUserPermissions/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<?> getUserPermissions(@PathVariable Long id) {
+        return ResponseEntity.ok().body(userService.getUserPermissions(id));
+    }
+
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
+   /* @PostMapping(path = "/addUserPermission/{id}")
+    public ResponseEntity<?> addUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
+        userService.addUserPermission(id, permission);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
+    /*@PostMapping(path = "/removeUserPermission/{id}")
+    public ResponseEntity<?> removeUserPermission(@PathVariable Long id, @RequestBody Permission permission) {
+        userService.removeUserPermission(id, permission);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * ne radi, ispraviti da se ne radi sa Permissions, nego PermissionDTO
+     */
+    /*@PatchMapping(path = "/deleteAndSetUserPermissions/{id}")
+    public ResponseEntity<?> deleteAndSetUserPermissions(@PathVariable Long id, @RequestBody List<Permission> permissionList) {
+        userService.deleteAndSetUserPermissions(id, permissionList);
+        return ResponseEntity.ok().build();
+    }*/
 
 
 }

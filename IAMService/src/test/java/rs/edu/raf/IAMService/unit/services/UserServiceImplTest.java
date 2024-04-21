@@ -337,7 +337,7 @@ class UserServiceImplTest {
 
 
     @Test
-    public void testCreateAgent_Success(){
+    public void testCreateAgent_Success() {
         AgentDto agentDto = new AgentDto();
         agentDto.setEmail("agent@gmail.com");
 
@@ -364,7 +364,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void testCreateAgent_EmailTaken(){
+    public void testCreateAgent_EmailTaken() {
         AgentDto agentDto = new AgentDto();
         when(userRepository.findByEmail(agentDto.getEmail())).thenReturn(Optional.of(new Agent()));
         assertThrows(EmailTakenException.class, () -> userService.createAgent(agentDto));
@@ -380,7 +380,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void setPassword_success(){
+    public void setPassword_success() {
         String mail = "email@gmail.com";
         String password = "password";
         User user = new User();
@@ -396,7 +396,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void setPassword_notSuccess(){
+    public void setPassword_notSuccess() {
         String mail = "email@gmail.com";
         String password = "password";
         User user = new User();
@@ -413,7 +413,7 @@ class UserServiceImplTest {
 
 
     @Test
-    public void findByEmail_Success(){
+    public void findByEmail_Success() {
         String email = "user@gmail.com";
         User user = new User();
         UserDto userDto = new UserDto();
@@ -429,7 +429,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void findByEmail_NotFound(){
+    public void findByEmail_NotFound() {
         String email = "user@gmail.com";
         User user = new User();
         user.setEmail(email);
@@ -441,7 +441,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void findById_Success(){
+    public void findById_Success() {
         Long id = 1L;
         User user = new User();
         UserDto userDto = new UserDto();
@@ -457,7 +457,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void findById_NotFound(){
+    public void findById_NotFound() {
         Long id = 1L;
         User user = new User();
         user.setId(id);
@@ -574,7 +574,41 @@ class UserServiceImplTest {
         assertThrows(NotFoundException.class, () -> userService.resetAgentsLeftLimit(userId));
     }
 
+    @Test
+    public void decreaseAgentsLimit() {
+        Long agentId = 1L;
+        Agent agent = new Agent();
+        agent.setId(agentId);
+        agent.setLeftOfLimit(new BigDecimal(1000));
 
+        when(userRepository.findById(agentId)).thenReturn(Optional.of(agent));
 
+        Double amount = 100.0;
+        userService.decreaseAgentLimit(agentId, amount);
 
+        assertEquals(new BigDecimal("900.0"), agent.getLeftOfLimit());
+    }
+
+    @Test
+    public void testCreateCompanyEmployee_Success() {
+        // Mock behavior
+        CompanyEmployeeDto companyEmployeeDto = new CompanyEmployeeDto(/* provide required fields */);
+        CompanyEmployee companyEmployee = new CompanyEmployee(/* initialize companyEmployee here */);
+        CompanyEmployee savedCEmployee = new CompanyEmployee(/* initialize savedCEmployee here */);
+        Role role = new Role(/* initialize role here */);
+        when(userMapper.companyEmployeeDtoToCompanyEmployee(companyEmployeeDto)).thenReturn(companyEmployee);
+        when(userRepository.save(companyEmployee)).thenReturn(savedCEmployee);
+        when(roleRepository.findByRoleType(RoleType.USER)).thenReturn(Optional.of(role));
+        when(userMapper.companyEmployeeToCompanyEmployeeDto(savedCEmployee)).thenReturn(companyEmployeeDto);
+
+        // Test
+        CompanyEmployeeDto result = userService.createCompanyEmployee(companyEmployeeDto);
+
+        // Verify
+        assertNotNull(result);
+        // Assert any other expectations as needed
+    }
+
+    // Add more test cases to cover other scenarios like exception handling, etc.
 }
+
