@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.controllers.ExchangeController;
 import rs.edu.raf.StockService.data.entities.Exchange;
 import rs.edu.raf.StockService.services.impl.InMemoryExchangeServiceImpl;
@@ -89,6 +90,14 @@ public class ExchangeControllerTests {
     }
 
     @Test
+    public void testFindExchangeByIdFail() {
+        when(exchangeService.findById(1231L)).thenThrow(new NotFoundException("Exchange with id: 1231 not found"));
+        ResponseEntity<Exchange> response = exchangeController.findExchangeById(1231L);
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
     public void testFindExchangeByExchangeName() {
         Exchange exchange = new Exchange(
                 1L,
@@ -100,12 +109,20 @@ public class ExchangeControllerTests {
                 7
         );
         when(exchangeService.findByExchangeName("Jakarta Futures Exchange (bursa Berjangka Jakarta)")).thenReturn(exchange);
-
         ResponseEntity<Exchange> response = exchangeController.findExchangeByName("Jakarta Futures Exchange (bursa Berjangka Jakarta)");
-
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(exchange, response.getBody());
+    }
+
+    @Test
+    public void testFindExchangeByExchangeNameException() {
+
+        when(exchangeService.findByExchangeName("some name that doesnt exist")).thenThrow(new NotFoundException("Exchange with name: some name that doesnt exist not found"));
+        ResponseEntity<Exchange> response = exchangeController.findExchangeByName("some name that doesnt exist");
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
     }
 
     @Test
@@ -126,5 +143,17 @@ public class ExchangeControllerTests {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(exchange, response.getBody());
+    }
+
+    @Test
+    public void testFindExchangeByMiCodeException() {
+
+        when(exchangeService.findByMICode("AAAAAA")).thenThrow(new NotFoundException("Exchange with miCode: AAAAAA not found"));
+
+        ResponseEntity<Exchange> response = exchangeController.findExchangeByMiCode("AAAAAA");
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+       
     }
 }

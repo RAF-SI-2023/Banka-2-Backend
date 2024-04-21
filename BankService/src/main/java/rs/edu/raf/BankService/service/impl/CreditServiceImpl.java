@@ -64,11 +64,7 @@ public class CreditServiceImpl implements CreditService {
         if (account == null) {
             throw new RuntimeException("Account not found");
         }
-        if (!account.getCurrencyCode().equals(creditRequestDto.getCurrency())) {
-            throw new RuntimeException("Currency is not the same as account currency");
-        }
-
-
+        creditRequestDto.setCurrency(account.getCurrencyCode());
         CreditRequest creditRequest = creditMapper.creditRequestDtoToCreditRequest(creditRequestDto);
         creditRequest = creditRequestRepository.save(creditRequest);
         return creditMapper.creditRequestToCreditRequestDto(creditRequest);

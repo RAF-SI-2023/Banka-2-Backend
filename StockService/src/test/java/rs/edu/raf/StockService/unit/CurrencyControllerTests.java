@@ -12,8 +12,6 @@ import rs.edu.raf.StockService.data.entities.Currency;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 import rs.edu.raf.StockService.services.impl.CurrencyInflationServiceImpl;
 import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyInflationServiceImpl;
-import rs.edu.raf.StockService.services.impl.InMemoryCurrencyServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

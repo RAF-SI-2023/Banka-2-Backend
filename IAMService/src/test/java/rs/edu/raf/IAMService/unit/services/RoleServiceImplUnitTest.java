@@ -13,6 +13,7 @@ import rs.edu.raf.IAMService.repositories.RoleRepository;
 import rs.edu.raf.IAMService.services.impl.RoleServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class RoleServiceImplUnitTest {
 
     @Test
     void testGetAllRoles_Success() {
-        Role testRole1=new Role();
-        Role testRole2=new Role();
+        Role testRole1 = new Role();
+        Role testRole2 = new Role();
 
         testRole1.setRoleType(RoleType.SUPERVISOR);
         testRole1.setId(1L);
@@ -46,21 +47,32 @@ public class RoleServiceImplUnitTest {
 
         when(roleRepository.findAll()).thenReturn(testRoles);
 
-        when(roleMapper.roleToRoleDto(testRole1)).thenReturn(new RoleDto(testRole1.getId(),testRole1.getRoleType()));
-        when(roleMapper.roleToRoleDto(testRole2)).thenReturn(new RoleDto(testRole2.getId(),testRole2.getRoleType()));
+        when(roleMapper.roleToRoleDto(testRole1)).thenReturn(new RoleDto(testRole1.getId(), testRole1.getRoleType()));
+        when(roleMapper.roleToRoleDto(testRole2)).thenReturn(new RoleDto(testRole2.getId(), testRole2.getRoleType()));
 
         List<RoleDto> successValue = roleService.getAllRoles();
 
-        for(RoleDto successRoleDto:successValue){
-            Boolean match=false;
-            for(Role testRole:testRoles){
-                if(successRoleDto.getRoleType()==testRole.getRoleType()){
-                    match=true;
+        for (RoleDto successRoleDto : successValue) {
+            Boolean match = false;
+            for (Role testRole : testRoles) {
+                if (successRoleDto.getRoleType() == testRole.getRoleType()) {
+                    match = true;
                     break;
                 }
             }
-            if(!match) fail("Role retrieval failed");
+            if (!match) fail("Role retrieval failed");
         }
     }
+
+    @Test
+    void testGetAllRoles_Exception() {
+        when(roleRepository.findAll()).thenThrow(new RuntimeException("Role retrieval failed"));
+        try {
+            roleService.getAllRoles();
+        } catch (Exception e) {
+            assertEquals("Roles not retrieved.", e.getMessage());
+        }
+    }
+
 
 }

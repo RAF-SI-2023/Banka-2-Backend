@@ -155,6 +155,8 @@ public class UserServiceImpl implements UserService {
             return userMapper.supervisorToSupervisorDto((Supervisor) user);
         if (user instanceof Agent)
             return userMapper.agentToAgentDto((Agent) user);
+        if (user instanceof CompanyEmployee)
+            return userMapper.companyEmployeeToCompanyEmployeeDto((CompanyEmployee) user);
         return userMapper.userToUserDto(user);
     }
 
@@ -172,7 +174,6 @@ public class UserServiceImpl implements UserService {
         PrivateClient savedClient = userRepository.save(client);
 
         sendClientActivationMessage(savedClient.getEmail());
-
         return userMapper.privateClientToPrivateClientDto(savedClient);
     }
 
@@ -185,9 +186,7 @@ public class UserServiceImpl implements UserService {
 
         Role role = roleRepository.findByRoleType(RoleType.USER)
                 .orElseThrow(() -> new MissingRoleException("USER"));
-
         client.setRole(role);
-
         sendClientActivationMessage(savedClient.getEmail());
 
         return userMapper.corporateClientToCorporateClientDto(savedClient);
@@ -212,7 +211,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
+/* ovo ne radi samo, koja je poenta uopste
     @Override
     public List<Permission> getUserPermissions(Long id) {
         List<Permission> permissionList = new ArrayList<>(userRepository.findById(id).get().getPermissions());
@@ -235,8 +234,9 @@ public class UserServiceImpl implements UserService {
     public void deleteAndSetUserPermissions(Long id, List<Permission> permissionList) {
         getUserPermissions(id).clear();
         getUserPermissions(id).addAll(permissionList);
-    }
+    }*/
 
+ /* ovo se ne koristi nigde?
     @Override
     public void sendToQueue(String email, String urlLink) {
         PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
@@ -248,20 +248,7 @@ public class UserServiceImpl implements UserService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void PasswordResetSendToQueue(String email, String urlLink) {
-        PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
-        passwordChangeDto.setEmail(email);
-        passwordChangeDto.setUrlLink(urlLink);
-        try {
-            String json = objectMapper.writeValueAsString(passwordChangeDto);
-            rabbitTemplate.convertAndSend("password-forgot", json);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
+    }*/
 
     @Override
     public boolean setPassword(String email, String password) {
@@ -275,6 +262,18 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public CompanyEmployeeDto createCompanyEmployee(CompanyEmployeeDto companyEmployeeDto) {
+        CompanyEmployee companyEmployee = userMapper
+                .companyEmployeeDtoToCompanyEmployee(companyEmployeeDto);
+        CompanyEmployee savedCEmployee = userRepository.save(companyEmployee);
+        Role role = roleRepository.findByRoleType(RoleType.USER)
+                .orElseThrow(() -> new MissingRoleException("USER"));
+        savedCEmployee.setRole(role);
+        sendClientActivationMessage(savedCEmployee.getEmail());
+        return userMapper.companyEmployeeToCompanyEmployeeDto(savedCEmployee);
     }
 
     @Override

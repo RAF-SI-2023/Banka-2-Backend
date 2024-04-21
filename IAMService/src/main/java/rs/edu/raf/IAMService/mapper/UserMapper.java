@@ -174,4 +174,27 @@ public class UserMapper {
                 agent.getLeftOfLimit()
         );
     }
+
+    public CompanyEmployee companyEmployeeDtoToCompanyEmployee(CompanyEmployeeDto dto) {
+        return new CompanyEmployee(
+                dto.getDateOfBirth(),
+                dto.getEmail(),
+                dto.getEmail(),
+                dto.getPhone(),
+                dto.getAddress(),
+                dto.getPib()
+        );
+    }
+
+    public CompanyEmployeeDto companyEmployeeToCompanyEmployeeDto(CompanyEmployee companyEmployee) {
+        return new CompanyEmployeeDto(
+                companyEmployee.getId(),
+                companyEmployee.getDateOfBirth(),
+                companyEmployee.getEmail(),
+                companyEmployee.getUsername(),
+                companyEmployee.getPhone(),
+                companyEmployee.getAddress(),
+                companyEmployee.getPib()
+        );
+    }
 }

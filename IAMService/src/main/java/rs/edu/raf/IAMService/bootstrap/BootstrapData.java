@@ -72,7 +72,7 @@ public class BootstrapData implements CommandLineRunner {
 //            roleRepository.save(adminRole);
 //        }
 
-        if (roleRepository.count() == 0){
+        if (roleRepository.count() == 0) {
             roleRepository.saveAll(roles);
         }
         // ##############################
@@ -97,23 +97,22 @@ public class BootstrapData implements CommandLineRunner {
         // NE BRISATI OVOG USERA
 
 
-
         User userTest = new User();
         userTest.setEmail("test@gmail.com");
         userTest.setUsername("test@gmail.com");
         userTest.setPassword(passwordEncoder.encode("Test123!"));
-        Role wow =roleRepository.findByRoleType(RoleType.USER).orElse(null);
-        if(wow==null) {
+        Role wow = roleRepository.findByRoleType(RoleType.USER).orElse(null);
+        if (wow == null) {
             userTest.setRole(userRole);
-        }else{
-        userTest.setRole(wow);
+        } else {
+            userTest.setRole(wow);
         }
         userTest.setPermissions(null);
         userTest.setPhone("+38111236456");
         userTest.setDateOfBirth(336779146L);
         userTest.setAddress("Trg Republike V/5, Beograd, Srbija");
 
-        Optional<User> userTest2 =userRepository.findByEmail("test@gmail.com");
+        Optional<User> userTest2 = userRepository.findByEmail("test@gmail.com");
         if (userTest2.isEmpty()) {
             System.out.println("Nema test usera");
             userRepository.save(userTest);
@@ -137,17 +136,6 @@ public class BootstrapData implements CommandLineRunner {
         admin.setPermissions(List.of(per1, per2));
         users.add(admin);
 
-
-        User user = new User();
-        user.setEmail("nikola@gmail.com");
-        user.setUsername("nikola@gmail.com");
-        user.setPassword(passwordEncoder.encode("Nikola123!"));
-        user.setRole(userRole);
-        user.setPermissions(null);
-        user.setPhone("+38111236456");
-        user.setDateOfBirth(336779146L);
-        user.setAddress("Trg Republike V/5, Beograd, Srbija");
-        users.add(user);
 
         Employee employee1 = new Employee();
         employee1.setEmail("lazar@gmail.com");
@@ -260,7 +248,7 @@ public class BootstrapData implements CommandLineRunner {
         supervisor2.setAddress("Glavna 5, Zemun, Srbija");
         users.add(supervisor2);
 
-        CorporateClient corporateClient = new CorporateClient();
+  /*    CorporateClient corporateClient = new CorporateClient();
         corporateClient.setEmail("vladimir@gmail.com");
         corporateClient.setUsername("vladimir@gmail.com");
         corporateClient.setPassword(passwordEncoder.encode("Vladimir123!"));
@@ -285,10 +273,12 @@ public class BootstrapData implements CommandLineRunner {
         corporateClient1.setAddress("Svetog Save 52, Beograd, Srbija");
         corporateClient1.setPrimaryAccountNumber("3334444999991234");
         users.add(corporateClient1);
+        */
+
 
         PrivateClient privateClient = new PrivateClient();
-        privateClient.setEmail("andrija@gmail.com");
-        privateClient.setUsername("andrija@gmail.com");
+        privateClient.setEmail(myEmail2);
+        privateClient.setUsername(myEmail2);
         privateClient.setPassword(passwordEncoder.encode("private"));
         privateClient.setRole(userRole);
         privateClient.setPhone("+38111234972");
@@ -300,6 +290,21 @@ public class BootstrapData implements CommandLineRunner {
         privateClient.setGender("M");
         privateClient.setPrimaryAccountNumber("3334444111111111");
         users.add(privateClient);
+
+        PrivateClient privateClient1 = new PrivateClient();
+        privateClient1.setEmail(myEmail3);
+        privateClient1.setUsername(myEmail3);
+        privateClient1.setPassword(passwordEncoder.encode("private"));
+        privateClient1.setRole(userRole);
+        privateClient1.setPhone("+38111234872");
+        privateClient1.setAddress("Bulevar Kralja Aleksandra 3, Novi Sad, Srbija");
+        privateClient1.setDateOfBirth(852241546L);
+        privateClient1.setPermissions(List.of(per1, per2));
+        privateClient1.setName("Bogdan");
+        privateClient1.setSurname("Nastasic");
+        privateClient1.setGender("M");
+        privateClient1.setPrimaryAccountNumber("1112222333333333");
+        users.add(privateClient1);
 
         if (userRepository.count() == 1) {
             userRepository.saveAll(users);
