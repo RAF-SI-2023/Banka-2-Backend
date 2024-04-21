@@ -41,10 +41,10 @@ public class CashAccount {
     private String currencyCode;
     private Double maintenanceFee = 0.0;
 
-    @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "senderCashAccount", fetch = FetchType.LAZY)
     private List<TransferTransaction> sentTransferTransactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiverAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "receiverCashAccount", fetch = FetchType.LAZY)
     private List<TransferTransaction> receivedTransferTransactions = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
