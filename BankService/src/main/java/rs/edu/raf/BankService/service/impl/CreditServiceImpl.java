@@ -54,7 +54,7 @@ public class CreditServiceImpl implements CreditService {
         bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - credit.getCreditAmount()));
 
         cashAccount.setAvailableBalance((long) (cashAccount.getAvailableBalance() + credit.getCreditAmount()));
-        accountRepository.saveAll(List.of(a, bankAccountSender));
+        accountRepository.saveAll(List.of(cashAccount, bankAccountSender));
         credit = creditRepository.save(credit);
         return creditMapper.creditToCreditDto(credit);
     }
