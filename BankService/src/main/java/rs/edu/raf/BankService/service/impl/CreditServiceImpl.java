@@ -35,25 +35,25 @@ public class CreditServiceImpl implements CreditService {
         if (credit1 != null) {
             throw new RuntimeException("Credit already exists");
         }
-        CashAccount a = accountRepository.findByAccountNumber(credit.getAccountNumber());
-        if (a == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(credit.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
-        if (!a.getCurrencyCode().equals(credit.getCurrencyCode())) {
+        if (!cashAccount.getCurrencyCode().equals(credit.getCurrencyCode())) {
             throw new RuntimeException("Currency is not the same as account currency");
         }
 
         List<CashAccount> bankCashAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
-        CashAccount bankAccountSender = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(a.getCurrencyCode())).findFirst().orElse(null);
+        CashAccount bankAccountSender = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(cashAccount.getCurrencyCode())).findFirst().orElse(null);
         if (bankAccountSender == null) {
             throw new RuntimeException("Bank account not found");
         }
-        if (a.getAvailableBalance() < credit.getCreditAmount()) {
+        if (bankAccountSender.getAvailableBalance() < credit.getCreditAmount()) {
             throw new RuntimeException("Not enough funds");
         }
         bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - credit.getCreditAmount()));
 
-        a.setAvailableBalance((long) (a.getAvailableBalance() + credit.getCreditAmount()));
+        cashAccount.setAvailableBalance((long) (cashAccount.getAvailableBalance() + credit.getCreditAmount()));
         accountRepository.saveAll(List.of(a, bankAccountSender));
         credit = creditRepository.save(credit);
         return creditMapper.creditToCreditDto(credit);
