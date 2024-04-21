@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.data.enums.OrderActionType;
+import rs.edu.raf.BankService.data.enums.SecuritiesType;
 
 @Entity
 @Table(name = "orders")
@@ -24,6 +25,9 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderActionType orderActionType;
+
+    @Enumerated(EnumType.STRING)
+    private SecuritiesType securitiesType;
 
     private Integer quantity;
 
