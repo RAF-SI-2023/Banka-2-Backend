@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 
@@ -15,13 +14,13 @@ import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DomesticCurrencyAccount extends Account {
+public class DomesticCurrencyCashAccount extends CashAccount {
 
     private Long id;
     private DomesticCurrencyAccountType domesticCurrencyAccountType;
     private Double interestRate = 0.0; // vazi za retirement i student
 
-    public DomesticCurrencyAccount(
+    public DomesticCurrencyCashAccount(
             String accountNumber,
             String email,
             AccountType accountType,

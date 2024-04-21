@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import rs.edu.raf.BankService.data.dto.ExchangeRatesDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRequestDto;
-import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.DomesticCurrencyAccountType;
 import rs.edu.raf.BankService.e2e.generators.JwtTokenGenerator;
@@ -37,7 +37,7 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
     private CurrencyExchangeControllerStateTests currencyExchangeControllerStateTests;
 
     private MockHttpServletResponse responseEntity;
-    DomesticCurrencyAccount domesticCurrencyAccount1;
+    DomesticCurrencyCashAccount domesticCurrencyAccount1;
 
     @Value("${MY_EMAIL_1}")
     private String myEmail1;
@@ -130,7 +130,7 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
 
     @Given("a valid account number {string}")
     public void aValidAccountNumber(String accountNumber) {
-        domesticCurrencyAccount1 = new DomesticCurrencyAccount();
+        domesticCurrencyAccount1 = new DomesticCurrencyCashAccount();
         domesticCurrencyAccount1.setAccountNumber(accountNumber);
         domesticCurrencyAccount1.setEmail(myEmail1);
         domesticCurrencyAccount1.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);

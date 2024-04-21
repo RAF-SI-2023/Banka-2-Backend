@@ -2,11 +2,10 @@ package rs.edu.raf.BankService.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
-import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
@@ -22,7 +21,6 @@ import rs.edu.raf.BankService.service.CurrencyExchangeService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,9 +53,9 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ExchangeTransferDetailsDto exchangeCurrency(ExchangeRequestDto exchangeRequestDto) {
-        Account from = accountRepository.findByAccountNumber(exchangeRequestDto.getFromAccount());
-        Account to = accountRepository.findByAccountNumber(exchangeRequestDto.getToAccount());
-        List<Account> bankAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
+        CashAccount from = accountRepository.findByAccountNumber(exchangeRequestDto.getFromAccount());
+        CashAccount to = accountRepository.findByAccountNumber(exchangeRequestDto.getToAccount());
+        List<CashAccount> bankCashAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
 
         if (from == null || to == null) {
             throw new AccountNotFoundException("Account not found");
@@ -70,7 +68,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             throw new RuntimeException("Cannot exchange same currency");
         }
 
-        if (from instanceof DomesticCurrencyAccount && to instanceof DomesticCurrencyAccount) {
+        if (from instanceof DomesticCurrencyCashAccount && to instanceof DomesticCurrencyCashAccount) {
             throw new RuntimeException("Cannot exchange between domestic currency accounts");
         }
 
@@ -79,10 +77,10 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
             throw new RuntimeException("Exchange rate not found");
         }
 
-        Account bankAccountReceiver = bankAccounts.stream().filter(account -> account.getCurrencyCode().equals(from.getCurrencyCode())).findFirst().orElse(null);
-        Account bankAccountSender = bankAccounts.stream().filter(account -> account.getCurrencyCode().equals(to.getCurrencyCode())).findFirst().orElse(null);
+        CashAccount bankCashAccountReceiver = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(from.getCurrencyCode())).findFirst().orElse(null);
+        CashAccount bankCashAccountSender = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(to.getCurrencyCode())).findFirst().orElse(null);
 
-        if (bankAccountReceiver == null || bankAccountSender == null) {
+        if (bankCashAccountReceiver == null || bankCashAccountSender == null) {
             throw new AccountNotFoundException("Bank account not found");
         }
 
@@ -96,23 +94,23 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         from.setAvailableBalance((long) (from.getAvailableBalance() - exchangeRequestDto.getAmount()));
         accountRepository.save(from);
 
-        bankAccountReceiver.setAvailableBalance((long) (bankAccountReceiver.getAvailableBalance() + exchangeRequestDto.getAmount()));
-        accountRepository.save(bankAccountReceiver);
+        bankCashAccountReceiver.setAvailableBalance((long) (bankCashAccountReceiver.getAvailableBalance() + exchangeRequestDto.getAmount()));
+        accountRepository.save(bankCashAccountReceiver);
 
 
         to.setAvailableBalance((long) (to.getAvailableBalance() + amountToSubtract));
         accountRepository.save(to);
 
-        bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - amountToSubtract));
-        accountRepository.save(bankAccountSender);
+        bankCashAccountSender.setAvailableBalance((long) (bankCashAccountSender.getAvailableBalance() - amountToSubtract));
+        accountRepository.save(bankCashAccountSender);
 
         ExchangeTransferTransactionDetails exchangeTransferDetails = new ExchangeTransferTransactionDetails();
         exchangeTransferDetails.setExchangeRate(exchangeRateValue);
         exchangeTransferDetails.setAmount(exchangeRequestDto.getAmount());
         exchangeTransferDetails.setFromCurrency(from.getCurrencyCode());
         exchangeTransferDetails.setToCurrency(to.getCurrencyCode());
-        exchangeTransferDetails.setSenderAccount(from);
-        exchangeTransferDetails.setReceiverAccount(to);
+        exchangeTransferDetails.setSenderCashAccount(from);
+        exchangeTransferDetails.setReceiverCashAccount(to);
         exchangeTransferDetails.setFee(0);
         exchangeTransferDetails.setTotalAmount(amountToSubtract);
         exchangeTransferDetails.setCreatedAt(LocalDateTime.now());

@@ -22,7 +22,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class CashAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class Account {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<SavedAccount> savedAccounts;
 
-    public Account(
+    public CashAccount(
             String accountNumber,
             String email,
             AccountType accountType,

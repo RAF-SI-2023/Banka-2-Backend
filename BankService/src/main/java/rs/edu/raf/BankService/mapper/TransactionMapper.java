@@ -21,8 +21,8 @@ public class TransactionMapper {
         dto.setAmount(transaction.getAmount());
         dto.setStatus(transaction.getStatus());
         dto.setCreatedAt(transaction.getCreatedAt());
-        dto.setSenderAccountNumber(transaction.getSenderAccount().getAccountNumber());
-        dto.setReceiverAccountNumber(transaction.getReceiverAccount().getAccountNumber());
+        dto.setSenderAccountNumber(transaction.getSenderCashAccount().getAccountNumber());
+        dto.setReceiverAccountNumber(transaction.getReceiverCashAccount().getAccountNumber());
 
         return dto;
     }
@@ -41,8 +41,8 @@ public class TransactionMapper {
         dto.setAmount(transaction.getAmount());
         dto.setStatus(transaction.getStatus());
         dto.setCreatedAt(transaction.getCreatedAt());
-        dto.setSenderAccountNumber(transaction.getSenderAccount().getAccountNumber());
-        dto.setReceiverAccountNumber(transaction.getReceiverAccount().getAccountNumber());
+        dto.setSenderAccountNumber(transaction.getSenderCashAccount().getAccountNumber());
+        dto.setReceiverAccountNumber(transaction.getReceiverCashAccount().getAccountNumber());
         dto.setCreatedAt(transaction.getCreatedAt());
         dto.setReferenceNumber(transaction.getReferenceNumber());
         dto.setTransactionCode(transaction.getTransactionCode());

@@ -8,9 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
-import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
@@ -19,7 +19,6 @@ import rs.edu.raf.BankService.data.enums.*;
 import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
-import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
@@ -59,7 +58,7 @@ public class BootstrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info("BankService: DATA LOADING IN PROGRESS...");
         if (accountRepository.count() == 0) {
-            DomesticCurrencyAccount domesticCurrencyAccount1 = new DomesticCurrencyAccount();
+            DomesticCurrencyCashAccount domesticCurrencyAccount1 = new DomesticCurrencyCashAccount();
             domesticCurrencyAccount1.setAccountNumber("3334444999999999");
             domesticCurrencyAccount1.setEmail(myEmail1);
             domesticCurrencyAccount1.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
@@ -69,9 +68,9 @@ public class BootstrapData implements CommandLineRunner {
             domesticCurrencyAccount1.setAvailableBalance(100000L);
             domesticCurrencyAccount1.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
             domesticCurrencyAccount1.setInterestRate(2.5);
-            accountRepository.save((Account) domesticCurrencyAccount1);
+            accountRepository.save((CashAccount) domesticCurrencyAccount1);
 
-            ForeignCurrencyAccount foreignCurrencyAccount1 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount foreignCurrencyAccount1 = new ForeignCurrencyCashAccount();
             foreignCurrencyAccount1.setAccountNumber("3334444777777777");
             foreignCurrencyAccount1.setEmail(myEmail1);
             foreignCurrencyAccount1.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -81,7 +80,7 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount1.setAvailableBalance(500L);
             accountRepository.saveAndFlush(foreignCurrencyAccount1);
 
-            ForeignCurrencyAccount foreignCurrencyAccount2 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount foreignCurrencyAccount2 = new ForeignCurrencyCashAccount();
             foreignCurrencyAccount2.setAccountNumber("3334444888888888");
             foreignCurrencyAccount2.setEmail(myEmail1);
             foreignCurrencyAccount2.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -91,7 +90,7 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount2.setAvailableBalance(450L);
             accountRepository.saveAndFlush(foreignCurrencyAccount2);
 
-            ForeignCurrencyAccount fac4 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount fac4 = new ForeignCurrencyCashAccount();
             fac4.setAccountNumber("3333444401010101");
             fac4.setEmail(myEmail1);
             fac4.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -102,7 +101,7 @@ public class BootstrapData implements CommandLineRunner {
             accountRepository.saveAndFlush(fac4);
 
 
-            DomesticCurrencyAccount domesticCurrencyAccount2 = new DomesticCurrencyAccount();
+            DomesticCurrencyCashAccount domesticCurrencyAccount2 = new DomesticCurrencyCashAccount();
             domesticCurrencyAccount2.setAccountNumber("3334444111111111");
             domesticCurrencyAccount2.setEmail(myEmail2);
             domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
@@ -112,9 +111,9 @@ public class BootstrapData implements CommandLineRunner {
             domesticCurrencyAccount2.setCurrencyCode("RSD");
             domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
             domesticCurrencyAccount2.setInterestRate(2.5);
-            accountRepository.save((Account) domesticCurrencyAccount2);
+            accountRepository.save((CashAccount) domesticCurrencyAccount2);
 
-            ForeignCurrencyAccount foreignCurrencyAccount3 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount foreignCurrencyAccount3 = new ForeignCurrencyCashAccount();
             foreignCurrencyAccount3.setAccountNumber("3330000000000000");
             foreignCurrencyAccount3.setEmail(myEmail2);
             foreignCurrencyAccount3.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -124,7 +123,7 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount3.setAvailableBalance(550L);
             accountRepository.saveAndFlush(foreignCurrencyAccount3);
 
-            ForeignCurrencyAccount facmyEmail2 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount facmyEmail2 = new ForeignCurrencyCashAccount();
             facmyEmail2.setAccountNumber("1112222888888888");
             facmyEmail2.setEmail(myEmail2);
             facmyEmail2.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -134,7 +133,7 @@ public class BootstrapData implements CommandLineRunner {
             facmyEmail2.setAvailableBalance(550L);
             accountRepository.saveAndFlush(facmyEmail2);
 
-            DomesticCurrencyAccount dca2 = new DomesticCurrencyAccount();
+            DomesticCurrencyCashAccount dca2 = new DomesticCurrencyCashAccount();
             dca2.setAccountNumber("1112222333333333");
             dca2.setEmail(myEmail3);
             dca2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
@@ -144,9 +143,9 @@ public class BootstrapData implements CommandLineRunner {
             dca2.setAvailableBalance(100000L);
             dca2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.STUDENT);
             dca2.setInterestRate(2.5);
-            accountRepository.save((Account) dca2);
+            accountRepository.save((CashAccount) dca2);
 
-            ForeignCurrencyAccount foreignCurrencyAccount12 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount foreignCurrencyAccount12 = new ForeignCurrencyCashAccount();
             foreignCurrencyAccount12.setAccountNumber("1112222444444444");
             foreignCurrencyAccount12.setEmail(myEmail3);
             foreignCurrencyAccount12.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -155,7 +154,7 @@ public class BootstrapData implements CommandLineRunner {
             foreignCurrencyAccount12.setCurrencyCode("USD");
             foreignCurrencyAccount12.setAvailableBalance(500L);
             accountRepository.saveAndFlush(foreignCurrencyAccount12);
-            ForeignCurrencyAccount foreignCurrencyAccount4 = new ForeignCurrencyAccount();
+            ForeignCurrencyCashAccount foreignCurrencyAccount4 = new ForeignCurrencyCashAccount();
             foreignCurrencyAccount4.setAccountNumber("1112222555555555");
             foreignCurrencyAccount4.setEmail(myEmail3);
             foreignCurrencyAccount4.setAccountType(AccountType.FOREIGN_CURRENCY_ACCOUNT);
@@ -171,7 +170,7 @@ public class BootstrapData implements CommandLineRunner {
             for (String currency : ExchangeRateBootstrapUtil.allowedCurrencies) {
                 if (currency.equals("RSD")) {
                     //TODO OVDE STAVITI DA BUDU BUSINESS
-                    DomesticCurrencyAccount domesticBankAccount = new DomesticCurrencyAccount();
+                    DomesticCurrencyCashAccount domesticBankAccount = new DomesticCurrencyCashAccount();
                     domesticBankAccount.setAccountNumber("000000000000000" + i);
                     domesticBankAccount.setEmail("bankAccount@bank.rs");
                     domesticBankAccount.setAccountType(AccountType.BANK_ACCOUNT);
@@ -186,7 +185,7 @@ public class BootstrapData implements CommandLineRunner {
                     continue;
                 }
                 ;
-                ForeignCurrencyAccount foreignCurrencyAccount = new ForeignCurrencyAccount();
+                ForeignCurrencyCashAccount foreignCurrencyAccount = new ForeignCurrencyCashAccount();
                 foreignCurrencyAccount.setAccountNumber("000000000000000" + i);
                 foreignCurrencyAccount.setEmail("bankAccount@bank.rs");
                 foreignCurrencyAccount.setAccountType(AccountType.BANK_ACCOUNT);

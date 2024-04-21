@@ -11,8 +11,8 @@ public class ExchangeTransferDetailsMapper {
     public ExchangeTransferDetailsDto exchangeTransferDetailsToExchangeTransferDetailsDto(ExchangeTransferTransactionDetails exchangeTransferDetails) {
         return new ExchangeTransferDetailsDto(
                 exchangeTransferDetails.getId(),
-                exchangeTransferDetails.getSenderAccount().getAccountNumber(),
-                exchangeTransferDetails.getReceiverAccount().getAccountNumber(),
+                exchangeTransferDetails.getSenderCashAccount().getAccountNumber(),
+                exchangeTransferDetails.getReceiverCashAccount().getAccountNumber(),
                 exchangeTransferDetails.getFromCurrency(),
                 exchangeTransferDetails.getToCurrency(),
                 exchangeTransferDetails.getAmount(),
