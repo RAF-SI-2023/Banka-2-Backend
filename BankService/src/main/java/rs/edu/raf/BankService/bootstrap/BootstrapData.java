@@ -181,6 +181,7 @@ public class BootstrapData implements CommandLineRunner {
                     domesticBankAccount.setInterestRate(0.0);
                     domesticBankAccount.setCurrencyCode(currency);
                     domesticBankAccount.setAvailableBalance(999999999L);
+                    domesticBankAccount.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
                     accountRepository.saveAndFlush(domesticBankAccount);
                     i++;
                     continue;
