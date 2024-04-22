@@ -37,10 +37,10 @@ public class OptionServiceImpl implements OptionService {
     }
 
 
-    @Override
-    public List<Option> findAll() {
-        return optionRepository.findAll();
-    }
+//    @Override
+//    public List<Option> findAll() {
+//        return optionRepository.findAll();
+//    }
 
    @Cacheable(value = "stockListing", key = "#stockListing")
     @Override
@@ -51,16 +51,16 @@ public class OptionServiceImpl implements OptionService {
         return requestedOptions;
     }
 
-    @Override
-    public Option findById(Long id) {
-        return optionRepository.findById(id).orElseThrow(() -> new NotFoundException("Option with id: " + id + " not found."));
-    }
+//    @Override
+//    public Option findById(Long id) {
+//        return optionRepository.findById(id).orElseThrow(() -> new NotFoundException("Option with id: " + id + " not found."));
+//    }
 
 
-    @Override
-    public Option findByStockListing(String stockListing) {
-        return optionRepository.findByStockListing(stockListing);
-    }
+//    @Override
+//    public Option findByStockListing(String stockListing) {
+//        return optionRepository.findByStockListing(stockListing);
+//    }
 
  //   @Scheduled(cron = "0 */15 * * * *") //every 15 minute
     public  List<Option> loadOptions(String stockListing) {
@@ -162,18 +162,18 @@ public class OptionServiceImpl implements OptionService {
     }
 
 
-    @Override
-    public void checkIfOptionExistsAndUpdate(Option option) {
-        Optional<Option> option1 = optionRepository.findOption(option);
-        if (option1.isPresent()) {
-            option1.get().setOpenInterest(option.getOpenInterest());
-            option1.get().setImpliedVolatility(option.getImpliedVolatility());
-            optionRepository.save(option1.get());
-        } else {
-            optionRepository.save(option);
-        }
-
-    }
+//    @Override
+//    public void checkIfOptionExistsAndUpdate(Option option) {
+//        Optional<Option> option1 = optionRepository.findOption(option);
+//        if (option1.isPresent()) {
+//            option1.get().setOpenInterest(option.getOpenInterest());
+//            option1.get().setImpliedVolatility(option.getImpliedVolatility());
+//            optionRepository.save(option1.get());
+//        } else {
+//            optionRepository.save(option);
+//        }
+//
+//    }
 
 
 }
