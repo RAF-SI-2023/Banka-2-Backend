@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
 
 @Entity
 @Table(name = "foreign_currency_holders")
@@ -21,5 +20,5 @@ public class ForeignCurrencyHolder {
     private Long reservedFunds = 0l;
     @ManyToOne
     @JoinColumn(name = "account_id")
-    private ForeignCurrencyAccount account;
+    private ForeignCurrencyCashAccount account;
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForeignCurrencyAccount extends Account {
+public class ForeignCurrencyCashAccount extends CashAccount {
 
     private Double interestRate = 1.0;
     /**
@@ -35,7 +35,7 @@ public class ForeignCurrencyAccount extends Account {
      */
 
 
-    public ForeignCurrencyAccount(
+    public ForeignCurrencyCashAccount(
             String accountNumber,
             String email,
             AccountType accountType,

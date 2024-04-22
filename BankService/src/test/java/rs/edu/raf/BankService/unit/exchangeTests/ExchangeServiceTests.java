@@ -7,11 +7,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import rs.edu.raf.BankService.data.dto.ExchangeRatesDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRequestDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
-import rs.edu.raf.BankService.exception.NotEnoughFundsException;
 import rs.edu.raf.BankService.mapper.ExchangeRatesMapper;
 import rs.edu.raf.BankService.mapper.ExchangeTransferDetailsMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
@@ -87,14 +86,14 @@ class ExchangeServiceTests {
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
         exchangeRequestDto.setFromAccount("111111111111111111");
         exchangeRequestDto.setToAccount("222222222222222222");
-        Account from = new Account();
+        CashAccount from = new CashAccount();
         from.setAccountNumber("111111111111111111");
         from.setAvailableBalance(100l);
         from.setEmail("a");
         from.setCurrencyCode("USD");
 
 
-        ForeignCurrencyAccount to = new ForeignCurrencyAccount();
+        ForeignCurrencyCashAccount to = new ForeignCurrencyCashAccount();
 
         to.setAccountNumber("222222222222222222");
         to.setAvailableBalance(0l);
@@ -102,12 +101,12 @@ class ExchangeServiceTests {
         to.setCurrencyCode("EUR");
 
 
-        Account bank1 = new Account();
+        CashAccount bank1 = new CashAccount();
         bank1.setAccountNumber("1");
         bank1.setAvailableBalance(10000l);
         bank1.setEmail("a");
         bank1.setCurrencyCode("USD");
-        Account bank2 = new Account();
+        CashAccount bank2 = new CashAccount();
         bank2.setAccountNumber("1");
         bank2.setAvailableBalance(10000l);
         bank2.setEmail("a");
@@ -115,7 +114,7 @@ class ExchangeServiceTests {
         when(accountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
         when(accountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
         when(exchangeRateRepository.findByFromCurrencyAndToCurrency(anyString(), anyString())).thenReturn(new ExchangeRates());
-        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(new Account(), new Account()));
+        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
         when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
         // Invoke service method
         assertDoesNotThrow(() -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
@@ -140,14 +139,14 @@ class ExchangeServiceTests {
         exchangeRequestDto.setFromAccount("111111111111111111");
         exchangeRequestDto.setToAccount("222222222222222222");
         exchangeRequestDto.setAmount(10000000);
-        Account from = new Account();
+        CashAccount from = new CashAccount();
         from.setAccountNumber("111111111111111111");
         from.setAvailableBalance(100l);
         from.setEmail("a");
         from.setCurrencyCode("USD");
 
 
-        ForeignCurrencyAccount to = new ForeignCurrencyAccount();
+        ForeignCurrencyCashAccount to = new ForeignCurrencyCashAccount();
 
         to.setAccountNumber("222222222222222222");
         to.setAvailableBalance(0l);
@@ -155,12 +154,12 @@ class ExchangeServiceTests {
         to.setCurrencyCode("EUR");
 
 
-        Account bank1 = new Account();
+        CashAccount bank1 = new CashAccount();
         bank1.setAccountNumber("1");
         bank1.setAvailableBalance(10000l);
         bank1.setEmail("a");
         bank1.setCurrencyCode("USD");
-        Account bank2 = new Account();
+        CashAccount bank2 = new CashAccount();
         bank2.setAccountNumber("1");
         bank2.setAvailableBalance(10000l);
         bank2.setEmail("a");
@@ -168,7 +167,7 @@ class ExchangeServiceTests {
         when(accountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
         when(accountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
         when(exchangeRateRepository.findByFromCurrencyAndToCurrency(anyString(), anyString())).thenReturn(new ExchangeRates());
-        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(new Account(), new Account()));
+        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
         when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
 
 

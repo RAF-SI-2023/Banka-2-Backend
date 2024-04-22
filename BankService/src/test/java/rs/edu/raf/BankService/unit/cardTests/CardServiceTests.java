@@ -7,13 +7,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.data.dto.CreateCardDto;
-import rs.edu.raf.BankService.data.entities.accounts.BusinessAccount;
+import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.enums.CardType;
 import rs.edu.raf.BankService.mapper.CardMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
-import rs.edu.raf.BankService.service.CardService;
 import rs.edu.raf.BankService.service.impl.CardServiceImpl;
 
 import java.time.Instant;
@@ -51,7 +50,7 @@ public class CardServiceTests {
         // Set a valid CVV code
         cardDto.setAccountNumber("3334444999999991"); // Set a valid account number
 
-        BusinessAccount account = new BusinessAccount();
+        BusinessCashAccount account = new BusinessCashAccount();
         account.setAccountNumber("3334444999999991");
         // Set a valid account number
         // Set a valid status

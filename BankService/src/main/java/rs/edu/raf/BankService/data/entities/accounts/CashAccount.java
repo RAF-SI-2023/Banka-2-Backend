@@ -22,7 +22,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class CashAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,16 +41,16 @@ public class Account {
     private String currencyCode;
     private Double maintenanceFee = 0.0;
 
-    @OneToMany(mappedBy = "senderAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "senderCashAccount", fetch = FetchType.LAZY)
     private List<TransferTransaction> sentTransferTransactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiverAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "receiverCashAccount", fetch = FetchType.LAZY)
     private List<TransferTransaction> receivedTransferTransactions = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<SavedAccount> savedAccounts;
 
-    public Account(
+    public CashAccount(
             String accountNumber,
             String email,
             AccountType accountType,

@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
 import rs.edu.raf.BankService.data.enums.AccountType;
 
 @Entity
@@ -13,12 +12,12 @@ import rs.edu.raf.BankService.data.enums.AccountType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessAccount extends Account {
+public class BusinessCashAccount extends CashAccount {
 
     private String PIB;
     private String identificationNumber; // matični broj
 
-    public BusinessAccount(
+    public BusinessCashAccount(
             String accountNumber,
             String email,
             AccountType accountType,

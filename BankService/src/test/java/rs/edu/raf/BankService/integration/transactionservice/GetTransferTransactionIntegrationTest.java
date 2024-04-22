@@ -8,7 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.repository.AccountRepository;
 import rs.edu.raf.BankService.repository.TransactionRepository;
@@ -28,7 +28,7 @@ public class GetTransferTransactionIntegrationTest {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    private Account testAccount;
+    private CashAccount testCashAccount;
     private TransferTransaction transaction;
     private Long testAccountId;
     private List<GenericTransactionDto> transactions;
@@ -36,8 +36,8 @@ public class GetTransferTransactionIntegrationTest {
     @Transactional
     @After
     public void finish() {
-        if (testAccount != null) {
-            accountRepository.delete(testAccount);
+        if (testCashAccount != null) {
+            accountRepository.delete(testCashAccount);
         }
         if (transaction != null) {
             transactionRepository.delete(transaction);
@@ -46,16 +46,16 @@ public class GetTransferTransactionIntegrationTest {
 
     @Given("an account with number {string} has made one transfer transaction")
     public void an_account_with_number_has_made_transfer_transactions(String accountNumber) {
-        testAccount = new Account();
-        testAccount.setAccountNumber(accountNumber);
+        testCashAccount = new CashAccount();
+        testCashAccount.setAccountNumber(accountNumber);
 
         transaction = new TransferTransaction();
-        transaction.setSenderAccount(testAccount);
+        transaction.setSenderCashAccount(testCashAccount);
 
-        testAccount.setSentTransferTransactions(List.of(transaction));
+        testCashAccount.setSentTransferTransactions(List.of(transaction));
 
-        testAccount = accountRepository.save(testAccount);
-        testAccountId = testAccount.getId();
+        testCashAccount = accountRepository.save(testCashAccount);
+        testAccountId = testCashAccount.getId();
         transactionRepository.save(transaction);
     }
 

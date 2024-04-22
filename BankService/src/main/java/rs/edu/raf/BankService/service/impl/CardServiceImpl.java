@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.data.dto.CreateCardDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.mapper.CardMapper;
 import rs.edu.raf.BankService.repository.AccountRepository;
@@ -45,8 +45,8 @@ public class CardServiceImpl implements CardService {
             throw new RuntimeException("Card number must have 16 digits");
         }
 
-        Account account = accountRepository.findByAccountNumber(createdCard.getAccountNumber());
-        if (account == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(createdCard.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account with account number " + createdCard.getAccountNumber() + " not found");
         }
 

@@ -6,7 +6,7 @@ import rs.edu.raf.NotificationService.data.dto.*;
 @Component
 public class EmailDtoMapper {
     private static final String PASSWORD_ACTIVATION_CONTENT = """
-            Thank you for creating an account with us. To activate your account please click on the following link:
+            Thank you for creating an cashAccount with us. To activate your cashAccount please click on the following link:
                         
             [Activation Link: $activationUrl]
             """;
@@ -16,13 +16,13 @@ public class EmailDtoMapper {
             [Change Password Link: $changePasswordLink]
             """;
     private static final String PROFILE_ACTIVATION_CONTENT = """
-            To ensure the security of your account, we require you to verify your email address. Please use the following verification code to complete the process:
+            To ensure the security of your cashAccount, we require you to verify your email address. Please use the following verification code to complete the process:
                         
             Verification Code: [$verificationCode]
             """;
 
     private static final String TRANSACTION_VERIFICATION = """
-            To ensure the security of your account, we require you to verify the transaction you have just created. Please use the following verification token to complete the process:
+            To ensure the security of your cashAccount, we require you to verify the transaction you have just created. Please use the following verification token to complete the process:
                         
             Verification Token: [$verificationToken]
             """;

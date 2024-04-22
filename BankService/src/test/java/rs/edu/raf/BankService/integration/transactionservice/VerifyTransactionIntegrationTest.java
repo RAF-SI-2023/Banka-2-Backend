@@ -6,7 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.repository.AccountRepository;
@@ -28,8 +28,8 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     @Autowired
     private TransactionRepository transactionRepository;
 
-    private Account testSenderAccount;
-    private Account testReceiverAccount;
+    private CashAccount testSenderCashAccount;
+    private CashAccount testReceiverCashAccount;
     private ExternalTransferTransaction transaction;
     private TransactionStatus status;
     private Long transactionId;
@@ -40,11 +40,11 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
         if (transactionId != null) {
             transactionRepository.deleteById(transactionId);
         }
-        if (testSenderAccount != null && testSenderAccount.getId() != null) {
-            accountRepository.delete(testSenderAccount);
+        if (testSenderCashAccount != null && testSenderCashAccount.getId() != null) {
+            accountRepository.delete(testSenderCashAccount);
         }
-        if (testReceiverAccount != null && testReceiverAccount.getId() != null) {
-            accountRepository.delete(testReceiverAccount);
+        if (testReceiverCashAccount != null && testReceiverCashAccount.getId() != null) {
+            accountRepository.delete(testReceiverCashAccount);
         }
     }
 
@@ -52,18 +52,18 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     public void a_pending_external_transfer_transaction(String sender, String receiver, String token, String amount) {
         ExternalTransferTransaction transferTransaction = new ExternalTransferTransaction();
 
-        testSenderAccount = new Account();
-        testSenderAccount.setAvailableBalance(10000L);
-        testSenderAccount.setAccountNumber(sender);
+        testSenderCashAccount = new CashAccount();
+        testSenderCashAccount.setAvailableBalance(10000L);
+        testSenderCashAccount.setAccountNumber(sender);
 
-        testReceiverAccount = new Account();
-        testReceiverAccount.setAvailableBalance(10000L);
-        testReceiverAccount.setAccountNumber(receiver);
+        testReceiverCashAccount = new CashAccount();
+        testReceiverCashAccount.setAvailableBalance(10000L);
+        testReceiverCashAccount.setAccountNumber(receiver);
 
-        accountRepository.saveAll(List.of(testReceiverAccount, testSenderAccount));
+        accountRepository.saveAll(List.of(testReceiverCashAccount, testSenderCashAccount));
 
-        transferTransaction.setSenderAccount(testSenderAccount);
-        transferTransaction.setReceiverAccount(testReceiverAccount);
+        transferTransaction.setSenderCashAccount(testSenderCashAccount);
+        transferTransaction.setReceiverCashAccount(testReceiverCashAccount);
         transferTransaction.setAmount(Long.parseLong(amount));
         transferTransaction.setVerificationToken(token);
 
@@ -85,31 +85,31 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     @Then("the sender's new balance should be {string} after verification - happyFlow")
     public void the_senders_new_balance_should_be(String expectedBalance) {
         refreshTestAccounts();
-        assertEquals(Long.parseLong(expectedBalance), testSenderAccount.getAvailableBalance());
+        assertEquals(Long.parseLong(expectedBalance), testSenderCashAccount.getAvailableBalance());
     }
 
     @Then("the receiver's new balance should be {string} after verification - happyFlow")
     public void the_receivers_new_balance_should_be(String expectedBalance) {
         refreshTestAccounts();
-        assertEquals(Long.parseLong(expectedBalance), testReceiverAccount.getAvailableBalance());
+        assertEquals(Long.parseLong(expectedBalance), testReceiverCashAccount.getAvailableBalance());
     }
 
     @Given("a pending external transfer transaction from {string} to {string} with token {string} and amount {string} - invalidToken")
     public void a_pending_external_transfer_transaction_invalid_token(String sender, String receiver, String token, String amount) {
         ExternalTransferTransaction transferTransaction = new ExternalTransferTransaction();
 
-        testSenderAccount = new Account();
-        testSenderAccount.setAvailableBalance(10000L);
-        testSenderAccount.setAccountNumber(sender);
+        testSenderCashAccount = new CashAccount();
+        testSenderCashAccount.setAvailableBalance(10000L);
+        testSenderCashAccount.setAccountNumber(sender);
 
-        testReceiverAccount = new Account();
-        testReceiverAccount.setAvailableBalance(10000L);
-        testReceiverAccount.setAccountNumber(receiver);
+        testReceiverCashAccount = new CashAccount();
+        testReceiverCashAccount.setAvailableBalance(10000L);
+        testReceiverCashAccount.setAccountNumber(receiver);
 
-        accountRepository.saveAll(List.of(testReceiverAccount, testSenderAccount));
+        accountRepository.saveAll(List.of(testReceiverCashAccount, testSenderCashAccount));
 
-        transferTransaction.setSenderAccount(testSenderAccount);
-        transferTransaction.setReceiverAccount(testReceiverAccount);
+        transferTransaction.setSenderCashAccount(testSenderCashAccount);
+        transferTransaction.setReceiverCashAccount(testReceiverCashAccount);
         transferTransaction.setAmount(Long.parseLong(amount));
         transferTransaction.setVerificationToken(token);
 
@@ -131,19 +131,19 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     @Then("the sender's new balance should be {string} after verification - invalidToken")
     public void the_senders_new_balance_should_be_invalid_token(String expectedBalance) {
         refreshTestAccounts();
-        assertEquals(Long.parseLong(expectedBalance), testSenderAccount.getAvailableBalance());
+        assertEquals(Long.parseLong(expectedBalance), testSenderCashAccount.getAvailableBalance());
     }
 
     @Then("the receiver's new balance should be {string} after verification - invalidToken")
     public void the_receivers_new_balance_should_be_invalid_token(String expectedBalance) {
         refreshTestAccounts();
-        assertEquals(Long.parseLong(expectedBalance), testReceiverAccount.getAvailableBalance());
+        assertEquals(Long.parseLong(expectedBalance), testReceiverCashAccount.getAvailableBalance());
     }
 
     private void refreshTestAccounts() {
-        testSenderAccount = accountRepository.findById(testSenderAccount.getId())
+        testSenderCashAccount = accountRepository.findById(testSenderCashAccount.getId())
                 .orElseThrow(() -> new AssertionError("Sender account not found"));
-        testReceiverAccount = accountRepository.findById(testReceiverAccount.getId())
+        testReceiverCashAccount = accountRepository.findById(testReceiverCashAccount.getId())
                 .orElseThrow(() -> new AssertionError("Receiver account not found"));
     }
 }
