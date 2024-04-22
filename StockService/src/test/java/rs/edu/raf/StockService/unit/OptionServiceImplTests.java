@@ -52,51 +52,6 @@ public class OptionServiceImplTests {
     }
 
 
-//    @Test
-//    public void testFindAll() {
-//        // Mock behavior
-//        List<Option> options = new ArrayList<>();
-//        when(optionRepository.findAll()).thenReturn(options);
-//
-//        // Test
-//        List<Option> result = optionService.findAll();
-//
-//        // Verify
-//        assertEquals(options, result);
-//    }
-
-//    @Test
-//    public void testFindById_ExistingId() {
-//        // Mock behavior
-//        Long id = 1L;
-//        Option option = new Option(/* initialize option here */);
-//        when(optionRepository.findById(eq(id))).thenReturn(Optional.of(option));
-//
-//        // Test
-//        Option result = optionService.findById(id);
-//
-//        // Verify
-//        assertEquals(option, result);
-//    }
-
-//    @Test
-//    public void testFindById_NonExistingId() {
-//        // Mock behavior
-//        Long id = 1L;
-//        when(optionRepository.findById(eq(id))).thenReturn(Optional.empty());
-//
-//        // Test
-//        // Expect NotFoundException
-//        try {
-//            optionService.findById(id);
-//        } catch (NotFoundException e) {
-//            // Verify
-//            assertEquals("Option with id: 1 not found.", e.getMessage());
-//
-//        }
-//    }
-
-
     @Test
     public void testFindAllByStockListing() {
         // Given
@@ -118,27 +73,6 @@ public class OptionServiceImplTests {
     private HttpClient httpClientMock;
 
 
-//    @Autowired
-//    private MockMvc mockMvc;
-//    @Test
-//    public void testLoadOptions() throws IOException, InterruptedException {
-//
-//
-//        try {
-//            ResultActions resultActions = mockMvc.perform(
-//                    post("http://localhost:8003/api/cards/create-card")
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .accept(MediaType.APPLICATION_JSON)
-//            ).andExpect(status().isOk());
-//            MvcResult mvcResult = resultActions.andReturn();
-//            responseEntity = mvcResult.getResponse();
-//
-//
-//        } catch (Exception e) {
-//            fail(e.getMessage());
-//        }
-//
-//    }
 @Mock
 private HttpResponse<String> httpResponse;
 
