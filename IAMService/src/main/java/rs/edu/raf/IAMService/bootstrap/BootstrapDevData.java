@@ -31,19 +31,19 @@ public class BootstrapDevData implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepository companyRepository;
 
-    @Value("${MY_EMAIL_1}")
+    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2}")
+    @Value("${MY_EMAIL_2:defaultEmail2@gmail.com}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3}")
+    @Value("${MY_EMAIL_3:defaultEmail3@gmail.com}")
     private String myEmail3;
 
 
     public void run(String... args) throws Exception {
 
-        logger.info("DATA LOADING IN PROGRESS...");
+        logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
 
         Role adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
         Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
@@ -53,10 +53,6 @@ public class BootstrapDevData implements CommandLineRunner {
 
         Permission per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
         Permission per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
-
-        // ##############################
-        // #     DODAVANJE USER-a       #
-        // ##############################
 
         // ##############################
         // #          COMPANIES         #
@@ -73,32 +69,6 @@ public class BootstrapDevData implements CommandLineRunner {
             company.setActivityCode(12345);
             companyRepository.save(company);
         }
-
-
-/*
-
-    PODACI ISPOD SU NE-TESTNI PODACI
-    PODACI ISPOD SU NE-TESTNI PODACI
-    PODACI ISPOD SU NE-TESTNI PODACI
-    PODACI ISPOD SU NE-TESTNI PODACI
-
-    NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
-    NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
-    NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
-    NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
-
-    NIJE DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
-    NIJE DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
-    NIJE DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
-    NIJE DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
-
-*/
-
-/*
-################################################################################################################
-                    USERS
-################################################################################################################
-*/
 
         User admin = new User();
         admin.setEmail(myEmail1);
@@ -247,6 +217,7 @@ public class BootstrapDevData implements CommandLineRunner {
         saveUserIfNotExists(privateClient);
         saveUserIfNotExists(privateClient1);
 
+        logger.info("IAMService: DEV DATA LOADING FINISHED...");
 
     }
 
