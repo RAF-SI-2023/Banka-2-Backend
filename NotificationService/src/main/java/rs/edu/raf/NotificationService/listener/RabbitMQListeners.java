@@ -30,34 +30,21 @@ public class RabbitMQListeners {
     @RabbitListener(queues = "password-activation")
     public void passwordActivationHandler(PasswordActivationDto passwordActivationDto) throws IOException {
         if (!isValid(passwordActivationDto)) return;
-
         EmailDto activationEmail = emailDtoMapper.activationEmail(passwordActivationDto);
-
-        logger.info("passwordActivationListener received message" + activationEmail);
-
         emailService.sendSimpleMailMessage(passwordActivationDto.getEmail(), passwordActivationDto.getSubject(), passwordActivationDto.getActivationUrl());
-
     }
 
     @RabbitListener(queues = "password-change")
     public void passwordChangeHandler(PasswordChangeDto passwordChangeDto) throws IOException {
         if (!isValid(passwordChangeDto)) return;
-
         EmailDto passwordChangeEmail = emailDtoMapper.changePasswordEmail(passwordChangeDto);
-
-        logger.info("passwordChangeListener received message: " + passwordChangeEmail);
     }
 
     @RabbitListener(queues = "user-profile-activation-code")
     public void userProfileActivationCodeHandler(ProfileActivationCodeDto profileActivationCodeDto) throws IOException {
-
         if (!isValid(profileActivationCodeDto)) return;
-
         EmailDto userActivationCodeEmail = emailDtoMapper.profileActivationEmail(profileActivationCodeDto);
-
         emailService.sendSimpleMailMessage(userActivationCodeEmail.getEmail(), userActivationCodeEmail.getSubject(), userActivationCodeEmail.getContent());
-
-        logger.info("userProfileActivationCodeListener received message: " + userActivationCodeEmail);
     }
 
     @RabbitListener(queues = "password-forgot")
@@ -67,17 +54,10 @@ public class RabbitMQListeners {
 
     @RabbitListener(queues = "transaction-verification")
     public void transactionVerification(TransferTransactionVerificationDto transferTransactionVerificationDto) throws IOException {
-
         if (!isValid(transferTransactionVerificationDto)) return;
-
         EmailDto transactionVerification = emailDtoMapper.transactionVerification(transferTransactionVerificationDto);
-
         emailService.sendSimpleMailMessage(transactionVerification.getEmail(), transactionVerification.getSubject(), transactionVerification.getContent());
-
-        logger.info("transaction-verification received message: " + transactionVerification);
     }
-
-
 
 
     private <T> boolean isValid(T dto) {
