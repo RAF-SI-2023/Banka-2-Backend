@@ -37,14 +37,14 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
 
     @Given("user is logged in as employee;")
     public void userIsLoggedInAsEmployee() {
-        userControllerTestsState.jwt = JwtTokenGenerator.generateToken(1L, "milos.gajic2000@gmail.com", "EMPLOYEE", "");
+        userControllerTestsState.jwt = JwtTokenGenerator.generateToken(1L, "lazar@gmail.com", "EMPLOYEE", "");
     }
 
     @When("user creates new credit request;")
     @WithUserDetails("")
     public void userCreatesNewCreditRequest() {
         CreditRequestDto creditRequestDto = new CreditRequestDto();
-        creditRequestDto.setAccountNumber("3334444999999999");
+        creditRequestDto.setAccountNumber("0932345666666666");
         creditRequestDto.setCurrency("RSD");
         creditRequestDto.setHousingStatus("OWNED");
         creditRequestDto.setCreditType(CreditType.GOTOVINSKI);
@@ -91,7 +91,7 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
     @Given("credit request is pending approval and is in the list of credit requests")
     public void creditRequestIsPendingApprovalAndIsInTheListOfCreditRequests() {
         CreditRequestDto creditRequestDto = new CreditRequestDto();
-        creditRequestDto.setAccountNumber("3334444999999999");
+        creditRequestDto.setAccountNumber("0932345666666666");
         creditRequestDto.setCurrency("RSD");
         creditRequestDto.setHousingStatus("OWNED");
         creditRequestDto.setCreditType(CreditType.GOTOVINSKI);

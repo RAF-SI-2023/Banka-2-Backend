@@ -7,7 +7,7 @@ Feature: Get All users
 
     Scenario: Get all users and confirm user is present
         Given admin logs in
-        And user "lazar@gmail.com" exists
+        And user "dummyUser@gmail.com" exists
         When listing all users
-        Then confirm user "lazar@gmail.com" is present
+        Then confirm user "dummyUser@gmail.com" is present
 

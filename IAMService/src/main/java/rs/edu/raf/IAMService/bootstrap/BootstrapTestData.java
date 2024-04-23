@@ -20,22 +20,21 @@ import java.util.List;
 
 /**
  *     Ova klasa ce da se runnuje prilikom pokretanja maven test komande
- *
+ *     ----------------------------------------------------------------
  *     PODACI ISPOD SU TESTNI PODACI
  *     PODACI ISPOD SU TESTNI PODACI
  *     PODACI ISPOD SU TESTNI PODACI
  *     PODACI ISPOD SU TESTNI PODACI
- *
+ *     ----------------------------------------------------------------
  *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
  *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
  *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
  *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
- *
+ *     ----------------------------------------------------------------
  *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
  *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
  *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
  *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
- *
  */
 
 @Component
@@ -50,11 +49,12 @@ public class BootstrapTestData implements CommandLineRunner {
     private final CompanyRepository companyRepository;
 
     private static Boolean alreadySetup = false;
+    private static final Object lock = new Object();
 
     @Override
     public void run(String... args) throws Exception {
 
-        synchronized (alreadySetup){
+        synchronized (lock){
             if (alreadySetup) {
                 return;
             }
@@ -64,6 +64,7 @@ public class BootstrapTestData implements CommandLineRunner {
         Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
         Role agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
         Role userRole = roleRepository.findByRoleType(RoleType.USER).get();
+        Role admin = roleRepository.findByRoleType(RoleType.ADMIN).get();
 
         Permission per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
         Permission per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
@@ -130,11 +131,75 @@ public class BootstrapTestData implements CommandLineRunner {
         loginTestUser.setDateOfBirth(336779146L);
         loginTestUser.setAddress("Trg Republike V/5, Beograd, Srbija");
 
+        User passwordChangeTestUser = new User();
+        passwordChangeTestUser.setEmail("passwordChangeTestUser@gmail.com");
+        passwordChangeTestUser.setUsername("passwordChangeTestUser@gmail.com");
+        passwordChangeTestUser.setPassword(passwordEncoder.encode("passwordChangeTestUser"));
+        passwordChangeTestUser.setRole(userRole);
+        passwordChangeTestUser.setPermissions(List.of(per1, per2));
+        passwordChangeTestUser.setPhone("+38111236456");
+        passwordChangeTestUser.setDateOfBirth(336779146L);
+        passwordChangeTestUser.setAddress("Trg Republike V/5, Beograd, Srbija");
+
+        User dummyUser = new User();
+        dummyUser.setEmail("dummyUser@gmail.com");
+        dummyUser.setUsername("dummyUser@gmail.com");
+        dummyUser.setPassword(passwordEncoder.encode("dummyUser"));
+        dummyUser.setRole(userRole);
+        dummyUser.setPermissions(List.of(per1, per2));
+        dummyUser.setPhone("+38111236456");
+        dummyUser.setDateOfBirth(336779146L);
+        dummyUser.setAddress("Trg Republike V/5, Beograd, Srbija");
+
+        Employee dummyEmployee = new Employee();
+        dummyEmployee.setEmail("dummyEmployee@gmail.com");
+        dummyEmployee.setUsername("dummyEmployee@gmail.com");
+        dummyEmployee.setPassword(passwordEncoder.encode("dummyEmployee"));
+        dummyEmployee.setPhone("+38111236456");
+        dummyEmployee.setDateOfBirth(336779146L);
+        dummyEmployee.setAddress("Trg Republike V/5, Beograd, Srbija");
+        dummyEmployee.setDateOfBirth(511739146L);
+        dummyEmployee.setName("name");
+        dummyEmployee.setSurname("surname");
+        dummyEmployee.setGender("Male");
+        dummyEmployee.setPosition("position");
+        dummyEmployee.setDepartment("department");
+        dummyEmployee.setActive(true);
+        dummyEmployee.setPermissions(List.of(per1, per2));
+        dummyEmployee.setRole(employeeRole);
+
+        User dummyAdminUser = new User();
+        dummyAdminUser.setEmail("dummyAdminUser@gmail.com");
+        dummyAdminUser.setUsername("dummyAdminUser@gmail.com");
+        dummyAdminUser.setPassword(passwordEncoder.encode("dummyAdminUser"));
+        dummyAdminUser.setRole(admin);
+        dummyAdminUser.setPermissions(List.of(per1, per2));
+        dummyAdminUser.setPhone("+38111236456");
+        dummyAdminUser.setDateOfBirth(336779146L);
+        dummyAdminUser.setAddress("Trg Republike V/5, Beograd, Srbija");
+
+        Agent dummyAgent = new Agent();
+        dummyAgent.setEmail("dummyAgent@gmail.com");
+        dummyAgent.setUsername("dummyAgent@gmail.com");
+        dummyAgent.setPassword(passwordEncoder.encode("dummyAgent"));
+        dummyAgent.setRole(agentRole);
+        dummyAgent.setPhone("+38111317456");
+        dummyAgent.setAddress("Juriga Gargarina 3, Beograd, Srbija");
+        dummyAgent.setDateOfBirth(204155146L);
+        dummyAgent.setLimit(new BigDecimal("12345.67"));
+        dummyAgent.setLeftOfLimit(new BigDecimal("578.42"));
+
         saveUserIfNotExists(inactiveEmployee);
         saveUserIfNotExists(activeEmployee);
         saveUserIfNotExists(notEmployee);
         saveUserIfNotExists(agent);
         saveUserIfNotExists(loginTestUser);
+        saveUserIfNotExists(passwordChangeTestUser);
+        saveUserIfNotExists(dummyUser);
+        saveUserIfNotExists(dummyEmployee);
+        saveUserIfNotExists(dummyAdminUser);
+        saveUserIfNotExists(dummyAgent);
+
     }
 
     private void saveUserIfNotExists(User user) {

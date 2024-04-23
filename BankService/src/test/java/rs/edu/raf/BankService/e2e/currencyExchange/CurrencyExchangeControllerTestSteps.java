@@ -44,7 +44,7 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
 
     @Given("user is logged in as employee;")
     public void userIsLoggedInAsEmployee() {
-        currencyExchangeControllerStateTests.jwt = JwtTokenGenerator.generateToken(1L, "milos.gajic2000@gmail.com", "EMPLOYEE", "");
+        currencyExchangeControllerStateTests.jwt = JwtTokenGenerator.generateToken(1L, "lazar@gmail.com", "EMPLOYEE", "");
     }
 
 

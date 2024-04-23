@@ -10,6 +10,7 @@ import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 import rs.edu.raf.BankService.data.enums.CreditType;
 import rs.edu.raf.BankService.service.CreditService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -24,7 +25,7 @@ public class CreditStepsDefinition {
     }
 
     String accountNumber;
-    List<CreditDto> credits;
+    List<CreditDto> credits = new ArrayList<>();
     CreditRequestDto creditRequestDto;
     Object response;
 

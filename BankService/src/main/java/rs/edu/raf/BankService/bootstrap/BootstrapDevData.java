@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
@@ -26,12 +27,12 @@ import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
-public class BootstrapData implements CommandLineRunner {
+@Profile("dev")
+public class BootstrapDevData implements CommandLineRunner {
 
     @Value("${MY_EMAIL_1}")
     private String myEmail1;
@@ -45,10 +46,7 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_4}")
     private String myEmail4;
 
-    @Value("${MY_EMAIL_5}")
-    private String myEmail5;
-
-    private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
+    private static final Logger logger = LoggerFactory.getLogger(BootstrapDevData.class);
     private final AccountRepository accountRepository;
     private final CreditRepository creditRepository;
     private final CreditRequestRepository creditRequestRepository;
@@ -70,7 +68,8 @@ public class BootstrapData implements CommandLineRunner {
             domesticCurrencyAccount1.setAvailableBalance(100000L);
             domesticCurrencyAccount1.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
             domesticCurrencyAccount1.setInterestRate(2.5);
-            accountRepository.save((CashAccount) domesticCurrencyAccount1);
+
+            addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount1);
 
             ForeignCurrencyCashAccount foreignCurrencyAccount1 = new ForeignCurrencyCashAccount();
             foreignCurrencyAccount1.setAccountNumber("3334444777777777");
@@ -256,38 +255,7 @@ public class BootstrapData implements CommandLineRunner {
         }
 
 
-        Optional<Card> cardTest = cardRepository.findByIdentificationCardNumber(1000000000000000L);
 
-        if (cardTest.isEmpty()) {
-            Card card = new Card();
-            card.setAccountNumber("3334444999999999");
-            card.setCvvCode("133");
-            card.setIdentificationCardNumber(1000000000000000L);
-            card.setCardType(CardType.CREDIT);
-            card.setCreationDate(1712602820L);
-            card.setExpirationDate(1775682066000L);
-            card.setLimitCard(1111000L);
-            card.setStatus(true);
-            card.setNameOfCard("TEST");
-            cardRepository.save(card);
-        } else {
-
-            Card card = cardTest.get();
-            card.setAccountNumber("3334444999999999");
-            card.setCvvCode("133");
-            card.setIdentificationCardNumber(1000000000000000L);
-            card.setCardType(CardType.CREDIT);
-            card.setCreationDate(1712602820L);
-            card.setExpirationDate(1775682066000L);
-            card.setLimitCard(1111000L);
-            card.setStatus(true);
-            card.setNameOfCard("TEST");
-
-            cardRepository.save(card);
-
-        }
-
-        logger.info("BankService: DATA LOADING IN PROGRESS...");
         if (exchangeRateRepository.count() != 0) {
             if (exchangeRateRepository.findAll().get(0).getTimeNextUpdate() < System.currentTimeMillis()) {
                 exchangeRateRepository.deleteAll();
@@ -320,4 +288,26 @@ public class BootstrapData implements CommandLineRunner {
 
         logger.info("BankService: DATA LOADING FINISHED...");
     }
+
+
+    private void addCardIfIdentificationCardNumberIsNotPresent(Card card){
+        if(cardRepository.findByIdentificationCardNumber(card.getIdentificationCardNumber()).isEmpty()){
+            cardRepository.save(card);
+        }
+    }
+
+    private void addAccountIfCashAccountNumberIsNotPresent(CashAccount account){
+        if(accountRepository.findByAccountNumber(account.getAccountNumber()) == null){
+            if(account instanceof DomesticCurrencyCashAccount){
+                accountRepository.save((DomesticCurrencyCashAccount)account);
+            }
+            else if (account instanceof ForeignCurrencyCashAccount){
+                accountRepository.save((ForeignCurrencyCashAccount)account);
+            }
+            else {
+                accountRepository.save(account);
+            }
+        }
+    }
+
 }
