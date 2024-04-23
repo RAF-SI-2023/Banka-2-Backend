@@ -99,7 +99,7 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
    public void user_set_parameters(String email, String password){
        changePasswordDto.setEmail(email);
        changePasswordDto.setPassword(password);
-       tests.jwt = JwtTokenGenerator.generateToken(1L, "lukapavlovic032@gmail.com", "ADMIN", "");
+       tests.jwt = JwtTokenGenerator.generateToken(1L, "dummyAdminUser@gmail.com", "ADMIN", "");
    }
 
    @SneakyThrows
