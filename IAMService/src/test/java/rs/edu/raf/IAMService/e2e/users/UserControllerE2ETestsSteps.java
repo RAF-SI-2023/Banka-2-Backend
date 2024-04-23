@@ -62,7 +62,7 @@ public class UserControllerE2ETestsSteps extends UserControllerE2ETestsConfig {
                    post("/api/auth/login")
                            .contentType(MediaType.APPLICATION_JSON_VALUE)
                            .accept(MediaType.APPLICATION_JSON_VALUE)
-                           .content("{\"email\":\"lukapavlovic032@gmail.com\",\"password\":\"admin\"}")
+                           .content("{\"email\":\"dummyAdminUser@gmail.com\",\"password\":\"dummyAdminUser\"}")
            ).andExpect(status().isOk());
 
            MvcResult mvcResult = resultActions.andReturn();
@@ -347,7 +347,7 @@ public class UserControllerE2ETestsSteps extends UserControllerE2ETestsConfig {
    @And("new user {string} is added")
    public void newUserIsAdded(String email) {
        try{
-           var role = roleRepository.findByRoleType(RoleType.USER);
+           Role role = roleRepository.findByRoleType(RoleType.USER).get();
 
            User user = new User();
            user.setEmail(email);
@@ -355,7 +355,7 @@ public class UserControllerE2ETestsSteps extends UserControllerE2ETestsConfig {
            user.setDateOfBirth(511739146L);
            user.setPhone("+38111236456");
            user.setAddress("Pariske komune 5, Beograd, Srbija");
-           user.setRole(role.get());
+           user.setRole(role);
            userRepository.save(user);
        }
        catch (Exception e){

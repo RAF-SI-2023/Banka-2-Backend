@@ -27,6 +27,7 @@ import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.e2e.generators.JwtTokenGenerator;
 import rs.edu.raf.IAMService.mapper.UserMapper;
+import rs.edu.raf.IAMService.repositories.UserRepository;
 import rs.edu.raf.IAMService.services.UserService;
 
 import java.util.Map;
@@ -53,25 +54,29 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
    private UserMapper userMapper;
    @Autowired
    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
 
    private MvcResult mvcResult;
 
-
-
    String email;
+
    EmployeeDto employeeDto = new EmployeeDto();
+
    Long id;
+
    ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+
    ResponseEntity<ChangePasswordDto> entity;
 
    AgentDto agentDto = new AgentDto();
 
    //get user email
    @Given("user gives paramethers email {string}")
-   public void user_paramethers_email(String string){
-       email = string;
-       tests.jwt = JwtTokenGenerator.generateToken(1L, "lukapavlovic032@gmail.com", "ADMIN", "");
+   public void user_paramethers_email(String email){
+       this.email = email;
+       tests.jwt = JwtTokenGenerator.generateToken(1L, email, "USER", "");
    }
 
    @SneakyThrows
@@ -86,7 +91,6 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
 
    @Then("response status ok and body user")
    public void response_status_ok(){
-       assert mvcResult.getResponse() != null;
        assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
    }
 
@@ -114,6 +118,7 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
    @Then("response status ok and body true")
    public void response_status(){
        assert mvcResult.getResponse() != null;
+       assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
    }
 
 //    //create employee
@@ -167,11 +172,10 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
 //    }
 
 
-   //find by id
-   @Given("user gives paramethers id {string}")
-   public void userGivesParamethersId(String arg0) {
-       id = Long.valueOf(Integer.parseInt(arg0));
-       tests.jwt = JwtTokenGenerator.generateToken(1L, "lukapavlovic032@gmail.com", "ADMIN", "");
+   @Given("user get id by email {string}")
+   public void userGivesParamethersId(String email) {
+       id = userRepository.findByEmail(email).get().getId();
+       tests.jwt = JwtTokenGenerator.generateToken(1L, email, "USER", "");
    }
 
    @SneakyThrows
@@ -185,8 +189,9 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
        mvcResult = resultActions.andReturn();
    }
 
-   @Then("response status ok and body user for user geting id")
+   @Then("response status ok and body user for user getting id")
    public void responseStatusOkAndBodyUserForUserGetingId() {
-      assert mvcResult.getResponse() != null;
+        assert mvcResult.getResponse() != null;
+        assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
    }
 }
