@@ -39,7 +39,7 @@ public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControl
     private MockHttpServletResponse responseEntity;
     DomesticCurrencyCashAccount domesticCurrencyAccount1;
 
-    @Value("${MY_EMAIL_1}")
+    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
     private String myEmail1;
 
     @Given("user is logged in as employee;")

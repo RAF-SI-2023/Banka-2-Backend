@@ -34,17 +34,15 @@ import java.util.Random;
 @Profile("dev")
 public class BootstrapDevData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1}")
+    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2}")
+    @Value("${MY_EMAIL_2:defaultEmail2@gmail.com}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3}")
+    @Value("${MY_EMAIL_3:defaultEmail3@gmail.com}")
     private String myEmail3;
 
-    @Value("${MY_EMAIL_4}")
-    private String myEmail4;
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapDevData.class);
     private final AccountRepository accountRepository;
@@ -56,7 +54,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        logger.info("BankService: DATA LOADING IN PROGRESS...");
+        logger.info("BankService: DEV DATA LOADING IN PROGRESS...");
         if (accountRepository.count() == 0) {
             DomesticCurrencyCashAccount domesticCurrencyAccount1 = new DomesticCurrencyCashAccount();
             domesticCurrencyAccount1.setAccountNumber("3334444999999999");
@@ -286,7 +284,7 @@ public class BootstrapDevData implements CommandLineRunner {
             }
         }
 
-        logger.info("BankService: DATA LOADING FINISHED...");
+        logger.info("BankService: DEV DATA LOADING FINISHED...");
     }
 
 

@@ -61,6 +61,8 @@ public class BootstrapTestData implements CommandLineRunner {
             alreadySetup = true;
         }
 
+        logger.info("IAMService: TEST DATA LOADING IN PROGRESS...");
+
         Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
         Role agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
         Role userRole = roleRepository.findByRoleType(RoleType.USER).get();
@@ -199,6 +201,8 @@ public class BootstrapTestData implements CommandLineRunner {
         saveUserIfNotExists(dummyEmployee);
         saveUserIfNotExists(dummyAdminUser);
         saveUserIfNotExists(dummyAgent);
+
+        logger.info("IAMService: TEST DATA LOADING FINISHED...");
 
     }
 

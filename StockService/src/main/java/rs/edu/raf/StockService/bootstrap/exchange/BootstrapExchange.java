@@ -26,10 +26,10 @@ public class BootstrapExchange implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        logger.info("DATA LOADING IN PROGRESS...");
+        logger.info("StockService: READING EXCHANGE CSV FILE DATA IN PROGRESS...");
         ExchangeCsvReader exchangeCsvReader = new ExchangeCsvReader(resourceLoader);
         List<Exchange> exchanges = exchangeCsvReader.loadExchangeCsv();
         exchangeService.setExchangeList(exchanges);
-        logger.info("DATA LOADING FINISHED...");
+        logger.info("StockService: READING EXCHANGE CSV FILE DATA FINISHED...");
     }
 }

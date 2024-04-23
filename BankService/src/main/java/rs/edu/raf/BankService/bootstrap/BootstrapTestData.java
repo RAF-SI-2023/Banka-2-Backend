@@ -63,6 +63,10 @@ public class BootstrapTestData implements CommandLineRunner {
             alreadySetup = true;
         }
 
+
+        logger.info("BankService: TEST DATA LOADING IN PROGRESS...");
+
+
         DomesticCurrencyCashAccount testDomesticCashAccount1 = new DomesticCurrencyCashAccount();
         testDomesticCashAccount1.setAccountNumber("0004444999999999");
         testDomesticCashAccount1.setEmail("owndByUser1@gmail.com");
@@ -122,6 +126,8 @@ public class BootstrapTestData implements CommandLineRunner {
         card1.setNameOfCard("TEST");
 
         addCardIfIdentificationCardNumberIsNotPresent(card1);
+
+        logger.info("BankService: TEST DATA LOADING FINISHED...");
 
     }
 
