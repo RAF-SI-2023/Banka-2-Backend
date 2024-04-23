@@ -36,8 +36,8 @@ public class OptionServiceImpl implements OptionService {
         this.optionMapper = optionMapper;
     }
 
-
-   @Cacheable(value = "stockListing", key = "#stockListing")
+//    dobija se ovaj error "java.lang.IllegalArgumentException: Null key returned for cache operation" kada se porenu testovi pre CI-ja
+//    @Cacheable(value = "stockListing", key = "#stockListing")
     @Override
     public List<Option> findAllByStockListing(String stockListing) {
 
