@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ExchangeRateApiResponse {
+public class ExchangeRateApiResponse implements Serializable {
     private String result;
     private String documentation;
     private String terms_of_use;
