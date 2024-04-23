@@ -11,15 +11,15 @@ public interface OptionService {
      * Videti da li moze po jos nekim metodama da se pretrazuje, da li je potrebno i slicno.
      */
 
-    List<Option> findAll();
+//    List<Option> findAll();
 
     List<Option> findAllByStockListing(String stockListing);
 
-    Option findById(Long id);
+//    Option findById(Long id);
 
-    Option findByStockListing(String stockListing);
+//    Option findByStockListing(String stockListing);
 
     List<Option> loadOptions(String stockListing);
 
-    public void checkIfOptionExistsAndUpdate(Option option);
+//    public void checkIfOptionExistsAndUpdate(Option option);
 }
