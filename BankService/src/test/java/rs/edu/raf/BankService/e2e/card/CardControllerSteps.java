@@ -61,8 +61,8 @@ public class CardControllerSteps extends CardControllerTestsConfig {
 
     @When("the create card endpoint is called")
     public void theCreateCardEndpointIsCalled() {
-        CreateCardDto cardDto = new CreateCardDto(/* Add necessary data here */);
-        cardDto.setAccountNumber("9987761555555555");
+        CreateCardDto cardDto = new CreateCardDto();
+        cardDto.setAccountNumber("0004444999999999");
         cardDto.setLimitCard(100000L);
         cardDto.setCardType(CardType.CREDIT);
 

@@ -12,12 +12,12 @@ Feature: Retrieving exchange rates for a currency
 
   Scenario: Attempt to exchange currency
     Given user is logged in as employee;
-    Given a valid account number "3334444999999999"
-    Then the putExchangeCurrency endpoint is called from account "3334444999999999" to account "3334444888888888" and from "RSD" to "USD" amount of 1000
-    Then it should return a success response for account "3334444999999999" to account "3334444888888888" and from "RSD" to "USD" amount of 1000
+    Given a valid account number "0932345666666666"
+    Then the putExchangeCurrency endpoint is called from account "0932345666666666" to account "7772345666556666" and from "RSD" to "USD" amount of 1000
+    Then it should return a success response for account "0932345666666666" to account "7772345666556666" and from "RSD" to "USD" amount of 1000
 
   Scenario: Attempt to exchange currency but its not same user
     Given user is logged in as employee;
-    Given a valid account number "3334444999999999"
-    Then it should fail to return a response for account "3334444999999999" to account "3334444111111111" and from "RSD" to "USD" amount of 1000
+    Given a valid account number "0932345666666666"
+    Then it should fail to return a response for account "0932345666666666" to account "0932345111111111" and from "RSD" to "USD" amount of 1000
 
