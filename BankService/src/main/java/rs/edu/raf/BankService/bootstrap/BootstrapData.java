@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
@@ -53,6 +54,7 @@ public class BootstrapData implements CommandLineRunner {
     private final CreditRequestRepository creditRequestRepository;
     private final CardRepository cardRepository;
     private final ExchangeRateRepository exchangeRateRepository;
+    private final ResourceLoader resourceLoader;
 
     @Override
     public void run(String... args) throws Exception {
@@ -292,7 +294,8 @@ public class BootstrapData implements CommandLineRunner {
             }
         }
         if (exchangeRateRepository.count() == 0) {
-            List<ExchangeRateApiResponse> responseList = ExchangeRateBootstrapUtil.getDataFromApi();
+            ExchangeRateBootstrapUtil.setResource(resourceLoader, "dev");
+            List<ExchangeRateApiResponse> responseList = ExchangeRateBootstrapUtil.getData();
             for (ExchangeRateApiResponse response : responseList) {
                 Map<String, Double> conversionRates = response.getConversion_rates();
                 conversionRates.forEach((k, v) -> {
