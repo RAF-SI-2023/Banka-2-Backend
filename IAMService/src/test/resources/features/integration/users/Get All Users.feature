@@ -4,6 +4,6 @@ Feature: Get All users
         When calling find all users
         Then get list of all users
     Scenario: Get all users & find specific user
-        Given User with email "mirkomail@gmail.com" exists
+        Given User with email "activeEmplyee@gmail.com" exists
         When calling find all users
-        Then find user "mirkomail@gmail.com"
+        Then find user "activeEmplyee@gmail.com"
