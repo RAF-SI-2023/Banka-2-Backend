@@ -49,11 +49,12 @@ public class BootstrapTestData implements CommandLineRunner {
     private final CompanyRepository companyRepository;
 
     private static Boolean alreadySetup = false;
+    private static final Object lock = new Object();
 
     @Override
     public void run(String... args) throws Exception {
 
-        synchronized (alreadySetup){
+        synchronized (lock){
             if (alreadySetup) {
                 return;
             }
