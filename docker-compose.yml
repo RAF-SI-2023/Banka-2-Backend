@@ -16,11 +16,11 @@ services:
       timeout: 10s
       retries: 5
 
-  stock-redis:
+  redis:
     image: redis
     expose:
       - "6379"
-    container_name: stock-redis
+    container_name: redis
     environment:
       REDIS_HOST_AUTH_METHOD: trust
       ALLOW_EMPTY_PASSWORD: "yes"
@@ -99,13 +99,13 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/bank_db?currentSchema=stock_service_schema
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_REDIS_HOST=stock-redis
+      - SPRING_REDIS_HOST=redis
     depends_on:
       postgres-db:
         condition: service_healthy
       rabbitmq:
         condition: service_started
-      stock-redis:
+      redis:
         condition: service_started
 
   otc-service:
