@@ -45,17 +45,5 @@ public class EmailService {
 
         emailSender.send(message);
     }
-    public void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException{
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(htmlContent, true);
-        emailSender.send(message);
-    }
-    // For Complex messages (example: HTML with embeded images)
-    public void sendMimeMessage(MimeMessage message){
-        emailSender.send(message);
-    }
 }
