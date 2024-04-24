@@ -9,12 +9,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.*;
 import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
-import rs.edu.raf.BankService.data.entities.accounts.BusinessAccount;
-import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyAccount;
-import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyAccount;
+import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
@@ -38,13 +37,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean userAccountUserProfileConnectionAttempt(AccountNumberDto accountNumberDto) {
-        Account account = accountRepository.findByAccountNumber(accountNumberDto.getAccountNumber());
-        if (account != null) {
-            UserAccountUserProfileLinkState userAccountUserProfileLinkState = account.getLinkState();
+        CashAccount cashAccount = accountRepository.findByAccountNumber(accountNumberDto.getAccountNumber());
+        if (cashAccount != null) {
+            UserAccountUserProfileLinkState userAccountUserProfileLinkState = cashAccount.getLinkState();
             if (userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.NOT_ASSOCIATED)) {
-                generateActivationCodeAndSendToQueue(accountNumberDto.getAccountNumber(), account.getEmail());
-                account.setLinkState(UserAccountUserProfileLinkState.IN_PROCESS);
-                accountRepository.saveAndFlush(account);
+                generateActivationCodeAndSendToQueue(accountNumberDto.getAccountNumber(), cashAccount.getEmail());
+                cashAccount.setLinkState(UserAccountUserProfileLinkState.IN_PROCESS);
+                accountRepository.saveAndFlush(cashAccount);
                 return true;
             } else if (userAccountUserProfileLinkState.equals(UserAccountUserProfileLinkState.IN_PROCESS)) {
                 throw new UserAccountInProcessOfBindingWithUserProfileException(accountNumberDto.getAccountNumber());
@@ -58,16 +57,16 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean confirmActivationCode(String accountNumber, Integer code) throws ActivationCodeExpiredException {
-        Account account = accountRepository.findByAccountNumber(accountNumber);
-        if (account != null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(accountNumber);
+        if (cashAccount != null) {
             UserAccountUserProfileActivationCode token = userAccountUserProfileActivationCodeRepository.findByAccountNumber(accountNumber);
             if (Integer.valueOf(token.getCode()).equals(code)) {
                 if (token.isExpired()) {
                     throw new ActivationCodeExpiredException();
                 }
                 userAccountUserProfileActivationCodeRepository.delete(token);
-                account.setLinkState(UserAccountUserProfileLinkState.ASSOCIATED);
-                accountRepository.saveAndFlush(account);
+                cashAccount.setLinkState(UserAccountUserProfileLinkState.ASSOCIATED);
+                accountRepository.saveAndFlush(cashAccount);
                 return true;
             } else {
                 throw new ActivationCodeDoesNotMatchException();
@@ -78,8 +77,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public DomesticCurrencyAccountDto createDomesticCurrencyAccount(DomesticCurrencyAccountDto dto) throws AccountNumberAlreadyExistException {
-        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
-        if (account != null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if (cashAccount != null) {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.saveAndFlush(accountMapper.domesticAccountDtoToDomesticAccount(dto));
@@ -88,8 +87,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ForeignCurrencyAccountDto createForeignCurrencyAccount(ForeignCurrencyAccountDto dto) throws AccountNumberAlreadyExistException {
-        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
-        if (account != null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if (cashAccount != null) {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
@@ -98,8 +97,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public BusinessAccountDto createBusinessAccount(BusinessAccountDto dto) throws AccountNumberAlreadyExistException {
-        Account account = accountRepository.findByAccountNumber(dto.getAccountNumber());
-        if (account != null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(dto.getAccountNumber());
+        if (cashAccount != null) {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         accountRepository.save(accountMapper.businessAccountDtoToBusinessAccount(dto));
@@ -108,18 +107,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountDto> findAccountsByEmail(String email) {
-        List<Account> accounts = accountRepository.findAllByEmail(email);
-        if (accounts.isEmpty()) {
-            throw new AccountNotFoundException(email);
+        List<CashAccount> cashAccounts = accountRepository.findAllByEmail(email);
+        if (cashAccounts.isEmpty()) {
+            return List.of();
         }
         //     return accounts.stream().map(accountMapper::accountToAccountDto).toList();
-        return accounts.stream().map((account) -> {
-            if (account instanceof DomesticCurrencyAccount) {
-                return accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto((DomesticCurrencyAccount) account);
-            } else if (account instanceof ForeignCurrencyAccount) {
-                return accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto((ForeignCurrencyAccount) account);
-            } else if (account instanceof BusinessAccount) {
-                return accountMapper.businessAccountToBusinessAccountDto((BusinessAccount) account);
+        return cashAccounts.stream().map((account) -> {
+            if (account instanceof DomesticCurrencyCashAccount) {
+                return accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto((DomesticCurrencyCashAccount) account);
+            } else if (account instanceof ForeignCurrencyCashAccount) {
+                return accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto((ForeignCurrencyCashAccount) account);
+            } else if (account instanceof BusinessCashAccount) {
+                return accountMapper.businessAccountToBusinessAccountDto((BusinessCashAccount) account);
             }
             return null;
         }).toList();
@@ -134,9 +133,9 @@ public class AccountServiceImpl implements AccountService {
         userAccountUserProfileActivationCodeRepository.findAll().forEach(token -> {
             if (token.isExpired()) {
                 userAccountUserProfileActivationCodeRepository.delete(token);
-                Account account = accountRepository.findByAccountNumber(token.getAccountNumber());
-                account.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
-                accountRepository.saveAndFlush(account);
+                CashAccount cashAccount = accountRepository.findByAccountNumber(token.getAccountNumber());
+                cashAccount.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
+                accountRepository.saveAndFlush(cashAccount);
             }
         });
     }
@@ -160,15 +159,15 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public SavedAccountDto createSavedAccount(Long accountId, SavedAccountDto dto) {
-        Account account = accountRepository.findById(accountId)
+        CashAccount cashAccount = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
         SavedAccount savedAccount = new SavedAccount();
         savedAccount.setName(dto.getName());
         savedAccount.setAccountNumber(dto.getAccountNumber());
 
-        account.getSavedAccounts().add(savedAccount);
-        accountRepository.save(account);
+        cashAccount.getSavedAccounts().add(savedAccount);
+        accountRepository.save(cashAccount);
 
         return dto;
     }
@@ -176,10 +175,10 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto) {
-        Account account = accountRepository.findById(accountId)
+        CashAccount cashAccount = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        SavedAccount savedAccountToUpdate = account.getSavedAccounts().stream()
+        SavedAccount savedAccountToUpdate = cashAccount.getSavedAccounts().stream()
                 .filter(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber))
                 .findFirst()
                 .orElseThrow(() -> new AccountNotFoundException("Saved account not found"));
@@ -187,17 +186,17 @@ public class AccountServiceImpl implements AccountService {
         savedAccountToUpdate.setName(dto.getName());
         savedAccountToUpdate.setAccountNumber(dto.getAccountNumber());
 
-        accountRepository.save(account);
+        accountRepository.save(cashAccount);
 
         return dto;
     }
 
     @Override
     public void deleteSavedAccount(Long accountId, String savedAccountNumber) {
-        Account account = accountRepository.findById(accountId)
+        CashAccount cashAccount = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        account.getSavedAccounts().removeIf(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber));
-        accountRepository.save(account);
+        cashAccount.getSavedAccounts().removeIf(savedAccount -> savedAccount.getAccountNumber().equals(savedAccountNumber));
+        accountRepository.save(cashAccount);
     }
 }

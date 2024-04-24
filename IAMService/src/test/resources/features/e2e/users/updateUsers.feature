@@ -2,9 +2,9 @@ Feature: Update Users
 
     Scenario: Update Employee Information
         Given admin logs in
-        And employee "mirkomail@gmail.com" exists
-        When employee's "mirkomail@gmail.com" phone number is changed to "123456789"
-        Then employee's "mirkomail@gmail.com" phone number in database is "123456789"
+        And employee "dummyEmployee@gmail.com" exists
+        When employee's "dummyEmployee@gmail.com" phone number is changed to "123456789"
+        Then employee's "dummyEmployee@gmail.com" phone number in database is "123456789"
 
 ## Donji testovi rade kad se pozovu preko iz ovog fajla. Kad se pozovu preko UserControllerE2ETests ne rade (bad request)
 #

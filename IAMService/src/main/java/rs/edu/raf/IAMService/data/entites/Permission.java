@@ -7,6 +7,7 @@ import rs.edu.raf.IAMService.data.enums.PermissionType;
 import java.util.List;
 
 @Entity
+@Table(name = "permissions")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

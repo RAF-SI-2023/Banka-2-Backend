@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.CreditDto;
 import rs.edu.raf.BankService.data.dto.CreditRequestDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
@@ -35,15 +35,26 @@ public class CreditServiceImpl implements CreditService {
         if (credit1 != null) {
             throw new RuntimeException("Credit already exists");
         }
-        Account a = accountRepository.findByAccountNumber(credit.getAccountNumber());
-        if (a == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(credit.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
-        if (!a.getCurrencyCode().equals(credit.getCurrencyCode())) {
+        if (!cashAccount.getCurrencyCode().equals(credit.getCurrencyCode())) {
             throw new RuntimeException("Currency is not the same as account currency");
         }
 
-        a.setAvailableBalance((long) (a.getAvailableBalance() + credit.getCreditAmount()));
+        List<CashAccount> bankCashAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
+        CashAccount bankAccountSender = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(cashAccount.getCurrencyCode())).findFirst().orElse(null);
+        if (bankAccountSender == null) {
+            throw new RuntimeException("Bank account not found");
+        }
+        if (bankAccountSender.getAvailableBalance() < credit.getCreditAmount()) {
+            throw new RuntimeException("Not enough funds");
+        }
+        bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - credit.getCreditAmount()));
+
+        cashAccount.setAvailableBalance((long) (cashAccount.getAvailableBalance() + credit.getCreditAmount()));
+        accountRepository.saveAll(List.of(cashAccount, bankAccountSender));
         credit = creditRepository.save(credit);
         return creditMapper.creditToCreditDto(credit);
     }
@@ -60,15 +71,11 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public CreditRequestDto createCreditRequest(CreditRequestDto creditRequestDto) {
-        Account account = accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
-        if (account == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
-        if (!account.getCurrencyCode().equals(creditRequestDto.getCurrency())) {
-            throw new RuntimeException("Currency is not the same as account currency");
-        }
-
-
+        creditRequestDto.setCurrency(cashAccount.getCurrencyCode());
         CreditRequest creditRequest = creditMapper.creditRequestDtoToCreditRequest(creditRequestDto);
         creditRequest = creditRequestRepository.save(creditRequest);
         return creditMapper.creditRequestToCreditRequestDto(creditRequest);
@@ -91,8 +98,8 @@ public class CreditServiceImpl implements CreditService {
         if (creditRequest.getStatus() != CreditRequestStatus.PENDING) {
             throw new RuntimeException("Credit request is not pending");
         }
-        Account account = accountRepository.findByAccountNumber(creditRequest.getAccountNumber());
-        if (account == null) {
+        CashAccount cashAccount = accountRepository.findByAccountNumber(creditRequest.getAccountNumber());
+        if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
 

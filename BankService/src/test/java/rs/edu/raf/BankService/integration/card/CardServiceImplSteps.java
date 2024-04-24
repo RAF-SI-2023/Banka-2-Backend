@@ -43,9 +43,7 @@ public class CardServiceImplSteps extends CardServiceImplTestsConfig {
 
     @Then("the user should return 200")
     public void the_user_should_see_the_card() throws Exception {
-
         assertEquals(200, responseEntity.getStatusCodeValue());
-
     }
 
     @When("the user enters the account number {string}")
@@ -66,7 +64,7 @@ public class CardServiceImplSteps extends CardServiceImplTestsConfig {
     }
 
 
-    @When("the bank creates a new card with given acount number")
+    @When("the bank creates a new card with given account number")
     public void the_user_creates_a_new_card() throws Exception {
         brandNewCreatedCardDto = new CreateCardDto();
         brandNewCreatedCardDto.setAccountNumber(accountNumber);

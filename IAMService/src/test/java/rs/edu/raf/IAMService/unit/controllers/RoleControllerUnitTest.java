@@ -27,7 +27,7 @@ public class RoleControllerUnitTest {
     private RoleService roleService;
 
     @Test
-    void testGetAllRoles_Success(){
+    void testGetAllRoles_Success() {
         List<RoleDto> roleDtos = new ArrayList<>();
         roleDtos.add(new RoleDto(1L, RoleType.SUPERVISOR));
         roleDtos.add(new RoleDto(2L, RoleType.USER));
@@ -40,22 +40,23 @@ public class RoleControllerUnitTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        for(RoleDto testRoleDto:roleDtos){
-            Boolean match=false;
-            for(RoleDto responseRoleDto:responseBody){
-                if(responseRoleDto.getRoleType()==testRoleDto.getRoleType()){
-                    match=true;
+        for (RoleDto testRoleDto : roleDtos) {
+            Boolean match = false;
+            for (RoleDto responseRoleDto : responseBody) {
+                if (responseRoleDto.getRoleType() == testRoleDto.getRoleType()) {
+                    match = true;
                     break;
                 }
             }
-            if(!match) fail("Role retrieval failed");
+            if (!match) fail("Role retrieval failed");
         }
     }
 
     @Test
-    void testGetAllRoles_Exception(){
+    void testGetAllRoles_Exception() {
         when(roleService.getAllRoles()).thenThrow(new RuntimeException("Role retrieval failed"));
-        ResponseEntity response=roleController.getAllRoles();
+        ResponseEntity response = roleController.getAllRoles();
         assertEquals("Role retrieval failed", response.getBody());
     }
+
 }

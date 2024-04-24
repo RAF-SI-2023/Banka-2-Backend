@@ -181,7 +181,34 @@ public class UserServiceCrudTests {
         }
 
     }
-    
+
+    @Test
+    public void testDeleteUserByEmail_UserFound_RoleUser_ReturnsDeletedUserDto() {
+        // Arrange
+        String email = "test@example.com";
+        User user = new User();
+        user.setEmail(email);
+        user.setRole(new Role(RoleType.USER));
+        UserDto userDto1 = new UserDto();
+        userDto1.setEmail(user.getEmail());
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.removeUserByEmail(email)).thenReturn(1);
+
+        try (MockedStatic<SpringSecurityUtil> utilities = Mockito.mockStatic(SpringSecurityUtil.class)) {
+            utilities.when(() -> SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE"))
+                    .thenReturn(true);
+            assertTrue(SpringSecurityUtil.hasRoleRole("ROLE_EMPLOYEE"));
+            when(userMapper.userToUserDto(user)).thenReturn(userDto1);
+            // Act
+            Integer flag = userService.deleteUserByEmail(email);
+            // Assert
+            assertEquals(1, flag);
+            // Add more assertions as needed for other properties
+            verify(userRepository, times(1)).removeUserByEmail(email);
+        }
+
+    }
+
     @Test
     public void testUpdateUser_Employee_SuccessfullyUpdated() {
         // Arrange

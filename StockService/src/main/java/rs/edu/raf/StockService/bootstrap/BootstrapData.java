@@ -71,7 +71,7 @@ public class BootstrapData implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        logger.info("DATA LOADING IN PROGRESS...");
+        logger.info("StockService: SOME DATA LOADING IN PROGRESS...");
         CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(resourceLoader);
         List<Currency> currencyList;
         List<CurrencyInflation> currencyInflationList;
@@ -93,42 +93,13 @@ public class BootstrapData implements CommandLineRunner {
          * otkomentarisati ako cemo koristiti bazu, a ne in memory listu , slicno i za currencyInflation
          currencyRepository.saveAll(currencyList);    */
 
-        LocalDate currentDate = LocalDate.now();
-        LocalDateTime localDateTime = currentDate.atStartOfDay();
-        long milliseconds = localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-//        for (int i = 1; i <= 3; i++) {
-//            Option option = new Option();
-//            option.setStockListing("STOCK" + i);
-//            option.setOptionType(OptionType.PUT);
-//            option.setStrikePrice("100" + i);
-//            option.setImpliedVolatility("420" + i);
-//            option.setOpenInterest(120 + "i");
-//            option.setSettlementDate(milliseconds);
-//
-//            optionRepository.save(option);
-//
-//        }
-//        Option option = new Option();
-//        option.setStockListing("STOCK" + 1);
-//        option.setOptionType(OptionType.PUT);
-//        option.setStrikePrice("100" + 1);
-//        option.setImpliedVolatility("420" + 1);
-//        option.setOpenInterest(120 + "i");
-//        option.setSettlementDate(milliseconds);
-//        optionRepository.save(option);
-
-
-       // optionServiceImpl.loadOptions();
-
-      //  optionServiceImpl.loadOptions();
-
         if (futuresContractRepository.count() == 0) {
             FuturesContractCsvReader futuresContractCsvReader = new FuturesContractCsvReader(resourceLoader);
             List<FuturesContract> futuresContracts = futuresContractCsvReader.readFromFile();
             futuresContractRepository.saveAll(futuresContracts);
         }
 
-        logger.info("DATA LOADING FINISHED...");
+        logger.info("StockService: SOME DATA LOADING FINISHED...");
     }
 
     //**Iskljucivo za redis, da se sve odmah kesira, nema nekog smisla.*/

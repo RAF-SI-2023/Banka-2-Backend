@@ -52,11 +52,11 @@ class AuthControllerTest {
     @Test
     void testLogin() throws Exception {
         // Setup
-        LoginDto loginRequest = new LoginDto("lukapavlovic032@gmail.com", "admin");
+        LoginDto loginRequest = new LoginDto("dummyAdminUser@gmail.com", "dummyAdminUser");
 
         User user = new User(); // Create a user object with the required fields.
-        user.setEmail("lukapavlovic032@gmail.com");
-        user.setPassword(passwordEncoder.encode("admin"));
+        user.setEmail("dummyAdminUser@gmail.com");
+        user.setPassword(passwordEncoder.encode("dummyAdminUser"));
 
         String expectedToken = "token";
 

@@ -11,5 +11,5 @@ Feature: Activate employees
 
     Scenario:
         # User is not an employee so activate should fail
-        Given user exists
+        Given user that is not employee
         Then activating user will fail

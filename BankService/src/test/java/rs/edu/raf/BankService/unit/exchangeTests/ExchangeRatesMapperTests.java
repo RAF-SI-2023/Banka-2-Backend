@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import rs.edu.raf.BankService.data.dto.ExchangeRatesDto;
 import rs.edu.raf.BankService.data.dto.ExchangeTransferDetailsDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.mapper.ExchangeRatesMapper;
@@ -81,12 +81,12 @@ class ExchangeRatesMapperTests {
         // Prepare test data
         ExchangeTransferTransactionDetails exchangeTransferDetails = new ExchangeTransferTransactionDetails();
         exchangeTransferDetails.setId(1L);
-        Account senderAccount = new Account();
-        senderAccount.setAccountNumber("123456");
-        exchangeTransferDetails.setSenderAccount(senderAccount);
-        Account receiverAccount = new Account();
-        receiverAccount.setAccountNumber("654321");
-        exchangeTransferDetails.setReceiverAccount(receiverAccount);
+        CashAccount senderCashAccount = new CashAccount();
+        senderCashAccount.setAccountNumber("123456");
+        exchangeTransferDetails.setSenderCashAccount(senderCashAccount);
+        CashAccount receiverCashAccount = new CashAccount();
+        receiverCashAccount.setAccountNumber("654321");
+        exchangeTransferDetails.setReceiverCashAccount(receiverCashAccount);
         exchangeTransferDetails.setFromCurrency("USD");
         exchangeTransferDetails.setToCurrency("EUR");
         exchangeTransferDetails.setAmount(100.0);
@@ -100,8 +100,8 @@ class ExchangeRatesMapperTests {
 
         // Verify mapping
         assertEquals(exchangeTransferDetails.getId(), dto.getId());
-        assertEquals(exchangeTransferDetails.getSenderAccount().getAccountNumber(), dto.getFromAccountNumber());
-        assertEquals(exchangeTransferDetails.getReceiverAccount().getAccountNumber(), dto.getToAccountNumber());
+        assertEquals(exchangeTransferDetails.getSenderCashAccount().getAccountNumber(), dto.getFromAccountNumber());
+        assertEquals(exchangeTransferDetails.getReceiverCashAccount().getAccountNumber(), dto.getToAccountNumber());
         assertEquals(exchangeTransferDetails.getFromCurrency(), dto.getFromCurrency());
         assertEquals(exchangeTransferDetails.getToCurrency(), dto.getToCurrency());
         assertEquals(exchangeTransferDetails.getAmount(), dto.getAmount());

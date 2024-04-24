@@ -54,15 +54,15 @@ public class CardControllerSteps extends CardControllerTestsConfig {
         this.cardMapper = cardMapper;
     }
 
-    @Given("user is logged in")
+    @Given("employee is logged in")
     public void userIsLoggedInAsEmployee() {
-        userControllerTestsState.jwt = JwtTokenGenerator.generateToken(1L, "test@gmail.com", "EMPLOYEE", "");
+        userControllerTestsState.jwt = JwtTokenGenerator.generateToken(1L, "lazar@gmail.com", "EMPLOYEE", "");
     }
 
     @When("the create card endpoint is called")
     public void theCreateCardEndpointIsCalled() {
-        CreateCardDto cardDto = new CreateCardDto(/* Add necessary data here */);
-        cardDto.setAccountNumber("3334444777777777");
+        CreateCardDto cardDto = new CreateCardDto();
+        cardDto.setAccountNumber("0004444999999999");
         cardDto.setLimitCard(100000L);
         cardDto.setCardType(CardType.CREDIT);
 
@@ -100,16 +100,11 @@ public class CardControllerSteps extends CardControllerTestsConfig {
     @Then("it should return a success response with the created card details")
     public void itShouldReturnASuccessResponseWithTheCreatedCardDetails() {
         assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
-
-
-//
-//        // Add assertions for success response
     }
 
     @When("an invalid create card request without necessary data")
     public void anInvalidCreateCardRequestWithoutNecessaryData() {
-        CreateCardDto cardDto = new CreateCardDto(/* Add necessary data here */);
-        //  cardDto.setAccountNumber("3334444777777777");
+        CreateCardDto cardDto = new CreateCardDto(/* without necessary data */);
         cardDto.setLimitCard(100000L);
         cardDto.setCardType(CardType.CREDIT);
 
@@ -132,15 +127,12 @@ public class CardControllerSteps extends CardControllerTestsConfig {
     @Then("it should return a not found status with an error message")
     public void itShouldReturnAForbiddenStatusWithAnErrorMessage() {
         assertEquals(MockHttpServletResponse.SC_FORBIDDEN, responseEntityFail.getStatus());
-
     }
 
     private MockHttpServletResponse responseCardNumber;
     @When("users endpoint is called")
     public void usersEndpointIsCalled() {
-
         long identificationCardNumber = 1000000000000000L;
-
         try {
             ResultActions resultActions = mockMvc.perform(
                     get("http://localhost:8003/api/cards/id/"+identificationCardNumber)
@@ -150,7 +142,6 @@ public class CardControllerSteps extends CardControllerTestsConfig {
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseCardNumber =mvcResult.getResponse();
-
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -158,10 +149,7 @@ public class CardControllerSteps extends CardControllerTestsConfig {
     @Then("it should return a success response with the card details")
     public void itShouldReturnASuccessResponseWithTheCardDetails() {
         assertEquals(MockHttpServletResponse.SC_OK, responseCardNumber.getStatus());
-        // Add assertions for success response
     }
-
-
 
     @When("users endpoint put is called {string}")
     public void usersEndpointIsCalledForStatus(String url) {
@@ -178,12 +166,9 @@ public class CardControllerSteps extends CardControllerTestsConfig {
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseCardNumber =mvcResult.getResponse();
-
         } catch (Exception e) {
             fail(e.getMessage());
         }
-
-
     }
 
     @When("users endpoint get is called {string}")
@@ -209,7 +194,6 @@ public class CardControllerSteps extends CardControllerTestsConfig {
         CardDto cardDto = new CardDto();
         cardDto.setIdentificationCardNumber(1000000000000000L);
         cardDto.setLimitCard(100000L);
-
         try {
             ResultActions resultActions = mockMvc.perform(
                     put(url)
@@ -220,7 +204,6 @@ public class CardControllerSteps extends CardControllerTestsConfig {
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseCardNumber =mvcResult.getResponse();
-
         } catch (Exception e) {
             fail(e.getMessage());
         }

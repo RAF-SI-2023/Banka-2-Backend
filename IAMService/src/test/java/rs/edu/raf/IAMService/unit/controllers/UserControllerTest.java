@@ -29,7 +29,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import rs.edu.raf.IAMService.controllers.UserController;
 import rs.edu.raf.IAMService.data.dto.*;
+import rs.edu.raf.IAMService.data.entites.Employee;
 import rs.edu.raf.IAMService.data.entites.Permission;
+import rs.edu.raf.IAMService.data.entites.User;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
 import rs.edu.raf.IAMService.exceptions.EmailTakenException;
@@ -40,9 +42,10 @@ import rs.edu.raf.IAMService.filters.JwtFilter;
 import rs.edu.raf.IAMService.jwtUtils.JwtUtil;
 import rs.edu.raf.IAMService.services.UserService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -152,7 +155,7 @@ class UserControllerTest {
 //    }
 
     @Test
-    void createEmployee_happyFlow_returnsOk(){
+    void createEmployee_happyFlow_returnsOk() {
         EmployeeDto employeeDto = new EmployeeDto();
 
         when(userService.createEmployee(Mockito.any(EmployeeDto.class))).thenReturn(employeeDto);
@@ -166,7 +169,7 @@ class UserControllerTest {
 
 
     @Test
-    void createEmployee_emailTaken_badRequest(){
+    void createEmployee_emailTaken_badRequest() {
         String email = "employee@gmail.com";
         EmployeeDto employeeDtoException = new EmployeeDto();
         employeeDtoException.setEmail(email);
@@ -182,7 +185,7 @@ class UserControllerTest {
     }
 
     @Test
-    void createEmployee_missingRole_internalServer(){
+    void createEmployee_missingRole_internalServer() {
         String role = RoleType.ADMIN.getRole();
         EmployeeDto employeeDtoException = new EmployeeDto();
         String message = String.format("Role of type '%s' not found!", role);
@@ -197,9 +200,8 @@ class UserControllerTest {
     }
 
 
-
     @Test
-    void createAgent_happyFlow_returnsOk(){
+    void createAgent_happyFlow_returnsOk() {
         AgentDto agentDto = new AgentDto();
 
         when(userService.createAgent(Mockito.any(AgentDto.class))).thenReturn(agentDto);
@@ -210,8 +212,9 @@ class UserControllerTest {
         assertEquals(agentDto.getId(), responseEntity.getBody());
         verify(userService, times(1)).createAgent(agentDto);
     }
+
     @Test
-    void createAgent_emailTaken_badRequest(){
+    void createAgent_emailTaken_badRequest() {
         String email = "employee@gmail.com";
         AgentDto agentDto = new AgentDto();
         String message = String.format("User with email '%s' already exists", email);
@@ -226,7 +229,7 @@ class UserControllerTest {
     }
 
     @Test
-    void createAgent_missingRole_internalServer(){
+    void createAgent_missingRole_internalServer() {
         String role = RoleType.ADMIN.getRole();
         AgentDto agentDtoException = new AgentDto();
         String message = String.format("Role of type '%s' not found!", role);
@@ -241,7 +244,7 @@ class UserControllerTest {
     }
 
     @Test
-    void initiatesChangePassword_happyFlow_returnsOk(){
+    void initiatesChangePassword_happyFlow_returnsOk() {
         ChangePasswordDto changePasswordDto = new ChangePasswordDto();
 
         when(userService.setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword())).thenReturn(true);
@@ -250,7 +253,7 @@ class UserControllerTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(true, responseEntity.getBody());
-        verify(userService, times(1)).setPassword(changePasswordDto.getEmail(),changePasswordDto.getPassword());
+        verify(userService, times(1)).setPassword(changePasswordDto.getEmail(), changePasswordDto.getPassword());
     }
 
 
@@ -291,7 +294,124 @@ class UserControllerTest {
         verify(userService, times(1)).findById(id);
     }
 
+    @Test
+    public void testActivateEmployee_Success() {
+        // Mock behavior
+        int id = 123;
+        Employee user = new Employee();
+        user.setId(123L);
+        user.setActive(true);
+        when(userService.employeeActivation(id)).thenReturn(user);
 
+        // Test
+        ResponseEntity<Boolean> response = userController.activateEmployee(id);
 
+        // Verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(Boolean.TRUE.equals(response.getBody()));
+    }
 
+    @Test
+    public void testActivateEmployee_Failure() {
+        // Mock behavior
+        int id = 123;
+        doThrow(new IllegalArgumentException()).when(userService).employeeActivation(id);
+
+        // Test
+        ResponseEntity<Boolean> response = userController.activateEmployee(id);
+
+        // Verify
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertFalse(response.getBody());
+    }
+
+    @Test
+    public void testDeactivateEmployee_Success() {
+        // Mock behavior
+        int id = 123;
+        Employee user = new Employee();
+        user.setId(123L);
+        user.setActive(true);
+        when(userService.employeeDeactivation(id)).thenReturn(user);
+
+        // Test
+        ResponseEntity<Boolean> response = userController.deactivateEmployee(id);
+
+        // Verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody());
+    }
+
+    @Test
+    public void testDeactivateEmployee_Failure() {
+        // Mock behavior
+        int id = 123;
+        doThrow(new IllegalArgumentException()).when(userService).employeeDeactivation(id);
+
+        // Test
+        ResponseEntity<Boolean> response = userController.deactivateEmployee(id);
+
+        // Verify
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertFalse(response.getBody());
+    }
+
+    @Test
+    public void testGetAgentsLeftLimit() {
+        // Mock behavior
+        Long id = 123L;
+        BigDecimal limit = new BigDecimal("1000.00");
+        when(userService.getAgentsLeftLimit(id)).thenReturn(limit);
+
+        // Test
+        ResponseEntity<BigDecimal> response = userController.getAgentsLeftLimit(id);
+
+        // Verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(limit, response.getBody());
+    }
+
+    @Test
+    public void testResetAgentsLeftLimit() {
+        // Mock behavior
+        Long id = 123L;
+        when(userService.getAgentsLeftLimit(id)).thenReturn(new BigDecimal("1000.00"));
+
+        // Test
+        ResponseEntity<Void> response = userController.resetAgentsLeftLimit(id);
+
+        // Verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testDecreaseAgentLimit() {
+        // Mock behavior
+        Long id = 123L;
+        Double amount = 50.0;
+        when(userService.getAgentsLeftLimit(id)).thenReturn(new BigDecimal("1000.00"));
+
+        // Test
+        ResponseEntity<Void> response = userController.decreaseAgentLimit(id, amount);
+
+        // Verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void createCompanyEmployeeSuccess() {
+        // Mock behavior
+        CompanyEmployeeDto employeeDto = new CompanyEmployeeDto();
+        employeeDto.setEmail("email");
+        employeeDto.setRole(RoleType.USER);
+        employeeDto.setPib(123L);
+        when(userService.createCompanyEmployee(employeeDto)).thenReturn(employeeDto);
+
+        // Test
+        ResponseEntity<?> response = userController.createCompanyEmployee(employeeDto);
+
+        // Verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }
+

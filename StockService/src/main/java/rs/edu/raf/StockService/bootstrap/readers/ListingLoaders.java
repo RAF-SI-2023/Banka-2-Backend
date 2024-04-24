@@ -5,8 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import rs.edu.raf.StockService.bootstrap.exchange.BootstrapExchange;
@@ -15,6 +19,8 @@ import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.repositories.ForexRepository;
 import rs.edu.raf.StockService.repositories.StockRepository;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -27,13 +33,25 @@ public class ListingLoaders implements CommandLineRunner {
     private String iexToken;
     @Value("${finnhubToken}")
     private String finnhubToken;
+    private List<Stock> stockList;
+    private List<Forex> forexList;
 
-    public ListingLoaders(StockRepository stockRepository, ForexRepository forexRepository) {
+    private final Environment environment;
+
+    ResourceLoader resourceLoader;
+
+    @Autowired
+    public ListingLoaders(StockRepository stockRepository, ForexRepository forexRepository, ResourceLoader resourceLoader, Environment environment) {
         this.stockRepository = stockRepository;
         this.forexRepository = forexRepository;
+        this.stockList = new ArrayList<>();
+        this.forexList = new ArrayList<>();
+        this.resourceLoader = resourceLoader;
+        this.environment = environment;
     }
 
-    private void loadStocks() {
+    private void loadStocksFromApi() {
+
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -80,8 +98,8 @@ public class ListingLoaders implements CommandLineRunner {
                         stock.setLow(change);
                         stock.setShares(0);
                         stock.setYield(yield);
-
-                        stockRepository.save(stock);
+                        stockList.add(stock);
+                        //               stockRepository.save(stock);
                     }
 
                 }
@@ -94,7 +112,7 @@ public class ListingLoaders implements CommandLineRunner {
 
     }
 
-    private void loadForexes() {
+    private void loadForexesFromApi() {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -149,8 +167,8 @@ public class ListingLoaders implements CommandLineRunner {
                             forex.setBaseCurrency(baseCurrency);
                             forex.setQuoteCurrency(quoteCurrency);
                             i++;
-
-                            forexRepository.save(forex);
+                            forexList.add(forex);
+                            //     forexRepository.save(forex);
                         }
                     }
 
@@ -169,14 +187,64 @@ public class ListingLoaders implements CommandLineRunner {
 
     }
 
+    private void tryToLoadStockFromFile() throws IOException {
+        Resource stockResource = resourceLoader.getResource("classpath:serializedData/stock.exc");
+        if(stockRepository.count() == 0){
+            if(stockResource.exists()){
+                try (ObjectInputStream objectIn = new ObjectInputStream(stockResource.getInputStream())) {
+                    List<Stock> obj = (List<Stock>) objectIn.readObject();
+                    System.out.println("list of stocks has been deserialized:");
+                    stockList.addAll(obj);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                stockRepository.saveAll(stockList);
+            }
+            else{
+                loadStocksFromApi();
+                // ne znamo kako da sacuvano na putanji resources/serializedData/stock.exc
+                // gde ce da se cuva u docker kontejneru ?
+                ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("stock.exc"));
+                objectOut.writeObject(stockList);
+                objectOut.close();
+                System.out.println("list of stocks has been serialized and saved to db");
+                stockRepository.saveAll(stockList);
+            }
+        }
+    }
+
+    private void tryToLoadForexFromFile() throws IOException {
+        Resource forexResource = resourceLoader.getResource("classpath:serializedData/forex.exc");
+        if(forexRepository.count() == 0){
+            if(forexResource.exists()){
+                try (ObjectInputStream objectIn = new ObjectInputStream(forexResource.getInputStream())) {
+                    List<Forex> obj = (List<Forex>) objectIn.readObject();
+                    System.out.println("list of forexes has been deserialized:");
+                    forexList.addAll(obj);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                forexRepository.saveAll(forexList);
+            } else {
+                loadForexesFromApi();
+                // ne znamo kako da sacuvano na putanji resources/serializedData/forex.exc
+                // gde ce da se cuva u docker kontejneru ?
+                ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("forex.exc"));
+                objectOut.writeObject(forexList);
+                objectOut.close();
+                System.out.println("list of forexes has been serialized and saved to db");
+                forexRepository.saveAll(forexList);
+            }
+        }
+    }
+
+
     @Override
     public void run(String... args) throws Exception {
-        logger.info("DATA LOADING IN PROGRESS...");
-
-        loadStocks();
-        loadForexes();
-
-        logger.info("DATA LOADING FINISHED...");
+        logger.info("StockService: STOCK AND FOREX DATA LOADING IN PROGRESS...");
+        tryToLoadStockFromFile();
+        tryToLoadForexFromFile();
+        logger.info("StockService: STOCK AND FOREX DATA LOADING FINISHED...");
     }
 
 }

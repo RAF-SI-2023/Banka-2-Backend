@@ -7,7 +7,7 @@ import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.entities.accounts.Account;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
@@ -28,8 +28,8 @@ public class CreateExternalTransactionIntegrationTest extends TransactionService
     @Autowired
     private TransactionRepository transactionRepository;
 
-    private Account testSenderAccount;
-    private Account testReceiverAccount;
+    private CashAccount testSenderCashAccount;
+    private CashAccount testReceiverCashAccount;
     private TransactionStatus status;
     private Long transactionId;
 
@@ -39,36 +39,36 @@ public class CreateExternalTransactionIntegrationTest extends TransactionService
         if (transactionId != null) {
             transactionRepository.deleteById(transactionId);
         }
-        if (testSenderAccount != null && testSenderAccount.getId() != null) {
-            accountRepository.delete(testSenderAccount);
+        if (testSenderCashAccount != null && testSenderCashAccount.getId() != null) {
+            accountRepository.delete(testSenderCashAccount);
         }
-        if (testReceiverAccount != null && testReceiverAccount.getId() != null) {
-            accountRepository.delete(testReceiverAccount);
+        if (testReceiverCashAccount != null && testReceiverCashAccount.getId() != null) {
+            accountRepository.delete(testReceiverCashAccount);
         }
     }
 
     @Given("a sender account with number {string} with a balance of {long} for external transaction - happyFlow")
     public void an_account_with_number_with_a_balance_of(String accountNumber, Long balance) {
-        testSenderAccount = createTestAccount(accountNumber,
+        testSenderCashAccount = createTestAccount(accountNumber,
                 "sender@example.com",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 "USD",
                 0.0 ,
                 balance);
 
-        accountRepository.save(testSenderAccount);
+        accountRepository.save(testSenderCashAccount);
     }
 
     @Given("a receiver account with number {string} with a balance of {long} for external transaction - happyFlow")
     public void a_receiver_account_with_number_with_a_balance_of(String accountNumber, Long balance) {
-        testReceiverAccount = createTestAccount(accountNumber,
+        testReceiverCashAccount = createTestAccount(accountNumber,
                 "sender@example.com",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 "USD",
                 0.0 ,
                 balance);
 
-        accountRepository.save(testReceiverAccount);
+        accountRepository.save(testReceiverCashAccount);
     }
 
     @When("I request an external transfer of {long} from {string} to {string} - happyFlow")
@@ -92,26 +92,26 @@ public class CreateExternalTransactionIntegrationTest extends TransactionService
 
     @Then("the sender's new balance should be {long} after external transaction - happyFlow")
     public void the_sender_s_new_balance_should_be(Long expectedBalance) {
-        Account senderAccount = accountRepository.findByAccountNumber(testSenderAccount.getAccountNumber());
-        assertEquals(expectedBalance, senderAccount.getAvailableBalance());
+        CashAccount senderCashAccount = accountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
+        assertEquals(expectedBalance, senderCashAccount.getAvailableBalance());
     }
 
     @Then("the receiver's new balance should be {long} after external transaction - happyFlow")
     public void the_receiver_s_new_balance_should_be(Long expectedBalance) {
-        Account receiverAccount = accountRepository.findByAccountNumber(testReceiverAccount.getAccountNumber());
-        assertEquals(expectedBalance, receiverAccount.getAvailableBalance());
+        CashAccount receiverCashAccount = accountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
+        assertEquals(expectedBalance, receiverCashAccount.getAvailableBalance());
     }
 
     @Given("a sender account with number {string} with a balance of {long} for external transaction - insufficientFunds")
     public void a_sender_account_with_number_with_a_balance_of_insufficientFunds(String accountNumber, Long balance) {
-        testSenderAccount = createTestAccount(accountNumber, "sender@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
-        accountRepository.save(testSenderAccount);
+        testSenderCashAccount = createTestAccount(accountNumber, "sender@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
+        accountRepository.save(testSenderCashAccount);
     }
 
     @Given("a receiver account with number {string} with a balance of {long} for external transaction - insufficientFunds")
     public void a_receiver_account_with_number_with_a_balance_of_insufficientFunds(String accountNumber, Long balance) {
-        testReceiverAccount = createTestAccount(accountNumber, "receiver@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
-        accountRepository.save(testReceiverAccount);
+        testReceiverCashAccount = createTestAccount(accountNumber, "receiver@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
+        accountRepository.save(testReceiverCashAccount);
     }
 
     @When("I request an external transfer of {long} from {string} to {string} - insufficientFunds")
@@ -135,32 +135,32 @@ public class CreateExternalTransactionIntegrationTest extends TransactionService
 
     @Then("the sender's new balance should be {long} after external transaction - insufficientFunds")
     public void the_sender_s_new_balance_should_be_insufficientFunds(Long expectedBalance) {
-        Account senderAccount = accountRepository.findByAccountNumber(testSenderAccount.getAccountNumber());
-        assertEquals(expectedBalance, senderAccount.getAvailableBalance());
+        CashAccount senderCashAccount = accountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
+        assertEquals(expectedBalance, senderCashAccount.getAvailableBalance());
     }
 
     @Then("the receiver's new balance should be {long} after external transaction - insufficientFunds")
     public void the_receiver_s_new_balance_should_be_insufficientFunds(Long expectedBalance) {
-        Account receiverAccount = accountRepository.findByAccountNumber(testReceiverAccount.getAccountNumber());
-        assertEquals(expectedBalance, receiverAccount.getAvailableBalance());
+        CashAccount receiverCashAccount = accountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
+        assertEquals(expectedBalance, receiverCashAccount.getAvailableBalance());
     }
 
-    private Account createTestAccount(String accountNumber,
-                                      String email,
-                                      AccountType accountType,
-                                      String currencyCode,
-                                      Double maintenanceFee,
-                                      Long balance) {
-        Account account = new Account();
-        account.setAccountNumber(accountNumber);
-        account.setEmail(email);
-        account.setAvailableBalance(balance);
-        account.setAccountType(accountType);
-        account.setCurrencyCode(currencyCode);
-        account.setMaintenanceFee(maintenanceFee);
-        account.setAvailableBalance(balance);
-        account.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
-        account.setEmployeeId(1L);
-        return account;
+    private CashAccount createTestAccount(String accountNumber,
+                                          String email,
+                                          AccountType accountType,
+                                          String currencyCode,
+                                          Double maintenanceFee,
+                                          Long balance) {
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAccountNumber(accountNumber);
+        cashAccount.setEmail(email);
+        cashAccount.setAvailableBalance(balance);
+        cashAccount.setAccountType(accountType);
+        cashAccount.setCurrencyCode(currencyCode);
+        cashAccount.setMaintenanceFee(maintenanceFee);
+        cashAccount.setAvailableBalance(balance);
+        cashAccount.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
+        cashAccount.setEmployeeId(1L);
+        return cashAccount;
     }
 }

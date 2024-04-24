@@ -14,9 +14,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForeignCurrencyAccount extends Account {
+public class ForeignCurrencyCashAccount extends CashAccount {
 
     private Double interestRate = 1.0;
+    /**
+     * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
+     */
     private String defaultCurrencyCode;
     private Integer numberOfAllowedCurrencies = 1;
     @OneToMany(
@@ -27,7 +30,12 @@ public class ForeignCurrencyAccount extends Account {
     )
     private List<ForeignCurrencyHolder> foreignCurrencyHolders = new ArrayList<>();
 
-    public ForeignCurrencyAccount(
+    /**
+     * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
+     */
+
+
+    public ForeignCurrencyCashAccount(
             String accountNumber,
             String email,
             AccountType accountType,
