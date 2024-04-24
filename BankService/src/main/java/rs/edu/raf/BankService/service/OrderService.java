@@ -7,14 +7,14 @@ import rs.edu.raf.BankService.data.enums.OrderStatus;
 
 import java.util.List;
 
-@Service
-public interface OrderService {
-
-    boolean create(OrderDto orderDto);
-
-    List<OrderDto> getAll();
-
-    boolean updateOrderStatus(Long orderId, OrderStatus status);
-
-    List<Order> findAllByUserId(Long id);
-}
+//@Service
+//public interface OrderService {
+//
+//    boolean create(OrderDto orderDto);
+//
+//    List<OrderDto> getAll();
+//
+//    boolean updateOrderStatus(Long orderId, OrderStatus status);
+//
+//    List<Order> findAllByUserId(Long id);
+//}
