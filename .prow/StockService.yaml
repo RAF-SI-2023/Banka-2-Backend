@@ -21,7 +21,7 @@ presubmits:
               # za integracione i end to end testove.
               docker compose up -d stock-service
               docker compose up -d postgres-db
-              docker compose up -d stock-redis
+              docker compose up -d redis
               docker compose up -d rabbitmq
               
               cd "$SERVICE_NAME"
