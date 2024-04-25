@@ -105,6 +105,15 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
+        if (SpringSecurityUtil.hasRoleRole("ROLE_SUPERVISOR")) {
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                if (user.getRole().getRoleType() == RoleType.AGENT) {
+                    return userRepository.removeUserByEmail(email);
+                }
+            }
+        }
         if (SpringSecurityUtil.hasRoleRole("ROLE_USER")) {
             if (SpringSecurityUtil.getPrincipalEmail().equals(email)) {
                 return userRepository.removeUserByEmail(email);
