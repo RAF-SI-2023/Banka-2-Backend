@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 return userRepository.removeUserByEmail(email);
             }
         }
-        return -1;
+        throw new RuntimeException("You don't have permission to delete this user.");
     }
 
     @Override
