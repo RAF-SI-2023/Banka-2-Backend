@@ -19,7 +19,7 @@ public class AccountController {
 
 
     @PostMapping("/associate-profile-initialization")
-    public ResponseEntity<?> login(@RequestBody AccountNumberDto accountNumberDto) {
+    public ResponseEntity<?> associateProfileWithAccount(@RequestBody AccountNumberDto accountNumberDto) {
         try {
             return ResponseEntity.ok(accountService.userAccountUserProfileConnectionAttempt(accountNumberDto));
         } catch (Exception e) {
