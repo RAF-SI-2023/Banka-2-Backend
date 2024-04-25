@@ -1,8 +1,10 @@
 package rs.edu.raf.IAMService.unit.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.webjars.NotFoundException;
@@ -48,6 +50,10 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     public void createPrivateClient_validDto_returnsSavedPrivateClient() {
@@ -68,7 +74,6 @@ class UserServiceImplTest {
         // then
         verify(userRepository, times(1)).save(any(PrivateClient.class));
         doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(ClientActivationMessageDto.class));
-
         assertNotNull(result.getId());
         assertEquals(requestDto.getName(), result.getName());
         assertEquals(requestDto.getSurname(), result.getSurname());
@@ -101,7 +106,6 @@ class UserServiceImplTest {
         // then
         verify(userRepository, times(1)).save(client);
         doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(ClientActivationMessageDto.class));
-
         assertNotNull(result.getId());
         assertEquals(requestDto.getName(), result.getName());
         assertEquals(requestDto.getUsername(), result.getUsername());
