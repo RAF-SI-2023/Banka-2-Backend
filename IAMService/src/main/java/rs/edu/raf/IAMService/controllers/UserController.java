@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/create/agent")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
     public ResponseEntity<?> createAgent(@RequestBody AgentDto agentDto) {
         try {
             AgentDto newAgentDto = userService.createAgent(agentDto);
@@ -155,7 +155,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/all", consumes = MediaType.ALL_VALUE)
-    @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE','ROLE_SUPERVISOR')")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }
