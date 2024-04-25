@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 
 @Service
@@ -179,7 +180,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new MissingRoleException("USER"));
 
         client.setRole(role);
-
+        client.setPermissions(List.of());
+        client.setPassword(passwordEncoder.encode(Thread.currentThread().getName() + new Random().nextLong() + Thread.activeCount()));
         PrivateClient savedClient = userRepository.save(client);
 
         sendClientActivationMessage(savedClient.getEmail());
@@ -196,6 +198,9 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findByRoleType(RoleType.USER)
                 .orElseThrow(() -> new MissingRoleException("USER"));
         client.setRole(role);
+        client.setPermissions(List.of());
+        client.setPassword(passwordEncoder.encode(Thread.currentThread().getName() + new Random().nextLong() + Thread.activeCount()));
+
         sendClientActivationMessage(savedClient.getEmail());
 
         return userMapper.corporateClientToCorporateClientDto(savedClient);
@@ -211,9 +216,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendClientActivationMessage(String email) {
-        rabbitTemplate.convertAndSend(
+        //isnt used as of 25/4
+     /*   rabbitTemplate.convertAndSend(
                 "password-activation",
-                new ClientActivationMessageDto("url", email));
+                new ClientActivationMessageDto("url", email));*/
     }
 
     @Override
