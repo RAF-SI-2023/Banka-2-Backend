@@ -213,6 +213,20 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<exclude>**/bootstrap/**</exclude>
+						<exclude>**/configuration/**</exclude>
+						<exclude>**/data/**</exclude>
+						<exclude>**/exceptions/**</exclude>
+						<exclude>**/filters/**</exclude>
+						<exclude>**/jwtUtils/**</exclude>
+						<exclude>**/mapper/**</exclude>
+						<exclude>**/repositories/**</exclude>
+						<exclude>**/utils/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
