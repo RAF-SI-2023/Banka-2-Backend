@@ -128,7 +128,12 @@ public class UserController {
     @PreAuthorize(value = "hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Transactional
     public ResponseEntity<?> deleteUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(userService.deleteUserByEmail(email));
+        try {
+            return ResponseEntity.ok(userService.deleteUserByEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+
     }
 
     @PutMapping(path = "/update/employee", consumes = MediaType.APPLICATION_JSON_VALUE)
