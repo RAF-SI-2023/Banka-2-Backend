@@ -110,9 +110,9 @@ public class BootstrapDevData implements CommandLineRunner {
         employee2.setAddress("Dr Huga Klana 1, Beograd, Srbija");
 
         Agent agent1 = new Agent();
-        agent1.setEmail("dusan@gmail.com");
-        agent1.setUsername("dusan@gmail.com");
-        agent1.setPassword(passwordEncoder.encode("Dusan123!"));
+        agent1.setEmail("agent1@gmail.com");
+        agent1.setUsername("agent1@gmail.com");
+        agent1.setPassword(passwordEncoder.encode("agent1"));
         agent1.setRole(agentRole);
         agent1.setPhone("+38111317456");
         agent1.setAddress("Juriga Gargarina 3, Beograd, Srbija");
