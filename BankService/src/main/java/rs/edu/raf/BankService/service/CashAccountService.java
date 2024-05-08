@@ -7,7 +7,7 @@ import rs.edu.raf.BankService.exception.*;
 import java.util.List;
 
 @Service
-public interface AccountService {
+public interface CashAccountService {
 
     boolean userAccountUserProfileConnectionAttempt(AccountNumberDto accountNumberDto)
             throws UserAccountAlreadyAssociatedWithUserProfileException, UserAccountInProcessOfBindingWithUserProfileException, AccountNotFoundException;
@@ -31,4 +31,7 @@ public interface AccountService {
     SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto);
 
     void deleteSavedAccount(Long accountId, String savedAccountNumber);
+
+    boolean setIsAccountPrimaryForTrading(String accountNumber, boolean usedForSecurities);
+    boolean setIsAccountPrimaryForTrading(String accountNumber);
 }

@@ -16,12 +16,13 @@ public class AccountDto {
     private String email;
     private boolean status;
     private String accountType;
-    private Long availableBalance;
-    private Long reservedFunds;
+    private double availableBalance;
+    private double reservedFunds;
     private Long employeeId;
     private Long creationData;
     private Long expirationDate;
     private String currencyCode;
     private Double maintenanceFee;
+
 
 }

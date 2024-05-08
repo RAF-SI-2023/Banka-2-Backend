@@ -1,33 +1,32 @@
 package rs.edu.raf.BankService.controller;
 
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.web.bind.annotation.*;
-//import rs.edu.raf.BankService.data.dto.OrderDto;
-//import rs.edu.raf.BankService.data.enums.OrderStatus;
-//import rs.edu.raf.BankService.service.OrderService;
-//
-//import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import rs.edu.raf.BankService.data.dto.OrderDto;
+import rs.edu.raf.BankService.service.OrderService;
 
-//@RestController
-//@CrossOrigin
-//@RequestMapping("/api/orders")
-//public class OrderController {
-//
-//    private final OrderService orderService;
-//
-//    @Autowired
-//    public OrderController(OrderService orderService) {
-//        this.orderService = orderService;
-//    }
-//
-//    @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR')")
-//    @PostMapping()
-//    public ResponseEntity<Boolean> createOrder(OrderDto orderDto){
-//        return ResponseEntity.ok().body(orderService.create(orderDto));
-//    }
-//
+@RestController
+@CrossOrigin
+@RequestMapping("/api/orders")
+public class OrderController {
+
+    private final OrderService orderService;
+
+    @Autowired
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER')")
+    @PostMapping()
+    public ResponseEntity<Boolean> createOrder(OrderDto orderDto){
+        return ResponseEntity.ok().body(orderService.createOrder(orderDto));
+    }
+
+
+
 //    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR')")
 //    @GetMapping()
 //    public ResponseEntity<?> getAllOrders(){
@@ -57,5 +56,5 @@ package rs.edu.raf.BankService.controller;
 //    public ResponseEntity<?> rejectOrder(@PathVariable Long id){
 //        return ResponseEntity.ok().body(orderService.updateOrderStatus(id, OrderStatus.REJECTED));
 //    }
-//}
+}
 

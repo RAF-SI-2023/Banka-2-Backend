@@ -36,8 +36,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginRequest) {
         try {
-            System.out.println(userService.findByEmail(loginRequest.getEmail()));
-
             authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (Exception e) {
             e.printStackTrace();

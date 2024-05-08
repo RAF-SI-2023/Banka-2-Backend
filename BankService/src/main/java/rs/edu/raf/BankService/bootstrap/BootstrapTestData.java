@@ -11,13 +11,11 @@ import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.enums.*;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
-
-import java.util.concurrent.locks.Lock;
 
 /**
  *     Ova klasa ce da se runnuje prilikom pokretanja maven test komande
@@ -44,7 +42,7 @@ import java.util.concurrent.locks.Lock;
 public class BootstrapTestData implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapTestData.class);
-    private final AccountRepository accountRepository;
+    private final CashAccountRepository cashAccountRepository;
     private final CreditRepository creditRepository;
     private final CreditRequestRepository creditRequestRepository;
     private final CardRepository cardRepository;
@@ -138,15 +136,15 @@ public class BootstrapTestData implements CommandLineRunner {
     }
 
     private void addAccountIfCashAccountNumberIsNotPresent(CashAccount account){
-        if(accountRepository.findByAccountNumber(account.getAccountNumber()) == null){
+        if(cashAccountRepository.findByAccountNumber(account.getAccountNumber()) == null){
             if(account instanceof DomesticCurrencyCashAccount){
-                accountRepository.save((DomesticCurrencyCashAccount)account);
+                cashAccountRepository.save((DomesticCurrencyCashAccount)account);
             }
             else if (account instanceof ForeignCurrencyCashAccount){
-                accountRepository.save((ForeignCurrencyCashAccount)account);
+                cashAccountRepository.save((ForeignCurrencyCashAccount)account);
             }
             else {
-                accountRepository.save(account);
+                cashAccountRepository.save(account);
             }
         }
     }

@@ -2,6 +2,7 @@ package rs.edu.raf.IAMService.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -26,11 +27,13 @@ public class SpringSecurityConfig {
     private final UserService userService;
     private final JwtFilter jwtFilter;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private Environment environment;
 
-    public SpringSecurityConfig(UserService userService, JwtFilter jwtFilter, PasswordEncoder bCryptPasswordEncoder) {
+    public SpringSecurityConfig(UserService userService, JwtFilter jwtFilter, PasswordEncoder bCryptPasswordEncoder, Environment environment) {
         this.userService = userService;
         this.jwtFilter = jwtFilter;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+
     }
 
     @Bean

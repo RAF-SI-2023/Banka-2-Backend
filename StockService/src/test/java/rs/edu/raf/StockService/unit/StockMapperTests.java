@@ -38,6 +38,7 @@ public class StockMapperTests {
     @Test
     public void testStockDtoToStock() {
         StockDto stockDto = new StockDto(
+                1L,
                 "Stock1 Symbol",
                 "Stock1 Description",
                 "Stock1 Exchange",

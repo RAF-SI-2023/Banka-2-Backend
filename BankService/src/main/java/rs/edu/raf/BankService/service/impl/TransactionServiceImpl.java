@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
@@ -17,8 +18,9 @@ import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.InvalidInternalTransferException;
 import rs.edu.raf.BankService.exception.TransactionNotFoundException;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
+import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
 
 import java.util.List;
@@ -29,16 +31,17 @@ import java.util.stream.Collectors;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private final TransactionRepository transactionRepository;
-    private final AccountRepository accountRepository;
+    private final CashTransactionRepository cashTransactionRepository;
+    private final CashAccountRepository cashAccountRepository;
     private final TransactionMapper transactionMapper;
     private final RabbitTemplate rabbitTemplate;
+    private final CurrencyExchangeService currencyExchangeService;
 
     @Transactional
     @Override
     public InternalTransferTransactionDto createInternalTransferTransaction(InternalTransferTransactionDto internalTransferTransactionDto) {
-        CashAccount senderCashAccount = accountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
-        CashAccount receiverCashAccount = accountRepository.findByAccountNumber(internalTransferTransactionDto.getReceiverAccountNumber());
+        CashAccount senderCashAccount = cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
+        CashAccount receiverCashAccount = cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getReceiverAccountNumber());
 
         if (senderCashAccount == null || receiverCashAccount == null) {
             throw new AccountNotFoundException("Account not found");
@@ -58,8 +61,8 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setSenderCashAccount(senderCashAccount);
         transaction.setReceiverCashAccount(receiverCashAccount);
 
-        Long senderBalance = senderCashAccount.getAvailableBalance();
-        Long receiverBalance = receiverCashAccount.getAvailableBalance();
+        double senderBalance = senderCashAccount.getAvailableBalance();
+        double receiverBalance = receiverCashAccount.getAvailableBalance();
         Long transferAmount = transaction.getAmount();
 
         if (senderBalance >= transferAmount) {
@@ -71,15 +74,15 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStatus(TransactionStatus.DECLINED);
         }
 
-        accountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
+        cashAccountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
 
-        return transactionMapper.toInternalTransferTransactionDto(transactionRepository.save(transaction));
+        return transactionMapper.toInternalTransferTransactionDto(cashTransactionRepository.save(transaction));
     }
 
     @Override
     public ExternalTransferTransactionDto createExternalTransferTransaction(ExternalTransferTransactionDto externalTransferTransactionDto) {
-        CashAccount senderCashAccount = accountRepository.findByAccountNumber(externalTransferTransactionDto.getSenderAccountNumber());
-        CashAccount receiverCashAccount = accountRepository.findByAccountNumber(externalTransferTransactionDto.getReceiverAccountNumber());
+        CashAccount senderCashAccount = cashAccountRepository.findByAccountNumber(externalTransferTransactionDto.getSenderAccountNumber());
+        CashAccount receiverCashAccount = cashAccountRepository.findByAccountNumber(externalTransferTransactionDto.getReceiverAccountNumber());
 
         if (senderCashAccount == null || receiverCashAccount == null) {
             throw new AccountNotFoundException("Account not found");
@@ -90,7 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setSenderCashAccount(senderCashAccount);
         transaction.setReceiverCashAccount(receiverCashAccount);
 
-        Long senderBalance = transaction.getSenderCashAccount().getAvailableBalance();
+        double senderBalance = transaction.getSenderCashAccount().getAvailableBalance();
         Long transferAmount = transaction.getAmount();
 
         if (senderBalance >= transferAmount) {
@@ -105,25 +108,25 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStatus(TransactionStatus.DECLINED);
         }
 
-        accountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
+        cashAccountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
 
-        return transactionMapper.toExternalTransferTransactionDto(transactionRepository.save(transaction));
+        return transactionMapper.toExternalTransferTransactionDto(cashTransactionRepository.save(transaction));
     }
 
     @Override
     public TransactionStatus verifyTransaction(Long transactionId, String verificationToken) {
-        TransferTransaction transferTransaction = transactionRepository.findById(transactionId)
+        TransferTransaction transferTransaction = cashTransactionRepository.findById(transactionId)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
         TransactionStatus transactionStatus = transferTransaction.getStatus();
 
         if (transferTransaction instanceof ExternalTransferTransaction) {
-            Long senderBalance = transferTransaction.getSenderCashAccount().getAvailableBalance();
-            Long receiverBalance = transferTransaction.getReceiverCashAccount().getAvailableBalance();
+            double senderBalance = transferTransaction.getSenderCashAccount().getAvailableBalance();
+            double receiverBalance = transferTransaction.getReceiverCashAccount().getAvailableBalance();
             Long transferAmount = ((ExternalTransferTransaction) transferTransaction).getAmount();
 
-            CashAccount senderCashAccount = accountRepository
+            CashAccount senderCashAccount = cashAccountRepository
                     .findByAccountNumber(transferTransaction.getSenderCashAccount().getAccountNumber());
-            CashAccount receiverCashAccount = accountRepository
+            CashAccount receiverCashAccount = cashAccountRepository
                     .findByAccountNumber(transferTransaction.getReceiverCashAccount().getAccountNumber());
 
             if (verificationToken.equals(((ExternalTransferTransaction) transferTransaction).getVerificationToken())) {
@@ -133,7 +136,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionStatus = TransactionStatus.CONFIRMED;
                 transferTransaction.setStatus(transactionStatus);
 
-                accountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
+                cashAccountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
             }
             else {
                 transactionStatus = TransactionStatus.DECLINED;
@@ -141,19 +144,92 @@ public class TransactionServiceImpl implements TransactionService {
             }
         }
 
-        transactionRepository.save(transferTransaction);
+        cashTransactionRepository.save(transferTransaction);
 
         return transactionStatus;
     }
 
     @Override
     public List<GenericTransactionDto> getTransferTransactions(Long senderAccountId) {
-        CashAccount senderCashAccount = accountRepository.findById(senderAccountId)
+        CashAccount senderCashAccount = cashAccountRepository.findById(senderAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("User not found"));
 
         return senderCashAccount.getSentTransferTransactions().stream()
                 .map(transactionMapper::toGenericTransactionDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean reserveFunds(String accountNumber, double amount) {
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(accountNumber);
+        if (cashAccount == null) {
+            throw new AccountNotFoundException("Account not found");
+        }
+        return reserveFunds(cashAccount, amount);
+    }
+
+    @Override
+    public boolean reserveFunds(CashAccount cashAccount, double amount) {
+        // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
+        double availableBalance = cashAccount.getAvailableBalance();
+        double reservedFunds = cashAccount.getReservedFunds();
+
+        if(availableBalance - reservedFunds < amount) {
+            throw new RuntimeException("Insufficient funds");
+        }
+
+        cashAccount.setReservedFunds(reservedFunds + amount);
+        cashAccountRepository.save(cashAccount);
+        return true;
+    }
+
+    @Override
+    public boolean releaseFunds(String accountNumber, double amount) {
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(accountNumber);
+        if (cashAccount == null) {
+            throw new AccountNotFoundException("Account not found");
+        }
+        return releaseFunds(cashAccount, amount);
+    }
+
+    @Override
+    public boolean releaseFunds(CashAccount cashAccount, double amount) {
+        // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
+        double availableBalance = cashAccount.getAvailableBalance();
+        double reservedFunds = cashAccount.getAvailableBalance();
+
+        if(reservedFunds < amount) {
+            // this should not happen
+            throw new RuntimeException("Insufficient reserved funds (THIS SOULD NOT HAPPEN)");
+        }
+
+        cashAccount.setAvailableBalance(availableBalance - amount);
+        cashAccount.setReservedFunds(reservedFunds - amount);
+        cashAccountRepository.save(cashAccount);
+        return true;
+    }
+
+    @Override
+    public boolean addFunds(CashAccount cashAccount, double amount) {
+        // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
+        double availableBalance = cashAccount.getAvailableBalance();
+        cashAccount.setAvailableBalance(availableBalance + amount);
+        cashAccountRepository.save(cashAccount);
+        return true;
+    }
+
+    @Override
+    public boolean transferFunds(String senderAccountNumber, String receiverAccountNumber, double amount) {
+        // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
+        CashAccount senderAccount = cashAccountRepository.findByAccountNumber(senderAccountNumber);
+        CashAccount receiverAccount = cashAccountRepository.findPrimaryTradingAccount(receiverAccountNumber);
+        if (receiverAccount == null || senderAccount == null) {
+            throw new NotFoundException("Seller or buyer account not found");
+        }
+        releaseFunds(senderAccount, amount);
+        double fundsToAdd = currencyExchangeService.calculateAmountBetweenCurrencies(senderAccount.getCurrencyCode(), receiverAccount.getCurrencyCode(), amount);
+        addFunds(receiverAccount, fundsToAdd);
+        return true;
     }
 
     private String generateVerificationToken() {

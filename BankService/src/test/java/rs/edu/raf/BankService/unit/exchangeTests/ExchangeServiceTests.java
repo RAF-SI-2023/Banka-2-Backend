@@ -13,10 +13,10 @@ import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.ExchangeRatesMapper;
 import rs.edu.raf.BankService.mapper.ExchangeTransferDetailsMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
 import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.impl.CurrencyExchangeServiceImpl;
 
 import java.util.List;
@@ -30,10 +30,10 @@ class ExchangeServiceTests {
     private ExchangeRateRepository exchangeRateRepository;
 
     @Mock
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
     @Mock
-    private TransactionRepository transactionRepository;
+    private CashTransactionRepository cashTransactionRepository;
 
     @Mock
     private ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
@@ -111,23 +111,23 @@ class ExchangeServiceTests {
         bank2.setAvailableBalance(10000l);
         bank2.setEmail("a");
         bank2.setCurrencyCode("EUR");
-        when(accountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
-        when(accountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
+        when(cashAccountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
+        when(cashAccountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
         when(exchangeRateRepository.findByFromCurrencyAndToCurrency(anyString(), anyString())).thenReturn(new ExchangeRates());
-        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
-        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
+        when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
+        when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
         // Invoke service method
         assertDoesNotThrow(() -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
 
         // Verify
-        verify(transactionRepository, times(1)).save(any());
+        verify(cashTransactionRepository, times(1)).save(any());
     }
 
     @Test
     void testExchangeCurrency_AccountNotFound() {
         // Prepare test data
         ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto();
-        when(accountRepository.findByAccountNumber(anyString())).thenReturn(null);
+        when(cashAccountRepository.findByAccountNumber(anyString())).thenReturn(null);
 
         // Invoke and verify
         assertThrows(AccountNotFoundException.class, () -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
@@ -164,11 +164,11 @@ class ExchangeServiceTests {
         bank2.setAvailableBalance(10000l);
         bank2.setEmail("a");
         bank2.setCurrencyCode("EUR");
-        when(accountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
-        when(accountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
+        when(cashAccountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
+        when(cashAccountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
         when(exchangeRateRepository.findByFromCurrencyAndToCurrency(anyString(), anyString())).thenReturn(new ExchangeRates());
-        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
-        when(accountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
+        when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
+        when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
 
 
         // Invoke and verify

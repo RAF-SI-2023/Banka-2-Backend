@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
-import rs.edu.raf.BankService.repository.AccountRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
 
 import java.util.List;
@@ -23,10 +23,10 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     private TransactionService transactionService;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private CashTransactionRepository cashTransactionRepository;
 
     private CashAccount testSenderCashAccount;
     private CashAccount testReceiverCashAccount;
@@ -38,13 +38,13 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     @After
     public void finish() {
         if (transactionId != null) {
-            transactionRepository.deleteById(transactionId);
+            cashTransactionRepository.deleteById(transactionId);
         }
         if (testSenderCashAccount != null && testSenderCashAccount.getId() != null) {
-            accountRepository.delete(testSenderCashAccount);
+            cashAccountRepository.delete(testSenderCashAccount);
         }
         if (testReceiverCashAccount != null && testReceiverCashAccount.getId() != null) {
-            accountRepository.delete(testReceiverCashAccount);
+            cashAccountRepository.delete(testReceiverCashAccount);
         }
     }
 
@@ -60,14 +60,14 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
         testReceiverCashAccount.setAvailableBalance(10000L);
         testReceiverCashAccount.setAccountNumber(receiver);
 
-        accountRepository.saveAll(List.of(testReceiverCashAccount, testSenderCashAccount));
+        cashAccountRepository.saveAll(List.of(testReceiverCashAccount, testSenderCashAccount));
 
         transferTransaction.setSenderCashAccount(testSenderCashAccount);
         transferTransaction.setReceiverCashAccount(testReceiverCashAccount);
         transferTransaction.setAmount(Long.parseLong(amount));
         transferTransaction.setVerificationToken(token);
 
-        transaction = transactionRepository.save(transferTransaction);
+        transaction = cashTransactionRepository.save(transferTransaction);
         status = transaction.getStatus();
         transactionId = transaction.getId();
     }
@@ -106,14 +106,14 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
         testReceiverCashAccount.setAvailableBalance(10000L);
         testReceiverCashAccount.setAccountNumber(receiver);
 
-        accountRepository.saveAll(List.of(testReceiverCashAccount, testSenderCashAccount));
+        cashAccountRepository.saveAll(List.of(testReceiverCashAccount, testSenderCashAccount));
 
         transferTransaction.setSenderCashAccount(testSenderCashAccount);
         transferTransaction.setReceiverCashAccount(testReceiverCashAccount);
         transferTransaction.setAmount(Long.parseLong(amount));
         transferTransaction.setVerificationToken(token);
 
-        transaction = transactionRepository.save(transferTransaction);
+        transaction = cashTransactionRepository.save(transferTransaction);
         status = transaction.getStatus();
         transactionId = transaction.getId();
     }
@@ -141,9 +141,9 @@ public class VerifyTransactionIntegrationTest extends TransactionServiceIntegrat
     }
 
     private void refreshTestAccounts() {
-        testSenderCashAccount = accountRepository.findById(testSenderCashAccount.getId())
+        testSenderCashAccount = cashAccountRepository.findById(testSenderCashAccount.getId())
                 .orElseThrow(() -> new AssertionError("Sender account not found"));
-        testReceiverCashAccount = accountRepository.findById(testReceiverCashAccount.getId())
+        testReceiverCashAccount = cashAccountRepository.findById(testReceiverCashAccount.getId())
                 .orElseThrow(() -> new AssertionError("Receiver account not found"));
     }
 }

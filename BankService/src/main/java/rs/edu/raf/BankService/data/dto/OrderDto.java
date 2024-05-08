@@ -1,12 +1,11 @@
 package rs.edu.raf.BankService.data.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import rs.edu.raf.BankService.data.enums.OrderActionType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
-import rs.edu.raf.BankService.data.enums.SecuritiesType;
+import rs.edu.raf.BankService.data.enums.ListingType;
 
 @Data
 @AllArgsConstructor
@@ -17,9 +16,9 @@ public class OrderDto {
 
     private OrderActionType orderActionType;
 
-    private SecuritiesType securitiesType;
+    private ListingType listingType;
 
-    private String stockSymbol;
+    private String securitiesSymbol;
 
     private Integer quantity;
 

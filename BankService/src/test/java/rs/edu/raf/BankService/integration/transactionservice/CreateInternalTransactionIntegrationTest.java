@@ -11,8 +11,8 @@ import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
-import rs.edu.raf.BankService.repository.AccountRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,10 +23,10 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
     private TransactionService transactionService;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private CashTransactionRepository cashTransactionRepository;
 
     private CashAccount testSenderCashAccount;
     private CashAccount testReceiverCashAccount;
@@ -37,13 +37,13 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
     @After
     public void finish() {
         if (transactionId != null) {
-            transactionRepository.deleteById(transactionId);
+            cashTransactionRepository.deleteById(transactionId);
         }
         if (testSenderCashAccount != null && testSenderCashAccount.getId() != null) {
-            accountRepository.delete(testSenderCashAccount);
+            cashAccountRepository.delete(testSenderCashAccount);
         }
         if (testReceiverCashAccount != null && testReceiverCashAccount.getId() != null) {
-            accountRepository.delete(testReceiverCashAccount);
+            cashAccountRepository.delete(testReceiverCashAccount);
         }
     }
     @Given("a sender account with number {string} with a balance of {long} for internal transaction - happyFlow")
@@ -55,7 +55,7 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
                 0.0 ,
                 balance);
 
-        accountRepository.save(testSenderCashAccount);
+        cashAccountRepository.save(testSenderCashAccount);
     }
 
     @Given("a receiver account with number {string} with a balance of {long} for internal transaction - happyFlow")
@@ -67,7 +67,7 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
                 0.0 ,
                 balance);
 
-        accountRepository.save(testReceiverCashAccount);
+        cashAccountRepository.save(testReceiverCashAccount);
     }
 
     @When("I request an internal transfer of {long} from {string} to {string} - happyFlow")
@@ -87,27 +87,27 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
     }
 
     @Then("the sender's new balance should be {long} after internal transaction - happyFlow")
-    public void the_sender_s_new_balance_should_be(Long expectedBalance) {
-        CashAccount senderCashAccount = accountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
+    public void the_sender_s_new_balance_should_be(double expectedBalance) {
+        CashAccount senderCashAccount = cashAccountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
         assertEquals(expectedBalance, senderCashAccount.getAvailableBalance());
     }
 
     @Then("the receiver's new balance should be {long} after internal transaction - happyFlow")
-    public void the_receiver_s_new_balance_should_be(Long expectedBalance) {
-        CashAccount receiverCashAccount = accountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
+    public void the_receiver_s_new_balance_should_be(double expectedBalance) {
+        CashAccount receiverCashAccount = cashAccountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
         assertEquals(expectedBalance, receiverCashAccount.getAvailableBalance());
     }
 
     @Given("a sender account with number {string} with a balance of {long} for internal transaction - insufficientFunds")
     public void a_sender_account_with_number_with_a_balance_of_insufficientFunds(String accountNumber, Long balance) {
         testSenderCashAccount = createTestAccount(accountNumber, "sender@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
-        accountRepository.save(testSenderCashAccount);
+        cashAccountRepository.save(testSenderCashAccount);
     }
 
     @Given("a receiver account with number {string} with a balance of {long} for internal transaction - insufficientFunds")
     public void a_receiver_account_with_number_with_a_balance_of_insufficientFunds(String accountNumber, Long balance) {
         testReceiverCashAccount = createTestAccount(accountNumber, "sender@example.com", AccountType.DOMESTIC_CURRENCY_ACCOUNT, "USD", 0.0, balance);
-        accountRepository.save(testReceiverCashAccount);
+        cashAccountRepository.save(testReceiverCashAccount);
     }
 
     @When("I request an internal transfer of {long} from {string} to {string} - insufficientFunds")
@@ -127,14 +127,14 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
     }
 
     @Then("the sender's new balance should be {long} after internal transaction - insufficientFunds")
-    public void the_sender_s_new_balance_should_be_insufficientFunds(Long expectedBalance) {
-        CashAccount senderCashAccount = accountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
+    public void the_sender_s_new_balance_should_be_insufficientFunds(double expectedBalance) {
+        CashAccount senderCashAccount = cashAccountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
         assertEquals(expectedBalance, senderCashAccount.getAvailableBalance());
     }
 
     @Then("the receiver's new balance should be {long} after internal transaction - insufficientFunds")
-    public void the_receiver_s_new_balance_should_be_insufficientFunds(Long expectedBalance) {
-        CashAccount receiverCashAccount = accountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
+    public void the_receiver_s_new_balance_should_be_insufficientFunds(double expectedBalance) {
+        CashAccount receiverCashAccount = cashAccountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
         assertEquals(expectedBalance, receiverCashAccount.getAvailableBalance());
     }
 
