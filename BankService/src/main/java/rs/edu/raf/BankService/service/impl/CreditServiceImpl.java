@@ -10,7 +10,7 @@ import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 import rs.edu.raf.BankService.mapper.CreditMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 import rs.edu.raf.BankService.service.CreditService;
@@ -26,7 +26,7 @@ public class CreditServiceImpl implements CreditService {
     private final CreditRepository creditRepository;
     private final CreditRequestRepository creditRequestRepository;
     private final CreditMapper creditMapper;
-    private final AccountRepository accountRepository;
+    private final CashAccountRepository cashAccountRepository;
 
     @Transactional
     @Override
@@ -35,7 +35,7 @@ public class CreditServiceImpl implements CreditService {
         if (credit1 != null) {
             throw new RuntimeException("Credit already exists");
         }
-        CashAccount cashAccount = accountRepository.findByAccountNumber(credit.getAccountNumber());
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(credit.getAccountNumber());
         if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
@@ -43,7 +43,7 @@ public class CreditServiceImpl implements CreditService {
             throw new RuntimeException("Currency is not the same as account currency");
         }
 
-        List<CashAccount> bankCashAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
+        List<CashAccount> bankCashAccounts = cashAccountRepository.findAllByEmail("bankAccount@bank.rs");
         CashAccount bankAccountSender = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(cashAccount.getCurrencyCode())).findFirst().orElse(null);
         if (bankAccountSender == null) {
             throw new RuntimeException("Bank account not found");
@@ -54,7 +54,7 @@ public class CreditServiceImpl implements CreditService {
         bankAccountSender.setAvailableBalance((long) (bankAccountSender.getAvailableBalance() - credit.getCreditAmount()));
 
         cashAccount.setAvailableBalance((long) (cashAccount.getAvailableBalance() + credit.getCreditAmount()));
-        accountRepository.saveAll(List.of(cashAccount, bankAccountSender));
+        cashAccountRepository.saveAll(List.of(cashAccount, bankAccountSender));
         credit = creditRepository.save(credit);
         return creditMapper.creditToCreditDto(credit);
     }
@@ -71,7 +71,7 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public CreditRequestDto createCreditRequest(CreditRequestDto creditRequestDto) {
-        CashAccount cashAccount = accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(creditRequestDto.getAccountNumber());
         if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }
@@ -98,7 +98,7 @@ public class CreditServiceImpl implements CreditService {
         if (creditRequest.getStatus() != CreditRequestStatus.PENDING) {
             throw new RuntimeException("Credit request is not pending");
         }
-        CashAccount cashAccount = accountRepository.findByAccountNumber(creditRequest.getAccountNumber());
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(creditRequest.getAccountNumber());
         if (cashAccount == null) {
             throw new RuntimeException("Account not found");
         }

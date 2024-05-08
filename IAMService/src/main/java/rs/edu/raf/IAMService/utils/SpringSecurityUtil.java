@@ -9,7 +9,7 @@ public class SpringSecurityUtil {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
     }
 
-    static public boolean hasRolePermission(String permission){
+    static public boolean hasPermission(String permission){
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(permission));
     }
 

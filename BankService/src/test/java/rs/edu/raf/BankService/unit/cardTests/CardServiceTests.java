@@ -11,7 +11,7 @@ import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.enums.CardType;
 import rs.edu.raf.BankService.mapper.CardMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.service.impl.CardServiceImpl;
 
@@ -38,7 +38,7 @@ public class CardServiceTests {
     private CardRepository cardRepository;
 
     @Mock
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
     @InjectMocks
     private CardServiceImpl cardService;
@@ -63,7 +63,7 @@ public class CardServiceTests {
         List<Card> lista = new ArrayList<>();
         lista.add(card);
 
-        when(accountRepository.findByAccountNumber(anyString())).thenReturn(account);
+        when(cashAccountRepository.findByAccountNumber(anyString())).thenReturn(account);
         when(cardMapper.createCardDtoToCard(cardDto)).thenReturn(card);
         when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(new ArrayList<>());
         when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(lista);

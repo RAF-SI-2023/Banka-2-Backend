@@ -11,9 +11,9 @@ public class StockDto extends ListingDto {
     private Integer shares;
     private Double yield;
 
-    public StockDto(String symbol, String description, String exchange, Long lastRefresh, Double price, Double high,
+    public StockDto(Long id, String symbol, String description, String exchange, Long lastRefresh, Double price, Double high,
                     Double low, Double change, Integer volume, Integer shares, Double yield) {
-        super(symbol, description, exchange, lastRefresh, price, high, low, change, volume);
+        super(id, symbol, description, exchange, lastRefresh, price, high, low, change, volume);
         this.shares = shares;
         this.yield = yield;
     }

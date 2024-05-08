@@ -2,6 +2,7 @@ package rs.edu.raf.BankService.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
@@ -13,10 +14,10 @@ import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.NotEnoughFundsException;
 import rs.edu.raf.BankService.mapper.ExchangeRatesMapper;
 import rs.edu.raf.BankService.mapper.ExchangeTransferDetailsMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
 import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 
 import java.time.LocalDateTime;
@@ -29,9 +30,12 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final ExchangeRateRepository exchangeRateRepository;
     private final ExchangeRatesMapper exchangeRatesMapper;
     private final ExchangeTransferDetailsMapper exchangeTransferDetailsMapper;
-    private final AccountRepository accountRepository;
-    private final TransactionRepository transactionRepository;
+    private final CashAccountRepository cashAccountRepository;
+    private final CashTransactionRepository cashTransactionRepository;
     private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
+
+    @Value("${bank.default.currency}")
+    private String defaultCurrency;
 
     @Override
     public List<ExchangeRatesDto> getAllExchangeRates() {
@@ -53,9 +57,9 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ExchangeTransferDetailsDto exchangeCurrency(ExchangeRequestDto exchangeRequestDto) {
-        CashAccount from = accountRepository.findByAccountNumber(exchangeRequestDto.getFromAccount());
-        CashAccount to = accountRepository.findByAccountNumber(exchangeRequestDto.getToAccount());
-        List<CashAccount> bankCashAccounts = accountRepository.findAllByEmail("bankAccount@bank.rs");
+        CashAccount from = cashAccountRepository.findByAccountNumber(exchangeRequestDto.getFromAccount());
+        CashAccount to = cashAccountRepository.findByAccountNumber(exchangeRequestDto.getToAccount());
+        List<CashAccount> bankCashAccounts = cashAccountRepository.findAllByEmail("bankAccount@bank.rs");
 
         if (from == null || to == null) {
             throw new AccountNotFoundException("Account not found");
@@ -92,17 +96,17 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
 
         from.setAvailableBalance((long) (from.getAvailableBalance() - exchangeRequestDto.getAmount()));
-        accountRepository.save(from);
+        cashAccountRepository.save(from);
 
         bankCashAccountReceiver.setAvailableBalance((long) (bankCashAccountReceiver.getAvailableBalance() + exchangeRequestDto.getAmount()));
-        accountRepository.save(bankCashAccountReceiver);
+        cashAccountRepository.save(bankCashAccountReceiver);
 
 
         to.setAvailableBalance((long) (to.getAvailableBalance() + amountToSubtract));
-        accountRepository.save(to);
+        cashAccountRepository.save(to);
 
         bankCashAccountSender.setAvailableBalance((long) (bankCashAccountSender.getAvailableBalance() - amountToSubtract));
-        accountRepository.save(bankCashAccountSender);
+        cashAccountRepository.save(bankCashAccountSender);
 
         ExchangeTransferTransactionDetails exchangeTransferDetails = new ExchangeTransferTransactionDetails();
         exchangeTransferDetails.setExchangeRate(exchangeRateValue);
@@ -115,10 +119,85 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         exchangeTransferDetails.setTotalAmount(amountToSubtract);
         exchangeTransferDetails.setCreatedAt(LocalDateTime.now());
         exchangeTransferDetails.setStatus(TransactionStatus.CONFIRMED);
-        exchangeTransferDetails = transactionRepository.save(exchangeTransferDetails);
+        exchangeTransferDetails = cashTransactionRepository.save(exchangeTransferDetails);
 
         return exchangeTransferDetailsMapper.exchangeTransferDetailsToExchangeTransferDetailsDto(exchangeTransferDetails);
 
+    }
+
+//    @Override
+//    @Transactional(rollbackOn = Exception.class)
+//    public double convertToDefaultCurrency(String fromCurrency, double amount) {
+//         if(fromCurrency.equals(defaultCurrency)) {
+//             return amount;
+//         }
+//
+//        List<CashAccount> bankCashAccounts = cashAccountRepository.findAllByEmail("bankAccount@bank.rs");
+//        CashAccount from = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(fromCurrency)).findFirst().orElse(null);
+//        CashAccount to = bankCashAccounts.stream().filter(account -> account.getCurrencyCode().equals(defaultCurrency)).findFirst().orElse(null);
+//
+//        if (from == null || to == null) {
+//            throw new AccountNotFoundException("Bank account not found");
+//        }
+//
+//        ExchangeRates exchangeRate = exchangeRateRepository.findByFromCurrencyAndToCurrency(from.getCurrencyCode(), to.getCurrencyCode());
+//        if (exchangeRate == null) {
+//            throw new RuntimeException("Exchange rate not found");
+//        }
+//
+//        if (from.getAvailableBalance() - from.getReservedFunds() < amount) {
+//            throw new NotEnoughFundsException();
+//        }
+//
+//        double exchangeRateValue = exchangeRate.getExchangeRate();
+//        Double exchangeValue = amount * exchangeRateValue;
+//        if(exchangeValue == null) {
+//            throw new RuntimeException("Null pointer exception when tried to calculate exchangeValue");
+//        }
+//
+//        to.setAvailableBalance((long) (to.getAvailableBalance() + exchangeValue));
+//        cashAccountRepository.save(to);
+//
+//        from.setAvailableBalance((long) (from.getAvailableBalance() - amount));
+//        cashAccountRepository.save(from);
+//
+//        return exchangeValue;
+//    }
+
+    @Override
+    public double calculateAmountInDefaultCurrency(String fromCurrency, double amount) {
+        return calculateAmountBetweenCurrencies(fromCurrency, defaultCurrency, amount);
+    }
+
+    @Override
+    public double calculateAmountBetweenCurrencies(String fromCurrency, String toCurrency, double amount) {
+        if(fromCurrency.equals(toCurrency)) {
+            return amount;
+        }
+
+        ExchangeRates exchangeRate = exchangeRateRepository.findByFromCurrencyAndToCurrency(fromCurrency, toCurrency);
+        if (exchangeRate == null) {
+            throw new RuntimeException("Exchange rate not found");
+        }
+
+        double exchangeRateValue = exchangeRate.getExchangeRate();
+        Double amountInNewCurrency = amount * exchangeRateValue;
+        if(amountInNewCurrency == null) {
+            throw new RuntimeException("Null pointer exception when tried to calculate amountInNewCurrency");
+        }
+
+        return amountInNewCurrency;
+    }
+
+    @Override
+    public double convert(String fromCurrency, String toCurrency, double amount) {
+        if(fromCurrency.equals(toCurrency)) {
+            return amount;
+        }
+
+
+
+        return 0;
     }
 
 }

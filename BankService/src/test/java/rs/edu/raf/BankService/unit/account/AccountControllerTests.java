@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.controller.AccountController;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
-import rs.edu.raf.BankService.service.impl.AccountServiceImpl;
+import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ public class AccountControllerTests {
     private AccountController accountController;
 
     @Mock
-    private AccountServiceImpl accountService;
+    private CashAccountServiceImpl accountService;
 
     @Test
     public void testAssociateProfileWithAccount_ThrowsException() {

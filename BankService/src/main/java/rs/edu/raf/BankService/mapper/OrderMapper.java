@@ -1,17 +1,18 @@
 package rs.edu.raf.BankService.mapper;
 
+import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.OrderDto;
 import rs.edu.raf.BankService.data.entities.Order;
-import rs.edu.raf.BankService.data.enums.OrderActionType;
 
+@Component
 public class OrderMapper {
 
 
     public Order orderDtoToOrder(OrderDto orderDto){
         Order order = new Order();
         order.setOrderActionType(orderDto.getOrderActionType());
-        order.setSecuritiesType(orderDto.getSecuritiesType());
-        order.setStockSymbol(orderDto.getStockSymbol());
+        order.setListingType(orderDto.getListingType());
+        order.setListingSymbol(orderDto.getSecuritiesSymbol());
         order.setQuantity(orderDto.getQuantity());
         order.setSettlementDate(orderDto.getSettlementDate());
         order.setLimitPrice(orderDto.getLimitPrice());
@@ -25,8 +26,8 @@ public class OrderMapper {
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderStatus(order.getOrderStatus());
         orderDto.setOrderActionType(order.getOrderActionType());
-        orderDto.setSecuritiesType(order.getSecuritiesType());
-        orderDto.setStockSymbol(order.getStockSymbol());
+        orderDto.setListingType(order.getListingType());
+        orderDto.setSecuritiesSymbol(order.getListingSymbol());
         orderDto.setQuantity(order.getQuantity());
         orderDto.setSettlementDate(order.getSettlementDate());
         orderDto.setLimitPrice(order.getLimitPrice());

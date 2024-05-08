@@ -39,6 +39,7 @@ public class ForexMapperTests {
     @Test
     public void testForexDtoToForex() {
         ForexDto forexDto = new ForexDto(
+                1L,
                 "Forex1 Symbol",
                 "Forex1 Description",
                 "Forex1 Exchange",

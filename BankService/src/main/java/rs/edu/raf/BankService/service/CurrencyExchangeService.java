@@ -14,4 +14,10 @@ public interface CurrencyExchangeService {
     List<ExchangeRatesDto> getExchangeRatesForCurrency(String currencyCode);
 
     ExchangeTransferDetailsDto exchangeCurrency(ExchangeRequestDto exchangeRequestDto);
+
+    double calculateAmountInDefaultCurrency(String fromCurrency, double amount);
+
+    double calculateAmountBetweenCurrencies(String fromCurrency, String toCurrency, double amount);
+
+    double convert(String fromCurrency, String toCurrency, double amount);
 }

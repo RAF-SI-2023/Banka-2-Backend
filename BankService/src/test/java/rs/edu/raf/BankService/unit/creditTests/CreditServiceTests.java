@@ -14,7 +14,7 @@ import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.enums.CreditRequestStatus;
 import rs.edu.raf.BankService.data.enums.CreditType;
 import rs.edu.raf.BankService.mapper.CreditMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 import rs.edu.raf.BankService.service.impl.CreditServiceImpl;
@@ -39,7 +39,7 @@ class CreditServiceTests {
     private CreditMapper creditMapper;
 
     @Mock
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
 
     @InjectMocks
@@ -89,7 +89,7 @@ class CreditServiceTests {
         when(creditMapper.creditRequestDtoToCreditRequest(creditRequestDto)).thenReturn(creditRequest);
         when(creditRequestRepository.save(creditRequest)).thenReturn(creditRequest);
         when(creditMapper.creditRequestToCreditRequestDto(creditRequest)).thenReturn(creditRequestDto);
-        when(accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber())).thenReturn(cashAccount);
+        when(cashAccountRepository.findByAccountNumber(creditRequestDto.getAccountNumber())).thenReturn(cashAccount);
         // When
         var result = creditService.createCreditRequest(creditRequestDto);
 
@@ -179,7 +179,7 @@ class CreditServiceTests {
         when(creditMapper.creditRequestDtoToCreditRequest(creditRequestDto)).thenReturn(creditRequest);
         when(creditRequestRepository.save(creditRequest)).thenReturn(creditRequest);
         when(creditMapper.creditRequestToCreditRequestDto(creditRequest)).thenReturn(creditRequestDto);
-        when(accountRepository.findByAccountNumber(creditRequestDto.getAccountNumber())).thenReturn(account);
+        when(cashAccountRepository.findByAccountNumber(creditRequestDto.getAccountNumber())).thenReturn(account);
         // When
         var result = creditService.createCreditRequest(creditRequestDto);
 

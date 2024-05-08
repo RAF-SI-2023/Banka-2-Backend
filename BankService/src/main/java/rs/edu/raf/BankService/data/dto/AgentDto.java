@@ -9,6 +9,6 @@ public class AgentDto {
 
     private Double userLimit;
     private Double leftOfLimit;
-    private boolean orderApprovalRequired;
+    private Boolean orderApprovalRequired;
 
 }

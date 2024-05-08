@@ -8,6 +8,7 @@ import rs.edu.raf.StockService.data.entities.Stock;
 public class StockMapper {
     public StockDto stockToStockDto(Stock stock) {
         return new StockDto(
+                stock.getId(),
                 stock.getSymbol(),
                 stock.getDescription(),
                 stock.getExchange(),

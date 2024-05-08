@@ -1,12 +1,14 @@
 package rs.edu.raf.BankService.data.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.edu.raf.BankService.data.dto.ExchangeDto;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.data.enums.OrderActionType;
-import rs.edu.raf.BankService.data.enums.SecuritiesType;
+import rs.edu.raf.BankService.data.enums.ListingType;
 
 @Entity
 @Table(name = "orders")
@@ -21,22 +23,27 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String stockSymbol;
+    private Long listingId;
+
+    private String listingSymbol;
 
     @Enumerated(EnumType.STRING)
     private OrderActionType orderActionType;
 
     @Enumerated(EnumType.STRING)
-    private SecuritiesType securitiesType;
+    private ListingType listingType;
 
+    @NotNull
     private Integer quantity;
+
+    private Integer realizedQuantity = 0;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.APPROVED;
 
     private Long settlementDate = -1L;
 
-    private boolean orderCompleted = false;
+    private boolean isDone = false;
 
     private long timeOfLastModification;
 
@@ -55,8 +62,6 @@ public class Order {
     private Long approvedBySupervisorId = -1L;
 
     private long userId = -1;
-
-
 
 
 }

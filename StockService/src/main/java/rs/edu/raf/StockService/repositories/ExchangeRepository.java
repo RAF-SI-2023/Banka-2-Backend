@@ -9,4 +9,6 @@ public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
     Exchange findByExchangeName(String exchangeName);
 
     Exchange findByExchangeMICode(String miCode);
+
+    Exchange findByExchangeAcronym(String exchangeAcronym);
 }

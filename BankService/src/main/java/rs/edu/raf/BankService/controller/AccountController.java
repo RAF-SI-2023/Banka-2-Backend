@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
-import rs.edu.raf.BankService.service.AccountService;
+import rs.edu.raf.BankService.service.CashAccountService;
 
 @RestController
 @CrossOrigin
@@ -15,13 +15,13 @@ import rs.edu.raf.BankService.service.AccountService;
 @RequestMapping(value = "/api/accounts", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class AccountController {
 
-    private final AccountService accountService;
+    private final CashAccountService cashAccountService;
 
 
     @PostMapping("/associate-profile-initialization")
     public ResponseEntity<?> associateProfileWithAccount(@RequestBody AccountNumberDto accountNumberDto) {
         try {
-            return ResponseEntity.ok(accountService.userAccountUserProfileConnectionAttempt(accountNumberDto));
+            return ResponseEntity.ok(cashAccountService.userAccountUserProfileConnectionAttempt(accountNumberDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -30,7 +30,7 @@ public class AccountController {
     @PostMapping("/code-confirmation/{accountNumber}")
     public ResponseEntity<?> confirmActivationCode(@PathVariable String accountNumber, @RequestBody Integer code) {
         try {
-            return ResponseEntity.ok(accountService.confirmActivationCode(accountNumber, code));
+            return ResponseEntity.ok(cashAccountService.confirmActivationCode(accountNumber, code));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -39,7 +39,7 @@ public class AccountController {
     @PostMapping("/create-account/domestic")
     public ResponseEntity<?> createDomesticAccount(@RequestBody DomesticCurrencyAccountDto domesticCurrencyAccountDto) {
         try {
-            return ResponseEntity.ok(accountService.createDomesticCurrencyAccount(domesticCurrencyAccountDto));
+            return ResponseEntity.ok(cashAccountService.createDomesticCurrencyAccount(domesticCurrencyAccountDto));
         } catch (AccountNumberAlreadyExistException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class AccountController {
     @PostMapping("/create-account/foreign")
     public ResponseEntity<?> createForeignAccount(@RequestBody ForeignCurrencyAccountDto foreignCurrencyAccountDto) {
         try {
-            return ResponseEntity.ok(accountService.createForeignCurrencyAccount(foreignCurrencyAccountDto));
+            return ResponseEntity.ok(cashAccountService.createForeignCurrencyAccount(foreignCurrencyAccountDto));
         } catch (AccountNumberAlreadyExistException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class AccountController {
     @PostMapping("/create-account/business")
     public ResponseEntity<?> createBusinessAccount(@RequestBody BusinessAccountDto businessAccountDto) {
         try {
-            return ResponseEntity.ok(accountService.createBusinessAccount(businessAccountDto));
+            return ResponseEntity.ok(cashAccountService.createBusinessAccount(businessAccountDto));
         } catch (AccountNumberAlreadyExistException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class AccountController {
     @GetMapping(value = "/find-by-email/{email}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> findAccountsByEmail(@PathVariable String email) {
         try {
-            return ResponseEntity.ok(accountService.findAccountsByEmail(email));
+            return ResponseEntity.ok(cashAccountService.findAccountsByEmail(email));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -81,7 +81,7 @@ public class AccountController {
     @PostMapping("/savedAccount/{accountId}/")
     public SavedAccountDto createSavedAccount(@PathVariable Long accountId,
                                               @RequestBody SavedAccountDto savedAccountDto) {
-        return accountService.createSavedAccount(accountId, savedAccountDto);
+        return cashAccountService.createSavedAccount(accountId, savedAccountDto);
 
     }
 
@@ -89,12 +89,19 @@ public class AccountController {
     public SavedAccountDto updateSavedAccount(@PathVariable Long accountId,
                                               @PathVariable String savedAccountNumber,
                                               @RequestBody SavedAccountDto savedAccountDto) {
-        return accountService.updateSavedAccount(accountId, savedAccountNumber, savedAccountDto);
+        return cashAccountService.updateSavedAccount(accountId, savedAccountNumber, savedAccountDto);
     }
 
     @DeleteMapping("/savedAccount/{accountId}/")
     public void deleteSavedAccount(@PathVariable Long accountId,
                                    @RequestBody String savedAccountNumber) {
-        accountService.deleteSavedAccount(accountId, savedAccountNumber);
+        cashAccountService.deleteSavedAccount(accountId, savedAccountNumber);
     }
+
+    @PutMapping("/set-primary-trading-account/{accountNumber}")
+    public ResponseEntity<?> setIsAccountPrimaryForTrading(@PathVariable String accountNumber,
+                                                           @RequestBody boolean usedForSecurities) {
+        return ResponseEntity.ok(cashAccountService.setIsAccountPrimaryForTrading(accountNumber, usedForSecurities));
+    }
+
 }

@@ -121,9 +121,9 @@ public class StockControllerTests {
         );
         List<Stock> stocks = new ArrayList<>();
         stocks.add(stock);
-        when(stockService.findBySymbol("Stock1 Symbol")).thenReturn(stocks);
+        when(stockService.findBySymbolDEPRICATED("Stock1 Symbol")).thenReturn(stocks);
 
-        ResponseEntity<List<Stock>> response = stockController.findStockBySymbol("Stock1 Symbol");
+        ResponseEntity<List<Stock>> response = stockController.findStockBySymbolDEPRCATED("Stock1 Symbol");
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
