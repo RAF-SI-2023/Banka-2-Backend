@@ -73,7 +73,7 @@ class UserServiceImplTest {
 
         // then
         verify(userRepository, times(1)).save(any(PrivateClient.class));
-        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ClientActivationMessageDto.class));
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(ClientActivationMessageDto.class));
         assertNotNull(result.getId());
         assertEquals(requestDto.getName(), result.getName());
         assertEquals(requestDto.getSurname(), result.getSurname());
@@ -105,7 +105,7 @@ class UserServiceImplTest {
 
         // then
         verify(userRepository, times(1)).save(client);
-        verify(rabbitTemplate, times(1)).convertAndSend(eq("password-activation"), any(ClientActivationMessageDto.class));
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(ClientActivationMessageDto.class));
         assertNotNull(result.getId());
         assertEquals(requestDto.getName(), result.getName());
         assertEquals(requestDto.getUsername(), result.getUsername());

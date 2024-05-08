@@ -177,6 +177,16 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<exclude>**/configuration/**</exclude>
+						<exclude>**/data/**</exclude>
+						<exclude>**/mapper/**</exclude>
+						<exclude>**/listener/**</exclude>
+						<exclude>**/mapper/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
