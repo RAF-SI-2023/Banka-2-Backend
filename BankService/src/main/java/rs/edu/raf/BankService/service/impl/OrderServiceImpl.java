@@ -129,6 +129,11 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+    @Override
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+    }
+
 //    private double getBuyOrderPrice(Order buyOrder, SecuritiesPriceDto currentPrice) {
 //        int contractSize = getContractSize(buyOrder.getListingType());
 //        //da li je order 'Stop-Limit order'
