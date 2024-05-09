@@ -84,15 +84,21 @@ public class OrderServiceImpl implements OrderService {
             case SELL -> {
                 currency = tradingCashAccount.getCurrencyCode();
             }
+            case SELL_TO_STOCK_MARKET -> {
+                if (listingDto.getExchange() != null) {
+                    exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
+                    currency = exchangeDto.getCurrency();   //ako bira kom exchangeu ce da proda
+                } else currency = tradingCashAccount.getCurrencyCode(); //ako ne bira, videti u nekom trenutku //todo
+            }
         }
 
         double totalPrice = calculateOrderPrice(order.getQuantity(), listingDto.getPrice());
-        if(isBankOrder){
+        if (isBankOrder) {
             handleIfOrderInitiatedByAgent(order, initiatedByUserId, currency, totalPrice);
         }
 
         double totalPriceInTradingCashAccountCurrency = currencyExchangeService.calculateAmountBetweenCurrencies(currency, tradingCashAccount.getCurrencyCode(), totalPrice);
-        if(order.getOrderStatus() == OrderStatus.APPROVED){
+        if (order.getOrderStatus() == OrderStatus.APPROVED) {
             transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
         }
 
@@ -179,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
 //        }
 //    }
 
-    private int getContractSize(ListingType listingType){
+    private int getContractSize(ListingType listingType) {
         return switch (listingType) {
             case STOCK -> 1;
             case FOREX -> 1000;
@@ -190,7 +196,7 @@ public class OrderServiceImpl implements OrderService {
 
     private CashAccount fetchPrimaryTradingAccount(String email, String msg) {
         CashAccount cashAccount = cashAccountRepository.findPrimaryTradingAccount(email);
-        if(cashAccount == null){
+        if (cashAccount == null) {
             throw new NotFoundException(msg);
         }
         return cashAccount;
@@ -198,7 +204,7 @@ public class OrderServiceImpl implements OrderService {
 
     private ListingDto fetchSecuritiesByOrder(Order order) {
         ListingDto listingDto = stockService.getSecuritiesByOrder(order);
-        if(listingDto == null){
+        if (listingDto == null) {
             throw new NullPointerException("Null pointer exception when tried to get current price for symbol " + order.getListingSymbol());
         }
         return listingDto;
@@ -206,28 +212,28 @@ public class OrderServiceImpl implements OrderService {
 
     private ExchangeDto fetchExchangeByExchangeAcronym(String exchangeAcronym) {
         ExchangeDto exchangeDto = stockService.getExchangeExchangeAcronym(exchangeAcronym);
-        if(exchangeDto == null){
+        if (exchangeDto == null) {
             throw new NullPointerException("Null pointer exception when tried to get exchangeDto by exchangeAcronym: " + exchangeAcronym);
         }
         return exchangeDto;
     }
 
-    private Double calculateOrderPrice(Integer quantity, Double securitiesCurrentPrice){
+    private Double calculateOrderPrice(Integer quantity, Double securitiesCurrentPrice) {
         Double total = quantity * securitiesCurrentPrice;
-        if(total == null){
+        if (total == null) {
             throw new NullPointerException("Null pointer exception when tried to calculate total price for order");
         }
         return total;
     }
 
-    private void handleIfOrderInitiatedByAgent(Order order, long initiatedByUserId, String exchangeCurrency, double totalPriceInUsd){
-        if(SpringSecurityUtil.isAgent()){
+    private void handleIfOrderInitiatedByAgent(Order order, long initiatedByUserId, String exchangeCurrency, double totalPriceInUsd) {
+        if (SpringSecurityUtil.isAgent()) {
             // treba da se izracuna ukupna cena ordera i da se konvertuje u default valutu (RSD)
             double limitToSubtractInDefaultCurrency = currencyExchangeService.calculateAmountInDefaultCurrency(exchangeCurrency, totalPriceInUsd);
-            if(!iamService.reduceAgentLimit(initiatedByUserId, limitToSubtractInDefaultCurrency)){
+            if (!iamService.reduceAgentLimit(initiatedByUserId, limitToSubtractInDefaultCurrency)) {
                 throw new RuntimeException("Agent's limit not reduced");
             }
-            if(iamService.isApprovalNeeded(initiatedByUserId)){
+            if (iamService.isApprovalNeeded(initiatedByUserId)) {
                 order.setOrderStatus(OrderStatus.WAITING_FOR_APPROVAL);
             }
         }
