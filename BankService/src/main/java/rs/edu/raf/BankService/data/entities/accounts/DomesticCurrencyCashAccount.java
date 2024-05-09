@@ -20,6 +20,7 @@ public class DomesticCurrencyCashAccount extends CashAccount {
     private DomesticCurrencyAccountType domesticCurrencyAccountType;
     private Double interestRate = 0.0; // vazi za retirement i student
 
+
     public DomesticCurrencyCashAccount(
             String accountNumber,
             String email,
@@ -33,5 +34,7 @@ public class DomesticCurrencyCashAccount extends CashAccount {
         if(domesticCurrencyAccountType == DomesticCurrencyAccountType.RETIREMENT) this.interestRate = 2.5;
         if(domesticCurrencyAccountType == DomesticCurrencyAccountType.STUDENT) this.interestRate = 4.0;
     }
+
+
 
 }

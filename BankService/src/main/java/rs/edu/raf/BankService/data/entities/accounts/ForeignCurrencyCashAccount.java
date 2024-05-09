@@ -21,6 +21,9 @@ public class ForeignCurrencyCashAccount extends CashAccount {
      * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
      */
     private String defaultCurrencyCode;
+    /**
+     * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
+     */
     private Integer numberOfAllowedCurrencies = 1;
     @OneToMany(
             mappedBy = "account",
@@ -29,10 +32,6 @@ public class ForeignCurrencyCashAccount extends CashAccount {
             orphanRemoval = true
     )
     private List<ForeignCurrencyHolder> foreignCurrencyHolders = new ArrayList<>();
-
-    /**
-     * OVO SE VISE NE KORISTI, SVE SA VISE CURRENCY-JA, CREDIT TO SPEC TIM
-     */
 
 
     public ForeignCurrencyCashAccount(
@@ -43,7 +42,6 @@ public class ForeignCurrencyCashAccount extends CashAccount {
             Double maintenanceFee
     ) {
         super(accountNumber, email, accountType, currencyCode, maintenanceFee);
-
         this.defaultCurrencyCode = currencyCode;
     }
 }

@@ -16,10 +16,11 @@ import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.UserAccountUserProfileActivationCodeRepository;
-import rs.edu.raf.BankService.service.impl.AccountServiceImpl;
+import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,16 +28,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountServiceTests {
+public class CashAccountServiceTests {
 
     @InjectMocks
-    private AccountServiceImpl accountService ;
+    private CashAccountServiceImpl accountService ;
 
     @Mock
     private UserAccountUserProfileActivationCodeRepository userAccountUserProfileActivationCodeRepository;
 
     @Mock
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
     @Mock
     private AccountMapper accountMapper;
@@ -53,7 +54,7 @@ public class AccountServiceTests {
     public void whenAccountNotFound_thenThrowAccountNotFoundException() {
         // Arrange
         AccountNumberDto accountNumberDto = new AccountNumberDto("nonExistingAccountNumber");
-        when(accountRepository.findByAccountNumber(accountNumberDto.getAccountNumber())).thenReturn(null);
+        when(cashAccountRepository.findByAccountNumber(accountNumberDto.getAccountNumber())).thenReturn(null);
 
         // Act & Assert
         assertThrows(AccountNotFoundException.class, () ->
@@ -68,7 +69,7 @@ public class AccountServiceTests {
         CashAccount cashAccount = new CashAccount();
         cashAccount.setLinkState(UserAccountUserProfileLinkState.NOT_ASSOCIATED);
 
-        when(accountRepository.findByAccountNumber(anyString())).thenReturn(cashAccount);
+        when(cashAccountRepository.findByAccountNumber(anyString())).thenReturn(cashAccount);
 
         // Arrange
         doNothing().when(mockRabbitTemplate).convertAndSend(anyString(), any(EmailDto.class));
@@ -78,7 +79,7 @@ public class AccountServiceTests {
 
         // Assert
         assertTrue(result);
-        verify(accountRepository).saveAndFlush(cashAccount);
+        verify(cashAccountRepository).saveAndFlush(cashAccount);
     }
 
     @Test
@@ -87,7 +88,7 @@ public class AccountServiceTests {
         String accountNumber = "123456";
         AccountNumberDto accountNumberDto = new AccountNumberDto(accountNumber);
         CashAccount mockCashAccount = mock(CashAccount.class);
-        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(mockCashAccount);
+        when(cashAccountRepository.findByAccountNumber(accountNumber)).thenReturn(mockCashAccount);
         when(mockCashAccount.getLinkState()).thenReturn(UserAccountUserProfileLinkState.IN_PROCESS);
 
         // Act & Assert
@@ -96,7 +97,7 @@ public class AccountServiceTests {
         );
 
         // Verifikacija da nema interakcija sa repozitorijumom koja bi dovela do promene u stanju
-        verify(accountRepository, never()).save(any(CashAccount.class));
+        verify(cashAccountRepository, never()).save(any(CashAccount.class));
     }
 
     @Test
@@ -109,7 +110,7 @@ public class AccountServiceTests {
         fakeCashAccount.setAccountNumber(fakeAccountNumber);
         fakeCashAccount.setLinkState(UserAccountUserProfileLinkState.ASSOCIATED);
 
-        when(accountRepository.findByAccountNumber(fakeAccountNumber)).thenReturn(fakeCashAccount);
+        when(cashAccountRepository.findByAccountNumber(fakeAccountNumber)).thenReturn(fakeCashAccount);
 
         // Act & Assert
         assertThrows(UserAccountAlreadyAssociatedWithUserProfileException.class, () ->
@@ -123,7 +124,7 @@ public class AccountServiceTests {
         String fakeAccountNumber = "123456789";
         Integer fakeCode = 1234;
 
-        when(accountRepository.findByAccountNumber(fakeAccountNumber)).thenReturn(null);
+        when(cashAccountRepository.findByAccountNumber(fakeAccountNumber)).thenReturn(null);
 
         // Act
         boolean result = accountService.confirmActivationCode(fakeAccountNumber, fakeCode);
@@ -144,7 +145,7 @@ public class AccountServiceTests {
         UserAccountUserProfileActivationCode fakeToken = new UserAccountUserProfileActivationCode();
         fakeToken.setCode(String.valueOf(correctCode));
 
-        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(fakeCashAccount);
+        when(cashAccountRepository.findByAccountNumber(accountNumber)).thenReturn(fakeCashAccount);
         when(userAccountUserProfileActivationCodeRepository.findByAccountNumber(accountNumber)).thenReturn(fakeToken);
 
         // Act & Assert
@@ -166,7 +167,7 @@ public class AccountServiceTests {
         calendar.add(Calendar.SECOND, -1);
         mockActivationCode.setExpirationDateTime(String.valueOf(calendar.getTime().getTime()));
 
-        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(mockCashAccount);
+        when(cashAccountRepository.findByAccountNumber(accountNumber)).thenReturn(mockCashAccount);
         when(userAccountUserProfileActivationCodeRepository.findByAccountNumber(accountNumber)).thenReturn(mockActivationCode);
 
         // Act & Assert
@@ -190,7 +191,7 @@ public class AccountServiceTests {
         calendar.add(Calendar.MINUTE, 5);
         token.setExpirationDateTime(String.valueOf(calendar.getTime().getTime()));
 
-        when(accountRepository.findByAccountNumber(anyString())).thenReturn(cashAccount);
+        when(cashAccountRepository.findByAccountNumber(anyString())).thenReturn(cashAccount);
         when(userAccountUserProfileActivationCodeRepository.findByAccountNumber(anyString())).thenReturn(token);
 
         // Act
@@ -207,7 +208,7 @@ public class AccountServiceTests {
         dto.setAccountNumber("existingAccountNumber");
         CashAccount existingAccount = new CashAccount();
 
-        when(accountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(existingAccount);
+        when(cashAccountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(existingAccount);
 
         // Act and Assert
         assertThrows(AccountNumberAlreadyExistException.class, () -> {
@@ -221,14 +222,14 @@ public class AccountServiceTests {
         DomesticCurrencyAccountDto dto = new DomesticCurrencyAccountDto();
         dto.setAccountNumber("NonExistingAccountNumber");
         DomesticCurrencyCashAccount domesticCurrencyCashAccount = new DomesticCurrencyCashAccount();
-        when(accountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(null);
+        when(cashAccountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(null);
         when(accountMapper.domesticAccountDtoToDomesticAccount(dto)).thenReturn(domesticCurrencyCashAccount);
 
         // Act
         DomesticCurrencyAccountDto result = accountService.createDomesticCurrencyAccount(dto);
 
         // Assert
-        verify(accountRepository, times(1)).saveAndFlush(domesticCurrencyCashAccount);
+        verify(cashAccountRepository, times(1)).saveAndFlush(domesticCurrencyCashAccount);
         assertNotNull(result);
     }
 
@@ -239,7 +240,7 @@ public class AccountServiceTests {
         dto.setAccountNumber("existingAccountNumber");
         CashAccount existingAccount = new CashAccount();
 
-        when(accountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(existingAccount);
+        when(cashAccountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(existingAccount);
 
         // Act and Assert
         assertThrows(AccountNumberAlreadyExistException.class, () -> {
@@ -253,14 +254,14 @@ public class AccountServiceTests {
         ForeignCurrencyAccountDto dto = new ForeignCurrencyAccountDto();
         dto.setAccountNumber("NonExistingAccountNumber");
         ForeignCurrencyCashAccount foreignCurrencyCashAccount = new ForeignCurrencyCashAccount();
-        when(accountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(null);
+        when(cashAccountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(null);
         when(accountMapper.foreignAccountDtoToForeignAccount(dto)).thenReturn(foreignCurrencyCashAccount);
 
         // Act
         ForeignCurrencyAccountDto result = accountService.createForeignCurrencyAccount(dto);
 
         // Assert
-        verify(accountRepository, times(1)).save(foreignCurrencyCashAccount);
+        verify(cashAccountRepository, times(1)).save(foreignCurrencyCashAccount);
         assertNotNull(result);
     }
 
@@ -271,7 +272,7 @@ public class AccountServiceTests {
         dto.setAccountNumber("existingAccountNumber");
         CashAccount existingAccount = new CashAccount();
 
-        when(accountRepository.findByAccountNumber(dto.getAccountNumber())).thenThrow(AccountNumberAlreadyExistException.class);
+        when(cashAccountRepository.findByAccountNumber(dto.getAccountNumber())).thenThrow(AccountNumberAlreadyExistException.class);
 
         // Act and Assert
         assertThrows(AccountNumberAlreadyExistException.class, () -> {
@@ -285,14 +286,14 @@ public class AccountServiceTests {
         BusinessAccountDto dto = new BusinessAccountDto();
         dto.setAccountNumber("NonExistingAccountNumber");
         BusinessCashAccount businessCurrencyCashAccount = new BusinessCashAccount();
-        when(accountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(null);
+        when(cashAccountRepository.findByAccountNumber(dto.getAccountNumber())).thenReturn(null);
         when(accountMapper.businessAccountDtoToBusinessAccount(dto)).thenReturn(businessCurrencyCashAccount);
 
         // Act
         BusinessAccountDto result = accountService.createBusinessAccount(dto);
 
         // Assert
-        verify(accountRepository, times(1)).save(businessCurrencyCashAccount);
+        verify(cashAccountRepository, times(1)).save(businessCurrencyCashAccount);
         assertNotNull(result);
     }
 
@@ -300,7 +301,7 @@ public class AccountServiceTests {
     public void whenNoAccountsExistForEmail_thenEmptyListIsReturned() {
         // Arrange
         String testEmail = "test@example.com";
-        when(accountRepository.findAllByEmail(testEmail)).thenReturn(List.of());
+        when(cashAccountRepository.findAllByEmail(testEmail)).thenReturn(List.of());
 
         // Act
         List<AccountDto> result = accountService.findAccountsByEmail(testEmail);
@@ -317,7 +318,7 @@ public class AccountServiceTests {
         ForeignCurrencyCashAccount foreignAccount = new ForeignCurrencyCashAccount();
         BusinessCashAccount businessAccount = new BusinessCashAccount();
         List<CashAccount> accounts = Arrays.asList(domesticAccount, foreignAccount, businessAccount);
-        when(accountRepository.findAllByEmail(testEmail)).thenReturn(accounts);
+        when(cashAccountRepository.findAllByEmail(testEmail)).thenReturn(accounts);
 
         DomesticCurrencyAccountDto domesticDto = new DomesticCurrencyAccountDto();
         ForeignCurrencyAccountDto foreignDto = new ForeignCurrencyAccountDto();
@@ -344,7 +345,7 @@ public class AccountServiceTests {
         Long fakeAccountId = 1L;
         SavedAccountDto fakeSavedAccountDto = new SavedAccountDto(); // Pretpostavljamo da postoji konstruktor
         // Configure the mock to throw an exception when findById is called
-        when(accountRepository.findById(fakeAccountId)).thenThrow(new AccountNotFoundException("Account not found"));
+        when(cashAccountRepository.findById(fakeAccountId)).thenThrow(new AccountNotFoundException("Account not found"));
 
         // Act and Assert
         assertThrows(AccountNotFoundException.class, () -> {
@@ -363,7 +364,7 @@ public class AccountServiceTests {
         CashAccount existingAccount = new CashAccount();
         existingAccount.setSavedAccounts(new ArrayList<>());
 
-        when(accountRepository.findById(existingAccountId)).thenReturn(Optional.of(existingAccount));
+        when(cashAccountRepository.findById(existingAccountId)).thenReturn(Optional.of(existingAccount));
 
         // Act
         SavedAccountDto result = accountService.createSavedAccount(existingAccountId, newSavedAccountDto);
@@ -372,7 +373,7 @@ public class AccountServiceTests {
         assertNotNull(result);
         assertEquals(newSavedAccountDto.getName(), result.getName());
         assertEquals(newSavedAccountDto.getAccountNumber(), result.getAccountNumber());
-        verify(accountRepository).save(any(CashAccount.class)); // Proverite da li je save metoda pozvana
+        verify(cashAccountRepository).save(any(CashAccount.class)); // Proverite da li je save metoda pozvana
     }
 
     @Test
@@ -382,7 +383,7 @@ public class AccountServiceTests {
         String fakeSavedAccountNumber = "1123";
         SavedAccountDto fakeSavedAccountDto = new SavedAccountDto(); // Pretpostavljamo da postoji konstruktor
         // Configure the mock to throw an exception when findById is called
-        when(accountRepository.findById(fakeAccountId)).thenThrow(new AccountNotFoundException("Account not found"));
+        when(cashAccountRepository.findById(fakeAccountId)).thenThrow(new AccountNotFoundException("Account not found"));
 
         // Act and Assert
         assertThrows(AccountNotFoundException.class, () -> {
@@ -407,7 +408,7 @@ public class AccountServiceTests {
         existingAccount.setSavedAccounts(savedAccounts);
 
         // Configure the mock to throw an exception when findById is called
-        when(accountRepository.findById(fakeAccountId)).thenReturn(Optional.of(existingAccount));
+        when(cashAccountRepository.findById(fakeAccountId)).thenReturn(Optional.of(existingAccount));
 
         // Act and Assert
         assertThrows(AccountNotFoundException.class, () -> {
@@ -432,14 +433,14 @@ public class AccountServiceTests {
         existingAccount.setSavedAccounts(savedAccounts);
 
         // Configure the mock to throw an exception when findById is called
-        when(accountRepository.findById(fakeAccountId)).thenReturn(Optional.of(existingAccount));
+        when(cashAccountRepository.findById(fakeAccountId)).thenReturn(Optional.of(existingAccount));
 
         SavedAccountDto resultDto = accountService.updateSavedAccount(fakeAccountId, fakeSavedAccountNumber, fakeSavedAccountDto);
 
         // Assert
         assertEquals(fakeSavedAccountDto.getName(), resultDto.getName());
         assertEquals(fakeSavedAccountDto.getAccountNumber(), resultDto.getAccountNumber());
-        verify(accountRepository).save(existingAccount);
+        verify(cashAccountRepository).save(existingAccount);
     }
 
     @Test
@@ -447,7 +448,7 @@ public class AccountServiceTests {
         Long fakeAccountId = 1L;
         String fakeSavedAccountNumber = "1123";
 
-        when(accountRepository.findById(fakeAccountId)).thenThrow(new AccountNotFoundException("Account not found"));
+        when(cashAccountRepository.findById(fakeAccountId)).thenThrow(new AccountNotFoundException("Account not found"));
 
         assertThrows(AccountNotFoundException.class, () -> {
             accountService.deleteSavedAccount(fakeAccountId, fakeSavedAccountNumber);
@@ -466,12 +467,12 @@ public class AccountServiceTests {
         savedAccounts.add(fakeSavedAccount);
         existingAccount.setSavedAccounts(savedAccounts);
 
-        when(accountRepository.findById(fakeAccountId)).thenReturn(Optional.of(existingAccount));
+        when(cashAccountRepository.findById(fakeAccountId)).thenReturn(Optional.of(existingAccount));
 
         accountService.deleteSavedAccount(fakeAccountId, fakeSavedAccountNumber);
 
         // Assert
-        verify(accountRepository, times(1)).save(existingAccount);
+        verify(cashAccountRepository, times(1)).save(existingAccount);
         assertTrue(existingAccount.getSavedAccounts().isEmpty());
     }
 

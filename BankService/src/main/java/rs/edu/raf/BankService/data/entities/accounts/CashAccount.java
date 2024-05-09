@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "cash_accounts")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Data
@@ -33,13 +33,17 @@ public class CashAccount {
     private String email;
     private boolean status = true;
     private AccountType accountType;
-    private Long availableBalance = 0L;
-    private Long reservedFunds = 0L;
+    private double availableBalance = 0L;
+    private double reservedFunds = 0L;
     private Long employeeId;
     private Long creationDate = creationDate();
     private Long expirationDate = expirationDate();
     private String currencyCode;
     private Double maintenanceFee = 0.0;
+    private boolean ownedByBank = false;
+
+    // da li je racun primarni za trgovinu sa hartijama od vrednosti
+    private boolean isPrimaryTradingAccount = false;
 
     @OneToMany(mappedBy = "senderCashAccount", fetch = FetchType.LAZY)
     private List<TransferTransaction> sentTransferTransactions = new ArrayList<>();
@@ -49,6 +53,8 @@ public class CashAccount {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<SavedAccount> savedAccounts;
+
+
 
     public CashAccount(
             String accountNumber,

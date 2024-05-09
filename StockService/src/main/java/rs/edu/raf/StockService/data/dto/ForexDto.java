@@ -11,9 +11,9 @@ public class ForexDto extends ListingDto {
     private String baseCurrency;
     private String quoteCurrency;
 
-    public ForexDto(String symbol, String description, String exchange, Long lastRefresh, Double price, Double high,
+    public ForexDto(Long id, String symbol, String description, String exchange, Long lastRefresh, Double price, Double high,
                     Double low, Double change, Integer volume, String baseCurrency, String quoteCurrency) {
-        super(symbol, description, exchange, lastRefresh, price, high, low, change, volume);
+        super(id, symbol, description, exchange, lastRefresh, price, high, low, change, volume);
         this.baseCurrency = baseCurrency;
         this.quoteCurrency = quoteCurrency;
     }

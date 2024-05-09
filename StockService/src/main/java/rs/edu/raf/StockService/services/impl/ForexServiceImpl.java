@@ -2,6 +2,7 @@ package rs.edu.raf.StockService.services.impl;
 
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import rs.edu.raf.StockService.data.dto.SecuritiesPriceDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.repositories.ForexRepository;
 import rs.edu.raf.StockService.services.ForexService;
@@ -28,6 +29,15 @@ public class ForexServiceImpl implements ForexService {
     }
 
     @Override
+    public Forex findBySymbol(String symbol) {
+        Forex forex = forexRepository.findForexBySymbol(symbol);
+        if (forex == null) {
+            throw new NotFoundException("Forex with symbol: " + symbol + "not found");
+        }
+        return forex;
+    }
+
+    @Override
     public List<Forex> findByBaseCurrency(String baseCurrency) {
         return forexRepository.findForexesByBaseCurrency(baseCurrency);
     }
@@ -36,4 +46,15 @@ public class ForexServiceImpl implements ForexService {
     public List<Forex> findByQuoteCurrency(String quoteCurrency) {
         return forexRepository.findForexesByQuoteCurrency(quoteCurrency);
     }
+
+    @Override
+    public SecuritiesPriceDto findCurrentPriceBySymbol(String symbol) {
+        Forex forex = forexRepository.findForexBySymbol(symbol);
+        if (forex == null) {
+            throw new NotFoundException("Forex with symbol: " + symbol + "not found");
+        }
+        return new SecuritiesPriceDto(forex.getPrice(), forex.getHigh(), forex.getLow());
+    }
+
+
 }

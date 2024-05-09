@@ -20,8 +20,8 @@ import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
-import rs.edu.raf.BankService.repository.AccountRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,10 +41,10 @@ public class TransferTransactionE2ETests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private CashTransactionRepository cashTransactionRepository;
 
     @MockBean
     private RabbitTemplate rabbitTemplate;
@@ -78,13 +78,13 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.CONFIRMED);
 
-        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
-        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = cashAccountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = cashAccountRepository.findByAccountNumber("222");
 
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 9000L);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 11000L);
 
-        Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.CONFIRMED);
     }
@@ -116,13 +116,13 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.DECLINED);
 
-        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
-        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = cashAccountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = cashAccountRepository.findByAccountNumber("222");
 
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.DECLINED);
     }
@@ -154,13 +154,13 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.PENDING);
 
-        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
-        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = cashAccountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = cashAccountRepository.findByAccountNumber("222");
 
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.PENDING);
     }
@@ -193,13 +193,13 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto.getStatus(), TransactionStatus.DECLINED);
 
-        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
-        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = cashAccountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = cashAccountRepository.findByAccountNumber("222");
 
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 1000L);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = transactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.DECLINED);
     }
@@ -222,13 +222,13 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto, TransactionStatus.CONFIRMED);
 
-        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
-        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = cashAccountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = cashAccountRepository.findByAccountNumber("222");
 
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 5000L);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 15000L);
 
-        Optional<TransferTransaction> transaction = transactionRepository.findById(transactionId);
+        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(transactionId);
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.CONFIRMED);
     }
@@ -251,13 +251,13 @@ public class TransferTransactionE2ETests {
 
         assertEquals(responseDto, TransactionStatus.DECLINED);
 
-        CashAccount updatedSenderCashAccount = accountRepository.findByAccountNumber("111");
-        CashAccount updatedReceiverCashAccount = accountRepository.findByAccountNumber("222");
+        CashAccount updatedSenderCashAccount = cashAccountRepository.findByAccountNumber("111");
+        CashAccount updatedReceiverCashAccount = cashAccountRepository.findByAccountNumber("222");
 
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000L);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = transactionRepository.findById(transactionId);
+        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(transactionId);
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.DECLINED);
     }
@@ -282,7 +282,7 @@ public class TransferTransactionE2ETests {
                 0.0,
                 receiverBalance);
 
-        accountRepository.saveAll(List.of(testSenderCashAccount, testReceiverCashAccount));
+        cashAccountRepository.saveAll(List.of(testSenderCashAccount, testReceiverCashAccount));
     }
 
     private CashAccount createTestAccount(String accountNumber,
@@ -323,7 +323,7 @@ public class TransferTransactionE2ETests {
                 0.0,
                 10000L);
 
-        accountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
+        cashAccountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
 
         transaction.setSenderCashAccount(senderCashAccount);
         transaction.setReceiverCashAccount(receiverCashAccount);
@@ -331,6 +331,6 @@ public class TransferTransactionE2ETests {
         transaction.setVerificationToken("11111");
         transaction.setAmount(5000L);
 
-        transactionId = transactionRepository.save(transaction).getId();
+        transactionId = cashTransactionRepository.save(transaction).getId();
     }
 }

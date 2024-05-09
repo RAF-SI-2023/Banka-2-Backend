@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<TransferTransaction, Long> {
+public interface CashTransactionRepository extends JpaRepository<TransferTransaction, Long> {
 
 }

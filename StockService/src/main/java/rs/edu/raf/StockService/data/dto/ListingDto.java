@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListingDto {
+    private Long id;
     private String symbol;
     private String description;
     private String exchange;

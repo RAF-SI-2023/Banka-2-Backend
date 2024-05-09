@@ -25,16 +25,21 @@ public class InMemoryExchangeServiceImpl implements ExchangeService {
 
     @Override
     public Exchange findById(Long id) {
-        return exchanges.stream().filter(currency -> currency.getId() == (id)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with id: " + id + "not found"));
+        return exchanges.stream().filter(currency -> currency.getId() == (id)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with id: " + id + " not found"));
     }
 
     @Override
     public Exchange findByExchangeName(String exchangeName) {
-        return exchanges.stream().filter(currency -> currency.getExchangeName().equals(exchangeName)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with exchangeName: " + exchangeName + "not found"));
+        return exchanges.stream().filter(currency -> currency.getExchangeName().equals(exchangeName)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with exchangeName: " + exchangeName + " not found"));
     }
 
     @Override
     public Exchange findByMICode(String miCode) {
-        return exchanges.stream().filter(currency -> currency.getExchangeMICode().equals(miCode)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with miCode: " + miCode + "not found"));
+        return exchanges.stream().filter(currency -> currency.getExchangeMICode().equals(miCode)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with miCode: " + miCode + " not found"));
+    }
+
+    @Override
+    public Exchange findByExchangeAcronym(String exchangeAcronym) {
+        return exchanges.stream().filter(currency -> currency.getExchangeAcronym().equals(exchangeAcronym)).findFirst().orElseThrow(() -> new NotFoundException("Exchange with exchangeAcronym: " + exchangeAcronym + " not found"));
     }
 }

@@ -8,7 +8,7 @@ import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.mapper.CardMapper;
-import rs.edu.raf.BankService.repository.AccountRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.service.CardService;
 
@@ -25,7 +25,7 @@ public class CardServiceImpl implements CardService {
 
     private final CardMapper cardMapper;
     private final CardRepository cardRepository;
-    private final AccountRepository accountRepository;
+    private final CashAccountRepository cashAccountRepository;
 
     @Override
     public CardDto createCard(CreateCardDto cardDto) {
@@ -45,7 +45,7 @@ public class CardServiceImpl implements CardService {
             throw new RuntimeException("Card number must have 16 digits");
         }
 
-        CashAccount cashAccount = accountRepository.findByAccountNumber(createdCard.getAccountNumber());
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(createdCard.getAccountNumber());
         if (cashAccount == null) {
             throw new RuntimeException("Account with account number " + createdCard.getAccountNumber() + " not found");
         }

@@ -139,7 +139,7 @@ public class StockServiceTests {
         when(stockRepository.findStocksBySymbol("Stock1 Symbol")).thenReturn(stocks);
 
 
-        List<Stock> result = stockService.findBySymbol("Stock1 Symbol");
+        List<Stock> result = stockService.findBySymbolDEPRICATED("Stock1 Symbol");
         assertEquals(stock, result.get(0));
     }
 }

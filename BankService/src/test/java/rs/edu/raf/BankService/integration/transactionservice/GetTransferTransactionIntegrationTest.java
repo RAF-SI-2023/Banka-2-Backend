@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
-import rs.edu.raf.BankService.repository.AccountRepository;
-import rs.edu.raf.BankService.repository.TransactionRepository;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
 
 import java.util.List;
@@ -24,9 +24,9 @@ public class GetTransferTransactionIntegrationTest {
     @Autowired
     private TransactionService transactionService;
     @Autowired
-    private AccountRepository accountRepository;
+    private CashAccountRepository cashAccountRepository;
     @Autowired
-    private TransactionRepository transactionRepository;
+    private CashTransactionRepository cashTransactionRepository;
 
     private CashAccount testCashAccount;
     private TransferTransaction transaction;
@@ -37,10 +37,10 @@ public class GetTransferTransactionIntegrationTest {
     @After
     public void finish() {
         if (testCashAccount != null) {
-            accountRepository.delete(testCashAccount);
+            cashAccountRepository.delete(testCashAccount);
         }
         if (transaction != null) {
-            transactionRepository.delete(transaction);
+            cashTransactionRepository.delete(transaction);
         }
     }
 
@@ -54,9 +54,9 @@ public class GetTransferTransactionIntegrationTest {
 
         testCashAccount.setSentTransferTransactions(List.of(transaction));
 
-        testCashAccount = accountRepository.save(testCashAccount);
+        testCashAccount = cashAccountRepository.save(testCashAccount);
         testAccountId = testCashAccount.getId();
-        transactionRepository.save(transaction);
+        cashTransactionRepository.save(transaction);
     }
 
     @Transactional

@@ -8,6 +8,7 @@ import rs.edu.raf.StockService.data.entities.Forex;
 public class ForexMapper {
     public ForexDto forexToForexDto(Forex forex) {
         return new ForexDto(
+                forex.getId(),
                 forex.getSymbol(),
                 forex.getDescription(),
                 forex.getExchange(),

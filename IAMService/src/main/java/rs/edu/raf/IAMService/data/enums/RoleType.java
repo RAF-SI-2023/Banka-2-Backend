@@ -10,6 +10,7 @@ public enum RoleType {
     AGENT("AGENT"),
     USER("USER");
 
+
     private final String role;
 
     RoleType(String role) {

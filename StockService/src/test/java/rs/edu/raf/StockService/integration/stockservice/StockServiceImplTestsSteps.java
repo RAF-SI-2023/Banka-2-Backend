@@ -47,7 +47,7 @@ public class StockServiceImplTestsSteps extends StockServiceImplTestsConfig {
 
     @When("fetching stocks with existing symbol {string}")
     public void fetchingStocksWithExistingSymbol(String symbol) {
-        returnedStocks = stockService.findBySymbol(symbol);
+        returnedStocks = stockService.findBySymbolDEPRICATED(symbol);
     }
 
     @Then("returned list contains only stocks with symbol {string}:")
@@ -59,7 +59,7 @@ public class StockServiceImplTestsSteps extends StockServiceImplTestsConfig {
 
     @When("fetching stocks with non-existing symbol {string}")
     public void fetchingStocksWithNonExistingSymbol(String symbol) {
-        returnedStocks = stockService.findBySymbol(symbol);
+        returnedStocks = stockService.findBySymbolDEPRICATED(symbol);
     }
 
     @Then("returned list does not contain any stock")

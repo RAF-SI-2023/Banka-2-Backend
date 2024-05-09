@@ -11,4 +11,5 @@ public interface ForexRepository extends JpaRepository<Forex, Long> {
 
     List<Forex> findForexesByBaseCurrency(String baseCurrency);
     List<Forex> findForexesByQuoteCurrency(String quoteCurrency);
+    Forex findForexBySymbol(String symbol);
 }

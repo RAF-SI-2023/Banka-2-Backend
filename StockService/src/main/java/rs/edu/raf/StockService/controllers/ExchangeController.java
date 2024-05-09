@@ -52,5 +52,14 @@ public class ExchangeController {
         }
     }
 
+    @GetMapping("/exchange-acronym/{exchangeAcronym}")
+    public ResponseEntity<Exchange> findExchangeByExchangeAcronym(@PathVariable String exchangeAcronym) {
+        try {
+            return ResponseEntity.ok(exchangeService.findByExchangeAcronym(exchangeAcronym));
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
 }

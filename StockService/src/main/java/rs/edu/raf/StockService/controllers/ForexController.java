@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
+import rs.edu.raf.StockService.data.dto.SecuritiesPriceDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.services.ForexService;
 
@@ -34,6 +35,15 @@ public class ForexController {
         }
     }
 
+    @GetMapping("/by-symbol/{symbol}")
+    public ResponseEntity<Forex> findForexBySymbol(@PathVariable String symbol) {
+        try {
+            return ResponseEntity.ok(forexService.findBySymbol(symbol));
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @GetMapping("/base-currency/{baseCurrency}")
     public ResponseEntity<List<Forex>> findForexByBaseCurrency(@PathVariable String baseCurrency) {
         return ResponseEntity.ok(forexService.findByBaseCurrency(baseCurrency));
@@ -42,6 +52,15 @@ public class ForexController {
     @GetMapping("/quote-currency/{quoteCurrency}")
     public ResponseEntity<List<Forex>> findForexByQuoteCurrency(@PathVariable String quoteCurrency) {
         return ResponseEntity.ok(forexService.findByQuoteCurrency(quoteCurrency));
+    }
+
+    @GetMapping("/current-price/{symbol}")
+    public ResponseEntity<SecuritiesPriceDto> findCurrentStockPriceBySymbol(@PathVariable String symbol) {
+        try {
+            return ResponseEntity.ok(forexService.findCurrentPriceBySymbol(symbol));
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 }

@@ -36,4 +36,9 @@ public class ExchangeServiceImpl implements ExchangeService {
     public Exchange findByMICode(String miCode) {
         return exchangeRepository.findByExchangeMICode(miCode);
     }
+
+    @Override
+    public Exchange findByExchangeAcronym(String exchangeAcronym) {
+        return exchangeRepository.findByExchangeAcronym(exchangeAcronym);
+    }
 }
