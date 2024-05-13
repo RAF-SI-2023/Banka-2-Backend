@@ -82,9 +82,6 @@ public class OrderServiceImpl implements OrderService {
                 currency = exchangeDto.getCurrency();
             }
             case SELL -> {
-                currency = tradingCashAccount.getCurrencyCode();
-            }
-            case SELL_TO_STOCK_MARKET -> {
                 if (listingDto.getExchange() != null) {
                     exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
                     currency = exchangeDto.getCurrency();   //ako bira kom exchangeu ce da proda
