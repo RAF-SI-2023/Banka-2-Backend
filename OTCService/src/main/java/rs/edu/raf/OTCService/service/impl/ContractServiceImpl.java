@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.entity.Contract;
 import rs.edu.raf.OTCService.data.enums.ContractStatus;
+import rs.edu.raf.OTCService.data.enums.ContractType;
 import rs.edu.raf.OTCService.mappers.ContractMapper;
 import rs.edu.raf.OTCService.repositories.ContractRepository;
 import rs.edu.raf.OTCService.service.BankService;
@@ -40,8 +41,16 @@ public class ContractServiceImpl implements ContractService {
         toBeCreated.setVolume(contractDto.getVolume());
         toBeCreated.setTotalPrice(contractDto.getTotalPrice());
         toBeCreated.setTicker(contractDto.getTicker());
+        toBeCreated.setBuyersEmail(contractDto.getBuyersEmail());
+        toBeCreated.setSellersEmail(contractDto.getSellersEmail());
+        toBeCreated.setBuyersPIB(contractDto.getBuyersPIB());
+        toBeCreated.setSellersPIB(contractDto.getSellersPIB());
         toBeCreated.setSellerConfirmation(false);
         toBeCreated.setBankConfirmation(false);
+        if (contractDto.getSellersEmail() != null)
+            toBeCreated.setContractType(ContractType.PRIVATE_CONTRACT);
+        else
+            toBeCreated.setContractType(ContractType.LEGAL_ENTITY_CONTRACT);
         return mapper.contractToDto(contractRepository.save(toBeCreated));
     }
 
@@ -62,7 +71,7 @@ public class ContractServiceImpl implements ContractService {
             contract = c.get();
         else
             throw new RuntimeException("Contract with id " + id + " not found");
-        if (contract.getBankConfirmation() != null)
+        if (contract.getBankConfirmation())
             throw new RuntimeException("Contract with id " + id + "is already confirmed by bank");
         contract.setBankConfirmation(true);
 
@@ -71,7 +80,7 @@ public class ContractServiceImpl implements ContractService {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
             bankService.createTransaction(mapper.contractToDto(contract));
-            //bankService.createOrder(new OrderDto(OrderStatus.APPROVED, OrderActionType.BUY,));
+
         }
 
 
@@ -87,7 +96,7 @@ public class ContractServiceImpl implements ContractService {
             contract = c.get();
         else
             throw new RuntimeException("Contract with id " + id + " not found");
-        if (contract.getSellerConfirmation() != null)
+        if (contract.getSellerConfirmation())
             throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
         contract.setSellerConfirmation(true);
 
@@ -110,7 +119,7 @@ public class ContractServiceImpl implements ContractService {
             contract = c.get();
         else
             throw new RuntimeException("Contract with id " + id + " not found");
-        if (contract.getSellerConfirmation() != null)
+        if (!contract.getSellerConfirmation())
             throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
         contract.setBankConfirmation(false);
         contract.setComment(message);
@@ -126,7 +135,7 @@ public class ContractServiceImpl implements ContractService {
             contract = c.get();
         else
             throw new RuntimeException("Contract with id " + id + " not found");
-        if (contract.getSellerConfirmation() != null)
+        if (!contract.getSellerConfirmation())
             throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
         contract.setSellerConfirmation(false);
         contract.setComment(message);

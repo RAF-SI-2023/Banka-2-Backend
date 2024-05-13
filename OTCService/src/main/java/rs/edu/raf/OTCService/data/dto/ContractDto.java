@@ -1,5 +1,6 @@
 package rs.edu.raf.OTCService.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import rs.edu.raf.OTCService.data.enums.ContractType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ContractDto {
     private Long id;
     private Boolean bankConfirmation;

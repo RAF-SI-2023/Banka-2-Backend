@@ -22,10 +22,10 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER','ROLE_ADMIN')")
     @PostMapping()
-    public ResponseEntity<Boolean> createOrder(OrderDto orderDto) {
-        return ResponseEntity.ok().body(orderService.createOrder(orderDto));
+    public ResponseEntity<Boolean> createOrder(@RequestBody OrderDto orderDto) {
+        return ResponseEntity.ok().body(orderService.createOrder(orderDto)); //TODO?
     }
 
 

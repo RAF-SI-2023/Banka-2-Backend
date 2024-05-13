@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final BlockingDeque<TradingJob> orders = new LinkedBlockingDeque<>();
 
     @Autowired
-    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository) {
+    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, TradingSimulation tradingSimulation) {
         this.transactionService = transactionService;
         this.iamService = iamService;
         this.stockService = stockService;
@@ -53,8 +53,9 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
         this.cashAccountRepository = cashAccountRepository;
 
-        this.tradingSimulation = new TradingSimulation();
+        this.tradingSimulation = tradingSimulation;
         this.tradingSimulation.setTradingJobs(orders);
+//        this.tradingSimulation.setTradingJobs(orders);
         Thread thread = new Thread(this.tradingSimulation);
         thread.start();
     }
@@ -70,9 +71,13 @@ public class OrderServiceImpl implements OrderService {
         Long initiatedByUserId = SpringSecurityUtil.getPrincipalId();
         order.setInitiatedByUserId(initiatedByUserId);
 
+        System.out.println(orderDto);
+        System.out.println(order);
+        System.out.println(SpringSecurityUtil.getPrincipalEmail());
         CashAccount tradingCashAccount = fetchPrimaryTradingAccount((isBankOrder ? null : SpringSecurityUtil.getPrincipalEmail()), "Primary trading account not found");
+        System.out.println("A");
         ListingDto listingDto = fetchSecuritiesByOrder(order);
-
+        System.out.println("A");
         // berza sa koje se kupuje hartija
         ExchangeDto exchangeDto = null;
         String currency = null;
@@ -80,6 +85,7 @@ public class OrderServiceImpl implements OrderService {
             case BUY -> {
                 exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
                 currency = exchangeDto.getCurrency();
+                System.out.println("A");
             }
             case SELL -> {
                 if (listingDto.getExchange() != null) {
@@ -88,16 +94,18 @@ public class OrderServiceImpl implements OrderService {
                 } else currency = tradingCashAccount.getCurrencyCode(); //ako ne bira, videti u nekom trenutku //todo
             }
         }
-
+        System.out.println("A");
         double totalPrice = calculateOrderPrice(order.getQuantity(), listingDto.getPrice());
         if (isBankOrder) {
             handleIfOrderInitiatedByAgent(order, initiatedByUserId, currency, totalPrice);
         }
+        System.out.println("A");
 
         double totalPriceInTradingCashAccountCurrency = currencyExchangeService.calculateAmountBetweenCurrencies(currency, tradingCashAccount.getCurrencyCode(), totalPrice);
         if (order.getOrderStatus() == OrderStatus.APPROVED) {
             transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
         }
+        System.out.println("A");
 
         order = orderRepository.save(order);
         try {
@@ -105,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println("A");
         return true;
     }
 

@@ -42,7 +42,9 @@ public class TransferTransactionController {
     }
 
     @PostMapping("/securities")
-    public ResponseEntity<?> createSecuritiesTransaction(ContractDto contractDto) {
+    
+    public ResponseEntity<?> createSecuritiesTransaction(@RequestBody ContractDto contractDto) {
+        System.out.println("ovde zapravo ulazi");
         return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
     }
 }

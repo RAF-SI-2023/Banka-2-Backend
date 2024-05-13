@@ -49,6 +49,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/accounts/associate-profile-initialization")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/accounts/code-confirmation/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/credit/**")).authenticated()
+                                .requestMatchers(new AntPathRequestMatcher("/api/orders/**")).authenticated()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()

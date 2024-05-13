@@ -1,6 +1,5 @@
 package rs.edu.raf.BankService.service.impl;
 
-import io.cucumber.core.backend.Pending;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,7 +25,6 @@ import rs.edu.raf.BankService.service.TransactionService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -223,7 +221,7 @@ public class TransactionServiceImpl implements TransactionService {
     public boolean transferFunds(String senderAccountNumber, String receiverAccountNumber, double amount) {
         // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
         CashAccount senderAccount = cashAccountRepository.findByAccountNumber(senderAccountNumber);
-        CashAccount receiverAccount = cashAccountRepository.findPrimaryTradingAccount(receiverAccountNumber);
+        CashAccount receiverAccount = cashAccountRepository.findByAccountNumber(receiverAccountNumber);
         if (receiverAccount == null || senderAccount == null) {
             throw new NotFoundException("Seller or buyer account not found");
         }
@@ -234,20 +232,23 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public SecuritiesTransaction createSecuritiesTransaction(ContractDto contractDto) {
+    public GenericTransactionDto createSecuritiesTransaction(ContractDto contractDto) {
 
         SecuritiesTransactionDto securitiesTransactionDto = new SecuritiesTransactionDto();
         securitiesTransactionDto.setAmount(contractDto.getTotalPrice());
         securitiesTransactionDto.setQuantityToTransfer(contractDto.getVolume());
+        securitiesTransactionDto.setSecuritiesSymbol(contractDto.getTicker());
         CashAccount buyer = cashAccountRepository.findPrimaryTradingAccount(contractDto.getBuyersEmail());
-        CashAccount seller = cashAccountRepository.findPrimaryTradingAccount(contractDto.getBuyersEmail());
+        CashAccount seller = cashAccountRepository.findPrimaryTradingAccount(contractDto.getSellersEmail());
         if (buyer == null || seller == null)
             throw new RuntimeException("buyer or seller account doesnt exist");
 
 
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyer.getAccountNumber(), securitiesTransactionDto.getSecuritiesSymbol());
         List<SecuritiesOwnership> sellSecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(seller.getAccountNumber(), securitiesTransactionDto.getSecuritiesSymbol());
-
+        System.out.println(buySecurities);
+        System.out.println(sellSecurities);
+        System.out.println(securitiesOwnershipRepository.findAllByAccountNumber(seller.getAccountNumber()));
         SecuritiesTransaction transaction = new SecuritiesTransaction();
         transaction.setAmount(securitiesTransactionDto.getAmount());
         transaction.setCreatedAt(LocalDateTime.now());
@@ -261,7 +262,7 @@ public class TransactionServiceImpl implements TransactionService {
         boolean doNotProcessOrder =
                 securitiesTransactionDto.getAmount() > buyer.getAvailableBalance() || sellSecurities.isEmpty() || sellSecurities.get(0).getQuantityOfPubliclyAvailable() < securitiesTransactionDto.getAmount();
 
-        if (doNotProcessOrder) {
+        if (!doNotProcessOrder) {
             transaction.setStatus(TransactionStatus.DECLINED);
             cashTransactionRepository.save(transaction);
 
@@ -294,7 +295,7 @@ public class TransactionServiceImpl implements TransactionService {
         securitiesOwnershipRepository.saveAll(List.of(buyerSo, sellerSo));
 
         transaction.setStatus(TransactionStatus.CONFIRMED);
-        return cashTransactionRepository.save(transaction);
+        return transactionMapper.toGenericTransactionDto(cashTransactionRepository.save(transaction));
 
     }
 

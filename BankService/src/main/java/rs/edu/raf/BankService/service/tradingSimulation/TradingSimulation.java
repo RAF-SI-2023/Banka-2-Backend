@@ -3,6 +3,8 @@ package rs.edu.raf.BankService.service.tradingSimulation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
@@ -32,6 +34,7 @@ import static rs.edu.raf.BankService.data.enums.ListingType.FOREX;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@Component
 public class TradingSimulation implements Runnable {
 
     private TransactionService transactionService;
@@ -44,6 +47,7 @@ public class TradingSimulation implements Runnable {
     private Random random = new Random();
     private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
     private static final Object lock = new Object();
+
 
     @Override
     public void run() {
@@ -288,6 +292,7 @@ public class TradingSimulation implements Runnable {
         return order.getStopPrice() == -1 ||
                 ((order.getOrderActionType() == OrderActionType.SELL) ? low < order.getStopPrice() : high > order.getStopPrice());
     }
+
 
 }
 

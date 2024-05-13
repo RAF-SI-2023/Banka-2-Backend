@@ -1,12 +1,10 @@
-package rs.edu.raf.BankService.data.dto;
+package rs.edu.raf.OTCService.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.enums.TransactionStatus;
-import rs.edu.raf.BankService.data.enums.TransactionType;
-
-import java.time.LocalDateTime;
+import rs.edu.raf.OTCService.data.enums.TransactionStatus;
+import rs.edu.raf.OTCService.data.enums.TransactionType;
 
 @Data
 @AllArgsConstructor

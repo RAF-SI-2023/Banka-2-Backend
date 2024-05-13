@@ -1,10 +1,7 @@
 package rs.edu.raf.BankService.service;
 
-import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
-import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
-import rs.edu.raf.BankService.data.enums.ContractType;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 
 import java.util.List;
@@ -31,5 +28,5 @@ public interface TransactionService {
 
     boolean transferFunds(String senderAccountNumber, String receiverAccountNumber, double amount);
 
-    SecuritiesTransaction createSecuritiesTransaction(ContractDto contractDto);
+    GenericTransactionDto createSecuritiesTransaction(ContractDto contractDto);
 }
