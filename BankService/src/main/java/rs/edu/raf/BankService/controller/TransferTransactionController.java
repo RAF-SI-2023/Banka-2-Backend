@@ -1,10 +1,10 @@
 package rs.edu.raf.BankService.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
-import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
+import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.service.TransactionService;
 
@@ -39,5 +39,10 @@ public class TransferTransactionController {
     @GetMapping(path = "/funds-transfer/{userId}")
     public List<GenericTransactionDto> getAllTransaction(@PathVariable Long userId) {
         return transactionService.getTransferTransactions(userId);
+    }
+
+    @PostMapping("/securities")
+    public ResponseEntity<?> createSecuritiesTransaction(ContractDto contractDto) {
+        return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
     }
 }

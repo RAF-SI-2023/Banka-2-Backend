@@ -26,11 +26,10 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public void deleteCompanyByIdentificationNumber(Integer identificationNumber) {
 
-        Company company= companyRepository.findByIdentificationNumber(identificationNumber).orElseThrow(() -> new NotFoundException("Company with identification number " + identificationNumber + " not found"));
+        Company company = companyRepository.findByIdentificationNumber(identificationNumber).orElseThrow(() -> new NotFoundException("Company with identification number " + identificationNumber + " not found"));
 
         companyRepository.delete(company);
     }
-
 
 
     public CompanyDto getCompanyById(Long id) {
@@ -46,10 +45,20 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyDto getCompanyByPib(Long pib) {
         Optional<Company> company = companyRepository.findByPib(pib);
-        if(company.isPresent()){
+        if (company.isPresent()) {
             return companyMapper.companyToCompanyDto(company.get());
-        }else{
+        } else {
             throw new CompanyNotFoundException("Company with pib " + pib + " not found");
+        }
+    }
+
+    @Override
+    public CompanyDto getCompanyByName(String name) {
+        Optional<Company> company = companyRepository.findByCompanyName(name);
+        if (company.isPresent()) {
+            return companyMapper.companyToCompanyDto(company.get());
+        } else {
+            throw new CompanyNotFoundException("Company with name " + name + " not found");
         }
     }
 
@@ -75,15 +84,15 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyDto getCompanyByIdNumber(Integer idNumber) {
         Optional<Company> company = companyRepository.findByIdentificationNumber(idNumber);
-        if(company.isPresent()){
+        if (company.isPresent()) {
             return companyMapper.companyToCompanyDto(company.get());
-        }else{
-            throw new CompanyNotFoundException("Company with identification number " + idNumber+ " not found.");
+        } else {
+            throw new CompanyNotFoundException("Company with identification number " + idNumber + " not found.");
         }
     }
 
     // Returns updated Company entity with only allowed modifications
-    private Company getModifiedCompanyEntity(Company companyToModify, CompanyDto companyDto){
+    private Company getModifiedCompanyEntity(Company companyToModify, CompanyDto companyDto) {
         companyToModify.setCompanyName(companyDto.getCompanyName());
         companyToModify.setFaxNumber(companyDto.getFaxNumber());
         companyToModify.setPhoneNumber(companyDto.getPhoneNumber());
@@ -93,11 +102,11 @@ public class CompanyServiceImpl implements CompanyService {
         return companyToModify;
     }
 
-    public CompanyDto updateCompany(CompanyDto companyDto){
+    public CompanyDto updateCompany(CompanyDto companyDto) {
         var company = companyRepository.findById(companyDto.getId());
         if (!company.isPresent())
             throw new CompanyNotFoundException("Company with id " + companyDto.getId() + " not found");
-        
+
         // save() return value may return incorrect data, so there is a need to call getModifiedCompanyEntity
         // example: Identification Number should not be updated, save() will return UPDATED value here
         Company modifiedCompany = getModifiedCompanyEntity(company.get(), companyDto);
