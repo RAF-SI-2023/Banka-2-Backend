@@ -70,6 +70,7 @@ public class ContractServiceImpl implements ContractService {
         if (contract.getBankConfirmation() && contract.getSellerConfirmation()) {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
+            bankService.createTransaction(mapper.contractToDto(contract));
             //bankService.createOrder(new OrderDto(OrderStatus.APPROVED, OrderActionType.BUY,));
         }
 
@@ -94,6 +95,7 @@ public class ContractServiceImpl implements ContractService {
         if (contract.getBankConfirmation() && contract.getSellerConfirmation()) {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
+            bankService.createTransaction(mapper.contractToDto(contract));
             //    bankService.createOrder();
         }
         //todo ovde posalji order ako su oba true na izvrsavanje

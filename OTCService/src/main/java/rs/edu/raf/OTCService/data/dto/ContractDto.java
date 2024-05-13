@@ -18,6 +18,8 @@ public class ContractDto {
     private Long dateTimeRealized;
     private String contractNumber; //videiti da li je potreban ili je dovoljan id
     private String description;
+
+
     private String ticker; //i.e. AAPL  might be listingName or smtn
     private Integer volume;
     private Double totalPrice; //U dinarima iz nekog razloga
