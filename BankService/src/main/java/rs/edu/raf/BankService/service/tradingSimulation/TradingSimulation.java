@@ -34,16 +34,15 @@ import static rs.edu.raf.BankService.data.enums.ListingType.FOREX;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@Component
 public class TradingSimulation implements Runnable {
 
-    private TransactionService transactionService;
-    private IAMService iamService;
-    private StockService stockService;
-    private CurrencyExchangeService currencyExchangeService;
-    private OrderRepository orderRepository;
-    private CashAccountRepository cashAccountRepository;
-    private SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private final TransactionService transactionService;
+    private final IAMService iamService;
+    private final StockService stockService;
+    private final CurrencyExchangeService currencyExchangeService;
+    private final OrderRepository orderRepository;
+    private final CashAccountRepository cashAccountRepository;
+    private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     private Random random = new Random();
     private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
     private static final Object lock = new Object();
@@ -81,10 +80,15 @@ public class TradingSimulation implements Runnable {
 
 
     private void processBuyOrder(TradingJob tradingJob) {
-        if (tradingJob.getOrder().getOrderActionType() == OrderActionType.BUY) {
+        if (tradingJob.getOrder().getOrderActionType() == OrderActionType.BUY &&
+                ((System.currentTimeMillis() - tradingJob.getOrder().getTimeOfLastModification() > 8640000))) {
             switch (tradingJob.getOrder().getListingType()) {
-                case STOCK -> processStockBuyOrder(tradingJob);
-                case FOREX -> processForexBuyOrder(tradingJob);
+                case STOCK -> {
+                    processStockBuyOrder(tradingJob);
+                }
+                case FOREX -> {
+                    processForexBuyOrder(tradingJob);
+                }
             }
         }
     }
@@ -95,6 +99,7 @@ public class TradingSimulation implements Runnable {
         // KUPUJEMO DIREKTNO SA BERZE
         // SVAKA BERZA IMA VALUTU U KOJOJ POSLUJE
         Order order = buyTradingJob.getOrder();
+
         WorkingHoursStatus workingHoursStatus = getWorkingHoursForStock(order.getListingId());
         if (workingHoursStatus == WorkingHoursStatus.CLOSED) {
             try {
@@ -106,6 +111,11 @@ public class TradingSimulation implements Runnable {
         }
 
         ListingDto listingDto = fetchSecuritiesByOrder(order);
+
+        if (listingDto.getVolume() == null) {
+            listingDto.setVolume(new Random().nextInt(1, 10));
+        }
+
         ExchangeDto exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
         //mockujemo podatke
         listingDto.setPrice(mockPrice(listingDto.getPrice()));
@@ -114,19 +124,21 @@ public class TradingSimulation implements Runnable {
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
 
         boolean doNotProcessOrder =
-                (order.isAllOrNone() && !Objects.equals(listingDto.getVolume(), order.getQuantity())) ||
+                (order.isAllOrNone() && listingDto.getVolume() < (order.getQuantity() - order.getRealizedQuantity())) ||
                         (order.isAllOrNone() && (order.getQuantity() > listingDto.getVolume())) ||
                         !checkLimitPrice(order, listingDto.getLow(), listingDto.getHigh()) ||
                         !checkStopPrice(order, listingDto.getLow(), listingDto.getHigh());
-
         if (doNotProcessOrder) {
             try {
+                order.setTimeOfLastModification(System.currentTimeMillis());
+                orderRepository.save(order);
                 tradingJobs.put(buyTradingJob);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             return;
         }
+
         //mora i ovo da se updateuje zar ne?
         //trebalo bi da bude unique acc# + securityName as a key
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyTradingJob.getTradingAccountNumber(), listingDto.getSymbol());
@@ -158,6 +170,7 @@ public class TradingSimulation implements Runnable {
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
+
         order.setRealizedQuantity(order.getRealizedQuantity() + quantityToProcess);
         if (Objects.equals(order.getRealizedQuantity(), order.getQuantity())) {
             order.setDone(true);

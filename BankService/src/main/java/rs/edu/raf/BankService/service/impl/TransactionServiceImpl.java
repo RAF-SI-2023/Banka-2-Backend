@@ -246,9 +246,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyer.getAccountNumber(), securitiesTransactionDto.getSecuritiesSymbol());
         List<SecuritiesOwnership> sellSecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(seller.getAccountNumber(), securitiesTransactionDto.getSecuritiesSymbol());
-        System.out.println(buySecurities);
-        System.out.println(sellSecurities);
-        System.out.println(securitiesOwnershipRepository.findAllByAccountNumber(seller.getAccountNumber()));
+
         SecuritiesTransaction transaction = new SecuritiesTransaction();
         transaction.setAmount(securitiesTransactionDto.getAmount());
         transaction.setCreatedAt(LocalDateTime.now());

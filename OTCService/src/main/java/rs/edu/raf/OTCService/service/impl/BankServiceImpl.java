@@ -35,7 +35,7 @@ public class BankServiceImpl implements BankService {
                     .method("POST", HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(contractDto)))
                     .build();
         } catch (JsonProcessingException e) {
-            System.out.println("PUCA OVDE");
+
             throw new RuntimeException(e);
         }
         try {
@@ -43,11 +43,10 @@ public class BankServiceImpl implements BankService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(request.bodyPublisher().get());
-        System.out.println(request);
+
         Boolean isSent = false;
         try {
-            System.out.println("ILI OVDE");
+
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             GenericTransactionDto res = objectMapper.readValue(response.body(), GenericTransactionDto.class);
             if (res.getStatus() == TransactionStatus.CONFIRMED)

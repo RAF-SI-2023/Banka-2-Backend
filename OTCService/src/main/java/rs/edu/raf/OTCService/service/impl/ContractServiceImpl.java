@@ -79,6 +79,7 @@ public class ContractServiceImpl implements ContractService {
         if (contract.getBankConfirmation() && contract.getSellerConfirmation()) {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
+            //TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj contract  pre slanja same transakcije.
             bankService.createTransaction(mapper.contractToDto(contract));
 
         }
@@ -104,8 +105,10 @@ public class ContractServiceImpl implements ContractService {
         if (contract.getBankConfirmation() && contract.getSellerConfirmation()) {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
+
+            //TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj contract  pre slanja same transakcije.
             bankService.createTransaction(mapper.contractToDto(contract));
-            //    bankService.createOrder();
+
         }
         //todo ovde posalji order ako su oba true na izvrsavanje
         return mapper.contractToDto(contractRepository.save(contract));

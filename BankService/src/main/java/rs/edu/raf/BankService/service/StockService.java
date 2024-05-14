@@ -3,15 +3,14 @@ package rs.edu.raf.BankService.service;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Order;
-import rs.edu.raf.BankService.data.enums.ListingType;
 
 @Service
 public interface StockService {
 
 
-    ForexDto getForexById(Long id);
+    ForexDto getForexBySymbol(String symbol);
 
-    StockDto getStockById(Long id);
+    StockDto getStockBySymbol(String symbol);
 
     ListingDto getSecuritiesByOrder(Order order);
 
