@@ -1,0 +1,88 @@
+package rs.edu.raf.OTCService.controllers;
+
+import jakarta.websocket.server.PathParam;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import rs.edu.raf.OTCService.data.dto.ContractDto;
+import rs.edu.raf.OTCService.service.ContractService;
+
+@RestController
+@RequestMapping("/api/contracts")
+@RequiredArgsConstructor
+@CrossOrigin
+public class ContractController {
+    private final ContractService contractService;
+
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllContracts() {
+        return ResponseEntity.ok(contractService.getAllContracts());
+    }
+
+
+    @GetMapping("/all-waiting")
+    public ResponseEntity<?> getAllWaitingContracts() {
+        return ResponseEntity.ok(contractService.getAllWaitingContracts());
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getContractById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(contractService.getContractById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createContract(@RequestBody ContractDto contractDto) {
+        try {
+            return ResponseEntity.ok(contractService.createContract(contractDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+        }
+    }
+
+    @PutMapping("/approve-seller/{id}")
+    public ResponseEntity<?> sellerApproveContractById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(contractService.sellerApproveContractById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+
+
+    }
+
+    @PutMapping("/approve-bank/{id}")
+    public ResponseEntity<?> bankApproveContractById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(contractService.bankApproveContractById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
+
+    @PutMapping("/deny-seller/{id}")
+    public ResponseEntity<?> sellerDenyContractById(@PathVariable Long id, @RequestBody String message) {
+        try {
+            return ResponseEntity.ok(contractService.sellerDenyContractById(id, message));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+
+    }
+
+    @PutMapping("/deny-bank/{id}")
+    public ResponseEntity<?> bankDenyContractById(@PathVariable Long id, @RequestBody String message) {
+        try {
+            return ResponseEntity.ok(contractService.bankDenyContractById(id, message));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
+
+}

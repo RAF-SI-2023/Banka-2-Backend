@@ -1,0 +1,48 @@
+package rs.edu.raf.BankService.controller;
+
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
+import rs.edu.raf.BankService.service.SecuritiesOwnershipService;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/api/securities-ownerships")
+@AllArgsConstructor
+public class SecuritiesOwnershipsController {
+    private final SecuritiesOwnershipService securitiesOwnershipService;
+
+    //TODO dodati security u nekom momentu
+    @GetMapping("/account-number/{accountNumber}")
+    public ResponseEntity<List<SecuritiesOwnershipDto>> getSecurityOwnershipsForAccountNumber(@PathVariable String accountNumber) {
+
+        return ResponseEntity.ok(securitiesOwnershipService.getSecurityOwnershipsForAccountNumber(accountNumber));
+    }
+
+    @GetMapping("/security-name/{securitySymbol}")
+    public ResponseEntity<List<SecuritiesOwnershipDto>> getSecurityOwnershipsBySecurity(@PathVariable String securitySymbol) {
+        return ResponseEntity.ok(securitiesOwnershipService.getSecurityOwnershipsBySecurity(securitySymbol));
+    }
+
+    @GetMapping("/all-available")
+    public ResponseEntity<List<SecuritiesOwnershipDto>> getAllPubliclyAvailableSecurityOwnerships() {
+        return ResponseEntity.ok(securitiesOwnershipService.getAllPubliclyAvailableSecurityOwnerships());
+    }
+
+
+    @PutMapping("/update-publicly-available")
+    public ResponseEntity<?> updatePubliclyAvailableQuantity(@RequestBody SecuritiesOwnershipDto soDto) {
+        try {
+            SecuritiesOwnershipDto dto = securitiesOwnershipService.updatePubliclyAvailableQuantity(soDto);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
+}
