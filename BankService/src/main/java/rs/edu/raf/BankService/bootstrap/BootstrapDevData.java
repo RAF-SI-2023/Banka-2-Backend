@@ -10,6 +10,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
+import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
@@ -21,6 +22,7 @@ import rs.edu.raf.BankService.data.enums.*;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
+import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
@@ -52,6 +54,7 @@ public class BootstrapDevData implements CommandLineRunner {
     private final CardRepository cardRepository;
     private final ExchangeRateRepository exchangeRateRepository;
     private final ResourceLoader resourceLoader;
+    private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -66,6 +69,8 @@ public class BootstrapDevData implements CommandLineRunner {
         loadCreditRequests();
 
         loadExchangeRates();
+
+        loadSecurityOwnerships();
 
         logger.info("BankService: DEV DATA LOADING FINISHED...");
     }
@@ -308,6 +313,55 @@ public class BootstrapDevData implements CommandLineRunner {
                 });
             }
         }
+    }
+
+    private void loadSecurityOwnerships(){
+        if(securitiesOwnershipRepository.count()==0){
+
+            String [] symbols1 ={"AAPL", "GOOGL", "Z","AGXLW"};
+            String [] symbols2 ={"NTFL" ,"TSLA","MSFT","FB"};
+            String [] symbols3 ={"K","TT","CC","I"};
+
+            for(int i=0; i<4; i++){
+                SecuritiesOwnership so1 = new SecuritiesOwnership();
+                so1.setEmail(myEmail1);
+                so1.setAccountNumber("3334444999999999");
+                so1.setOwnedByBank(false);
+                so1.setSecuritiesSymbol(symbols1[i]);
+                int quantity = new Random().nextInt(100);
+                so1.setQuantity(quantity+50);
+                so1.setQuantityOfPubliclyAvailable(quantity);
+                so1.setReservedQuantity(0);
+                securitiesOwnershipRepository.save(so1);
+
+                SecuritiesOwnership so2 = new SecuritiesOwnership();
+                so2.setEmail(myEmail2);
+                so2.setAccountNumber("3334444111111111");
+                so2.setOwnedByBank(false);
+                so2.setSecuritiesSymbol(symbols2[i]);
+                int quantity1 = new Random().nextInt(150);
+                so2.setQuantity(30+quantity1);
+                so2.setQuantityOfPubliclyAvailable(quantity1);
+                so2.setReservedQuantity(25);
+                securitiesOwnershipRepository.save(so2);
+
+
+                SecuritiesOwnership so3 = new SecuritiesOwnership();
+                so3.setEmail(myEmail3);
+                so3.setAccountNumber( "1112222333333333");
+                so3.setOwnedByBank(false);
+                so3.setSecuritiesSymbol(symbols3[i]);
+                int quantity2 = new Random().nextInt(250);
+                so3.setQuantity(quantity2+100);
+                so3.setQuantityOfPubliclyAvailable(quantity2);
+                so3.setReservedQuantity(5);
+                securitiesOwnershipRepository.save(so3);
+
+            }
+
+
+        }
+
     }
 
     private void addCardIfIdentificationCardNumberIsNotPresent(Card card){
