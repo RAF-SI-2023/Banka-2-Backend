@@ -14,6 +14,12 @@ public interface SecuritiesOwnershipService {
 
     List<SecuritiesOwnershipDto> getAllPubliclyAvailableSecurityOwnerships();
 
+
+    List<SecuritiesOwnershipDto> getAllPubliclyAvailableSecurityOwnershipsFromCompanies();
+
+    List<SecuritiesOwnershipDto> getAllPubliclyAvailableSecurityOwnershipsFromPrivates();
+
     SecuritiesOwnershipDto updatePubliclyAvailableQuantity(SecuritiesOwnershipDto soDto);
+
 
 }

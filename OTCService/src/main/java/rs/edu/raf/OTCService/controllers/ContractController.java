@@ -4,6 +4,7 @@ import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.service.ContractService;
@@ -58,6 +59,7 @@ public class ContractController {
     }
 
     @PutMapping("/approve-bank/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_AGENT','ROLE_SUPERVISOR')")
     public ResponseEntity<?> bankApproveContractById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(contractService.bankApproveContractById(id));
@@ -77,6 +79,7 @@ public class ContractController {
     }
 
     @PutMapping("/deny-bank/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_AGENT','ROLE_SUPERVISOR')")
     public ResponseEntity<?> bankDenyContractById(@PathVariable Long id, @RequestBody String message) {
         try {
             return ResponseEntity.ok(contractService.bankDenyContractById(id, message));

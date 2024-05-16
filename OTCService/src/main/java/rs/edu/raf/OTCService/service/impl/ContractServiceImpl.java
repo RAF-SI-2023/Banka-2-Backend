@@ -10,6 +10,7 @@ import rs.edu.raf.OTCService.mappers.ContractMapper;
 import rs.edu.raf.OTCService.repositories.ContractRepository;
 import rs.edu.raf.OTCService.service.BankService;
 import rs.edu.raf.OTCService.service.ContractService;
+import rs.edu.raf.OTCService.util.SpringSecurityUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -99,6 +100,12 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("Contract with id " + id + " not found");
         if (contract.getSellerConfirmation())
             throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
+        String loggedEmail = SpringSecurityUtil.getPrincipalEmail();
+        if (!contract.getSellersEmail().equalsIgnoreCase(loggedEmail)) {
+            throw new RuntimeException("You are not the seller");
+        }
+
+
         contract.setSellerConfirmation(true);
 
 
@@ -110,7 +117,7 @@ public class ContractServiceImpl implements ContractService {
             bankService.createTransaction(mapper.contractToDto(contract));
 
         }
-        //todo ovde posalji order ako su oba true na izvrsavanje
+
         return mapper.contractToDto(contractRepository.save(contract));
     }
 
@@ -122,8 +129,8 @@ public class ContractServiceImpl implements ContractService {
             contract = c.get();
         else
             throw new RuntimeException("Contract with id " + id + " not found");
-        if (!contract.getSellerConfirmation())
-            throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
+        if (!contract.getBankConfirmation())
+            throw new RuntimeException("Contract with id " + id + "is already denied by seller");
         contract.setBankConfirmation(false);
         contract.setComment(message);
         contract.setContractStatus(ContractStatus.REJECTED);
@@ -140,6 +147,10 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("Contract with id " + id + " not found");
         if (!contract.getSellerConfirmation())
             throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
+        String loggedEmail = SpringSecurityUtil.getPrincipalEmail();
+        if (!contract.getSellersEmail().equalsIgnoreCase(loggedEmail)) {
+            throw new RuntimeException("You are not the seller");
+        }
         contract.setSellerConfirmation(false);
         contract.setComment(message);
         contract.setContractStatus(ContractStatus.REJECTED);

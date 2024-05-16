@@ -20,4 +20,12 @@ public interface SecuritiesOwnershipRepository extends JpaRepository<SecuritiesO
     @Query("SELECT so FROM SecuritiesOwnership so WHERE so.quantityOfPubliclyAvailable>0")
     List<SecuritiesOwnership> findSecuritiesOwnershipByQuantityOfPubliclyAvailable();
 
+
+    @Query("Select so from SecuritiesOwnership so join BusinessCashAccount bca on so.accountNumber=bca.accountNumber where bca.PIB is not  null and so.quantityOfPubliclyAvailable>0")
+    List<SecuritiesOwnership> findSecuritiesOwnershipByQuantityOfPubliclyAvailableAndIsBusiness();
+
+    @Query("Select so from SecuritiesOwnership so join CashAccount bca on so.accountNumber=bca.accountNumber where so.quantityOfPubliclyAvailable>0")
+    List<SecuritiesOwnership> findSecuritiesOwnershipByQuantityOfPubliclyAvailableAndIsPrivate();
+
+
 }
