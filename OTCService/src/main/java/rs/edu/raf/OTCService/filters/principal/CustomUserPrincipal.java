@@ -8,9 +8,11 @@ import java.security.Principal;
 public class CustomUserPrincipal implements Principal {
     // Možete dodati dodatne metode da vratite userId i permissions
     private Long userId;
+    private String email;
 
-    public CustomUserPrincipal(Long userId) {
+    public CustomUserPrincipal(Long userId, String email) {
         this.userId = userId;
+        this.email = email;
     }
 
     // Standard getters and setters

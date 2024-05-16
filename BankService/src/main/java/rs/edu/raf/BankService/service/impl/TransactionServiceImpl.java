@@ -5,13 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
-import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.dto.TransferTransactionVerificationDto;
+import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
@@ -20,9 +19,11 @@ import rs.edu.raf.BankService.exception.TransactionNotFoundException;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
+import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper transactionMapper;
     private final RabbitTemplate rabbitTemplate;
     private final CurrencyExchangeService currencyExchangeService;
+    private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
 
     @Transactional
     @Override
@@ -69,8 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
             senderCashAccount.setAvailableBalance(senderBalance - transferAmount);
             receiverCashAccount.setAvailableBalance(receiverBalance + transferAmount);
             transaction.setStatus(TransactionStatus.CONFIRMED);
-        }
-        else {
+        } else {
             transaction.setStatus(TransactionStatus.DECLINED);
         }
 
@@ -103,8 +104,7 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setVerificationToken(token);
 
             sendVerificationMessage(senderCashAccount.getEmail(), token);
-        }
-        else {
+        } else {
             transaction.setStatus(TransactionStatus.DECLINED);
         }
 
@@ -137,8 +137,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transferTransaction.setStatus(transactionStatus);
 
                 cashAccountRepository.saveAll(List.of(senderCashAccount, receiverCashAccount));
-            }
-            else {
+            } else {
                 transactionStatus = TransactionStatus.DECLINED;
                 transferTransaction.setStatus(transactionStatus);
             }
@@ -174,7 +173,7 @@ public class TransactionServiceImpl implements TransactionService {
         double availableBalance = cashAccount.getAvailableBalance();
         double reservedFunds = cashAccount.getReservedFunds();
 
-        if(availableBalance - reservedFunds < amount) {
+        if (availableBalance - reservedFunds < amount) {
             throw new RuntimeException("Insufficient funds");
         }
 
@@ -198,7 +197,7 @@ public class TransactionServiceImpl implements TransactionService {
         double availableBalance = cashAccount.getAvailableBalance();
         double reservedFunds = cashAccount.getAvailableBalance();
 
-        if(reservedFunds < amount) {
+        if (reservedFunds < amount) {
             // this should not happen
             throw new RuntimeException("Insufficient reserved funds (THIS SOULD NOT HAPPEN)");
         }
@@ -222,7 +221,7 @@ public class TransactionServiceImpl implements TransactionService {
     public boolean transferFunds(String senderAccountNumber, String receiverAccountNumber, double amount) {
         // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
         CashAccount senderAccount = cashAccountRepository.findByAccountNumber(senderAccountNumber);
-        CashAccount receiverAccount = cashAccountRepository.findPrimaryTradingAccount(receiverAccountNumber);
+        CashAccount receiverAccount = cashAccountRepository.findByAccountNumber(receiverAccountNumber);
         if (receiverAccount == null || senderAccount == null) {
             throw new NotFoundException("Seller or buyer account not found");
         }
@@ -230,6 +229,72 @@ public class TransactionServiceImpl implements TransactionService {
         double fundsToAdd = currencyExchangeService.calculateAmountBetweenCurrencies(senderAccount.getCurrencyCode(), receiverAccount.getCurrencyCode(), amount);
         addFunds(receiverAccount, fundsToAdd);
         return true;
+    }
+
+    @Override
+    public GenericTransactionDto createSecuritiesTransaction(ContractDto contractDto) {
+
+        SecuritiesTransactionDto securitiesTransactionDto = new SecuritiesTransactionDto();
+        securitiesTransactionDto.setAmount(contractDto.getTotalPrice());
+        securitiesTransactionDto.setQuantityToTransfer(contractDto.getVolume());
+        securitiesTransactionDto.setSecuritiesSymbol(contractDto.getTicker());
+        CashAccount buyer = cashAccountRepository.findPrimaryTradingAccount(contractDto.getBuyersEmail());
+        CashAccount seller = cashAccountRepository.findPrimaryTradingAccount(contractDto.getSellersEmail());
+        if (buyer == null || seller == null)
+            throw new RuntimeException("buyer or seller account doesnt exist");
+
+
+        List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyer.getAccountNumber(), securitiesTransactionDto.getSecuritiesSymbol());
+        List<SecuritiesOwnership> sellSecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(seller.getAccountNumber(), securitiesTransactionDto.getSecuritiesSymbol());
+
+        SecuritiesTransaction transaction = new SecuritiesTransaction();
+        transaction.setAmount(securitiesTransactionDto.getAmount());
+        transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setSecuritiesSymbol(securitiesTransactionDto.getSecuritiesSymbol());
+        transaction.setQuantityToTransfer(securitiesTransactionDto.getQuantityToTransfer());
+        transaction.setReceiverCashAccount(seller);
+        transaction.setSenderCashAccount(buyer);
+        transaction.setStatus(TransactionStatus.PENDING);
+
+
+        boolean doNotProcessOrder =
+                securitiesTransactionDto.getAmount() > buyer.getAvailableBalance() || sellSecurities.isEmpty() || sellSecurities.get(0).getQuantityOfPubliclyAvailable() < securitiesTransactionDto.getAmount();
+
+        if (!doNotProcessOrder) {
+            transaction.setStatus(TransactionStatus.DECLINED);
+            cashTransactionRepository.save(transaction);
+
+            throw new RuntimeException("not enough funds/stocks");
+        }
+        //mora i ovo da se updateuje zar ne?
+        //trebalo bi da bude unique email + securityName as a key
+
+        if (buySecurities.isEmpty()) {
+            //kreiraj
+            SecuritiesOwnership so = new SecuritiesOwnership();
+            so.setAccountNumber(buyer.getAccountNumber());
+            so.setEmail(buyer.getEmail());
+            so.setQuantity(0);
+            so.setSecuritiesSymbol(securitiesTransactionDto.getSecuritiesSymbol());
+            so.setOwnedByBank(false);
+            so.setQuantityOfPubliclyAvailable(0);
+            securitiesOwnershipRepository.save(so);
+            buySecurities.add(so);
+        }
+
+        Integer quantityToProcess = securitiesTransactionDto.getQuantityToTransfer();
+        double totalPrice = securitiesTransactionDto.getAmount();
+        transferFunds(buyer.getAccountNumber(), seller.getAccountNumber(), totalPrice);
+        //..
+        SecuritiesOwnership buyerSo = buySecurities.get(0);
+        SecuritiesOwnership sellerSo = sellSecurities.get(0);
+        buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
+        sellerSo.setQuantity(sellerSo.getQuantity() - quantityToProcess);
+        securitiesOwnershipRepository.saveAll(List.of(buyerSo, sellerSo));
+
+        transaction.setStatus(TransactionStatus.CONFIRMED);
+        return transactionMapper.toGenericTransactionDto(cashTransactionRepository.save(transaction));
+
     }
 
     private String generateVerificationToken() {

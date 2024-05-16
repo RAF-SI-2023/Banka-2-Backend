@@ -18,6 +18,7 @@ import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.OrderRepository;
+import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.*;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingSimulation;
@@ -40,11 +41,12 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final CashAccountRepository cashAccountRepository;
-    private final TradingSimulation tradingSimulation;
+    private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private TradingSimulation tradingSimulation;
     private final BlockingDeque<TradingJob> orders = new LinkedBlockingDeque<>();
 
     @Autowired
-    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository) {
+    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository) {
         this.transactionService = transactionService;
         this.iamService = iamService;
         this.stockService = stockService;
@@ -52,8 +54,8 @@ public class OrderServiceImpl implements OrderService {
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.cashAccountRepository = cashAccountRepository;
-
-        this.tradingSimulation = new TradingSimulation();
+        this.securitiesOwnershipRepository = securitiesOwnershipRepository;
+        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository);
         this.tradingSimulation.setTradingJobs(orders);
         Thread thread = new Thread(this.tradingSimulation);
         thread.start();
@@ -71,20 +73,17 @@ public class OrderServiceImpl implements OrderService {
         order.setInitiatedByUserId(initiatedByUserId);
 
         CashAccount tradingCashAccount = fetchPrimaryTradingAccount((isBankOrder ? null : SpringSecurityUtil.getPrincipalEmail()), "Primary trading account not found");
-        ListingDto listingDto = fetchSecuritiesByOrder(order);
 
-        // berza sa koje se kupuje hartija
+        ListingDto listingDto = fetchSecuritiesByOrder(order);
         ExchangeDto exchangeDto = null;
         String currency = null;
         switch (order.getOrderActionType()) {
             case BUY -> {
                 exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
                 currency = exchangeDto.getCurrency();
+
             }
             case SELL -> {
-                currency = tradingCashAccount.getCurrencyCode();
-            }
-            case SELL_TO_STOCK_MARKET -> {
                 if (listingDto.getExchange() != null) {
                     exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
                     currency = exchangeDto.getCurrency();   //ako bira kom exchangeu ce da proda
@@ -97,10 +96,12 @@ public class OrderServiceImpl implements OrderService {
             handleIfOrderInitiatedByAgent(order, initiatedByUserId, currency, totalPrice);
         }
 
+
         double totalPriceInTradingCashAccountCurrency = currencyExchangeService.calculateAmountBetweenCurrencies(currency, tradingCashAccount.getCurrencyCode(), totalPrice);
         if (order.getOrderStatus() == OrderStatus.APPROVED) {
             transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
         }
+
 
         order = orderRepository.save(order);
         try {
@@ -108,7 +109,6 @@ public class OrderServiceImpl implements OrderService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
         return true;
     }
 

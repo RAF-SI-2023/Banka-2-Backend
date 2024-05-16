@@ -11,6 +11,8 @@ import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionType;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalField;
 
 @Component
 public class TransactionMapper {
@@ -66,7 +68,7 @@ public class TransactionMapper {
     public GenericTransactionDto toGenericTransactionDto(TransferTransaction transferTransaction) {
         GenericTransactionDto dto = new GenericTransactionDto();
         dto.setId(transferTransaction.getId().toString());
-        dto.setCreatedAt(transferTransaction.getCreatedAt());
+        dto.setCreatedAt(transferTransaction.getCreatedAt().toEpochSecond(ZoneOffset.UTC));
         dto.setStatus(transferTransaction.getStatus());
 
         if (transferTransaction instanceof ExternalTransferTransaction) {

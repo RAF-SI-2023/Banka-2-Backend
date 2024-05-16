@@ -23,4 +23,5 @@ public interface CompanyService {
 
     CompanyDto updateCompany(CompanyDto companyDto);
 
+    CompanyDto getCompanyByName(String name);
 }
