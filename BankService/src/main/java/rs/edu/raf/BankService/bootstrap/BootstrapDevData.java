@@ -68,6 +68,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
         loadCreditRequests();
 
+        loadExchangeRates();
 
         loadSecurityOwnerships();
         logger.info("BankService: DEV DATA LOADING FINISHED...");
@@ -315,8 +316,58 @@ public class BootstrapDevData implements CommandLineRunner {
         }
     }
 
-    private void addCardIfIdentificationCardNumberIsNotPresent(Card card) {
-        if (cardRepository.findByIdentificationCardNumber(card.getIdentificationCardNumber()).isEmpty()) {
+    private void loadSecurityOwnerships(){
+        if(securitiesOwnershipRepository.count()==0){
+
+            String [] symbols1 ={"AAPL", "GOOGL", "Z","AGXLW"};
+            String [] symbols2 ={"NTFL" ,"TSLA","MSFT","FB"};
+            String [] symbols3 ={"K","TT","CC","I"};
+
+
+            for(int i=0; i<4; i++){
+                SecuritiesOwnership so1 = new SecuritiesOwnership();
+                so1.setEmail(myEmail1);
+                so1.setAccountNumber("3334444999999999");
+                so1.setOwnedByBank(false);
+                so1.setSecuritiesSymbol(symbols1[i]);
+                int quantity = new Random().nextInt(100);
+                so1.setQuantity(quantity+50);
+                so1.setQuantityOfPubliclyAvailable(quantity);
+                so1.setReservedQuantity(0);
+                securitiesOwnershipRepository.save(so1);
+
+                SecuritiesOwnership so2 = new SecuritiesOwnership();
+                so2.setEmail(myEmail2);
+                so2.setAccountNumber("3334444111111111");
+                so2.setOwnedByBank(false);
+                so2.setSecuritiesSymbol(symbols2[i]);
+                int quantity1 = new Random().nextInt(150);
+                so2.setQuantity(30+quantity1);
+                so2.setQuantityOfPubliclyAvailable(quantity1);
+                so2.setReservedQuantity(25);
+                securitiesOwnershipRepository.save(so2);
+
+
+                SecuritiesOwnership so3 = new SecuritiesOwnership();
+                so3.setEmail(myEmail3);
+                so3.setAccountNumber( "1112222333333333");
+                so3.setOwnedByBank(false);
+                so3.setSecuritiesSymbol(symbols3[i]);
+                int quantity2 = new Random().nextInt(250);
+                so3.setQuantity(quantity2+100);
+                so3.setQuantityOfPubliclyAvailable(quantity2);
+                so3.setReservedQuantity(5);
+                securitiesOwnershipRepository.save(so3);
+
+            }
+
+
+        }
+
+    }
+
+    private void addCardIfIdentificationCardNumberIsNotPresent(Card card){
+        if(cardRepository.findByIdentificationCardNumber(card.getIdentificationCardNumber()).isEmpty()){
             cardRepository.save(card);
         }
     }
@@ -334,32 +385,5 @@ public class BootstrapDevData implements CommandLineRunner {
     }
 
 
-    private void loadSecurityOwnerships() {
-
-        if (securitiesOwnershipRepository.count() == 0) {
-            SecuritiesOwnership so1 = new SecuritiesOwnership();
-            so1.setEmail(myEmail1);
-            so1.setAccountNumber("3334444999999999");
-            so1.setOwnedByBank(false);
-            so1.setSecuritiesSymbol("AAPL");
-            so1.setQuantity(20);
-            so1.setQuantityOfPubliclyAvailable(10);
-            so1.setReservedQuantity(0);
-
-            securitiesOwnershipRepository.save(so1);
-
-            SecuritiesOwnership so2 = new SecuritiesOwnership();
-            so2.setEmail(myEmail2);
-            so2.setAccountNumber("3334444111111111");
-            so2.setOwnedByBank(false);
-            so2.setSecuritiesSymbol("GOOGL");
-            so2.setQuantity(30);
-            so2.setQuantityOfPubliclyAvailable(15);
-            so2.setReservedQuantity(5);
-
-            securitiesOwnershipRepository.save(so2);
-        }
-
-    }
 
 }
