@@ -42,6 +42,16 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> findCompanyByName(@PathVariable String name) {
+        try {
+            return ResponseEntity.ok(companyService.getCompanyByName(name));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
     @PostMapping("/create")
     public ResponseEntity<?> createCompany(@RequestBody CompanyDto companyDto) {
         try {

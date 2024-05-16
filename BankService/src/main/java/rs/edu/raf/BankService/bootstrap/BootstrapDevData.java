@@ -10,6 +10,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
+import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
@@ -21,6 +22,7 @@ import rs.edu.raf.BankService.data.enums.*;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CardRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
+import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
@@ -52,11 +54,12 @@ public class BootstrapDevData implements CommandLineRunner {
     private final CardRepository cardRepository;
     private final ExchangeRateRepository exchangeRateRepository;
     private final ResourceLoader resourceLoader;
+    private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
 
     @Override
     public void run(String... args) throws Exception {
         logger.info("BankService: DEV DATA LOADING IN PROGRESS...");
-
+        loadExchangeRates();
         loadBankOwnedCashAccounts();
 
         loadOtherCashAccounts();
@@ -65,12 +68,12 @@ public class BootstrapDevData implements CommandLineRunner {
 
         loadCreditRequests();
 
-        loadExchangeRates();
 
+        loadSecurityOwnerships();
         logger.info("BankService: DEV DATA LOADING FINISHED...");
     }
 
-    private void loadBankOwnedCashAccounts(){
+    private void loadBankOwnedCashAccounts() {
         // Create bank accounts for all allowed currencies
         int i = 0;
         for (String currency : ExchangeRateBootstrapUtil.allowedCurrencies) {
@@ -113,7 +116,7 @@ public class BootstrapDevData implements CommandLineRunner {
         }
     }
 
-    private void loadOtherCashAccounts(){
+    private void loadOtherCashAccounts() {
         DomesticCurrencyCashAccount domesticCurrencyAccount1 = new DomesticCurrencyCashAccount();
         domesticCurrencyAccount1.setAccountNumber("3334444999999999");
         domesticCurrencyAccount1.setEmail(myEmail1);
@@ -124,7 +127,7 @@ public class BootstrapDevData implements CommandLineRunner {
         domesticCurrencyAccount1.setAvailableBalance(100000L);
         domesticCurrencyAccount1.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
         domesticCurrencyAccount1.setInterestRate(2.5);
-
+        domesticCurrencyAccount1.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount1);
 
         ForeignCurrencyCashAccount foreignCurrencyAccount1 = new ForeignCurrencyCashAccount();
@@ -168,6 +171,7 @@ public class BootstrapDevData implements CommandLineRunner {
         domesticCurrencyAccount2.setCurrencyCode("RSD");
         domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
         domesticCurrencyAccount2.setInterestRate(2.5);
+        domesticCurrencyAccount2.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount2);
 
         ForeignCurrencyCashAccount foreignCurrencyAccount3 = new ForeignCurrencyCashAccount();
@@ -200,6 +204,7 @@ public class BootstrapDevData implements CommandLineRunner {
         dca2.setAvailableBalance(100000L);
         dca2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.STUDENT);
         dca2.setInterestRate(2.5);
+        dca2.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(dca2);
 
         ForeignCurrencyCashAccount foreignCurrencyAccount12 = new ForeignCurrencyCashAccount();
@@ -223,7 +228,7 @@ public class BootstrapDevData implements CommandLineRunner {
         addAccountIfCashAccountNumberIsNotPresent(foreignCurrencyAccount4);
     }
 
-    private void loadCredits(){
+    private void loadCredits() {
         if (creditRepository.count() == 0) {
             Credit c = new Credit();
             c.setAccountNumber("3334444111111111");
@@ -243,7 +248,7 @@ public class BootstrapDevData implements CommandLineRunner {
         }
     }
 
-    private void loadCreditRequests(){
+    private void loadCreditRequests() {
         if (creditRequestRepository.count() == 0) {
             String[] purposes = {"STAMBENI", "AUTO", "POTROŠAČKI", "REFINANSIRANJE", "EDUKACIJA"};
             String[] notes = {"pls daj kredit", "kupujem auto", "kupujem televizor", "refinansiram dugove", "studiram"};
@@ -310,24 +315,51 @@ public class BootstrapDevData implements CommandLineRunner {
         }
     }
 
-    private void addCardIfIdentificationCardNumberIsNotPresent(Card card){
-        if(cardRepository.findByIdentificationCardNumber(card.getIdentificationCardNumber()).isEmpty()){
+    private void addCardIfIdentificationCardNumberIsNotPresent(Card card) {
+        if (cardRepository.findByIdentificationCardNumber(card.getIdentificationCardNumber()).isEmpty()) {
             cardRepository.save(card);
         }
     }
 
-    private void addAccountIfCashAccountNumberIsNotPresent(CashAccount account){
-        if(cashAccountRepository.findByAccountNumber(account.getAccountNumber()) == null){
-            if(account instanceof DomesticCurrencyCashAccount){
-                cashAccountRepository.save((DomesticCurrencyCashAccount)account);
-            }
-            else if (account instanceof ForeignCurrencyCashAccount){
-                cashAccountRepository.save((ForeignCurrencyCashAccount)account);
-            }
-            else {
+    private void addAccountIfCashAccountNumberIsNotPresent(CashAccount account) {
+        if (cashAccountRepository.findByAccountNumber(account.getAccountNumber()) == null) {
+            if (account instanceof DomesticCurrencyCashAccount) {
+                cashAccountRepository.save((DomesticCurrencyCashAccount) account);
+            } else if (account instanceof ForeignCurrencyCashAccount) {
+                cashAccountRepository.save((ForeignCurrencyCashAccount) account);
+            } else {
                 cashAccountRepository.save(account);
             }
         }
+    }
+
+
+    private void loadSecurityOwnerships() {
+
+        if (securitiesOwnershipRepository.count() == 0) {
+            SecuritiesOwnership so1 = new SecuritiesOwnership();
+            so1.setEmail(myEmail1);
+            so1.setAccountNumber("3334444999999999");
+            so1.setOwnedByBank(false);
+            so1.setSecuritiesSymbol("AAPL");
+            so1.setQuantity(20);
+            so1.setQuantityOfPubliclyAvailable(10);
+            so1.setReservedQuantity(0);
+
+            securitiesOwnershipRepository.save(so1);
+
+            SecuritiesOwnership so2 = new SecuritiesOwnership();
+            so2.setEmail(myEmail2);
+            so2.setAccountNumber("3334444111111111");
+            so2.setOwnedByBank(false);
+            so2.setSecuritiesSymbol("GOOGL");
+            so2.setQuantity(30);
+            so2.setQuantityOfPubliclyAvailable(15);
+            so2.setReservedQuantity(5);
+
+            securitiesOwnershipRepository.save(so2);
+        }
+
     }
 
 }

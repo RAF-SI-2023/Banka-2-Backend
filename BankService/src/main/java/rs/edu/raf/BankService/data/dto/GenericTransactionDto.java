@@ -15,7 +15,7 @@ public class GenericTransactionDto {
 
     private String id;
     private Long amount;
-    private LocalDateTime createdAt;
+    private Long createdAt;
     private TransactionStatus status;
     private TransactionType type;
 }

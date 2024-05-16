@@ -15,9 +15,11 @@ import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -28,10 +30,10 @@ public class StockServiceImpl implements StockService {
 
 
     @Override
-    public ForexDto getForexById(Long id) {
+    public ForexDto getForexBySymbol(String symbol) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/forex/id/" + id))
-                .header("Authorization", SpringSecurityUtil.getJwtToken())
+                .uri(URI.create(STOCK_SERVICE_URL + "/forex/by-symbol/" + symbol))
+                //             .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
 
@@ -45,11 +47,11 @@ public class StockServiceImpl implements StockService {
             throw new RuntimeException(e);
         }
 
-        if(response.statusCode() == HttpStatus.NOT_FOUND.value()) {
+        if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
             throw new NotFoundException("Forex not found");
         }
 
-        if(forexDto == null) {
+        if (forexDto == null) {
             throw new NullPointerException("forexDto is null");
         }
 
@@ -57,11 +59,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public StockDto getStockById(Long id) {
+    public StockDto getStockBySymbol(String symbol) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/stock/id/" + id))
-                .header("Authorization", SpringSecurityUtil.getJwtToken())
-                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .uri(URI.create(STOCK_SERVICE_URL + "/stock/by-symbol/" + symbol))
+//                .header("Authorization", SpringSecurityUtil.getJwtToken())
+                .GET()
                 .build();
 
         HttpResponse<String> response;
@@ -69,16 +71,19 @@ public class StockServiceImpl implements StockService {
         try {
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String jsonUserListing = response.body();
+
+
             stockDto = objectMapper.readValue(jsonUserListing, StockDto.class);
+
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        if(response.statusCode() == HttpStatus.NOT_FOUND.value()) {
+        if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
             throw new NotFoundException("Stock not found");
         }
 
-        if(stockDto == null) {
+        if (stockDto == null) {
             throw new NullPointerException("stockDto is null");
         }
 
@@ -88,8 +93,8 @@ public class StockServiceImpl implements StockService {
     @Override
     public ListingDto getSecuritiesByOrder(Order order) {
         return switch (order.getListingType()) {
-            case STOCK -> getStockById(order.getListingId());
-            case FOREX -> getForexById(order.getListingId());
+            case STOCK -> getStockBySymbol(order.getListingSymbol());
+            case FOREX -> getForexBySymbol(order.getListingSymbol());
             default -> null;
         };
     }
@@ -97,8 +102,8 @@ public class StockServiceImpl implements StockService {
     @Override
     public ExchangeDto getExchangeExchangeAcronym(String exchangeAcronym) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/exchange/exchange-acronym/" + exchangeAcronym))
-                .header("Authorization", SpringSecurityUtil.getJwtToken())
+                .uri(URI.create(STOCK_SERVICE_URL + "/exchange/exchange-acronym?exchange=" + URLEncoder.encode(exchangeAcronym, StandardCharsets.UTF_8)))
+                //        .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
 
@@ -106,17 +111,23 @@ public class StockServiceImpl implements StockService {
         ExchangeDto exchangeDto;
         try {
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.body().isEmpty()) {
+                exchangeDto = new ExchangeDto();
+                exchangeDto.setExchangeAcronym(exchangeAcronym);
+                exchangeDto.setCurrency("USD");
+                return exchangeDto;
+            }
             String jsonUserListing = response.body();
             exchangeDto = objectMapper.readValue(jsonUserListing, ExchangeDto.class);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        if(response.statusCode() == HttpStatus.NOT_FOUND.value()) {
+        if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
             throw new NotFoundException("Exchange not found");
         }
 
-        if(exchangeDto == null) {
+        if (exchangeDto == null) {
             throw new NullPointerException("exchangeDto is null");
         }
 
