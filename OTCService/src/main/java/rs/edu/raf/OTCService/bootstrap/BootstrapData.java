@@ -15,16 +15,15 @@ import rs.edu.raf.OTCService.repositories.ContractRepository;
 
 @Component
 @RequiredArgsConstructor
-@Profile("dev")
 public class BootstrapData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
+    @Value("${MY_EMAIL_1}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2:defaultEmail2@gmail.com}")
+    @Value("${MY_EMAIL_2}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3:defaultEmail3@gmail.com}")
+    @Value("${MY_EMAIL_3}")
     private String myEmail3;
 
 
@@ -39,6 +38,9 @@ public class BootstrapData implements CommandLineRunner {
         loadContracts();
 
         logger.info("OTCService: DEV DATA LOADING FINISHED...");
+        System.out.println("MY_EMAIL_1: " + myEmail1);
+        System.out.println("MY_EMAIL_2: " + myEmail2);
+        System.out.println("MY_EMAIL_3: " + myEmail3);
     }
 
     private void loadContracts() {
