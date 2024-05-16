@@ -32,6 +32,18 @@ public class SecuritiesOwnershipServiceImpl implements SecuritiesOwnershipServic
         return securitiesOwnershipRepository.findSecuritiesOwnershipByQuantityOfPubliclyAvailable().stream().map(mapper::toDto).toList();
     }
 
+
+    @Override
+    public List<SecuritiesOwnershipDto> getAllPubliclyAvailableSecurityOwnershipsFromCompanies() {
+        return securitiesOwnershipRepository.findSecuritiesOwnershipByQuantityOfPubliclyAvailableAndIsBusiness().stream().map(mapper::toDto).toList();
+    }
+
+    @Override
+    public List<SecuritiesOwnershipDto> getAllPubliclyAvailableSecurityOwnershipsFromPrivates() {
+        return securitiesOwnershipRepository.findSecuritiesOwnershipByQuantityOfPubliclyAvailableAndIsPrivate().stream().map(mapper::toDto).toList();
+    }
+
+
     @Override
     public SecuritiesOwnershipDto updatePubliclyAvailableQuantity(SecuritiesOwnershipDto soDto) {
         Optional<SecuritiesOwnership> so = securitiesOwnershipRepository.findById(soDto.getId());

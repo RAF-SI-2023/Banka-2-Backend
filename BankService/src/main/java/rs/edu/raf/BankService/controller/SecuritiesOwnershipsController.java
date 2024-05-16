@@ -19,7 +19,6 @@ public class SecuritiesOwnershipsController {
     //TODO dodati security u nekom momentu
     @GetMapping("/account-number/{accountNumber}")
     public ResponseEntity<List<SecuritiesOwnershipDto>> getSecurityOwnershipsForAccountNumber(@PathVariable String accountNumber) {
-
         return ResponseEntity.ok(securitiesOwnershipService.getSecurityOwnershipsForAccountNumber(accountNumber));
     }
 
@@ -44,5 +43,16 @@ public class SecuritiesOwnershipsController {
         }
     }
 
+
+    @GetMapping("/all-available-companies")
+    public ResponseEntity<List<SecuritiesOwnershipDto>> getAllPubliclyAvailableSecurityOwnershipsFromCompanies() {
+        return ResponseEntity.ok(securitiesOwnershipService.getAllPubliclyAvailableSecurityOwnershipsFromCompanies());
+    }
+
+
+    @GetMapping("/all-available-private")
+    public ResponseEntity<List<SecuritiesOwnershipDto>> getAllPubliclyAvailableSecurityOwnershipsFromPrivate() {
+        return ResponseEntity.ok(securitiesOwnershipService.getAllPubliclyAvailableSecurityOwnershipsFromPrivates());
+    }
 
 }

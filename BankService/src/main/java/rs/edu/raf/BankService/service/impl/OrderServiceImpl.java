@@ -121,6 +121,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean updateOrderStatus(Long orderId, OrderStatus status) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.setOrderStatus(status);
+        orderRepository.save(order);
         return true;
     }
 
