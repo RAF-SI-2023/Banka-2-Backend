@@ -14,7 +14,10 @@ public interface TransactionService {
 
     TransactionStatus verifyTransaction(Long transactionId, String verificationToken);
 
-    List<GenericTransactionDto> getTransferTransactions(Long senderId);
+    List<GenericTransactionDto> getTransferTransactions(Long userId);
+
+    List<GenericTransactionDto> getTransferTransactionsByEmail(String email);
+
 
     boolean reserveFunds(String accountNumber, double amount);
 

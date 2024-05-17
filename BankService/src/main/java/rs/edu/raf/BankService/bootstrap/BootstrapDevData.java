@@ -18,15 +18,14 @@ import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
 import rs.edu.raf.BankService.data.enums.*;
-import rs.edu.raf.BankService.repository.CashAccountRepository;
-import rs.edu.raf.BankService.repository.CardRepository;
-import rs.edu.raf.BankService.repository.ExchangeRateRepository;
-import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
+import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +54,7 @@ public class BootstrapDevData implements CommandLineRunner {
     private final ExchangeRateRepository exchangeRateRepository;
     private final ResourceLoader resourceLoader;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private final CashTransactionRepository cashTransactionRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -71,7 +71,27 @@ public class BootstrapDevData implements CommandLineRunner {
         loadExchangeRates();
 
         loadSecurityOwnerships();
+
+        loadTransactions();
         logger.info("BankService: DEV DATA LOADING FINISHED...");
+    }
+
+    private void loadTransactions() {
+
+        if(cashTransactionRepository.count()==0){
+            InternalTransferTransaction itt = new InternalTransferTransaction();
+            itt.setAmount(1000L);
+            CashAccount sender = cashAccountRepository.findAllByEmail(myEmail1).get(0);
+            itt.setSenderCashAccount(sender);
+            CashAccount receiver = cashAccountRepository.findAllByEmail(myEmail2).get(0);
+            itt.setReceiverCashAccount(receiver);
+            itt.setStatus(TransactionStatus.CONFIRMED);
+            itt.setCreatedAt(LocalDateTime.now());
+
+            cashTransactionRepository.save(itt);
+        }
+
+
     }
 
     private void loadBankOwnedCashAccounts() {
