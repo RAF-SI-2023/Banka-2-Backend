@@ -41,6 +41,11 @@ public class TransferTransactionController {
         return transactionService.getTransferTransactions(userId);
     }
 
+    @GetMapping(path = "/funds-transfer-by-email/{email}")
+    public List<GenericTransactionDto> getAllTransactionByEmail(@PathVariable String email) {
+        return transactionService.getTransferTransactionsByEmail(email);
+    }
+
     @PostMapping("/securities")
 
     public ResponseEntity<?> createSecuritiesTransaction(@RequestBody ContractDto contractDto) {
