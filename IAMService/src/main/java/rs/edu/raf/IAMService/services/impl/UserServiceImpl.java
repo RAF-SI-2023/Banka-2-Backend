@@ -283,10 +283,12 @@ public class UserServiceImpl implements UserService {
     public CompanyEmployeeDto createCompanyEmployee(CompanyEmployeeDto companyEmployeeDto) {
         CompanyEmployee companyEmployee = userMapper
                 .companyEmployeeDtoToCompanyEmployee(companyEmployeeDto);
-        CompanyEmployee savedCEmployee = userRepository.save(companyEmployee);
         Role role = roleRepository.findByRoleType(RoleType.USER)
                 .orElseThrow(() -> new MissingRoleException("USER"));
-        savedCEmployee.setRole(role);
+        companyEmployee.setRole(role);
+        companyEmployee.setPermissions(new ArrayList<>());
+        CompanyEmployee savedCEmployee = userRepository.save(companyEmployee);
+
         sendClientActivationMessage(savedCEmployee.getEmail());
         return userMapper.companyEmployeeToCompanyEmployeeDto(savedCEmployee);
     }
