@@ -7,6 +7,7 @@ import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionType;
 
@@ -71,14 +72,22 @@ public class TransactionMapper {
         dto.setCreatedAt(transferTransaction.getCreatedAt().toEpochSecond(ZoneOffset.UTC));
         dto.setStatus(transferTransaction.getStatus());
 
+
         if (transferTransaction instanceof ExternalTransferTransaction) {
             dto.setAmount(((ExternalTransferTransaction) transferTransaction).getAmount());
+            dto.setType(TransactionType.EXTERNAL);
         } else if (transferTransaction instanceof InternalTransferTransaction) {
             dto.setAmount(((InternalTransferTransaction) transferTransaction).getAmount());
+            dto.setType(TransactionType.INTERNAL);
         } else if (transferTransaction instanceof ExchangeTransferTransactionDetails) {
             dto.setAmount((long) ((ExchangeTransferTransactionDetails) transferTransaction).getAmount());
             dto.setType(TransactionType.EXCHANGE);
+        } else if (transferTransaction instanceof SecuritiesTransaction) {
+            Double amount = ((SecuritiesTransaction) transferTransaction).getAmount();
+            dto.setAmount(amount.longValue());
+            dto.setType(TransactionType.SECURITY);
         }
+
 
         return dto;
     }
