@@ -168,12 +168,16 @@ public class TransactionServiceImpl implements TransactionService {
                     throw new AccountNotFoundException("User not found");
                 }
 
+
+
         List<GenericTransactionDto> transactions = senderCashAccountList.stream()
                 .flatMap(cashAccount -> Stream.concat(
                         cashAccount.getSentTransferTransactions().stream(),
                         cashAccount.getReceivedTransferTransactions().stream()))
                 .map(transactionMapper::toGenericTransactionDto)
                 .collect(Collectors.toList());
+
+        System.out.println(transactions.get(0).getType());
         return transactions;
     }
 

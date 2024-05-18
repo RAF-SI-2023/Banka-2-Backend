@@ -4,5 +4,7 @@ public enum TransactionType {
 
     INTERNAL,
     EXTERNAL,
-    EXCHANGE
+    EXCHANGE,
+    SECURITY,
+
 }
