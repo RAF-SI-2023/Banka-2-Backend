@@ -220,7 +220,7 @@ public class BootstrapDevData implements CommandLineRunner {
             CompanyEmployee     companyEmployee = new CompanyEmployee();
             companyEmployee.setEmail(emails[i]);
             companyEmployee.setUsername(usernames[i]);
-            companyEmployee.setPassword(passwordEncoder.encode("password"));
+            companyEmployee.setPassword(passwordEncoder.encode("companyemployee"));
             companyEmployee.setPhone(phoneNumbers[i]);
             companyEmployee.setAddress(addresses[i]);
             companyEmployee.setRole(userRole);
@@ -230,18 +230,6 @@ public class BootstrapDevData implements CommandLineRunner {
 
             saveUserIfNotExists(companyEmployee);
         }
-//        CompanyEmployee     companyEmployee = new CompanyEmployee();
-//        companyEmployee.setEmail(emails[0]);
-//        companyEmployee.setUsername(usernames[0]);
-//        companyEmployee.setPassword(passwordEncoder.encode("password"));
-//        companyEmployee.setPhone(phoneNumbers[0]);
-//        companyEmployee.setRole(userRole);
-//        companyEmployee.setAddress(addresses[0]);
-//        companyEmployee.setDateOfBirth(dateOfBirth[0]);
-//        companyEmployee.setPib(pib[0]);
-//        companyEmployee.setPermissions(List.of(per1, per2));
-
-
 
         saveUserIfNotExists(admin);
         saveUserIfNotExists(employee1);
