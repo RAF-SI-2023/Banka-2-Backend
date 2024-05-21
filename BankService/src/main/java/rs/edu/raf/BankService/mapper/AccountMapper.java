@@ -71,7 +71,8 @@ public class AccountMapper {
                 cashAccount.getCreationDate(),
                 cashAccount.getExpirationDate(),
                 cashAccount.getCurrencyCode(),
-                cashAccount.getMaintenanceFee()
+                cashAccount.getMaintenanceFee(),
+                cashAccount.isPrimaryTradingAccount()
         );
     }
 
@@ -91,7 +92,8 @@ public class AccountMapper {
                 account.getCurrencyCode(),
                 account.getMaintenanceFee(),
                 account.getDomesticCurrencyAccountType().name(),
-                account.getInterestRate()
+                account.getInterestRate(),
+                account.isPrimaryTradingAccount()
         );
     }
 
@@ -113,7 +115,8 @@ public class AccountMapper {
                 account.getInterestRate(),
                 account.getDefaultCurrencyCode(),
                 account.getNumberOfAllowedCurrencies(),
-                foreignCurrencyHolderListToForeignCurrencyHolderDtoList(account.getForeignCurrencyHolders())
+                foreignCurrencyHolderListToForeignCurrencyHolderDtoList(account.getForeignCurrencyHolders()),
+                account.isPrimaryTradingAccount()
         );
     }
 
@@ -133,7 +136,8 @@ public class AccountMapper {
                 account.getCurrencyCode(),
                 account.getMaintenanceFee(),
                 account.getPIB(),
-                account.getIdentificationNumber()
+                account.getIdentificationNumber(),
+                account.isPrimaryTradingAccount()
         );
     }
 

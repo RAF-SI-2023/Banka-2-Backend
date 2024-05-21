@@ -55,6 +55,7 @@ public class ContractServiceImpl implements ContractService {
         return mapper.contractToDto(contractRepository.save(toBeCreated));
     }
 
+
     @Override
     public ContractDto getContractById(Long id) {
         Optional<Contract> c = contractRepository.findById(id);
