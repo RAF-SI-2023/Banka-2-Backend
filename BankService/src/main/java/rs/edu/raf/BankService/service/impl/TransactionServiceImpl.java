@@ -150,7 +150,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<GenericTransactionDto> getTransferTransactions(Long  userId) {
+    public List<GenericTransactionDto> getTransferTransactions(Long userId) {
         CashAccount senderCashAccount = cashAccountRepository.findById(userId)
                 .orElseThrow(() -> new AccountNotFoundException("User not found"));
 
@@ -164,10 +164,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         List<CashAccount> senderCashAccountList = cashAccountRepository.findAllByEmail(email);
 
-                if(senderCashAccountList.isEmpty()){
-                    throw new AccountNotFoundException("User not found");
-                }
-
+        if (senderCashAccountList.isEmpty()) {
+            throw new AccountNotFoundException("User not found");
+        }
 
 
         List<GenericTransactionDto> transactions = senderCashAccountList.stream()
@@ -218,7 +217,7 @@ public class TransactionServiceImpl implements TransactionService {
     public boolean releaseFunds(CashAccount cashAccount, double amount) {
         // OVDE EVENTUALNO MOGU TRANSAKCIJE DA SE PRAVE
         double availableBalance = cashAccount.getAvailableBalance();
-        double reservedFunds = cashAccount.getAvailableBalance();
+        double reservedFunds = cashAccount.getReservedFunds();
 
         if (reservedFunds < amount) {
             // this should not happen
