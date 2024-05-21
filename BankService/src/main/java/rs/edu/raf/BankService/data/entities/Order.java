@@ -39,7 +39,7 @@ public class Order {
     private Integer realizedQuantity = 0;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.APPROVED;
+    private OrderStatus orderStatus = OrderStatus.WAITING_FOR_APPROVAL;
 
     private Long settlementDate = -1L;
 
