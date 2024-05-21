@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -149,13 +150,35 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<GenericTransactionDto> getTransferTransactions(Long senderAccountId) {
-        CashAccount senderCashAccount = cashAccountRepository.findById(senderAccountId)
+    public List<GenericTransactionDto> getTransferTransactions(Long  userId) {
+        CashAccount senderCashAccount = cashAccountRepository.findById(userId)
                 .orElseThrow(() -> new AccountNotFoundException("User not found"));
 
         return senderCashAccount.getSentTransferTransactions().stream()
                 .map(transactionMapper::toGenericTransactionDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GenericTransactionDto> getTransferTransactionsByEmail(String email) {
+
+        List<CashAccount> senderCashAccountList = cashAccountRepository.findAllByEmail(email);
+
+                if(senderCashAccountList.isEmpty()){
+                    throw new AccountNotFoundException("User not found");
+                }
+
+
+
+        List<GenericTransactionDto> transactions = senderCashAccountList.stream()
+                .flatMap(cashAccount -> Stream.concat(
+                        cashAccount.getSentTransferTransactions().stream(),
+                        cashAccount.getReceivedTransferTransactions().stream()))
+                .map(transactionMapper::toGenericTransactionDto)
+                .collect(Collectors.toList());
+
+        System.out.println(transactions.get(0).getType());
+        return transactions;
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import rs.edu.raf.IAMService.data.entites.*;
 import rs.edu.raf.IAMService.data.enums.PermissionType;
 import rs.edu.raf.IAMService.data.enums.RoleType;
@@ -40,35 +41,36 @@ public class BootstrapDevData implements CommandLineRunner {
     @Value("${MY_EMAIL_3:defaultEmail3@gmail.com}")
     private String myEmail3;
 
+    @Value("${MY_EMAIL_4:defaultEmail4@gmail.com}")
+    private String myEmail4;
+
+    @Value("${MY_EMAIL_5:defaultEmail5@gmail.com}")
+    private String myEmail5;
+
+
+
 
     public void run(String... args) throws Exception {
 
         logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
 
+        loadCompanies();
+        loadUsers();
+
+        logger.info("IAMService: DEV DATA LOADING FINISHED...");
+
+    }
+
+    private void loadUsers() {
         Role adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
         Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
         Role supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
         Role agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
         Role userRole = roleRepository.findByRoleType(RoleType.USER).get();
 
+
         Permission per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
         Permission per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
-
-        // ##############################
-        // #          COMPANIES         #
-        // ##############################
-        if (companyRepository.count() == 0) {
-            Company company = new Company();
-            company.setCompanyName("Example Ltd.");
-            company.setFaxNumber("123456");
-            company.setPhoneNumber("+38111236456");
-            company.setAddress("Trg Republike V/5, Beograd, Srbija");
-            company.setPib(123456789L);
-            company.setRegistryNumber(123456789);
-            company.setIdentificationNumber(123456);
-            company.setActivityCode(12345);
-            companyRepository.save(company);
-        }
 
         User admin = new User();
         admin.setEmail(myEmail1);
@@ -206,6 +208,29 @@ public class BootstrapDevData implements CommandLineRunner {
         privateClient1.setGender("M");
         privateClient1.setPrimaryAccountNumber("1112222333333333");
 
+
+        Long[] pib = {123456789L, 987654321L, 456789123L, 789123456L, 654321987L};
+        String[] emails = {"myEmail1@gmail.com", "myEmail2@gmail.com", "myEmail3@gmail.com", myEmail4, myEmail5};
+        String[] usernames = {"companyEmployee1", "companyEmployee2", "companyEmployee3", "companyEmployee4", "companyEmployee5"};
+        String[] phoneNumbers = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
+        String[] addresses = {"Pariske komune 5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Juriga Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
+        Long[] dateOfBirth = {511739146L, 606433546L, 473765600L, 204155146L, 216596746L};
+
+        for ( int i = 0; i < 5; i++ ) {
+            CompanyEmployee     companyEmployee = new CompanyEmployee();
+            companyEmployee.setEmail(emails[i]);
+            companyEmployee.setUsername(usernames[i]);
+            companyEmployee.setPassword(passwordEncoder.encode("companyemployee"));
+            companyEmployee.setPhone(phoneNumbers[i]);
+            companyEmployee.setAddress(addresses[i]);
+            companyEmployee.setRole(userRole);
+            companyEmployee.setDateOfBirth(dateOfBirth[i]);
+            companyEmployee.setPib(pib[i]);
+            companyEmployee.setPermissions(List.of(per1, per2));
+
+            saveUserIfNotExists(companyEmployee);
+        }
+
         saveUserIfNotExists(admin);
         saveUserIfNotExists(employee1);
         saveUserIfNotExists(employee2);
@@ -217,7 +242,34 @@ public class BootstrapDevData implements CommandLineRunner {
         saveUserIfNotExists(privateClient);
         saveUserIfNotExists(privateClient1);
 
-        logger.info("IAMService: DEV DATA LOADING FINISHED...");
+
+    }
+
+
+    private void loadCompanies() {
+
+        if (companyRepository.count() == 0) {
+            String[] companyNames = {"Example Ltd.", "Netflix", "Amazon", "Doofenshmirtz Inc.", "E Corp"};
+            String[] faxNumber = {"123456", "98765", "42146", "78909", "34567"};
+            String[] phoneNumber = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
+            String[] address = {"Trg Republike V/5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Juriga Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
+            Long[] pib = {123456789L, 987654321L, 456789123L, 789123456L, 654321987L};
+            Integer[] registryNumber = {123456789, 987654321, 456789123, 789123456, 654321987};
+            Integer[] identificationNumber = {123456, 987654, 456789, 789123, 654321};
+            Integer[] activityCode = {12345, 54321, 67890, 98765, 45678};
+            for ( int i = 0; i < 5; i++ ) {
+                Company company = new Company();
+                company.setCompanyName(companyNames[i]);
+                company.setFaxNumber(faxNumber[i]);
+                company.setPhoneNumber(phoneNumber[i]);
+                company.setAddress(address[i]);
+                company.setPib(pib[i]);
+                company.setRegistryNumber(registryNumber[i]);
+                company.setIdentificationNumber(identificationNumber[i]);
+                company.setActivityCode(activityCode[i]);
+                companyRepository.save(company);
+            }
+        }
 
     }
 

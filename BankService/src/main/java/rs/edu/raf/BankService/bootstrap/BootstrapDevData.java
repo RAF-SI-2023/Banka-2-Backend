@@ -10,6 +10,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
+import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
@@ -18,15 +19,18 @@ import rs.edu.raf.BankService.data.entities.card.Card;
 import rs.edu.raf.BankService.data.entities.credit.Credit;
 import rs.edu.raf.BankService.data.entities.credit.CreditRequest;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
+import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
 import rs.edu.raf.BankService.data.enums.*;
-import rs.edu.raf.BankService.repository.CashAccountRepository;
-import rs.edu.raf.BankService.repository.CardRepository;
-import rs.edu.raf.BankService.repository.ExchangeRateRepository;
-import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
+import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.repository.credit.CreditRepository;
 import rs.edu.raf.BankService.repository.credit.CreditRequestRepository;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +59,8 @@ public class BootstrapDevData implements CommandLineRunner {
     private final ExchangeRateRepository exchangeRateRepository;
     private final ResourceLoader resourceLoader;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private final CashTransactionRepository cashTransactionRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -68,9 +74,118 @@ public class BootstrapDevData implements CommandLineRunner {
 
         loadCreditRequests();
 
+        loadExchangeRates();
 
         loadSecurityOwnerships();
+
+        loadTransactions();
+
+        loadOrders();
+
         logger.info("BankService: DEV DATA LOADING FINISHED...");
+    }
+
+    private void loadOrders() {
+
+        if(orderRepository.count()==0){
+            Order order1 = new Order();
+
+            order1.setListingId(2499L);
+            order1.setListingSymbol("Z");
+            order1.setOrderActionType(OrderActionType.BUY);
+            order1.setListingType(ListingType.STOCK);
+            order1.setQuantity(10);
+            order1.setRealizedQuantity(0);
+            order1.setOrderStatus(OrderStatus.APPROVED);
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime threeDaysFromNow = now.plus(3, ChronoUnit.DAYS);
+            long nowEpochMilli = now.toInstant(ZoneOffset.UTC).toEpochMilli();
+            long threeDaysFromNowEpochMilli = threeDaysFromNow.toInstant(ZoneOffset.UTC).toEpochMilli();
+            order1.setSettlementDate(threeDaysFromNowEpochMilli);
+            order1.setDone(false);
+            order1.setTimeOfLastModification(nowEpochMilli);
+            order1.setLimitPrice(0.0);
+            order1.setStopPrice(0.0);
+            order1.setAllOrNone(false);
+            order1.setMargin(false);
+            order1.setOwnedByBank(false);
+            order1.setInitiatedByUserId(1L);
+            order1.setApprovedBySupervisorId(2L);
+            order1.setUserId(1L);
+
+            orderRepository.save(order1);
+
+            Order order2 = new Order();
+
+            order2.setListingId(2499L);
+            order2.setListingSymbol("Z");
+            order2.setOrderActionType(OrderActionType.BUY);
+            order2.setListingType(ListingType.STOCK);
+            order2.setQuantity(11);
+            order2.setRealizedQuantity(0);
+            order2.setOrderStatus(OrderStatus.WAITING_FOR_APPROVAL);
+            LocalDateTime now1 = LocalDateTime.now();
+            LocalDateTime threeDaysFromNow1 = now.plus(3, ChronoUnit.DAYS);
+            long nowEpochMilli1 = now1.toInstant(ZoneOffset.UTC).toEpochMilli();
+            long threeDaysFromNowEpochMilli1 = threeDaysFromNow1.toInstant(ZoneOffset.UTC).toEpochMilli();
+            order2.setSettlementDate(threeDaysFromNowEpochMilli1);
+            order2.setDone(false);
+            order2.setTimeOfLastModification(nowEpochMilli1);
+            order2.setLimitPrice(0.0);
+            order2.setStopPrice(0.0);
+            order2.setAllOrNone(false);
+            order2.setMargin(false);
+            order2.setOwnedByBank(false);
+            order2.setInitiatedByUserId(1L);
+            order2.setApprovedBySupervisorId(2L);
+            order2.setUserId(2L);
+
+            orderRepository.save(order2);
+        }
+
+
+    }
+
+    private void loadTransactions() {
+
+        if (cashTransactionRepository.count() == 0) {
+
+            CashAccount sender1 = cashAccountRepository.findAllByEmail(myEmail1).get(0);
+            CashAccount sender2 = cashAccountRepository.findAllByEmail(myEmail2).get(0);
+            CashAccount sender3 = cashAccountRepository.findAllByEmail(myEmail2).get(0);
+
+            InternalTransferTransaction itt = new InternalTransferTransaction();
+            itt.setAmount(1000L);
+            itt.setSenderCashAccount(sender1);
+            itt.setReceiverCashAccount(sender2);
+            itt.setStatus(TransactionStatus.CONFIRMED);
+            itt.setCreatedAt(LocalDateTime.now());
+            cashTransactionRepository.save(itt);
+
+            ExternalTransferTransaction ett = new ExternalTransferTransaction();
+            ett.setAmount(500L);
+            ett.setSenderCashAccount(sender2);
+            ett.setReceiverCashAccount(sender3);
+            ett.setStatus(TransactionStatus.CONFIRMED);
+            ett.setCreatedAt(LocalDateTime.now());
+            ett.setReferenceNumber("123456789");
+            ett.setVerificationToken("123456");
+            ett.setTransactionPurpose("Kupovina");
+            cashTransactionRepository.save(ett);
+
+            SecuritiesTransaction st = new SecuritiesTransaction();
+            st.setAmount(612.0);
+            st.setSenderCashAccount(sender3);
+            st.setReceiverCashAccount(sender1);
+            st.setStatus(TransactionStatus.CONFIRMED);
+            st.setCreatedAt(LocalDateTime.now());
+            st.setSecuritiesSymbol("AAPL");
+            st.setQuantityToTransfer(10);
+            cashTransactionRepository.save(st);
+
+        }
+
+
     }
 
     private void loadBankOwnedCashAccounts() {
@@ -315,6 +430,56 @@ public class BootstrapDevData implements CommandLineRunner {
         }
     }
 
+    private void loadSecurityOwnerships() {
+        if (securitiesOwnershipRepository.count() == 0) {
+
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "AGXLW"};
+            String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
+            String[] symbols3 = {"K", "TT", "CC", "I"};
+
+
+            for (int i = 0; i < 4; i++) {
+                SecuritiesOwnership so1 = new SecuritiesOwnership();
+                so1.setEmail(myEmail1);
+                so1.setAccountNumber("3334444999999999");
+                so1.setOwnedByBank(false);
+                so1.setSecuritiesSymbol(symbols1[i]);
+                int quantity = new Random().nextInt(100);
+                so1.setQuantity(quantity + 50);
+                so1.setQuantityOfPubliclyAvailable(quantity);
+                so1.setReservedQuantity(0);
+                securitiesOwnershipRepository.save(so1);
+
+                SecuritiesOwnership so2 = new SecuritiesOwnership();
+                so2.setEmail(myEmail2);
+                so2.setAccountNumber("3334444111111111");
+                so2.setOwnedByBank(false);
+                so2.setSecuritiesSymbol(symbols2[i]);
+                int quantity1 = new Random().nextInt(150);
+                so2.setQuantity(30 + quantity1);
+                so2.setQuantityOfPubliclyAvailable(quantity1);
+                so2.setReservedQuantity(25);
+                securitiesOwnershipRepository.save(so2);
+
+
+                SecuritiesOwnership so3 = new SecuritiesOwnership();
+                so3.setEmail(myEmail3);
+                so3.setAccountNumber("1112222333333333");
+                so3.setOwnedByBank(false);
+                so3.setSecuritiesSymbol(symbols3[i]);
+                int quantity2 = new Random().nextInt(250);
+                so3.setQuantity(quantity2 + 100);
+                so3.setQuantityOfPubliclyAvailable(quantity2);
+                so3.setReservedQuantity(5);
+                securitiesOwnershipRepository.save(so3);
+
+            }
+
+
+        }
+
+    }
+
     private void addCardIfIdentificationCardNumberIsNotPresent(Card card) {
         if (cardRepository.findByIdentificationCardNumber(card.getIdentificationCardNumber()).isEmpty()) {
             cardRepository.save(card);
@@ -333,33 +498,5 @@ public class BootstrapDevData implements CommandLineRunner {
         }
     }
 
-
-    private void loadSecurityOwnerships() {
-
-        if (securitiesOwnershipRepository.count() == 0) {
-            SecuritiesOwnership so1 = new SecuritiesOwnership();
-            so1.setEmail(myEmail1);
-            so1.setAccountNumber("3334444999999999");
-            so1.setOwnedByBank(false);
-            so1.setSecuritiesSymbol("AAPL");
-            so1.setQuantity(20);
-            so1.setQuantityOfPubliclyAvailable(10);
-            so1.setReservedQuantity(0);
-
-            securitiesOwnershipRepository.save(so1);
-
-            SecuritiesOwnership so2 = new SecuritiesOwnership();
-            so2.setEmail(myEmail2);
-            so2.setAccountNumber("3334444111111111");
-            so2.setOwnedByBank(false);
-            so2.setSecuritiesSymbol("GOOGL");
-            so2.setQuantity(30);
-            so2.setQuantityOfPubliclyAvailable(15);
-            so2.setReservedQuantity(5);
-
-            securitiesOwnershipRepository.save(so2);
-        }
-
-    }
 
 }

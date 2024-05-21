@@ -5,10 +5,12 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -87,6 +89,25 @@ public class TransferTransactionE2ETests {
         Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.CONFIRMED);
+    }
+    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
+    private String myEmail1;
+    @Transactional
+    @Test
+    public void checkTransactionHistoryByEmail_Success() throws Exception {
+
+        String email = myEmail1;
+
+        ResultActions resultActions = mockMvc.perform(
+                        get("http://localhost:8003/api/transaction/funds-transfer-by-email/" + email)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
+
+        MvcResult mvcResult = resultActions.andReturn();
+         MockHttpServletResponse responseCardNumber =mvcResult.getResponse();
+        assertEquals(MockHttpServletResponse.SC_OK, responseCardNumber.getStatus());
     }
 
     @Transactional
