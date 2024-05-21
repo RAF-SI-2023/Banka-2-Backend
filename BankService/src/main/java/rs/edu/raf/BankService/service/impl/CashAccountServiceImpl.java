@@ -9,11 +9,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
-import rs.edu.raf.BankService.data.entities.accounts.*;
 import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
@@ -170,6 +171,17 @@ public class CashAccountServiceImpl implements CashAccountService {
         cashAccountRepository.save(cashAccount);
 
         return dto;
+    }
+
+    @Override
+    public void becomePrimaryAccount(CashAccount cashAccount) {
+        List<CashAccount> cashAccounts = cashAccountRepository.findAllByEmail(cashAccount.getEmail());
+
+    if(cashAccounts.size()==1){
+        cashAccount.setPrimaryTradingAccount(true);
+        cashAccountRepository.save(cashAccount);
+    }
+
     }
 
     @Transactional

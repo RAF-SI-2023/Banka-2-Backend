@@ -2,6 +2,7 @@ package rs.edu.raf.BankService.service;
 
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.exception.*;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface CashAccountService {
             throws AccountNumberAlreadyExistException;
 
     SavedAccountDto createSavedAccount(Long accountId, SavedAccountDto dto);
+
+    void becomePrimaryAccount(CashAccount cashAccount);
 
     List<AccountDto> findAccountsByEmail(String email);
 

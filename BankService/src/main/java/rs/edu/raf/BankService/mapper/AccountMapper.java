@@ -71,7 +71,8 @@ public class AccountMapper {
                 cashAccount.getCreationDate(),
                 cashAccount.getExpirationDate(),
                 cashAccount.getCurrencyCode(),
-                cashAccount.getMaintenanceFee()
+                cashAccount.getMaintenanceFee(),
+                cashAccount.isPrimaryTradingAccount()
         );
     }
 
