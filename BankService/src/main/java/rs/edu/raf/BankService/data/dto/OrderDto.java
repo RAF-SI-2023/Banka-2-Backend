@@ -12,6 +12,8 @@ import rs.edu.raf.BankService.data.enums.ListingType;
 @NoArgsConstructor
 public class OrderDto {
 
+    private Long id;
+
     private OrderStatus orderStatus;
 
     private OrderActionType orderActionType;

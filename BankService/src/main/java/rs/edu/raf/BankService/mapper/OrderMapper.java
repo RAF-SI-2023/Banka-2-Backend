@@ -10,6 +10,7 @@ public class OrderMapper {
 
     public Order orderDtoToOrder(OrderDto orderDto){
         Order order = new Order();
+        order.setId(orderDto.getId());
         order.setOrderActionType(orderDto.getOrderActionType());
         order.setListingType(orderDto.getListingType());
         order.setListingSymbol(orderDto.getSecuritiesSymbol());
@@ -24,6 +25,7 @@ public class OrderMapper {
 
     public OrderDto orderToOrderDto(Order order){
         OrderDto orderDto = new OrderDto();
+        orderDto.setId(order.getId());
         orderDto.setOrderStatus(order.getOrderStatus());
         orderDto.setOrderActionType(order.getOrderActionType());
         orderDto.setListingType(order.getListingType());
