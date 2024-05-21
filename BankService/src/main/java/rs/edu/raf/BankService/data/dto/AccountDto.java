@@ -23,7 +23,7 @@ public class AccountDto {
     private Long expirationDate;
     private String currencyCode;
     private Double maintenanceFee;
-    private boolean isPrimaryAccount;
+    private boolean primaryAccount;
 
 
 }

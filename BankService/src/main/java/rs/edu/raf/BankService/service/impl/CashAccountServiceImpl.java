@@ -83,6 +83,8 @@ public class CashAccountServiceImpl implements CashAccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         cashAccountRepository.saveAndFlush(accountMapper.domesticAccountDtoToDomesticAccount(dto));
+        becomePrimaryAccount(accountMapper.domesticAccountDtoToDomesticAccount(dto));
+
         return dto;
     }
 
@@ -93,6 +95,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         cashAccountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
+        becomePrimaryAccount(accountMapper.foreignAccountDtoToForeignAccount(dto));
         return dto;
     }
 
@@ -103,6 +106,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         cashAccountRepository.save(accountMapper.businessAccountDtoToBusinessAccount(dto));
+        becomePrimaryAccount(accountMapper.businessAccountDtoToBusinessAccount(dto));
         return dto;
     }
 
@@ -170,6 +174,8 @@ public class CashAccountServiceImpl implements CashAccountService {
         cashAccount.getSavedAccounts().add(savedAccount);
         cashAccountRepository.save(cashAccount);
 
+        becomePrimaryAccount(cashAccount);
+
         return dto;
     }
 
@@ -177,10 +183,11 @@ public class CashAccountServiceImpl implements CashAccountService {
     public void becomePrimaryAccount(CashAccount cashAccount) {
         List<CashAccount> cashAccounts = cashAccountRepository.findAllByEmail(cashAccount.getEmail());
 
-    if(cashAccounts.size()==1){
-        cashAccount.setPrimaryTradingAccount(true);
-        cashAccountRepository.save(cashAccount);
-    }
+        System.out.println(cashAccounts.size()+" VELICINA");
+        if (cashAccounts.size() == 1) {
+            cashAccount.setPrimaryTradingAccount(true);
+            cashAccountRepository.save(cashAccount);
+        }
 
     }
 

@@ -56,6 +56,16 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public ContractDto findContractById(Long id) {
+        Optional<Contract> contractDto = contractRepository.findById(id);
+
+        if (contractDto.isPresent())
+            return mapper.contractToDto(contractDto.get());
+        else
+            throw new RuntimeException("Contract with id " + id + " not found");
+    }
+
+    @Override
     public ContractDto getContractById(Long id) {
         Optional<Contract> c = contractRepository.findById(id);
         if (c.isPresent())

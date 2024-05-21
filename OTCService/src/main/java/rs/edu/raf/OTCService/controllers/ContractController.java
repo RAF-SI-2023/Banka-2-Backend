@@ -88,4 +88,10 @@ public class ContractController {
         }
     }
 
+
+    @GetMapping("/find-by-id/{id}")
+    public ResponseEntity<?> findOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(contractService.findContractById(id));
+    }
+
 }

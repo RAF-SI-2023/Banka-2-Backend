@@ -28,10 +28,11 @@ public class DomesticCurrencyAccountDto extends AccountDto {
             String currencyCode,
             Double maintenanceFee,
             String domesticCurrencyAccountType,
-            Double interestRate
+            Double interestRate,
+            boolean primaryAccount
     ) {
         super(id, accountNumber, linkedWithUserProfile, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
-                expirationDate, currencyCode, maintenanceFee);
+                expirationDate, currencyCode, maintenanceFee, primaryAccount);
         this.domesticCurrencyAccountType = domesticCurrencyAccountType;
         this.interestRate = interestRate;
     }
