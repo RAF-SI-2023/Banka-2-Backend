@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForeignCurrencyHolderDto {
-
     private Long id;
     private String currencyCode;
     private Long availableBalance;
     private Long reservedFunds;
-
 }

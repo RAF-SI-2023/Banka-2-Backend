@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
         Long initiatedByUserId = SpringSecurityUtil.getPrincipalId();
         order.setInitiatedByUserId(initiatedByUserId);
 
-        CashAccount tradingCashAccount = fetchPrimaryTradingAccount((isBankOrder ? null : SpringSecurityUtil.getPrincipalEmail()), "Primary trading account not found");
+        CashAccount tradingCashAccount = fetchPrimaryTradingAccount((isBankOrder ? "bankAccount@bank.rs" : SpringSecurityUtil.getPrincipalEmail()), "Primary trading account not found");
 
         ListingDto listingDto = fetchSecuritiesByOrder(order);
         ExchangeDto exchangeDto = null;
