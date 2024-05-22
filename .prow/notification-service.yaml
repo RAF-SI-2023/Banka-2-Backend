@@ -14,7 +14,7 @@ presubmits:
               start-docker.sh
               
               # PROMENITI PRI KOPIRANJU
-              SERVICE_NAME="NotificationService"
+              SERVICE_NAME="notification-service"
               
               # PROMENITI PRI KOPIRANJU
               # Ovde treba da pokrenete sve mikroservise i dependencies koji vam trebaju
