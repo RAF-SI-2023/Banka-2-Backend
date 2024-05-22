@@ -9,11 +9,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.*;
-import rs.edu.raf.BankService.data.entities.accounts.*;
 import rs.edu.raf.BankService.data.entities.SavedAccount;
 import rs.edu.raf.BankService.data.entities.UserAccountUserProfileActivationCode;
 import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
+import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
@@ -82,6 +83,8 @@ public class CashAccountServiceImpl implements CashAccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         cashAccountRepository.saveAndFlush(accountMapper.domesticAccountDtoToDomesticAccount(dto));
+        becomePrimaryAccount(accountMapper.domesticAccountDtoToDomesticAccount(dto));
+
         return dto;
     }
 
@@ -92,6 +95,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         cashAccountRepository.save(accountMapper.foreignAccountDtoToForeignAccount(dto));
+        becomePrimaryAccount(accountMapper.foreignAccountDtoToForeignAccount(dto));
         return dto;
     }
 
@@ -102,6 +106,7 @@ public class CashAccountServiceImpl implements CashAccountService {
             throw new AccountNumberAlreadyExistException(dto.getAccountNumber());
         }
         cashAccountRepository.save(accountMapper.businessAccountDtoToBusinessAccount(dto));
+        becomePrimaryAccount(accountMapper.businessAccountDtoToBusinessAccount(dto));
         return dto;
     }
 
@@ -169,7 +174,21 @@ public class CashAccountServiceImpl implements CashAccountService {
         cashAccount.getSavedAccounts().add(savedAccount);
         cashAccountRepository.save(cashAccount);
 
+        becomePrimaryAccount(cashAccount);
+
         return dto;
+    }
+
+    @Override
+    public void becomePrimaryAccount(CashAccount cashAccount) {
+        List<CashAccount> cashAccounts = cashAccountRepository.findAllByEmail(cashAccount.getEmail());
+
+        System.out.println(cashAccounts.size()+" VELICINA");
+        if (cashAccounts.size() == 1) {
+            cashAccount.setPrimaryTradingAccount(true);
+            cashAccountRepository.save(cashAccount);
+        }
+
     }
 
     @Transactional

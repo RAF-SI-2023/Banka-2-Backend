@@ -28,10 +28,11 @@ public class BusinessAccountDto extends AccountDto {
             String currencyCode,
             Double maintenanceFee,
             String PIB,
-            String identificationNumber
+            String identificationNumber,
+            boolean primaryAccount
     ) {
         super(id, accountNumber, linkedWithUserProfile, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
-                expirationDate, currencyCode, maintenanceFee);
+                expirationDate, currencyCode, maintenanceFee, primaryAccount );
         this.PIB = PIB;
         this.identificationNumber = identificationNumber;
     }

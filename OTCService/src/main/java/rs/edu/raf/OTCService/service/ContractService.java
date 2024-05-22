@@ -14,7 +14,6 @@ public interface ContractService {
 
     ContractDto createContract(ContractDto contractDto);
 
-
     ContractDto getContractById(Long id);
 
     ContractDto bankApproveContractById(Long id);

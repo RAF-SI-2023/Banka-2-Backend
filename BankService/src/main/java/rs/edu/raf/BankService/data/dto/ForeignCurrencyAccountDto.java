@@ -36,10 +36,11 @@ public class ForeignCurrencyAccountDto extends AccountDto {
             Double interestRate,
             String defaultCurrencyCode,
             Integer numberOfAllowedCurrencies,
-            List<ForeignCurrencyHolderDto> foreignCurrencyHolderDto
+            List<ForeignCurrencyHolderDto> foreignCurrencyHolderDto,
+            boolean primaryAccount
     ) {
         super(id, accountNumber, linkState, email, status, name, availableBalance, reservedFunds, employeeId, creationData,
-                expirationDate, currencyCode, maintenanceFee);
+                expirationDate, currencyCode, maintenanceFee, primaryAccount);
         this.interestRate = interestRate;
         this.defaultCurrencyCode = defaultCurrencyCode;
         this.numberOfAllowedCurrencies = numberOfAllowedCurrencies;

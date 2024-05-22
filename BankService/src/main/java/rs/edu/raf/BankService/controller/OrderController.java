@@ -59,5 +59,11 @@ public class OrderController {
 
         return ResponseEntity.ok().body(orderService.updateOrderStatus(id, OrderStatus.DENIED));
     }
+
+    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+    @GetMapping("/find-by-id/{id}")
+    public ResponseEntity<?> findOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(orderService.findById(id));
+    }
 }
 
