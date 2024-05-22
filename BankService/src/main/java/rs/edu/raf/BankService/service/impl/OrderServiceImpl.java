@@ -131,8 +131,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto findById(Long orderId) {
+    public OrderDto findDtoById(Long orderId) {
         return orderRepository.findById(orderId).map(orderMapper::orderToOrderDto).orElseThrow(OrderNotFoundException::new);
+
+    }
+
+    @Override
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
     }
 
 //    private double getBuyOrderPrice(Order buyOrder, SecuritiesPriceDto currentPrice) {

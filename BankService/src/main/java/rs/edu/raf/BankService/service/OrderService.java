@@ -20,6 +20,9 @@ public interface OrderService {
     boolean updateOrderStatus(Long orderId, OrderStatus status);
 
     List<Order> findAllByUserId(Long id);
-    OrderDto findById(Long orderId);
+    OrderDto findDtoById(Long orderId);
+
+    Order findById(Long orderId);
+
 
 }
