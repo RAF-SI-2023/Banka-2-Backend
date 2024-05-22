@@ -14,7 +14,7 @@ presubmits:
               start-docker.sh
               
               # PROMENITI PRI KOPIRANJU
-              SERVICE_NAME="OTCService"
+              SERVICE_NAME="otc-service"
               
               # PROMENITI PRI KOPIRANJU
               # Ovde treba da pokrenete sve mikroservise i dependencies koji vam trebaju
