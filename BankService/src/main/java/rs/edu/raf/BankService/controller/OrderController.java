@@ -56,6 +56,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
     @PutMapping("/reject/{id}")
     public ResponseEntity<?> rejectOrder(@PathVariable Long id) {
+
         return ResponseEntity.ok().body(orderService.updateOrderStatus(id, OrderStatus.DENIED));
     }
 }
