@@ -48,7 +48,7 @@ services:
       retries: 5
 
   bank-service:
-    build: ./BankService
+    build: ./bank-service
     container_name: bank-service
     ports:
       - "8003:8003"
@@ -63,7 +63,7 @@ services:
         condition: service_started
 
   iam-service:
-    build: ./IAMService
+    build: ./iam-service
     container_name: iam-service
     ports:
       - "8000:8000"
@@ -78,7 +78,7 @@ services:
         condition: service_started
 
   notification-service:
-    build: ./NotificationService
+    build: ./notification-service
     container_name: notification-service
     ports:
       - "8002:8002"
@@ -91,7 +91,7 @@ services:
         condition: service_healthy
 
   stock-service:
-    build: ./StockService
+    build: ./stock-service
     container_name: stock-service
     ports:
       - "8001:8001"
@@ -109,7 +109,7 @@ services:
         condition: service_started
 
   otc-service:
-    build: ./OTCService
+    build: ./otc-service
     container_name: otc-service
     ports:
       - "8004:8004"

@@ -23,11 +23,11 @@
     </properties>
 
     <modules>
-        <module>IAMService</module>
-        <module>StockService</module>
-        <module>NotificationService</module>
-        <module>BankService</module>
-        <module>OTCService</module>
+        <module>iam-service</module>
+        <module>stock-service</module>
+        <module>notification-service</module>
+        <module>bank-service</module>
+        <module>otc-service</module>
     </modules>
 
     <build>
