@@ -15,7 +15,6 @@ presubmits:
               
               SERVICE_NAME="IAMService"
               
-              # PROMENITI PRI KOPIRANJU
               # Ovde treba da pokrenete sve mikroservise i dependencies koji vam trebaju
               # za integracione i end to end testove.
               docker compose up -d iam-service
