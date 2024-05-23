@@ -1,5 +1,6 @@
 package rs.edu.raf.StockService.controllers;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,8 @@ public class ForexController {
         }
     }
 
-    @GetMapping("/by-symbol/{symbol}")
-    public ResponseEntity<Forex> findForexBySymbol(@PathVariable String symbol) {
+    @GetMapping("/by-symbol")
+    public ResponseEntity<Forex> findForexBySymbol(@RequestParam String symbol) {
         try {
             return ResponseEntity.ok(forexService.findBySymbol(symbol));
         } catch (NotFoundException e) {

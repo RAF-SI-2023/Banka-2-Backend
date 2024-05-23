@@ -54,6 +54,7 @@ public class TradingSimulation implements Runnable {
     @Override
     public void run() {
         try {
+            Thread.sleep(20000);
             processOrders();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -126,6 +127,10 @@ public class TradingSimulation implements Runnable {
         //mockujemo podatke
         listingDto.setPrice(listingDto.getPrice());
         listingDto.setVolume(mockQuantity(listingDto.getVolume()));
+        if(listingDto.getHigh()==null)
+            listingDto.setHigh(-1.0);
+        if(listingDto.getLow()==null)
+            listingDto.setLow(-1.0);
 
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
 

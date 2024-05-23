@@ -13,6 +13,7 @@ import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.service.StockService;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -31,7 +32,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public ForexDto getForexBySymbol(String symbol) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/forex/by-symbol/" + symbol))
+                .uri(URI.create(STOCK_SERVICE_URL + "/forex/by-symbol?symbol=" + symbol))
                 //             .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
