@@ -16,4 +16,19 @@ public class TradingJob {
     private ExchangeDto exchangeDto;
     private String tradingAccountNumber;
     private String userRole;
+    private double totalPriceCalculated;
+
+
+    //is only used in update order status
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TradingJob that = (TradingJob) o;
+
+        return order.getId().equals(that.order.getId());
+    }
+
+
 }

@@ -95,7 +95,7 @@ public class TradingSimulation implements Runnable {
 
     // TODO
     private void processStockBuyOrder(TradingJob buyTradingJob) {
-
+        System.out.println("Trading started with trading job for order" + buyTradingJob.getOrder().getId());
         // KUPUJEMO DIREKTNO SA BERZE
         // SVAKA BERZA IMA VALUTU U KOJOJ POSLUJE
         Order order = buyTradingJob.getOrder();
@@ -107,6 +107,7 @@ public class TradingSimulation implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            System.out.println("Stock Market is closed");
             return;
         }
 
@@ -133,6 +134,7 @@ public class TradingSimulation implements Runnable {
                 order.setTimeOfLastModification(System.currentTimeMillis());
                 orderRepository.save(order);
                 tradingJobs.put(buyTradingJob);
+                System.out.println("Its do not process order");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -183,6 +185,7 @@ public class TradingSimulation implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("trading job done");
         //TODO videti da li treba jos nesto???
 
         //  listingDto.

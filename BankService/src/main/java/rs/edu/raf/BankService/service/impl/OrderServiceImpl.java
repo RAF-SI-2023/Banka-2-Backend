@@ -25,6 +25,7 @@ import rs.edu.raf.BankService.service.tradingSimulation.TradingSimulation;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
@@ -105,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
 
         order = orderRepository.save(order);
         try {
-            orders.put(new TradingJob(order, exchangeDto, tradingCashAccount.getAccountNumber(), SpringSecurityUtil.getUserRole()));
+            orders.put(new TradingJob(order, exchangeDto, tradingCashAccount.getAccountNumber(), SpringSecurityUtil.getUserRole(), totalPriceInTradingCashAccountCurrency));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -118,10 +119,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public boolean updateOrderStatus(Long orderId, OrderStatus status) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.setOrderStatus(status);
         orderRepository.save(order);
+        if (status == OrderStatus.APPROVED &&
+                orders.contains(new TradingJob(order, null, null, null, 0))) {
+            TradingJob tj = orders.stream().filter(val -> Objects.equals(val.getOrder().getId(), orderId)).toList().get(0);
+            System.out.println(tj.getTradingAccountNumber());
+            System.out.println(tj.getTotalPriceCalculated());
+            transactionService.reserveFunds(tj.getTradingAccountNumber(), tj.getTotalPriceCalculated());
+            tj.setOrder(order);
+        }
         return true;
     }
 
