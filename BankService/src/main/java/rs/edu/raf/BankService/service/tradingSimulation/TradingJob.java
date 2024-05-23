@@ -11,6 +11,7 @@ import rs.edu.raf.BankService.data.entities.Order;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class TradingJob {
     private Order order;
     private ExchangeDto exchangeDto;
