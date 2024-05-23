@@ -14,7 +14,7 @@ presubmits:
               start-docker.sh
               
               # PROMENITI PRI KOPIRANJU
-              SERVICE_NAME="IAMService"
+              SERVICE_NAME="iam-service"
               
               # PROMENITI PRI KOPIRANJU
               # Ovde treba da pokrenete sve mikroservise i dependencies koji vam trebaju
