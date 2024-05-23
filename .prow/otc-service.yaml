@@ -13,10 +13,8 @@ presubmits:
               
               start-docker.sh
               
-              # PROMENITI PRI KOPIRANJU
               SERVICE_NAME="OTCService"
               
-              # PROMENITI PRI KOPIRANJU
               # Ovde treba da pokrenete sve mikroservise i dependencies koji vam trebaju
               # za integracione i end to end testove.
               docker compose up -d otc-service
