@@ -10,7 +10,7 @@
      - “Rearrange entities”
      - “Cleanup code"
    - u VScode-u komandom Alt + Shift + F, odaberete "format on save" checkbox u settings-u, i sacuvate
-- Na ovom kanalu [backend-izvestaj]([https://discord.com/channels/1212372631265742888/1212372631681110020](https://discord.com/channels/1212372631265742888/1216333094286790787)) potrebno je ukratko napisati status vasih tiketa tako sto posaljete link ka vasem tiketu a ispod linka opisete status. Ovim izvestajem treba da se odgovori na sledeca pitanja:
+- Na ovom kanalu [#backend-izvestaj]([https://discord.com/channels/1212372631265742888/1212372631681110020](https://discord.com/channels/1212372631265742888/1216333094286790787)) potrebno je ukratko napisati status vasih tiketa tako sto posaljete link ka vasem tiketu a ispod linka opisete status. Ovim izvestajem treba da se odgovori na sledeca pitanja:
      - Da li stizete da odratite i testirate ispravnost odradjenih tiketa koji su vam dodeljeni
 -------
  ## Sta je potrebno instalirati
@@ -29,7 +29,7 @@
 - Kada hocete da dovucete izmene sa remote repozitorijuma (`dev` grana glavnog projekta) u vase lokalne repozitorijume treba da odradite komandu `git pull upstream` gde `upstream` redstavlja referencu na remote repozitorijum (`dev` grana glavnog projekta)
 ---
 ## application-local.properties
-### Dodati u src/main/resources folder u IAMService i BankService
+### Dodati u src/main/resources folder u bank-service, iam-service, otc-service
 ```
 MY_EMAIL_1=vasa_email_adresa_1@gmail.com
 MY_EMAIL_2=vasa_email_adresa_2@gmail.com

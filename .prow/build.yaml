@@ -29,7 +29,7 @@ postsubmits:
               docker login -u $HARBOR_USERNAME -p $HARBOR_PASSWORD harbor.k8s.elab.rs
               commit_hash=$(git rev-parse HEAD)
 
-              for serviceName in BankService IAMService NotificationService StockService OTCService; do
+              for serviceName in bank-service iam-service notification-service stock-service otc-service; do
                 docker build -f "../Banka-2-Infrastructure/images/${serviceName}.Dockerfile" -t harbor.k8s.elab.rs/${TEAM_NAME}/${serviceName}:latest "$serviceName"
 
                 docker tag harbor.k8s.elab.rs/${TEAM_NAME}/${serviceName}:latest harbor.k8s.elab.rs/${TEAM_NAME}/${serviceName}:${commit_hash}
