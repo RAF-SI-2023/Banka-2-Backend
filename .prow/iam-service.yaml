@@ -13,7 +13,6 @@ presubmits:
               
               start-docker.sh
               
-              # PROMENITI PRI KOPIRANJU
               SERVICE_NAME="IAMService"
               
               # PROMENITI PRI KOPIRANJU
