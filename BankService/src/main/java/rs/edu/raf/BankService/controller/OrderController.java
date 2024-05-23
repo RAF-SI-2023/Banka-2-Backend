@@ -22,48 +22,55 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER','ROLE_ADMIN','ROLE_EMPLOYEE')")
     @PostMapping()
     public ResponseEntity<Boolean> createOrder(@RequestBody OrderDto orderDto) {
         return ResponseEntity.ok().body(orderService.createOrder(orderDto)); //TODO?
     }
 
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR','ROLE_EMPLOYEE')")
     @GetMapping()
     public ResponseEntity<?> getAllOrders() {
         return ResponseEntity.ok().body(orderService.getAll());
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR','ROLE_EMPLOYEE')")
     @GetMapping("/non-approved")
     public ResponseEntity<?> getNonApprovedOrders() {
         return ResponseEntity.ok().body(orderService.getAll().stream().filter(orderDto -> orderDto.getOrderStatus().equals(OrderStatus.WAITING_FOR_APPROVAL)).collect(Collectors.toList()));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR','ROLE_EMPLOYEE')")
     @GetMapping("/approved")
     public ResponseEntity<?> getApprovedOrders() {
         return ResponseEntity.ok().body(orderService.getAll().stream().filter(orderDto -> orderDto.getOrderStatus().equals(OrderStatus.APPROVED)).collect(Collectors.toList()));
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR','ROLE_EMPLOYEE')")
+    @GetMapping("/denied")
+    public ResponseEntity<?> getDeniedOrders() {
+        return ResponseEntity.ok().body(orderService.getAll().stream().filter(orderDto -> orderDto.getOrderStatus().equals(OrderStatus.DENIED)).collect(Collectors.toList()));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_SUPERVISOR')")
     @PutMapping("/approve/{id}")
     public ResponseEntity<?> approveOrder(@PathVariable Long id) {
         return ResponseEntity.ok().body(orderService.updateOrderStatus(id, OrderStatus.APPROVED));
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_SUPERVISOR')")
     @PutMapping("/reject/{id}")
     public ResponseEntity<?> rejectOrder(@PathVariable Long id) {
 
         return ResponseEntity.ok().body(orderService.updateOrderStatus(id, OrderStatus.DENIED));
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
-    @GetMapping("/find-by-id/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_SUPERVISOR')")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> findOrderById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(orderService.findById(id));
+        return ResponseEntity.ok().body(orderService.findDtoById(id));
     }
 }
 

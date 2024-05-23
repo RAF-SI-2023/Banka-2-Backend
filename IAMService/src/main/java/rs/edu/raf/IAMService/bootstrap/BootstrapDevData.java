@@ -117,7 +117,7 @@ public class BootstrapDevData implements CommandLineRunner {
         agent1.setPassword(passwordEncoder.encode("agent1"));
         agent1.setRole(agentRole);
         agent1.setPhone("+38111317456");
-        agent1.setAddress("Juriga Gargarina 3, Beograd, Srbija");
+        agent1.setAddress("Jurija Gargarina 3, Beograd, Srbija");
         agent1.setDateOfBirth(204155146L);
         agent1.setLimit(new BigDecimal("12345.67"));
         agent1.setLeftOfLimit(new BigDecimal("578.42"));
@@ -213,7 +213,7 @@ public class BootstrapDevData implements CommandLineRunner {
         String[] emails = {"myEmail1@gmail.com", "myEmail2@gmail.com", "myEmail3@gmail.com", myEmail4, myEmail5};
         String[] usernames = {"companyEmployee1", "companyEmployee2", "companyEmployee3", "companyEmployee4", "companyEmployee5"};
         String[] phoneNumbers = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
-        String[] addresses = {"Pariske komune 5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Juriga Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
+        String[] addresses = {"Pariske komune 5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Jurija Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
         Long[] dateOfBirth = {511739146L, 606433546L, 473765600L, 204155146L, 216596746L};
 
         for ( int i = 0; i < 5; i++ ) {
@@ -249,10 +249,10 @@ public class BootstrapDevData implements CommandLineRunner {
     private void loadCompanies() {
 
         if (companyRepository.count() == 0) {
-            String[] companyNames = {"Example Ltd.", "Netflix", "Amazon", "Doofenshmirtz Inc.", "E Corp"};
+            String[] companyNames = {"Vought International", "NCR Corp.", "Umbrella Corp.", "Doofenshmirtz Inc.", "E-Corp"};
             String[] faxNumber = {"123456", "98765", "42146", "78909", "34567"};
             String[] phoneNumber = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
-            String[] address = {"Trg Republike V/5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Juriga Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
+            String[] address = {"Trg Republike V/5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Jurija Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
             Long[] pib = {123456789L, 987654321L, 456789123L, 789123456L, 654321987L};
             Integer[] registryNumber = {123456789, 987654321, 456789123, 789123456, 654321987};
             Integer[] identificationNumber = {123456, 987654, 456789, 789123, 654321};

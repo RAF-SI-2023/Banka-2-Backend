@@ -12,6 +12,7 @@ import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiRespon
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
+import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
@@ -309,16 +310,16 @@ public class BootstrapDevData implements CommandLineRunner {
         facmyEmail2.setAvailableBalance(550L);
         addAccountIfCashAccountNumberIsNotPresent(facmyEmail2);
 
-        DomesticCurrencyCashAccount dca2 = new DomesticCurrencyCashAccount();
+        BusinessCashAccount dca2 = new BusinessCashAccount();
         dca2.setAccountNumber("1112222333333333");
-        dca2.setEmail(myEmail3);
+        dca2.setEmail("myEmail1@gmail.com");
         dca2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
         dca2.setEmployeeId(2L);
         dca2.setMaintenanceFee(220.00);
         dca2.setCurrencyCode("RSD");
         dca2.setAvailableBalance(100000L);
-        dca2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.STUDENT);
-        dca2.setInterestRate(2.5);
+        dca2.setPIB("123456789");
+        dca2.setIdentificationNumber("123456789");
         dca2.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(dca2);
 
@@ -463,7 +464,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
-                so3.setEmail(myEmail3);
+                so3.setEmail("myEmail1@gmail.com");
                 so3.setAccountNumber("1112222333333333");
                 so3.setOwnedByBank(false);
                 so3.setSecuritiesSymbol(symbols3[i]);
