@@ -88,7 +88,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
     private void loadOrders() {
 
-        if(orderRepository.count()==0){
+        if (orderRepository.count() == 0) {
             Order order1 = new Order();
 
             order1.setListingId(2499L);
@@ -240,7 +240,7 @@ public class BootstrapDevData implements CommandLineRunner {
         domesticCurrencyAccount1.setEmployeeId(2L);
         domesticCurrencyAccount1.setMaintenanceFee(220.00);
         domesticCurrencyAccount1.setCurrencyCode("RSD");
-        domesticCurrencyAccount1.setAvailableBalance(100000L);
+        domesticCurrencyAccount1.setAvailableBalance(1000000000L);
         domesticCurrencyAccount1.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.RETIREMENT);
         domesticCurrencyAccount1.setInterestRate(2.5);
         domesticCurrencyAccount1.setPrimaryTradingAccount(true);

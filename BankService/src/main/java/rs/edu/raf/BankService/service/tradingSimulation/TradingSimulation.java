@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.ActiveTradingJob;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
@@ -13,6 +14,7 @@ import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.data.enums.OrderActionType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.data.enums.WorkingHoursStatus;
+import rs.edu.raf.BankService.repository.ActiveTradingJobRepository;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.OrderRepository;
 import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
@@ -43,6 +45,7 @@ public class TradingSimulation implements Runnable {
     private final OrderRepository orderRepository;
     private final CashAccountRepository cashAccountRepository;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private final ActiveTradingJobRepository activeTradingJobRepository;
     private Random random = new Random();
     private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
     private static final Object lock = new Object();
@@ -67,6 +70,8 @@ public class TradingSimulation implements Runnable {
             synchronized (TradingSimulation.lock) {
                 if (tradingJob.getOrder().getOrderStatus() != OrderStatus.APPROVED) {
                     tradingJobs.put(tradingJob);
+                    if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent())
+                        activeTradingJobRepository.save(new ActiveTradingJob(0, tradingJob.getOrder().getId(), tradingJob.getExchangeDto().getExchangeAcronym(), tradingJob.getTradingAccountNumber(), tradingJob.getUserRole(), tradingJob.getTotalPriceCalculated(), true));
                     continue;
                 }
                 switch (tradingJob.getOrder().getOrderActionType()) {
@@ -95,7 +100,7 @@ public class TradingSimulation implements Runnable {
 
     // TODO
     private void processStockBuyOrder(TradingJob buyTradingJob) {
-
+        System.out.println("Trading started with trading job for order" + buyTradingJob.getOrder().getId());
         // KUPUJEMO DIREKTNO SA BERZE
         // SVAKA BERZA IMA VALUTU U KOJOJ POSLUJE
         Order order = buyTradingJob.getOrder();
@@ -107,6 +112,7 @@ public class TradingSimulation implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            System.out.println("Stock Market is closed");
             return;
         }
 
@@ -118,7 +124,7 @@ public class TradingSimulation implements Runnable {
 
         ExchangeDto exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
         //mockujemo podatke
-        listingDto.setPrice(mockPrice(listingDto.getPrice()));
+        listingDto.setPrice(listingDto.getPrice());
         listingDto.setVolume(mockQuantity(listingDto.getVolume()));
 
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
@@ -133,6 +139,7 @@ public class TradingSimulation implements Runnable {
                 order.setTimeOfLastModification(System.currentTimeMillis());
                 orderRepository.save(order);
                 tradingJobs.put(buyTradingJob);
+                System.out.println("Its do not process order");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -176,6 +183,9 @@ public class TradingSimulation implements Runnable {
             order.setDone(true);
         }
         orderRepository.save(order);
+        ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
+        atj.setActive(false);
+        activeTradingJobRepository.save(atj);
 
         try {
             if (!order.isDone())
@@ -183,6 +193,7 @@ public class TradingSimulation implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("trading job done");
         //TODO videti da li treba jos nesto???
 
         //  listingDto.
@@ -218,10 +229,14 @@ public class TradingSimulation implements Runnable {
             securitiesOwnershipRepository.saveAll(so);
             order.setRealizedQuantity(order.getQuantity() - order.getRealizedQuantity());
             order.setDone(true);
-            orderRepository.save(order);
+            ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
+            atj.setActive(false);
+            activeTradingJobRepository.save(atj);
         }
         order.setDone(true);
-        orderRepository.save(order);
+        ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
+        atj.setActive(false);
+        activeTradingJobRepository.save(atj);
     }
 
 
