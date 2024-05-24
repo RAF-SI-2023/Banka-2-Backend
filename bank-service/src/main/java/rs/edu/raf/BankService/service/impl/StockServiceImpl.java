@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class StockServiceImpl implements StockService {
 
-    @Value("${stock.service.url}")
+    @Value("${stock.service.url:http://stock-service:8001/api}")
     private String STOCK_SERVICE_URL;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
