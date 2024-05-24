@@ -15,13 +15,20 @@ import rs.edu.raf.OTCService.repositories.ContractRepository;
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1}")
+    /*
+
+    Sa kojim email adresava seedovati bazu?
+    Trenutno koriste iste email kao i u BankServisu
+
+     */
+
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2}")
+    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3}")
+    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
     private String myEmail3;
 
 

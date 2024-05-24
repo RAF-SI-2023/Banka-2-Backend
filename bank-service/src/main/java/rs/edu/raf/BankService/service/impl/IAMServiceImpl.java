@@ -24,7 +24,7 @@ import java.net.http.HttpResponse;
 @RequiredArgsConstructor
 public class IAMServiceImpl implements IAMService {
 
-    @Value("${iam.service.url}")
+    @Value("${iam.service.url:http://iam-service:8000/api}")
     private String IAM_SERVICE_URL;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
