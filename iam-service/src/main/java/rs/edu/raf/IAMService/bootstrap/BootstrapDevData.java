@@ -50,23 +50,26 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
     public void run(String... args) throws Exception {
+        try{
+            logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
 
-        logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
+            loadCompanies();
+            loadUsers();
 
-        loadCompanies();
-        loadUsers();
-
-        logger.info("IAMService: DEV DATA LOADING FINISHED...");
-
+            logger.info("IAMService: DEV DATA LOADING FINISHED...");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadUsers() {
+
         Role adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
         Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
         Role supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
         Role agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
         Role userRole = roleRepository.findByRoleType(RoleType.USER).get();
-
 
         Permission per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
         Permission per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
