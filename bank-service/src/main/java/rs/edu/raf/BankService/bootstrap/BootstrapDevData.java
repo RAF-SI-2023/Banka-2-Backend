@@ -65,25 +65,31 @@ public class BootstrapDevData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        logger.info("BankService: DEV DATA LOADING IN PROGRESS...");
-        loadExchangeRates();
-        loadBankOwnedCashAccounts();
+        try {
+            logger.info("BankService: DEV DATA LOADING IN PROGRESS...");
+            loadExchangeRates();
+            loadBankOwnedCashAccounts();
 
-        loadOtherCashAccounts();
+            loadOtherCashAccounts();
 
-        loadCredits();
+            loadCredits();
 
-        loadCreditRequests();
+            loadCreditRequests();
 
-        loadExchangeRates();
+            loadExchangeRates();
 
-        loadSecurityOwnerships();
+            loadSecurityOwnerships();
 
-        loadTransactions();
+            loadTransactions();
 
-        loadOrders();
+            loadOrders();
 
-        logger.info("BankService: DEV DATA LOADING FINISHED...");
+            logger.info("BankService: DEV DATA LOADING FINISHED...");
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void loadOrders() {
