@@ -16,10 +16,7 @@ import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
-import rs.edu.raf.BankService.repository.ActiveTradingJobRepository;
-import rs.edu.raf.BankService.repository.CashAccountRepository;
-import rs.edu.raf.BankService.repository.OrderRepository;
-import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
+import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.*;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingSimulation;
@@ -45,11 +42,12 @@ public class OrderServiceImpl implements OrderService {
     private final CashAccountRepository cashAccountRepository;
     private final ActiveTradingJobRepository activeTradingJobRepository;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private final OrderTransactionRepository orderTransactionRepository;
     private TradingSimulation tradingSimulation;
     private final BlockingDeque<TradingJob> orders = new LinkedBlockingDeque<>();
 
     @Autowired
-    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository) {
+    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository,OrderTransactionRepository orderTransactionRepository) {
         this.transactionService = transactionService;
         this.iamService = iamService;
         this.stockService = stockService;
@@ -59,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
         this.cashAccountRepository = cashAccountRepository;
         this.securitiesOwnershipRepository = securitiesOwnershipRepository;
         this.activeTradingJobRepository = activeTradingJobRepository;
+        this.orderTransactionRepository=orderTransactionRepository;
 
         //load active trading jobs
         List<ActiveTradingJob> atjList = activeTradingJobRepository.findAll();
@@ -75,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException(e);
             }
         });
-        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository);
+        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository,orderTransactionRepository);
         this.tradingSimulation.setTradingJobs(orders);
         Thread thread = new Thread(this.tradingSimulation);
         thread.start();
