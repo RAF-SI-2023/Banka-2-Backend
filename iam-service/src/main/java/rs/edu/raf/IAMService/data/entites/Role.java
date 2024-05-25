@@ -12,7 +12,6 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Role {
 
@@ -23,9 +22,6 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(unique = true)
     private RoleType roleType;
-
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<User> users = new HashSet<>();
 
     public Role(RoleType roleType) {
         this.roleType = roleType;
