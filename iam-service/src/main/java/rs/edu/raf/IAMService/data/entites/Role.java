@@ -24,7 +24,7 @@ public class Role {
     @Column(unique = true)
     private RoleType roleType;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
     public Role(RoleType roleType) {
