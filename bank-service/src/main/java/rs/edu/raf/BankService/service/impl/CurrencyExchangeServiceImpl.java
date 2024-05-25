@@ -36,7 +36,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final CashTransactionRepository cashTransactionRepository;
     private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
 
-    @Value("${bank.default.currency}")
+    @Value("${bank.default.currency:RSD}")
     private String defaultCurrency;
 
     @Override
