@@ -71,6 +71,7 @@ public class BootstrapDevData implements CommandLineRunner {
         logger.info(roleRepository.findAll().toString());
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
+
         Role adminRole;
         Role employeeRole;
         Role supervisorRole;
@@ -90,7 +91,6 @@ public class BootstrapDevData implements CommandLineRunner {
         } catch (Exception e) {
             logger.info("NEMA EMPLOYEE ROLE");
             throw new NoSuchElementException();
-
         }
 
 
@@ -99,7 +99,6 @@ public class BootstrapDevData implements CommandLineRunner {
         } catch (Exception e) {
             logger.info("NEMA SUPERVISOR ROLE");
             throw new NoSuchElementException();
-
         }
 
 
@@ -117,7 +116,6 @@ public class BootstrapDevData implements CommandLineRunner {
         } catch (Exception e) {
             logger.info("NEMA USER ROLE");
             throw new NoSuchElementException();
-
         }
 
 
@@ -138,7 +136,6 @@ public class BootstrapDevData implements CommandLineRunner {
         } catch (Exception e) {
             logger.info("NEMA PERISIJE 2");
             throw new NoSuchElementException();
-
         }
 
 
