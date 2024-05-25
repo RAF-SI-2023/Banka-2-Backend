@@ -65,14 +65,68 @@ public class BootstrapDevData implements CommandLineRunner {
 
     private void loadUsers() {
 
-        Role adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
-        Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
-        Role supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
-        Role agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
-        Role userRole = roleRepository.findByRoleType(RoleType.USER).get();
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println(roleRepository.findAll().size());
+        System.out.println(roleRepository.findAll());
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
-        Permission per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
-        Permission per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
+        Role adminRole;
+        Role employeeRole;
+        Role supervisorRole;
+        Role agentRole;
+        Role userRole;
+
+        try {
+            adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
+        } catch (Exception e) {
+            System.out.println("NEMA AdMIN ROLE");
+        }
+
+
+        try {
+            employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
+        } catch (Exception e) {
+            System.out.println("NEMA EMPLOYEE ROLE");
+        }
+
+
+        try {
+            supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
+        } catch (Exception e) {
+            System.out.println("NEMA SUPERVISOR ROLE");
+        }
+
+
+        try {
+            agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
+        } catch (Exception e) {
+            System.out.println("NEMA AGENT ROLE");
+        }
+
+
+        try {
+            userRole = roleRepository.findByRoleType(RoleType.USER).get();
+        } catch (Exception e) {
+            System.out.println("NEMA USER ROLE");
+        }
+
+
+
+        Permission per1;
+        Permission per2;
+
+        try {
+            permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
+        } catch (Exception e) {
+            System.out.println("NEMA PERISIJE 1");
+        }
+
+        try {
+            permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
+        } catch (Exception e) {
+            System.out.println("NEMA PERISIJE 2");
+        }
+
 
         User admin = new User();
         admin.setEmail(myEmail1);
