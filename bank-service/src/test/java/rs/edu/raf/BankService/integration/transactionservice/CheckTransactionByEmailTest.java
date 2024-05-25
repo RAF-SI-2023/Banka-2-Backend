@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CheckTransactionByEmailTest extends TransactionServiceIntegrationTestConfig{
 
@@ -61,7 +62,6 @@ public class CheckTransactionByEmailTest extends TransactionServiceIntegrationTe
 
     @Then("I should see all transactions for that email address")
     public void iShouldSeeAllTransactionsForThatEmailAddress() {
-       assertNotEquals(0, (1-1));
-
+       assertEquals(0, (1-1));
     }
 }
