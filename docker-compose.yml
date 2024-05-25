@@ -41,6 +41,7 @@ services:
       - "5672:5672"
     volumes:
       - "./rabbitdata:/var/lib/rabbitmq"
+#    command: ["bash", "-c", "chmod 400 /var/lib/rabbitmq/.erlang.cookie; rabbitmq-server"]
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 5s

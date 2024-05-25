@@ -3,6 +3,7 @@ package rs.edu.raf.BankService.service.tradingSimulation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.aspectj.weaver.ast.Or;
 import rs.edu.raf.BankService.data.dto.ExchangeDto;
 import rs.edu.raf.BankService.data.dto.ForexDto;
 import rs.edu.raf.BankService.data.dto.ListingDto;
@@ -11,14 +12,12 @@ import rs.edu.raf.BankService.data.entities.ActiveTradingJob;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.transactions.OrderTransaction;
 import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.data.enums.OrderActionType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.data.enums.WorkingHoursStatus;
-import rs.edu.raf.BankService.repository.ActiveTradingJobRepository;
-import rs.edu.raf.BankService.repository.CashAccountRepository;
-import rs.edu.raf.BankService.repository.OrderRepository;
-import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
+import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.IAMService;
 import rs.edu.raf.BankService.service.StockService;
@@ -26,6 +25,7 @@ import rs.edu.raf.BankService.service.TransactionService;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -45,6 +45,7 @@ public class TradingSimulation implements Runnable {
     private final CashAccountRepository cashAccountRepository;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     private final ActiveTradingJobRepository activeTradingJobRepository;
+    private final OrderTransactionRepository orderTransactionRepository;
     private Random random = new Random();
     private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
     private static final Object lock = new Object();
@@ -53,6 +54,7 @@ public class TradingSimulation implements Runnable {
     @Override
     public void run() {
         try {
+            Thread.sleep(20000);
             processOrders();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -125,6 +127,10 @@ public class TradingSimulation implements Runnable {
         //mockujemo podatke
         listingDto.setPrice(listingDto.getPrice());
         listingDto.setVolume(mockQuantity(listingDto.getVolume()));
+        if(listingDto.getHigh()==null)
+            listingDto.setHigh(-1.0);
+        if(listingDto.getLow()==null)
+            listingDto.setLow(-1.0);
 
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
 
@@ -186,6 +192,19 @@ public class TradingSimulation implements Runnable {
         atj.setActive(false);
         activeTradingJobRepository.save(atj);
 
+
+        Optional<OrderTransaction> oot= orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
+        OrderTransaction ot=null;
+        ot = oot.orElseGet(OrderTransaction::new);
+        ot.setOrderId(order.getId());
+        ot.setDate(System.currentTimeMillis());
+        ot.setCurrency(account.getCurrencyCode());
+        ot.setAccountNumber(account.getAccountNumber());
+        ot.setPayAmount(buyTradingJob.getTotalPriceCalculated());
+        ot.setReservedFunds(account.getReservedFunds());
+        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
+        ot.setPayoffAmount(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
+        orderTransactionRepository.save(ot);
         try {
             if (!order.isDone())
                 tradingJobs.put(buyTradingJob);

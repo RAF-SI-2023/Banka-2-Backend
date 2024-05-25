@@ -18,6 +18,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
@@ -49,7 +50,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
 
-    public void run(String... args) throws Exception {
+    public void run(String... args)  {
         try{
             logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
 
@@ -80,6 +81,7 @@ public class BootstrapDevData implements CommandLineRunner {
             adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
         } catch (Exception e) {
             System.out.println("NEMA AdMIN ROLE");
+            throw new NoSuchElementException();
         }
 
 
@@ -87,6 +89,8 @@ public class BootstrapDevData implements CommandLineRunner {
             employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
         } catch (Exception e) {
             System.out.println("NEMA EMPLOYEE ROLE");
+            throw new NoSuchElementException();
+
         }
 
 
@@ -94,6 +98,8 @@ public class BootstrapDevData implements CommandLineRunner {
             supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
         } catch (Exception e) {
             System.out.println("NEMA SUPERVISOR ROLE");
+            throw new NoSuchElementException();
+
         }
 
 
@@ -101,6 +107,8 @@ public class BootstrapDevData implements CommandLineRunner {
             agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
         } catch (Exception e) {
             System.out.println("NEMA AGENT ROLE");
+            throw new NoSuchElementException();
+
         }
 
 
@@ -108,6 +116,8 @@ public class BootstrapDevData implements CommandLineRunner {
             userRole = roleRepository.findByRoleType(RoleType.USER).get();
         } catch (Exception e) {
             System.out.println("NEMA USER ROLE");
+            throw new NoSuchElementException();
+
         }
 
 
@@ -116,15 +126,19 @@ public class BootstrapDevData implements CommandLineRunner {
         Permission per2;
 
         try {
-            permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
+            per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
         } catch (Exception e) {
             System.out.println("NEMA PERISIJE 1");
+            throw new NoSuchElementException();
+
         }
 
         try {
-            permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
+            per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
         } catch (Exception e) {
             System.out.println("NEMA PERISIJE 2");
+            throw new NoSuchElementException();
+
         }
 
 
