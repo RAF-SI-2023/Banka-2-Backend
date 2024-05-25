@@ -13,6 +13,7 @@ import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertNotEquals;
@@ -22,7 +23,7 @@ public class CheckTransactionByEmailTest extends TransactionServiceIntegrationTe
     @Autowired
     private TransactionService transactionService;
 
-    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
 
@@ -35,7 +36,7 @@ public class CheckTransactionByEmailTest extends TransactionServiceIntegrationTe
     ResponseEntity<?> responseEntity;
 
     private String emailAddress;
-    private List<GenericTransactionDto> transactions;
+    private List<GenericTransactionDto> transactions = new ArrayList<>();
     private CashAccount testSenderCashAccount;
     private Long transactionId;
 
