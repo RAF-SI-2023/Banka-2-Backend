@@ -66,10 +66,11 @@ public class BootstrapDevData implements CommandLineRunner {
 
     private void loadUsers() {
 
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println(roleRepository.findAll().size());
-        System.out.println(roleRepository.findAll());
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        logger.info(String.valueOf(roleRepository.findAll().size()));
+        logger.info(roleRepository.findAll().toString());
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
 
         Role adminRole;
         Role employeeRole;
@@ -80,7 +81,7 @@ public class BootstrapDevData implements CommandLineRunner {
         try {
             adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
         } catch (Exception e) {
-            System.out.println("NEMA AdMIN ROLE");
+            logger.info("NEMA AdMIN ROLE");
             throw new NoSuchElementException();
         }
 
@@ -88,25 +89,23 @@ public class BootstrapDevData implements CommandLineRunner {
         try {
             employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
         } catch (Exception e) {
-            System.out.println("NEMA EMPLOYEE ROLE");
+            logger.info("NEMA EMPLOYEE ROLE");
             throw new NoSuchElementException();
-
         }
 
 
         try {
             supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
         } catch (Exception e) {
-            System.out.println("NEMA SUPERVISOR ROLE");
+            logger.info("NEMA SUPERVISOR ROLE");
             throw new NoSuchElementException();
-
         }
 
 
         try {
             agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
         } catch (Exception e) {
-            System.out.println("NEMA AGENT ROLE");
+            logger.info("NEMA AGENT ROLE");
             throw new NoSuchElementException();
 
         }
@@ -115,9 +114,8 @@ public class BootstrapDevData implements CommandLineRunner {
         try {
             userRole = roleRepository.findByRoleType(RoleType.USER).get();
         } catch (Exception e) {
-            System.out.println("NEMA USER ROLE");
+            logger.info("NEMA USER ROLE");
             throw new NoSuchElementException();
-
         }
 
 
@@ -128,7 +126,7 @@ public class BootstrapDevData implements CommandLineRunner {
         try {
             per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
         } catch (Exception e) {
-            System.out.println("NEMA PERISIJE 1");
+            logger.info("NEMA PERISIJE 1");
             throw new NoSuchElementException();
 
         }
@@ -136,9 +134,8 @@ public class BootstrapDevData implements CommandLineRunner {
         try {
             per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
         } catch (Exception e) {
-            System.out.println("NEMA PERISIJE 2");
+            logger.info("NEMA PERISIJE 2");
             throw new NoSuchElementException();
-
         }
 
 
