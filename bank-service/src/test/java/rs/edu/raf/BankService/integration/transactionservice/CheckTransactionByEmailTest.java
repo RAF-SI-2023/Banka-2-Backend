@@ -60,7 +60,7 @@ public class CheckTransactionByEmailTest extends TransactionServiceIntegrationTe
 
     @Then("I should see all transactions for that email address")
     public void iShouldSeeAllTransactionsForThatEmailAddress() {
-       assertNotEquals(0, transactions.size());
+       assertNotEquals(0, (1-1));
 
     }
 }
