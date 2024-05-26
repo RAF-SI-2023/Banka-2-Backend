@@ -71,19 +71,20 @@ public class BootstrapData implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        logger.info("StockService: SOME DATA LOADING IN PROGRESS...");
-        CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(resourceLoader);
-        List<Currency> currencyList;
-        List<CurrencyInflation> currencyInflationList;
+        try{
+            logger.info("StockService: SOME DATA LOADING IN PROGRESS...");
+            CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(resourceLoader);
+            List<Currency> currencyList;
+            List<CurrencyInflation> currencyInflationList;
          /* REDIS
           cacheCurrencies(currencyList);
         cacheCurrencyInflation(currencyInflationList);*/
-        if (currencyInflationRepository.count() == 0 || currencyRepository.count() == 0) {
-            currencyList = currencyCsvReader.loadCurrencyData();
-            currencyList = currencyRepository.saveAll(currencyList);
-            currencyInflationList = currencyCsvReader.pullCurrencyInflationData(currencyList);
-            currencyInflationRepository.saveAll(currencyInflationList);
-        }
+            if (currencyInflationRepository.count() == 0 || currencyRepository.count() == 0) {
+                currencyList = currencyCsvReader.loadCurrencyData();
+                currencyList = currencyRepository.saveAll(currencyList);
+                currencyInflationList = currencyCsvReader.pullCurrencyInflationData(currencyList);
+                currencyInflationRepository.saveAll(currencyInflationList);
+            }
         /*za in memory
         //  currencyService.setCurrencyList(currencyList);
         //  currencyInflationService.setCurrencyInflationList(currencyInflationList);
@@ -93,13 +94,17 @@ public class BootstrapData implements CommandLineRunner {
          * otkomentarisati ako cemo koristiti bazu, a ne in memory listu , slicno i za currencyInflation
          currencyRepository.saveAll(currencyList);    */
 
-        if (futuresContractRepository.count() == 0) {
-            FuturesContractCsvReader futuresContractCsvReader = new FuturesContractCsvReader(resourceLoader);
-            List<FuturesContract> futuresContracts = futuresContractCsvReader.readFromFile();
-            futuresContractRepository.saveAll(futuresContracts);
+            if (futuresContractRepository.count() == 0) {
+                FuturesContractCsvReader futuresContractCsvReader = new FuturesContractCsvReader(resourceLoader);
+                List<FuturesContract> futuresContracts = futuresContractCsvReader.readFromFile();
+                futuresContractRepository.saveAll(futuresContracts);
+            }
+
+            logger.info("StockService: SOME DATA LOADING FINISHED...");
+        } catch (Exception e){
+            e.printStackTrace();
         }
 
-        logger.info("StockService: SOME DATA LOADING FINISHED...");
     }
 
     //**Iskljucivo za redis, da se sve odmah kesira, nema nekog smisla.*/

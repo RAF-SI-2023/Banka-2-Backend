@@ -15,13 +15,20 @@ import rs.edu.raf.OTCService.repositories.ContractRepository;
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1}")
+    /*
+
+    Sa kojim email adresava seedovati bazu?
+    Trenutno koriste iste email kao i u BankServisu
+
+     */
+
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2}")
+    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3}")
+    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
     private String myEmail3;
 
 
@@ -29,16 +36,21 @@ public class BootstrapData implements CommandLineRunner {
     private final ContractRepository contractRepository;
 
     @Override
-    public void run(String... args) throws Exception {
-        logger.info("OTCService: DEV DATA LOADING IN PROGRESS...");
+    public void run(String... args) {
+        try{
+            logger.info("OTCService: DEV DATA LOADING IN PROGRESS...");
 
 
-        loadContracts();
+            loadContracts();
 
-        logger.info("OTCService: DEV DATA LOADING FINISHED...");
-        System.out.println("MY_EMAIL_1: " + myEmail1);
-        System.out.println("MY_EMAIL_2: " + myEmail2);
-        System.out.println("MY_EMAIL_3: " + myEmail3);
+            logger.info("OTCService: DEV DATA LOADING FINISHED...");
+            System.out.println("MY_EMAIL_1: " + myEmail1);
+            System.out.println("MY_EMAIL_2: " + myEmail2);
+            System.out.println("MY_EMAIL_3: " + myEmail3);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void loadContracts() {

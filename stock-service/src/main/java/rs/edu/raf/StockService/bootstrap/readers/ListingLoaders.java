@@ -241,10 +241,14 @@ public class ListingLoaders implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        logger.info("StockService: STOCK AND FOREX DATA LOADING IN PROGRESS...");
-        tryToLoadStockFromFile();
-        tryToLoadForexFromFile();
-        logger.info("StockService: STOCK AND FOREX DATA LOADING FINISHED...");
+        try{
+            logger.info("StockService: STOCK AND FOREX DATA LOADING IN PROGRESS...");
+            tryToLoadStockFromFile();
+            tryToLoadForexFromFile();
+            logger.info("StockService: STOCK AND FOREX DATA LOADING FINISHED...");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

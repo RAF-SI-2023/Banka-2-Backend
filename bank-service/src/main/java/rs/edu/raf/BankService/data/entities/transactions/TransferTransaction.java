@@ -33,5 +33,5 @@ public class TransferTransaction {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

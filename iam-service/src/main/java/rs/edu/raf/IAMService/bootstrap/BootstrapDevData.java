@@ -18,6 +18,7 @@ import rs.edu.raf.IAMService.repositories.UserRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
@@ -31,45 +32,112 @@ public class BootstrapDevData implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepository companyRepository;
 
-    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2:defaultEmail2@gmail.com}")
+    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3:defaultEmail3@gmail.com}")
+    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
     private String myEmail3;
 
-    @Value("${MY_EMAIL_4:defaultEmail4@gmail.com}")
+    @Value("${MY_EMAIL_4:defaultemail4@gmail.com}")
     private String myEmail4;
 
-    @Value("${MY_EMAIL_5:defaultEmail5@gmail.com}")
+    @Value("${MY_EMAIL_5:defaultemail5@gmail.com}")
     private String myEmail5;
 
 
 
 
-    public void run(String... args) throws Exception {
+    public void run(String... args)  {
+        try{
+            logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
 
-        logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
+            loadCompanies();
+            loadUsers();
 
-        loadCompanies();
-        loadUsers();
-
-        logger.info("IAMService: DEV DATA LOADING FINISHED...");
-
+            logger.info("IAMService: DEV DATA LOADING FINISHED...");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadUsers() {
-        Role adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
-        Role employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
-        Role supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
-        Role agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
-        Role userRole = roleRepository.findByRoleType(RoleType.USER).get();
+
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        logger.info(String.valueOf(roleRepository.findAll().size()));
+        logger.info(roleRepository.findAll().toString());
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
 
-        Permission per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
-        Permission per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
+        Role adminRole;
+        Role employeeRole;
+        Role supervisorRole;
+        Role agentRole;
+        Role userRole;
+
+        try {
+            adminRole = roleRepository.findByRoleType(RoleType.ADMIN).get();
+        } catch (Exception e) {
+            logger.info("NEMA AdMIN ROLE");
+            throw new NoSuchElementException();
+        }
+
+
+        try {
+            employeeRole = roleRepository.findByRoleType(RoleType.EMPLOYEE).get();
+        } catch (Exception e) {
+            logger.info("NEMA EMPLOYEE ROLE");
+            throw new NoSuchElementException();
+        }
+
+
+        try {
+            supervisorRole = roleRepository.findByRoleType(RoleType.SUPERVISOR).get();
+        } catch (Exception e) {
+            logger.info("NEMA SUPERVISOR ROLE");
+            throw new NoSuchElementException();
+        }
+
+
+        try {
+            agentRole = roleRepository.findByRoleType(RoleType.AGENT).get();
+        } catch (Exception e) {
+            logger.info("NEMA AGENT ROLE");
+            throw new NoSuchElementException();
+
+        }
+
+
+        try {
+            userRole = roleRepository.findByRoleType(RoleType.USER).get();
+        } catch (Exception e) {
+            logger.info("NEMA USER ROLE");
+            throw new NoSuchElementException();
+        }
+
+
+
+        Permission per1;
+        Permission per2;
+
+        try {
+            per1 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_1).get();
+        } catch (Exception e) {
+            logger.info("NEMA PERISIJE 1");
+            throw new NoSuchElementException();
+
+        }
+
+        try {
+            per2 = permissionRepository.findByPermissionType(PermissionType.PERMISSION_2).get();
+        } catch (Exception e) {
+            logger.info("NEMA PERISIJE 2");
+            throw new NoSuchElementException();
+        }
+
 
         User admin = new User();
         admin.setEmail(myEmail1);

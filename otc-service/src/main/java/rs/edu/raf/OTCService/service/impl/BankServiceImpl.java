@@ -20,7 +20,7 @@ import java.net.http.HttpResponse;
 @RequiredArgsConstructor
 public class BankServiceImpl implements BankService {
 
-    @Value("${bank.service.url}")
+    @Value("${bank.service.url:http://bank-service:8003/api}")
     private String BANK_SERVICE_URL;
     private final ObjectMapper objectMapper = new ObjectMapper();
 

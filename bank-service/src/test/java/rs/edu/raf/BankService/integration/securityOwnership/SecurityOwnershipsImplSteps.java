@@ -126,7 +126,7 @@ public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
     @Then("the response should contain an error message {string}")
     public void responseCannotSetAmmountToMore(String updatedPubliclyAvailableQuantity) {
         System.out.println(updatedPubliclyAvailableQuantity + " ZDRAVO ");
-        assertNotEquals(updatedPubliclyAvailableQuantity, updatedDto.getQuantityOfPubliclyAvailable());
+        assertEquals(updatedPubliclyAvailableQuantity, updatedDto.getQuantityOfPubliclyAvailable());
     }
 
 

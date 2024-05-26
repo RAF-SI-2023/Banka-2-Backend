@@ -27,7 +27,7 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
 
     private final String BASE_URL = "http://localhost:8003/api/securities-ownerships/";
 
-    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
     private MockHttpServletResponse responseEntity;
