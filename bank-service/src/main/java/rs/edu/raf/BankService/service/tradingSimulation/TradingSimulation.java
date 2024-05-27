@@ -23,6 +23,9 @@ import rs.edu.raf.BankService.service.IAMService;
 import rs.edu.raf.BankService.service.StockService;
 import rs.edu.raf.BankService.service.TransactionService;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -106,7 +109,15 @@ public class TradingSimulation implements Runnable {
         // SVAKA BERZA IMA VALUTU U KOJOJ POSLUJE
         Order order = buyTradingJob.getOrder();
 
-        WorkingHoursStatus workingHoursStatus = getWorkingHoursForStock(order.getListingId());
+        ListingDto listingDto = fetchSecuritiesByOrder(order);
+
+        if (listingDto.getVolume() == null) {
+            listingDto.setVolume(new Random().nextInt(1, 10));
+        }
+
+        ExchangeDto exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
+        WorkingHoursStatus workingHoursStatus = getWorkingHoursForStock(exchangeDto);
+
         if (workingHoursStatus == WorkingHoursStatus.CLOSED) {
             try {
                 tradingJobs.put(buyTradingJob);
@@ -117,13 +128,6 @@ public class TradingSimulation implements Runnable {
             return;
         }
 
-        ListingDto listingDto = fetchSecuritiesByOrder(order);
-
-        if (listingDto.getVolume() == null) {
-            listingDto.setVolume(new Random().nextInt(1, 10));
-        }
-
-        ExchangeDto exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
         //mockujemo podatke
         listingDto.setPrice(listingDto.getPrice());
         listingDto.setVolume(mockQuantity(listingDto.getVolume()));
@@ -179,6 +183,7 @@ public class TradingSimulation implements Runnable {
         transactionService.releaseFunds(account, totalPrice);
         // ...
         SecuritiesOwnership buyerSo = buySecurities.get(0);
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / buyerSo.getQuantity() + quantityToProcess);
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
@@ -203,7 +208,7 @@ public class TradingSimulation implements Runnable {
         ot.setPayAmount(buyTradingJob.getTotalPriceCalculated());
         ot.setReservedFunds(account.getReservedFunds());
         ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
-        ot.setPayoffAmount(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
+        ot.setPayoffAmount(0.0);
         orderTransactionRepository.save(ot);
         try {
             if (!order.isDone())
@@ -232,17 +237,21 @@ public class TradingSimulation implements Runnable {
         }
         Order order = tradingJob.getOrder();
         ListingDto listingDto = fetchSecuritiesByOrder(order);
+        //TODO 5/7/2024 ovde treba videti da li se bira berza kojoj prodajemo ili ne
         if (!order.isDone() && order.getQuantity() - order.getRealizedQuantity() > 0) {
             double amountToReceive = (order.getQuantity() - order.getRealizedQuantity()) * listingDto.getPrice();
             //todo videti da li treba da se konvertuje
-            transactionService.releaseFunds(tradingJob.getTradingAccountNumber(), amountToReceive);
+
+            //TODO 5/7/2024 dodati -15% poreza ili tako nesto i to poslati banci
+            CashAccount ca= cashAccountRepository.findByAccountNumber(tradingJob.getTradingAccountNumber());
+            transactionService.addFunds(ca, amountToReceive*0.85); //sebi ostaje 85% valjda je izracunavanje dobro
             List<SecuritiesOwnership> so = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(tradingJob.getTradingAccountNumber(), listingDto.getSymbol());
             if (so.size() == 1) {
                 so.get(0).setQuantity(order.getQuantity() - order.getRealizedQuantity());
             } else {
                 //ovde je greska?
                 so.get(0).setQuantity(order.getQuantity() - order.getRealizedQuantity());
-                throw new RuntimeException("nesto nije ok bas");
+                throw new RuntimeException("Something went wrong!");
             }
             securitiesOwnershipRepository.saveAll(so);
             order.setRealizedQuantity(order.getQuantity() - order.getRealizedQuantity());
@@ -250,7 +259,21 @@ public class TradingSimulation implements Runnable {
             ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
             atj.setActive(false);
             activeTradingJobRepository.save(atj);
+            OrderTransaction ot=null;
+            ot = new OrderTransaction();
+            ot.setOrderId(order.getId());
+            ot.setDate(System.currentTimeMillis());
+            ot.setCurrency(ca.getCurrencyCode());
+            ot.setAccountNumber(ca.getAccountNumber());
+            ot.setPayAmount(0.0);
+            ot.setReservedFunds(0.0);
+            ot.setUsedOfReservedFunds(0.0);
+            ot.setPayoffAmount(amountToReceive*0.85);
+            orderTransactionRepository.save(ot);
         }
+
+
+
         order.setDone(true);
         ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
         atj.setActive(false);
@@ -258,9 +281,12 @@ public class TradingSimulation implements Runnable {
     }
 
 
-    // TODO
-    private WorkingHoursStatus getWorkingHoursForStock(Long listingId) {
-        return WorkingHoursStatus.OPENED;
+    // satro radi
+    private WorkingHoursStatus getWorkingHoursForStock(ExchangeDto exchangeDto) {
+        int hours=LocalDateTime.now().plus(exchangeDto.getTimeZone(), ChronoUnit.HOURS).getHour();
+        if(hours>9 && hours<16)
+            return WorkingHoursStatus.OPENED;
+        else return WorkingHoursStatus.CLOSED;
     }
 
     private ListingDto fetchSecuritiesByOrder(Order order) {

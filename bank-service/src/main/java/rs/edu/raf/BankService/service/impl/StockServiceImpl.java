@@ -115,6 +115,7 @@ public class StockServiceImpl implements StockService {
                 exchangeDto = new ExchangeDto();
                 exchangeDto.setExchangeAcronym(exchangeAcronym);
                 exchangeDto.setCurrency("USD");
+                exchangeDto.setTimeZone(0);
                 return exchangeDto;
             }
             String jsonUserListing = response.body();

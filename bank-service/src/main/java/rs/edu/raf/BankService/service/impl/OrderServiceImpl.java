@@ -117,10 +117,13 @@ public class OrderServiceImpl implements OrderService {
 
 
         double totalPriceInTradingCashAccountCurrency = currencyExchangeService.calculateAmountBetweenCurrencies(currency, tradingCashAccount.getCurrencyCode(), totalPrice);
-        if (order.getOrderStatus() == OrderStatus.APPROVED) {
-            transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
-        }
-
+       try {
+           if (order.getOrderStatus() == OrderStatus.APPROVED) {
+               transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
+           }
+       }catch (RuntimeException e){
+           throw new RuntimeException("Insufficient funds for reservation");
+       }
 
         order = orderRepository.save(order);
         try {

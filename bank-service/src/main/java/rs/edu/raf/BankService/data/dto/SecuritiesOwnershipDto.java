@@ -16,4 +16,5 @@ public class SecuritiesOwnershipDto {
     private Integer quantity;
     private Integer quantityOfPubliclyAvailable;
     private Integer reservedQuantity;
+    private Double averageBuyingPrice;
 }
