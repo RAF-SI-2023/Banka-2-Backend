@@ -42,13 +42,13 @@ import java.util.Random;
 @Profile("dev")
 public class BootstrapDevData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
+    @Value("${MY_EMAIL_1}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
+    @Value("${MY_EMAIL_2}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
+    @Value("${MY_EMAIL_3}")
     private String myEmail3;
 
 
