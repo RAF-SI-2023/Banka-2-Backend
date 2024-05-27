@@ -24,9 +24,9 @@ public class OrderTransaction {
 
     private String currency;
 
-    private Double payAmount;
+    private Double payAmount; //uplata tj ove pare dajes
 
-    private Double payoffAmount;
+    private Double payoffAmount; //isplata tj ove pare dobijas
 
     private Double reservedFunds;
 

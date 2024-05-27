@@ -455,6 +455,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so1.setQuantity(quantity + 50);
                 so1.setQuantityOfPubliclyAvailable(quantity);
                 so1.setReservedQuantity(0);
+                so1.setAverageBuyingPrice(so1.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so1);
 
                 SecuritiesOwnership so2 = new SecuritiesOwnership();
@@ -466,11 +467,12 @@ public class BootstrapDevData implements CommandLineRunner {
                 so2.setQuantity(30 + quantity1);
                 so2.setQuantityOfPubliclyAvailable(quantity1);
                 so2.setReservedQuantity(25);
+                so2.setAverageBuyingPrice(so2.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so2);
 
 
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
-                so3.setEmail("myEmail1@gmail.com");
+                so3.setEmail(myEmail3);
                 so3.setAccountNumber("1112222333333333");
                 so3.setOwnedByBank(false);
                 so3.setSecuritiesSymbol(symbols3[i]);
@@ -478,6 +480,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so3.setQuantity(quantity2 + 100);
                 so3.setQuantityOfPubliclyAvailable(quantity2);
                 so3.setReservedQuantity(5);
+                so3.setAverageBuyingPrice(so3.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so3);
 
             }
