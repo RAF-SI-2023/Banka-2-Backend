@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.BankTransferTransactionDetails;
+import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.mapper.BankTransferTransactionDetailsMapper;
 import rs.edu.raf.BankService.repository.BankTransferTransactionDetailsRepository;
@@ -11,6 +12,7 @@ import rs.edu.raf.BankService.service.BankTransferTransactionDetailsService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +25,13 @@ public class BankTransferTransactionDetailsServiceImpl implements BankTransferTr
     @Override
     public List<BankTransferTransactionDetailsDto> getAllBankExchangeRates() {
 
-        return bankTransferTransactionDetailsRepository.findAll().stream()
+        List<BankTransferTransactionDetails> bankTransferTransactionDetails = bankTransferTransactionDetailsRepository.findAll();
+
+        List<BankTransferTransactionDetailsDto> bankTransferTransactionDetailsDtos = bankTransferTransactionDetails.stream()
                 .map(bankTransferTransactionDetailsMapper::convertToDto)
                 .toList();
+
+        return bankTransferTransactionDetailsDtos ;
     }
 
     @Override

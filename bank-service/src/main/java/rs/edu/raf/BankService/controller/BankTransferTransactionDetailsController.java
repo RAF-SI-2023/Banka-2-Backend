@@ -13,7 +13,7 @@ import rs.edu.raf.BankService.service.BankTransferTransactionDetailsService;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/bank-transactions", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/bank-transactions-details", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BankTransferTransactionDetailsController {
 
     private final BankTransferTransactionDetailsService bankTransferTransactionDetailsService;
