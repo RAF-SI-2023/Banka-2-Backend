@@ -146,6 +146,11 @@ public class OptionServiceImpl implements OptionService {
    //     return optionList;
     }
 
+    @Override
+    public Option findOptionByTickerSymbol(String tickerSymbol) {
+        return null;
+    }
+
 
 }
 
