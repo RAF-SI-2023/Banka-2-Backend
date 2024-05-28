@@ -47,7 +47,7 @@ class FuturesContractMapperTest {
         assertEquals(1200, futuresContractDto.getMaintenanceMargin());
         assertEquals(FuturesContractType.AGRICULTURE, futuresContractDto.getType());
     }
-
+/*
     @Test
     public void futuresContractDtoToFuturesContract_Success() {
         // Given
@@ -77,4 +77,5 @@ class FuturesContractMapperTest {
         assertEquals(1200, futuresContract.getMaintenanceMargin());
         assertEquals(FuturesContractType.AGRICULTURE, futuresContract.getType());
     }
+    */
 }

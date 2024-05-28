@@ -1,5 +1,6 @@
 package rs.edu.raf.BankService.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,5 +29,8 @@ public class ListingDto implements Serializable {
     private Double change;
     @NotNull
     private Integer volume;
+    @JsonIgnore
+    private String currency;
+
 
 }

@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface FuturesContractRepository extends JpaRepository<FuturesContract, Long> {
 
+    Optional<FuturesContract> findByName(String name);
 }

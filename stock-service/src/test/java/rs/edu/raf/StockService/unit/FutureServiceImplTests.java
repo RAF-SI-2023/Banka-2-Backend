@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
+import rs.edu.raf.StockService.mapper.FuturesContractMapper;
 import rs.edu.raf.StockService.repositories.FuturesContractRepository;
 import rs.edu.raf.StockService.services.impl.FuturesContractImpl;
 
@@ -27,7 +29,8 @@ public class FutureServiceImplTests {
 
     @Mock
     FuturesContractRepository futuresContractRepository;
-
+    @Mock
+    FuturesContractMapper mapper;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -38,14 +41,19 @@ public class FutureServiceImplTests {
     public void testFindAll() {
         // Mock behavior
         List<FuturesContract> contracts = new ArrayList<>();
-        contracts.add(new FuturesContract(/* initialize contract here */));
-        when(futuresContractRepository.findAll()).thenReturn(contracts);
+        FuturesContract contract=new FuturesContract(/* initialize contract here */);
+        contracts.add(contract);
+        List<FuturesContractDto> contractsDto = new ArrayList<>();
+        FuturesContractDto contractDto=new FuturesContractDto(/* initialize contract here */);
+        contractsDto.add(contractDto);
 
+        when(futuresContractRepository.findAll()).thenReturn(contracts);
+        when(mapper.futuresContractToFuturesContractDto(contract)).thenReturn(contractDto);
         // Test
-        List<FuturesContract> result = futuresContractServiceImpl.findAll();
+        List<FuturesContractDto> result = futuresContractServiceImpl.findAll();
 
         // Verify
-        assertEquals(contracts, result);
+        assertEquals(contractsDto, result);
     }
 
     @Test
@@ -67,13 +75,14 @@ public class FutureServiceImplTests {
         // Mock behavior
         Long id = 1L;
         FuturesContract contract = new FuturesContract(/* initialize contract here */);
+        FuturesContractDto dto=new FuturesContractDto();
         when(futuresContractRepository.findById(eq(id))).thenReturn(Optional.of(contract));
-
+        when(mapper.futuresContractToFuturesContractDto(contract)).thenReturn(dto);
         // Test
-        FuturesContract foundContract = futuresContractServiceImpl.findById(id);
+        FuturesContractDto foundContract = futuresContractServiceImpl.findById(id);
 
         // Verify
-        assertEquals(contract, foundContract);
+        assertEquals(dto, foundContract);
     }
 
     @Test
