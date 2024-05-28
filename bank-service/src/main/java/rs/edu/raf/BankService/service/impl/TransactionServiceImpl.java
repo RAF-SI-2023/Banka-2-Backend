@@ -306,6 +306,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Integer quantityToProcess = securitiesTransactionDto.getQuantityToTransfer();
         double totalPrice = securitiesTransactionDto.getAmount();
+        reserveFunds(buyer.getAccountNumber(),totalPrice);
         transferFunds(buyer.getAccountNumber(), seller.getAccountNumber(), totalPrice);
         //..
         SecuritiesOwnership buyerSo = buySecurities.get(0);
