@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.BankService.data.dto.ExchangeDto;
-import rs.edu.raf.BankService.data.dto.ListingDto;
-import rs.edu.raf.BankService.data.dto.OrderDto;
+import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.ActiveTradingJob;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
@@ -93,24 +91,50 @@ public class OrderServiceImpl implements OrderService {
 
         CashAccount tradingCashAccount = fetchPrimaryTradingAccount((isBankOrder ? "bankAccount@bank.rs" : SpringSecurityUtil.getPrincipalEmail()), "Primary trading account not found");
 
-        ListingDto listingDto = fetchSecuritiesByOrder(order);
+        Object listingDto = fetchSecuritiesByOrder(order);
+        double totalPrice = 0;
+
         ExchangeDto exchangeDto = null;
         String currency = null;
         switch (order.getOrderActionType()) {
             case BUY -> {
-                exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
-                currency = exchangeDto.getCurrency();
+                switch (orderDto.getListingType()){
+                    case STOCK,FOREX -> {
+                        if(((ListingDto) listingDto).getCurrency()==null){
+                            exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto) listingDto).getExchange());
+                            currency = exchangeDto.getCurrency();
+                        }
+                        else currency= ((ListingDto) listingDto).getCurrency();
+                        totalPrice = calculateOrderPrice(order.getQuantity(), ((ListingDto) listingDto).getPrice());
+                    }
+                    case OPTION -> {
+                        currency = ((OptionDto) listingDto).getCurrency();
+                        totalPrice = calculateOrderPrice(order.getQuantity(), ((OptionDto) listingDto).getStrikePrice());
+                    }
+                    case FUTURE -> {
+                        currency= "RSD";
+                        totalPrice=(calculateOrderPrice(order.getQuantity(),((FuturesContractDto)listingDto).getFuturesContractPrice()));
+                    }
+                    }
+                }
 
-            }
             case SELL -> {
-                if (listingDto.getExchange() != null) {
-                    exchangeDto = fetchExchangeByExchangeAcronym(listingDto.getExchange());
-                    currency = exchangeDto.getCurrency();   //ako bira kom exchangeu ce da proda
-                } else currency = tradingCashAccount.getCurrencyCode(); //ako ne bira, videti u nekom trenutku //todo
+                switch (orderDto.getListingType()){
+                    case STOCK,FOREX -> {
+                        if (((ListingDto) listingDto).getExchange() != null) {
+                            exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto) listingDto).getExchange());
+                            currency = exchangeDto.getCurrency();   //ako bira kom exchangeu ce da proda
+                        }
+                        else currency = tradingCashAccount.getCurrencyCode(); //ako ne bira, videti u nekom trenutku //todo
+                        totalPrice = calculateOrderPrice(order.getQuantity(), ((ListingDto) listingDto).getPrice());
+                    }
+                    case OPTION -> {
+
+                    }
+                }
             }
         }
 
-        double totalPrice = calculateOrderPrice(order.getQuantity(), listingDto.getPrice());
         if (isBankOrder) {
             handleIfOrderInitiatedByAgent(order, initiatedByUserId, currency, totalPrice);
         }
@@ -245,8 +269,8 @@ public class OrderServiceImpl implements OrderService {
         return cashAccount;
     }
 
-    private ListingDto fetchSecuritiesByOrder(Order order) {
-        ListingDto listingDto = stockService.getSecuritiesByOrder(order);
+    private Object fetchSecuritiesByOrder(Order order) {
+        Object listingDto = stockService.getSecuritiesByOrder(order);
         if (listingDto == null) {
             throw new NullPointerException("Null pointer exception when tried to get current price for symbol " + order.getListingSymbol());
         }

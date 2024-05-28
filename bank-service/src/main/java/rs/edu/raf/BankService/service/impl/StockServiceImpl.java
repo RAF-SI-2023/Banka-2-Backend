@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import rs.edu.raf.BankService.data.dto.ExchangeDto;
-import rs.edu.raf.BankService.data.dto.ForexDto;
-import rs.edu.raf.BankService.data.dto.ListingDto;
-import rs.edu.raf.BankService.data.dto.StockDto;
+import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.service.StockService;
 
@@ -91,12 +88,49 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public ListingDto getSecuritiesByOrder(Order order) {
+    public Object getSecuritiesByOrder(Order order) {
         return switch (order.getListingType()) {
             case STOCK -> getStockBySymbol(order.getListingSymbol());
             case FOREX -> getForexBySymbol(order.getListingSymbol());
+            case OPTION -> getOptionBySymbol(order.getListingSymbol());
+            case FUTURE -> getFuturesContractBySymbol(order.getListingSymbol());
             default -> null;
         };
+    }
+
+    private FuturesContractDto getFuturesContractBySymbol(String listingSymbol) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(STOCK_SERVICE_URL + "/futures/name/" + listingSymbol))
+//                .header("Authorization", SpringSecurityUtil.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> response;
+        FuturesContractDto futuresContractDto;
+        try {
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            String jsonUserListing = response.body();
+
+
+            futuresContractDto = objectMapper.readValue(jsonUserListing, FuturesContractDto.class);
+
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
+            throw new NotFoundException("Future Contract not found");
+        }
+
+        if (futuresContractDto == null) {
+            throw new NullPointerException("futureContractDto is null");
+        }
+
+        return futuresContractDto;
+    }
+
+    private OptionDto getOptionBySymbol(String listingSymbol) {
+     return OptionDto.fromString(listingSymbol);
     }
 
     @Override

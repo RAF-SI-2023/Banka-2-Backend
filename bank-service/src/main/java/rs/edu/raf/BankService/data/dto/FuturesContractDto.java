@@ -1,14 +1,11 @@
-package rs.edu.raf.StockService.data.dto;
+package rs.edu.raf.BankService.data.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import rs.edu.raf.StockService.data.enums.FuturesContractType;
+import rs.edu.raf.BankService.data.enums.FuturesContractType;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class FuturesContractDto {
     private Long id;
     private String name;

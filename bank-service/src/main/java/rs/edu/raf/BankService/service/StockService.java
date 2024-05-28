@@ -15,7 +15,7 @@ public interface StockService {
 
     StockDto getStockBySymbol(String symbol);
 
-    ListingDto getSecuritiesByOrder(Order order);
+    Object getSecuritiesByOrder(Order order);
 
     ExchangeDto getExchangeExchangeAcronym(String exchangeAcronym);
 
