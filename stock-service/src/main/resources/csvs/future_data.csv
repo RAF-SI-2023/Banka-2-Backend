@@ -1,53 +1,53 @@
-contract_name,contract_size,contract_unit,maintenance_margin,type
-corn,5000,bushel,1600,AGRICULTURE
-soybean,5000,bushel,2700,AGRICULTURE
-soybean oil,60000,pound,2100,AGRICULTURE
-soybean meal,180000,pound,1750,AGRICULTURE
-Chicago wheat,5000,bushel,2500,AGRICULTURE
-live cattle,40000,pound,1600,AGRICULTURE
-wheat,5000,bushel,2600,AGRICULTURE
-feeder cattle,50000,pound,2850,AGRICULTURE
-lean hog,40000,pound,1750,AGRICULTURE
-pork cutout,40000,pound,1900,AGRICULTURE
-nonfat dry milk,44000,pound,2150,AGRICULTURE
-class 3 milk,200000,pound,1500,AGRICULTURE
-class 4 milk,200000,pound,1500,AGRICULTURE
-cash-settled butter,20000,pound,2100,AGRICULTURE
-cash-settled cheese,20000,pound,2200,AGRICULTURE
-block cheese,2000,pound,2100,AGRICULTURE
-oats,5000,bushel,1800,AGRICULTURE
-rough rice,180000,pound,1400,AGRICULTURE
-urea,200000,pound,8000,AGRICULTURE
-lumber,27500,board feet,1350,ENERGY
-crude oil,1000,barrel,5300,ENERGY
-natural gas,10000,MMBtu,3700,ENERGY
-gasoline,42000,gallon,6500,ENERGY
-e-mini crude oil,500,barrel,2750,ENERGY
-NY harbor ULSD,42000,gallon,7000,ENERGY
-micro crude oil,100,barrel,550,ENERGY
-Henry Hub natural gas,10000,MMBtu,3800,ENERGY
-buckeye jet fuel,42000,gallon,8000,ENERGY
-gold,100,troy ounce,8000,ENERGY
-silver,5000,troy ounce,9500,ENERGY
-platinum,50,troy ounce,3700,ENERGY
-copper,25000,pound,6100,ENERGY
-aluminum,50000,pound,3600,ENERGY
-e-mini copper,12500,pound,3050,ENERGY
-copper mini,12500,pound,1500,METALS
-silver mini,1000,troy ounce,2500,METALS
-platinum mini,10,troy ounce,2500,METALS
-gold options,100,troy ounce,5000,METALS
-silver options,5000,troy ounce,6000,METALS
-palladium options,100,troy ounce,7000,METALS
-cotton,50000,pound,2000,SOFTS
-coffee,37500,pound,1500,SOFTS
-sugar,112000,pound,1200,SOFTS
-cocoa,10,metric ton,1800,SOFTS
-orange juice,15000,pound,2000,SOFTS
-lumber options,1100,board feet,2000,SOFTS
-lean hog options,40000,pound,2000,MEATS
-live cattle options,40000,pound,2000,MEATS
-feeder cattle options,50000,pound,2000,MEATS
-butter options,20000,pound,3000,MEATS
-cheese options,20000,pound,3000,MEATS
-pork belly options,40000,pound,3500,MEATS
+contract_name,contract_size,contract_unit,maintenance_margin,type,futuresContractPrice,rawMaterialPrice
+corn,5000,bushel,1600,AGRICULTURE,335.1171461,57.82237445
+soybean,5000,bushel,2700,AGRICULTURE,559.1627121,47.83824264
+soybean oil,60000,pound,2100,AGRICULTURE,630.0953786,152.2575009
+soybean meal,180000,pound,1750,AGRICULTURE,619.6856513,11.9078604
+Chicago wheat,5000,bushel,2500,AGRICULTURE,939.4696828,164.9583143
+live cattle,40000,pound,1600,AGRICULTURE,403.2592617,152.9441927
+wheat,5000,bushel,2600,AGRICULTURE,242.0600683,176.4325727
+feeder cattle,50000,pound,2850,AGRICULTURE,185.3678316,181.3492124
+lean hog,40000,pound,1750,AGRICULTURE,934.7696062,16.07360186
+pork cutout,40000,pound,1900,AGRICULTURE,592.829145,5.178469763
+nonfat dry milk,44000,pound,2150,AGRICULTURE,199.15436,15.00113853
+class 3 milk,200000,pound,1500,AGRICULTURE,510.1340225,182.4960306
+class 4 milk,200000,pound,1500,AGRICULTURE,836.5215656,50.34951537
+cash-settled butter,20000,pound,2100,AGRICULTURE,763.673518,91.33617882
+cash-settled cheese,20000,pound,2200,AGRICULTURE,682.5550306,92.06406081
+block cheese,2000,pound,2100,AGRICULTURE,655.3517815,193.4764441
+oats,5000,bushel,1800,AGRICULTURE,176.0012394,103.1333938
+rough rice,180000,pound,1400,AGRICULTURE,234.1099632,30.75301313
+urea,200000,pound,8000,AGRICULTURE,807.4156431,40.68435245
+lumber,27500,board feet,1350,ENERGY,29.42070746,6.785172998
+crude oil,1000,barrel,5300,ENERGY,748.5464503,161.0345155
+natural gas,10000,MMBtu,3700,ENERGY,498.4786072,139.840713
+gasoline,42000,gallon,6500,ENERGY,987.6729102,1.921595218
+e-mini crude oil,500,barrel,2750,ENERGY,114.2091682,29.62047163
+NY harbor ULSD,42000,gallon,7000,ENERGY,703.8526178,62.16387602
+micro crude oil,100,barrel,550,ENERGY,937.8205652,182.5240841
+Henry Hub natural gas,10000,MMBtu,3800,ENERGY,803.3170772,154.9717266
+buckeye jet fuel,42000,gallon,8000,ENERGY,733.5007777,88.88060654
+gold,100,troy ounce,8000,ENERGY,880.3682486,78.44484895
+silver,5000,troy ounce,9500,ENERGY,335.8463672,190.8587335
+platinum,50,troy ounce,3700,ENERGY,413.4347569,194.2265725
+copper,25000,pound,6100,ENERGY,615.8304618,7.271321979
+aluminum,50000,pound,3600,ENERGY,502.5490792,179.5259884
+e-mini copper,12500,pound,3050,ENERGY,709.3394301,11.10510036
+copper mini,12500,pound,1500,METALS,973.4046595,23.76432714
+silver mini,1000,troy ounce,2500,METALS,555.3754625,35.43327415
+platinum mini,10,troy ounce,2500,METALS,65.17157364,132.6477046
+gold options,100,troy ounce,5000,METALS,753.8824918,99.25959297
+silver options,5000,troy ounce,6000,METALS,852.0505568,43.96363015
+palladium options,100,troy ounce,7000,METALS,540.314924,26.99821727
+cotton,50000,pound,2000,SOFTS,538.5547336,105.4505075
+coffee,37500,pound,1500,SOFTS,413.2981025,159.6025876
+sugar,112000,pound,1200,SOFTS,881.6228965,26.27771505
+cocoa,10,metric ton,1800,SOFTS,266.7548033,8.182318361
+orange juice,15000,pound,2000,SOFTS,839.7434098,188.1978359
+lumber options,1100,board feet,2000,SOFTS,569.7443894,65.81867303
+lean hog options,40000,pound,2000,MEATS,246.3649516,53.25750324
+live cattle options,40000,pound,2000,MEATS,140.5690904,171.6499495
+feeder cattle options,50000,pound,2000,MEATS,942.9744021,59.69820855
+butter options,20000,pound,3000,MEATS,13.70836431,90.78704113
+cheese options,20000,pound,3000,MEATS,211.5410322,6.850683318
+pork belly options,40000,pound,3500,MEATS,249.0756608,46.90940906

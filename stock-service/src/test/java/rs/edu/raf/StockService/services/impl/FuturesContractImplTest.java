@@ -84,7 +84,9 @@ class FuturesContractImplTest {
                 300,
                 settlementDate,
                 14000,
-                FuturesContractType.AGRICULTURE
+                FuturesContractType.AGRICULTURE,
+                20.0,
+                20.0
         );
         when(futuresContractRepository.save(contractToSave)).thenReturn(contractToSave);
 

@@ -111,7 +111,7 @@ public class StockServiceImpl implements StockService {
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String jsonUserListing = response.body();
 
-
+            System.out.println(response.body());
             futuresContractDto = objectMapper.readValue(jsonUserListing, FuturesContractDto.class);
 
         } catch (IOException | InterruptedException e) {
