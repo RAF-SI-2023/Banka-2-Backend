@@ -20,8 +20,8 @@ public class FuturesContractMapper {
                 futuresContract.getSettlementDate(),
                 futuresContract.getMaintenanceMargin(),
                 futuresContract.getType(),
-                new Random().nextDouble(100.0,2000),
-                new Random().nextDouble(50.0,6000)
+                futuresContract.getFuturesContractPrice(),
+                futuresContract.getRawMaterialPrice()
         );
     }
 
@@ -35,7 +35,9 @@ public class FuturesContractMapper {
                 futuresContractDto.getOpenInterest(),
                 futuresContractDto.getSettlementDate(),
                 futuresContractDto.getMaintenanceMargin(),
-                futuresContractDto.getType()
+                futuresContractDto.getType(),
+                futuresContractDto.getFuturesContractPrice(),
+                futuresContractDto.getRawMaterialPrice()
         );
     }
 }

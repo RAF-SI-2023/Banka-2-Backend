@@ -34,4 +34,8 @@ public class FuturesContract {
     private int maintenanceMargin;
 
     private FuturesContractType type;
+
+    private Double futuresContractPrice;
+
+    private Double rawMaterialPrice;
 }
