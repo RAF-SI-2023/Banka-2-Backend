@@ -32,19 +32,19 @@ public class BootstrapDevData implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepository companyRepository;
 
-    @Value("${MY_EMAIL_1:admin@gmail.com}")
+    @Value("${MY_EMAIL_1}")
     private String myEmail1;
 
-    @Value("${MY_EMAIL_2:employee@gmail.com}")
+    @Value("${MY_EMAIL_2}")
     private String myEmail2;
 
-    @Value("${MY_EMAIL_3:corporateclient@gmail.com}")
+    @Value("${MY_EMAIL_3}")
     private String myEmail3;
 
-    @Value("${MY_EMAIL_4:privateclient@gmail.comm}")
+    @Value("${MY_EMAIL_4}")
     private String myEmail4;
 
-    @Value("${MY_EMAIL_5:lol@lol.com}")
+    @Value("${MY_EMAIL_5}")
     private String myEmail5;
 
 
