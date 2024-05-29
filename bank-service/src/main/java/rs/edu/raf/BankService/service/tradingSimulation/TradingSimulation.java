@@ -69,8 +69,13 @@ public class TradingSimulation implements Runnable {
             synchronized (TradingSimulation.lock) {
                 if (tradingJob.getOrder().getOrderStatus() != OrderStatus.APPROVED) {
                     tradingJobs.put(tradingJob);
-                    if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent())
-                        activeTradingJobRepository.save(new ActiveTradingJob(0, tradingJob.getOrder().getId(), tradingJob.getExchangeDto().getExchangeAcronym(), tradingJob.getTradingAccountNumber(), tradingJob.getUserRole(), tradingJob.getTotalPriceCalculated(), true));
+                    if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent()){
+                           String exchangeAcronym=null;
+                            if(tradingJob.getExchangeDto()!=null)
+                                exchangeAcronym=  tradingJob.getExchangeDto().getExchangeAcronym();
+                            else exchangeAcronym="";
+                        activeTradingJobRepository.save(new ActiveTradingJob(0, tradingJob.getOrder().getId(),exchangeAcronym , tradingJob.getTradingAccountNumber(), tradingJob.getUserRole(), tradingJob.getTotalPriceCalculated(), true));
+                    }
                     continue;
                 }
                 switch (tradingJob.getOrder().getOrderActionType()) {
@@ -123,6 +128,8 @@ public class TradingSimulation implements Runnable {
 
         if (workingHoursStatus == WorkingHoursStatus.CLOSED) {
             try {
+                order.setTimeOfLastModification(System.currentTimeMillis());
+                orderRepository.save(order);
                 tradingJobs.put(buyTradingJob);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -170,6 +177,7 @@ public class TradingSimulation implements Runnable {
             so.setSecuritiesSymbol(listingDto.getSymbol());
             so.setOwnedByBank(false);
             so.setQuantityOfPubliclyAvailable(0);
+            so.setAverageBuyingPrice(0.0);
             securitiesOwnershipRepository.save(so);
             buySecurities.add(so);
         }
@@ -186,7 +194,7 @@ public class TradingSimulation implements Runnable {
         transactionService.releaseFunds(account, totalPrice);
         // ...
         SecuritiesOwnership buyerSo = buySecurities.get(0);
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / buyerSo.getQuantity() + quantityToProcess);
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
@@ -286,12 +294,13 @@ public class TradingSimulation implements Runnable {
     }
 
 
-    // satro radi
+    // TODO U ELSE STAVITI CLOSED KAD SE BUDE POKAZIVAALOL
     private WorkingHoursStatus getWorkingHoursForStock(ExchangeDto exchangeDto) {
         int hours=LocalDateTime.now().plus(exchangeDto.getTimeZone(), ChronoUnit.HOURS).getHour();
         if(hours>9 && hours<16)
             return WorkingHoursStatus.OPENED;
-        else return WorkingHoursStatus.CLOSED;
+        else return WorkingHoursStatus.OPENED;
+
     }
 
     private Object fetchSecuritiesByOrder(Order order) {
@@ -376,6 +385,8 @@ public class TradingSimulation implements Runnable {
 
 
     private void processOptionBuyOrder(TradingJob buyTradingJob, OptionDto optionDto) {
+        System.out.println("usao u kupovinu opcija");
+        System.out.println(optionDto);
         Order order = buyTradingJob.getOrder();
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyTradingJob.getTradingAccountNumber(), order.getListingSymbol());
@@ -388,6 +399,7 @@ public class TradingSimulation implements Runnable {
             so.setSecuritiesSymbol(order.getListingSymbol());
             so.setOwnedByBank(false);
             so.setQuantityOfPubliclyAvailable(0);
+            so.setAverageBuyingPrice(0.0);
             securitiesOwnershipRepository.save(so);
             buySecurities.add(so);
         }
@@ -400,7 +412,7 @@ public class TradingSimulation implements Runnable {
 
 
         SecuritiesOwnership buyerSo = buySecurities.get(0);
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / buyerSo.getQuantity() + quantityToProcess);
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
@@ -449,6 +461,7 @@ public class TradingSimulation implements Runnable {
             so.setQuantity(0);
             so.setSecuritiesSymbol(order.getListingSymbol());
             so.setOwnedByBank(false);
+            so.setAverageBuyingPrice(0.0);
             so.setQuantityOfPubliclyAvailable(0);
             securitiesOwnershipRepository.save(so);
             buySecurities.add(so);
@@ -462,7 +475,7 @@ public class TradingSimulation implements Runnable {
 
 
         SecuritiesOwnership buyerSo = buySecurities.get(0);
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / buyerSo.getQuantity() + quantityToProcess);
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi

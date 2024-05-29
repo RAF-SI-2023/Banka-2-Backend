@@ -30,7 +30,9 @@ class FuturesContractMapperTest {
                 200,
                 860379441,
                 1200,
-                FuturesContractType.AGRICULTURE
+                FuturesContractType.AGRICULTURE,
+                20.0,
+                20.0
         );
 
         // When
