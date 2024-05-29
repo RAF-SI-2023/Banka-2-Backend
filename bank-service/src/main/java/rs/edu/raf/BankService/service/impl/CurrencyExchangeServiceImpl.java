@@ -35,7 +35,6 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final BankTransferTransactionDetailsRepository bankTransferTransactionDetailsRepository;
     private final BankTransferTransactionDetailsServiceImpl bankTransferTransactionDetailsServiceImpl;
 
-
     @Value("${bank.default.currency:RSD}")
     private String defaultCurrency;
 
