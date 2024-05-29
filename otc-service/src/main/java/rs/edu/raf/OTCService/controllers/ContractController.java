@@ -51,7 +51,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.sellerApproveContractById(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
 
@@ -63,7 +63,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.bankApproveContractById(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -72,7 +72,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.sellerDenyContractById(id, message));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
     }
@@ -83,7 +83,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.bankDenyContractById(id, message));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

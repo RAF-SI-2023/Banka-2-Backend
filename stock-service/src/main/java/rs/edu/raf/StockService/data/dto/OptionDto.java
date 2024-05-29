@@ -16,4 +16,5 @@ public class OptionDto {
     private Double impliedVolatility;
     private Double openInterest;
     private Long settlementDate;
+
 }

@@ -1,41 +1,26 @@
-package rs.edu.raf.StockService.data.entities;
+package rs.edu.raf.BankService.data.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.StockService.data.enums.FuturesContractType;
+import rs.edu.raf.BankService.data.enums.FuturesContractType;
 
-@Entity
+
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class FuturesContract {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@NoArgsConstructor
+public class FuturesContractDto {
     private Long id;
-
-    @Column(unique = true)
     private String name;
-
     private String code;
-
-    @Column(updatable = false)
     private int contractSize;
-
-    @Column(updatable = false)
     private String contractUnit;
-
     private int openInterest;
-
-    @Column(updatable = false)
     private long settlementDate;
-
     private int maintenanceMargin;
-
     private FuturesContractType type;
-
     private Double futuresContractPrice;
-
     private Double rawMaterialPrice;
 }
