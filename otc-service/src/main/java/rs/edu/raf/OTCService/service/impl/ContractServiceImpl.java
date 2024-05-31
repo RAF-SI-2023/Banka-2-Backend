@@ -48,7 +48,7 @@ public class ContractServiceImpl implements ContractService {
         toBeCreated.setSellersPIB(contractDto.getSellersPIB());
         toBeCreated.setSellerConfirmation(false);
         toBeCreated.setBankConfirmation(false);
-        if (contractDto.getSellersEmail() != null)
+        if (contractDto.getSellersEmail() != null && contractDto.getSellersEmail() != "")
             toBeCreated.setContractType(ContractType.PRIVATE_CONTRACT);
         else
             toBeCreated.setContractType(ContractType.LEGAL_ENTITY_CONTRACT);
