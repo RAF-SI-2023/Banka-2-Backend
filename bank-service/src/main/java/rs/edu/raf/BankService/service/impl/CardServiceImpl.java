@@ -96,7 +96,11 @@ public class CardServiceImpl implements CardService {
         if (card == null) {
             throw new RuntimeException("Card with identification card number " + cardNumber + " not found");
         }
-        card.setStatus(!card.getStatus());
+
+        if (!card.getStatus()) {
+            throw new RuntimeException("Card with identification card number " + cardNumber + " is already inactive");
+        }
+        card.setStatus(false);
         cardRepository.save(card);
         CardDto cardDto = cardMapper.cardToCardDto(card);
 
