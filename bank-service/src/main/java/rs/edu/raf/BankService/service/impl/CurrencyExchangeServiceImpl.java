@@ -16,10 +16,7 @@ import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.NotEnoughFundsException;
 import rs.edu.raf.BankService.mapper.ExchangeRatesMapper;
 import rs.edu.raf.BankService.mapper.ExchangeTransferDetailsMapper;
-import rs.edu.raf.BankService.repository.CashAccountRepository;
-import rs.edu.raf.BankService.repository.CashTransactionRepository;
-import rs.edu.raf.BankService.repository.ExchangeRateRepository;
-import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
+import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 
 import java.time.LocalDateTime;
@@ -35,8 +32,10 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final CashAccountRepository cashAccountRepository;
     private final CashTransactionRepository cashTransactionRepository;
     private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
+    private final BankTransferTransactionDetailsRepository bankTransferTransactionDetailsRepository;
+    private final BankTransferTransactionDetailsServiceImpl bankTransferTransactionDetailsServiceImpl;
 
-    @Value("${bank.default.currency}")
+    @Value("${bank.default.currency:RSD}")
     private String defaultCurrency;
 
     @Override
@@ -122,6 +121,10 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         exchangeTransferDetails.setCreatedAt(LocalDateTime.now());
         exchangeTransferDetails.setStatus(TransactionStatus.CONFIRMED);
         exchangeTransferDetails = cashTransactionRepository.save(exchangeTransferDetails);
+
+
+        bankTransferTransactionDetailsServiceImpl.createBankTransferTransactionDetails(exchangeTransferDetails);
+
 
         return exchangeTransferDetailsMapper.exchangeTransferDetailsToExchangeTransferDetailsDto(exchangeTransferDetails);
 

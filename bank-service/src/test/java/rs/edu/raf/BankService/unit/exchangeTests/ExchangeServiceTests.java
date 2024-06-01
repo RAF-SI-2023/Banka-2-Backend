@@ -5,10 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.OngoingStubbing;
+import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRatesDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRequestDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
+import rs.edu.raf.BankService.data.entities.exchangeCurrency.BankTransferTransactionDetails;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.ExchangeRatesMapper;
@@ -17,6 +20,8 @@ import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.repository.ExchangeRateRepository;
 import rs.edu.raf.BankService.repository.ForeignCurrencyHolderRepository;
+import rs.edu.raf.BankService.service.BankTransferTransactionDetailsService;
+import rs.edu.raf.BankService.service.impl.BankTransferTransactionDetailsServiceImpl;
 import rs.edu.raf.BankService.service.impl.CurrencyExchangeServiceImpl;
 
 import java.util.List;
@@ -34,6 +39,10 @@ class ExchangeServiceTests {
 
     @Mock
     private CashTransactionRepository cashTransactionRepository;
+
+
+    @Mock
+    private BankTransferTransactionDetailsServiceImpl bankTransferTransactionDetailsService;
 
     @Mock
     private ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
@@ -111,16 +120,20 @@ class ExchangeServiceTests {
         bank2.setAvailableBalance(10000l);
         bank2.setEmail("a");
         bank2.setCurrencyCode("EUR");
+
+
         when(cashAccountRepository.findByAccountNumber("111111111111111111")).thenReturn(from);
         when(cashAccountRepository.findByAccountNumber("222222222222222222")).thenReturn(to);
         when(exchangeRateRepository.findByFromCurrencyAndToCurrency(anyString(), anyString())).thenReturn(new ExchangeRates());
         when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
         when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
-        // Invoke service method
+         // Invoke service method
+
         assertDoesNotThrow(() -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
 
         // Verify
         verify(cashTransactionRepository, times(1)).save(any());
+
     }
 
     @Test

@@ -1,8 +1,10 @@
 package rs.edu.raf.StockService.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.services.FuturesContractService;
 
@@ -20,18 +22,29 @@ public class FuturesContractController {
 
     @GetMapping
     public ResponseEntity<?> allFutureContracts() {
-        List<FuturesContract> futuresContracts = futuresContractService.findAll();
+        List<FuturesContractDto> futuresContracts = futuresContractService.findAll();
         return ResponseEntity.ok(futuresContracts);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findFutureContractById(@PathVariable Long id) {
         try {
-            FuturesContract futuresContract = futuresContractService.findById(id);
+            FuturesContractDto futuresContract = futuresContractService.findById(id);
             return ResponseEntity.ok(futuresContract);
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).build();
         }
 
     }
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> findFutureContractByName(@PathVariable String name){
+        try{
+            FuturesContractDto futuresContractDto=futuresContractService.findByName(name);
+            return ResponseEntity.ok(futuresContractDto);
+        } catch (RuntimeException e){
+            return ResponseEntity.status(404).build();
+        }
+
+    }
+
 }

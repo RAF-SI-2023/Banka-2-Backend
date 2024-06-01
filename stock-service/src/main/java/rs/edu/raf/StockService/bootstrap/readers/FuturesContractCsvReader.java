@@ -36,7 +36,9 @@ public class FuturesContractCsvReader {
                                 0,
                                 System.currentTimeMillis(),
                                 Integer.parseInt(data[3]),
-                                FuturesContractType.valueOf(data[4])
+                                FuturesContractType.valueOf(data[4]),
+                                Double.parseDouble(data[5]),
+                                Double.parseDouble(data[6])
                         )
                 );
             }

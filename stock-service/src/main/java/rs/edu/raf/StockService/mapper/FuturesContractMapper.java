@@ -1,8 +1,12 @@
 package rs.edu.raf.StockService.mapper;
 
+import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
 
+import java.util.Random;
+
+@Component
 public class FuturesContractMapper {
 
     public FuturesContractDto futuresContractToFuturesContractDto(FuturesContract futuresContract) {
@@ -15,7 +19,9 @@ public class FuturesContractMapper {
                 futuresContract.getOpenInterest(),
                 futuresContract.getSettlementDate(),
                 futuresContract.getMaintenanceMargin(),
-                futuresContract.getType()
+                futuresContract.getType(),
+                futuresContract.getFuturesContractPrice(),
+                futuresContract.getRawMaterialPrice()
         );
     }
 
@@ -29,7 +35,9 @@ public class FuturesContractMapper {
                 futuresContractDto.getOpenInterest(),
                 futuresContractDto.getSettlementDate(),
                 futuresContractDto.getMaintenanceMargin(),
-                futuresContractDto.getType()
+                futuresContractDto.getType(),
+                futuresContractDto.getFuturesContractPrice(),
+                futuresContractDto.getRawMaterialPrice()
         );
     }
 }

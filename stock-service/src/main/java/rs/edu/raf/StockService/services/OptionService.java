@@ -21,5 +21,7 @@ public interface OptionService {
 
     List<Option> loadOptions(String stockListing);
 
+    Option findOptionByTickerSymbol(String tickerSymbol);
+
 //    public void checkIfOptionExistsAndUpdate(Option option);
 }

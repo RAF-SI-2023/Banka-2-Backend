@@ -30,5 +30,6 @@ public class SecuritiesOwnership {
     private Integer quantityOfPubliclyAvailable;
 
     private Integer reservedQuantity;
+    private Double averageBuyingPrice;
 
 }

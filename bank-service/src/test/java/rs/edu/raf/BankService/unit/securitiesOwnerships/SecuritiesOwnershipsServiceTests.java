@@ -28,7 +28,7 @@ public class SecuritiesOwnershipsServiceTests {
     @InjectMocks
     private SecuritiesOwnershipServiceImpl securitiesOwnershipService;
 
-    @Value("${MY_EMAIL_1:defaultEmail1@gmail.com}")
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
 

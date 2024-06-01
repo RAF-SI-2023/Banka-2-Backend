@@ -16,7 +16,8 @@ public class SecuritiesOwnershipMapper {
                 dto.getSecuritiesSymbol(),
                 dto.getQuantity(),
                 dto.getQuantityOfPubliclyAvailable(),
-                dto.getReservedQuantity()
+                dto.getReservedQuantity(),
+                dto.getAverageBuyingPrice()
         );
     }
 
@@ -29,7 +30,8 @@ public class SecuritiesOwnershipMapper {
                 so.getSecuritiesSymbol(),
                 so.getQuantity(),
                 so.getQuantityOfPubliclyAvailable(),
-                so.getReservedQuantity()
+                so.getReservedQuantity(),
+                so.getAverageBuyingPrice()
         );
     }
 }
