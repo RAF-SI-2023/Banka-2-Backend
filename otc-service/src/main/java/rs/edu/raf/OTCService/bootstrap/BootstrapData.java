@@ -44,10 +44,6 @@ public class BootstrapData implements CommandLineRunner {
             loadContracts();
 
             logger.info("OTCService: DEV DATA LOADING FINISHED...");
-            System.out.println("MY_EMAIL_1: " + myEmail1);
-            System.out.println("MY_EMAIL_2: " + myEmail2);
-            System.out.println("MY_EMAIL_3: " + myEmail3);
-
         } catch (Exception e){
             e.printStackTrace();
         }
