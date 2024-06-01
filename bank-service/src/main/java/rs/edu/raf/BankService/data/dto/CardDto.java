@@ -19,6 +19,7 @@ public class CardDto {
     private String cvvCode;
     private Long limitCard;
     private Boolean status;
+    private Boolean block;
 
 
 }

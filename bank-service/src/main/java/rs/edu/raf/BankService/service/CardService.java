@@ -24,4 +24,8 @@ public interface CardService {
     CardDto changeCardLimit(CardDto cardDto);
 
     void deleteCard(Long identificationCardNumber);
+
+    CardDto blockCard(Long identificationCardNumber);
+
+    CardDto unblockCard(Long identificationCardNumber);
 }

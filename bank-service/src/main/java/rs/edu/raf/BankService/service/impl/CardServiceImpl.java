@@ -160,5 +160,38 @@ public class CardServiceImpl implements CardService {
 
     }
 
+    @Override
+    public CardDto blockCard(Long identificationCardNumber) {
+        Card card = cardRepository.findByIdentificationCardNumber(identificationCardNumber).get();
+        if (card == null) {
+            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " not found");
+        }
+        if(card.getBlock()){
+            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " already blocked");
+        }
+        card.setBlock(true);
+        cardRepository.save(card);
+        CardDto cardDto = cardMapper.cardToCardDto(card);
+
+        return cardDto;
+    }
+
+    @Override
+    public CardDto unblockCard(Long identificationCardNumber) {
+        Card card = cardRepository.findByIdentificationCardNumber(identificationCardNumber).get();
+        if (card == null) {
+            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " not found");
+        }
+
+        if(!card.getBlock()){
+            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " already unblocked");
+        }
+        card.setBlock(false);
+        cardRepository.save(card);
+        CardDto cardDto = cardMapper.cardToCardDto(card);
+
+        return cardDto;
+    }
+
 
 }
