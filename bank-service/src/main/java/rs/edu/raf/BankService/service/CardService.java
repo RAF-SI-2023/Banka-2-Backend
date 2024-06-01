@@ -25,7 +25,6 @@ public interface CardService {
 
     void deleteCard(Long identificationCardNumber);
 
-    CardDto blockCard(Long identificationCardNumber);
 
-    CardDto unblockCard(Long identificationCardNumber);
+    CardDto changeBlockCard(Long identificationCardNumber);
 }

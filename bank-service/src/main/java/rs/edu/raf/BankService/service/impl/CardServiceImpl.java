@@ -26,7 +26,6 @@ public class CardServiceImpl implements CardService {
     private final CardMapper cardMapper;
     private final CardRepository cardRepository;
     private final CashAccountRepository cashAccountRepository;
-
     @Override
     public CardDto createCard(CreateCardDto cardDto) {
 
@@ -165,36 +164,17 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public CardDto blockCard(Long identificationCardNumber) {
+    public CardDto changeBlockCard(Long identificationCardNumber) {
         Card card = cardRepository.findByIdentificationCardNumber(identificationCardNumber).get();
         if (card == null) {
             throw new RuntimeException("Card with identification card number " + identificationCardNumber + " not found");
         }
-        if(card.getBlock()){
-            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " already blocked");
-        }
-        card.setBlock(true);
+        
+
+        card.setBlock(!card.getBlock());
         cardRepository.save(card);
-        CardDto cardDto = cardMapper.cardToCardDto(card);
 
-        return cardDto;
-    }
-
-    @Override
-    public CardDto unblockCard(Long identificationCardNumber) {
-        Card card = cardRepository.findByIdentificationCardNumber(identificationCardNumber).get();
-        if (card == null) {
-            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " not found");
-        }
-
-        if(!card.getBlock()){
-            throw new RuntimeException("Card with identification card number " + identificationCardNumber + " already unblocked");
-        }
-        card.setBlock(false);
-        cardRepository.save(card);
-        CardDto cardDto = cardMapper.cardToCardDto(card);
-
-        return cardDto;
+        return cardMapper.cardToCardDto(card);
     }
 
 
