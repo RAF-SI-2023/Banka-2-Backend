@@ -16,7 +16,8 @@ public class CardMapper {
                 dto.getAccountNumber(),
                 dto.getCvvCode(),
                 dto.getLimitCard(),
-                dto.getStatus()
+                dto.getStatus(),
+                dto.getBlock()
         );
     }
 
@@ -30,7 +31,8 @@ public class CardMapper {
                 card.getAccountNumber(),
                 card.getCvvCode(),
                 card.getLimitCard(),
-                card.getStatus()
+                card.getStatus(),
+                card.getBlock()
         );
     }
 

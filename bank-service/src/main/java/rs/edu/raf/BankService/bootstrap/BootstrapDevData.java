@@ -10,6 +10,8 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
+import rs.edu.raf.BankService.data.dto.CardDto;
+import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
@@ -83,6 +85,8 @@ public class BootstrapDevData implements CommandLineRunner {
             loadTransactions();
 
             loadOrders();
+
+            addCardIfIdentificationCardNumberIsNotPresent(new Card( 7767588514263210L, CardType.DEBIT, "Visa", "3330000000000000", "444", 11110L, true, false));
 
             logger.info("BankService: DEV DATA LOADING FINISHED...");
 
