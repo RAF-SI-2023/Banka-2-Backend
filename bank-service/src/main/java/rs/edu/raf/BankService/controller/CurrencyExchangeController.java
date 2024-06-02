@@ -24,6 +24,7 @@ public class CurrencyExchangeController {
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
+
     }
 
     @PostMapping("/exchange-currency")
