@@ -12,8 +12,6 @@ import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiRespon
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.data.dto.CreateCardDto;
-import rs.edu.raf.BankService.data.entities.MarginsAccount;
-import rs.edu.raf.BankService.data.entities.MarginsTransaction;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
@@ -66,8 +64,6 @@ public class BootstrapDevData implements CommandLineRunner {
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     private final CashTransactionRepository cashTransactionRepository;
     private final OrderRepository orderRepository;
-    private final MarginsAccountRepository marginAccountRepository;
-    private final MarginsTransactionRepository marginsTransactionRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -90,10 +86,6 @@ public class BootstrapDevData implements CommandLineRunner {
 
             loadOrders();
 
-            loadMarginAccounts();
-
-            loadMarginsTransactions();
-
             addCardIfIdentificationCardNumberIsNotPresent(new Card( 7767588514263210L, CardType.DEBIT, "Visa", "3330000000000000", "444", 11110L, true, false));
 
             logger.info("BankService: DEV DATA LOADING FINISHED...");
@@ -104,68 +96,6 @@ public class BootstrapDevData implements CommandLineRunner {
 
     }
 
-    private void loadMarginsTransactions() {
-        if (marginsTransactionRepository.count()==0){
-            MarginsTransaction mt1 = new MarginsTransaction();
-            mt1.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
-            mt1.setUserId(1L);
-            mt1.setCurrencyCode("RSD");
-            mt1.setDescription("Kupovina akcija");
-            mt1.setInvestmentAmount(1000.0);
-            mt1.setLoanValue(0.0);
-            mt1.setInterest(0.0);
-            mt1.setOrderPrice(1000.0);
-            mt1.setType(TransactionDirection.DEPOSIT);
-            mt1.setCreatedAt(System.currentTimeMillis());
-            marginsTransactionRepository.save(mt1);
-
-            MarginsTransaction mt2 = new MarginsTransaction();
-            mt2.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
-            mt2.setUserId(1L);
-            mt2.setCurrencyCode("RSD");
-            mt2.setDescription("Akcija 1");
-            mt2.setInvestmentAmount(100.0);
-            mt2.setLoanValue(0.0);
-            mt2.setInterest(0.0);
-            mt2.setOrderPrice(100.0);
-            mt2.setType(TransactionDirection.WITHDRAW);
-            mt2.setCreatedAt(System.currentTimeMillis());
-
-            marginsTransactionRepository.save(mt2);
-
-        }
-    }
-
-    private void loadMarginAccounts() {
-        if (marginAccountRepository.count() == 0) {
-
-            MarginsAccount marginsAccount1 = new MarginsAccount();
-            marginsAccount1.setAccountNumber("3334444999999999");
-            marginsAccount1.setEmail(myEmail1);
-            marginsAccount1.setCurrencyCode("RSD");
-            marginsAccount1.setListingType(ListingType.STOCK);
-            marginsAccount1.setBalance(1000000.0);
-            marginsAccount1.setLoanValue(0.0);
-            marginsAccount1.setMaintenanceMargin(0.0);
-            marginsAccount1.setMarginCall(false);
-            marginsAccount1.setUserId(1L);
-            marginAccountRepository.save(marginsAccount1);
-
-            MarginsAccount marginsAccount2 = new MarginsAccount();
-            marginsAccount2.setAccountNumber("3334444999999999");
-            marginsAccount2.setEmail(myEmail1);
-            marginsAccount2.setCurrencyCode("RSD");
-            marginsAccount2.setListingType(ListingType.FOREX);
-            marginsAccount2.setBalance(10000.0);
-            marginsAccount2.setLoanValue(0.0);
-            marginsAccount2.setMaintenanceMargin(0.0);
-            marginsAccount2.setMarginCall(false);
-            marginsAccount2.setUserId(1L);
-
-            marginAccountRepository.save(marginsAccount2);
-
-        }
-    }
     private void loadOrders() {
 
         if (orderRepository.count() == 0) {
@@ -268,7 +198,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
     }
-    private String tempPrimaryBankAccount;
+
     private void loadBankOwnedCashAccounts() {
         // Create bank accounts for all allowed currencies
         int i = 0;
@@ -277,7 +207,6 @@ public class BootstrapDevData implements CommandLineRunner {
                 //TODO OVDE STAVITI DA BUDU BUSINESS
                 DomesticCurrencyCashAccount domesticBankAccount = new DomesticCurrencyCashAccount();
                 domesticBankAccount.setAccountNumber("000000000000000" + i);
-                tempPrimaryBankAccount=domesticBankAccount.getAccountNumber();
                 domesticBankAccount.setEmail("bankAccount@bank.rs");
                 domesticBankAccount.setAccountType(AccountType.BANK_ACCOUNT);
                 domesticBankAccount.setEmployeeId(2L);
@@ -404,19 +333,6 @@ public class BootstrapDevData implements CommandLineRunner {
         dca2.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(dca2);
 
-        DomesticCurrencyCashAccount domesticCurrencyAccount3 = new DomesticCurrencyCashAccount();
-        domesticCurrencyAccount2.setAccountNumber("1112222666666666");
-        domesticCurrencyAccount2.setEmail(myEmail3);
-        domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
-        domesticCurrencyAccount2.setEmployeeId(2L);
-        domesticCurrencyAccount2.setMaintenanceFee(220.00);
-        domesticCurrencyAccount2.setAvailableBalance(1000000L);
-        domesticCurrencyAccount2.setCurrencyCode("RSD");
-        domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
-        domesticCurrencyAccount2.setInterestRate(2.5);
-        domesticCurrencyAccount2.setPrimaryTradingAccount(true);
-        addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount2);
-
         ForeignCurrencyCashAccount foreignCurrencyAccount12 = new ForeignCurrencyCashAccount();
         foreignCurrencyAccount12.setAccountNumber("1112222444444444");
         foreignCurrencyAccount12.setEmail(myEmail3);
@@ -528,7 +444,7 @@ public class BootstrapDevData implements CommandLineRunner {
     private void loadSecurityOwnerships() {
         if (securitiesOwnershipRepository.count() == 0) {
 
-            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "AGXLW"};
             String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
             String[] symbols3 = {"K", "TT", "CC", "I"};
 
@@ -538,7 +454,6 @@ public class BootstrapDevData implements CommandLineRunner {
                 so1.setEmail(myEmail1);
                 so1.setAccountNumber("3334444999999999");
                 so1.setOwnedByBank(false);
-                so1.setListingType(ListingType.STOCK);
                 so1.setSecuritiesSymbol(symbols1[i]);
                 int quantity = new Random().nextInt(100);
                 so1.setQuantity(quantity + 50);
@@ -551,7 +466,6 @@ public class BootstrapDevData implements CommandLineRunner {
                 so2.setEmail(myEmail2);
                 so2.setAccountNumber("3334444111111111");
                 so2.setOwnedByBank(false);
-                so1.setListingType(ListingType.STOCK);
                 so2.setSecuritiesSymbol(symbols2[i]);
                 int quantity1 = new Random().nextInt(150);
                 so2.setQuantity(30 + quantity1);
@@ -563,8 +477,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
                 so3.setEmail(myEmail3);
-                so1.setListingType(ListingType.STOCK);
-                so3.setAccountNumber("1112222666666666");
+                so3.setAccountNumber("1112222333333333");
                 so3.setOwnedByBank(false);
                 so3.setSecuritiesSymbol(symbols3[i]);
                 int quantity2 = new Random().nextInt(250);
@@ -574,16 +487,6 @@ public class BootstrapDevData implements CommandLineRunner {
                 so3.setAverageBuyingPrice(so3.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so3);
 
-                SecuritiesOwnership so4 = new SecuritiesOwnership();
-                so4.setEmail("bankAccount@bank.rs");
-                so4.setListingType(ListingType.STOCK);
-                so4.setAccountNumber(tempPrimaryBankAccount!=null?tempPrimaryBankAccount:"0000000000000005");
-                so4.setOwnedByBank(true);
-                so4.setSecuritiesSymbol(symbols3[i]);
-                so4.setQuantity(quantity2 + 100);
-                so4.setQuantityOfPubliclyAvailable(0);
-                so4.setAverageBuyingPrice(so4.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
-                securitiesOwnershipRepository.save(so4);
             }
 
 
