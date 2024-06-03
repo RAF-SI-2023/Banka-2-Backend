@@ -36,4 +36,17 @@ public class SecuritiesOwnership {
 
     private Double averageBuyingPrice;
 
+
+    public SecuritiesOwnership(Long id, String email, boolean isOwnedByBank, String accountNumber, String securitiesSymbol, Integer quantity, Integer quantityOfPubliclyAvailable, Integer reservedQuantity, Double averageBuyingPrice) {
+        this.id = id;
+        this.email = email;
+        this.ownedByBank = isOwnedByBank;
+        this.accountNumber = accountNumber;
+        this.securitiesSymbol = securitiesSymbol;
+        this.quantity = quantity;
+        this.quantityOfPubliclyAvailable = quantityOfPubliclyAvailable;
+        this.reservedQuantity = reservedQuantity;
+        this.averageBuyingPrice = averageBuyingPrice;
+    }
+
 }
