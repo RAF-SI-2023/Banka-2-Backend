@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SecuritiesOwnershipDto {
     private Long id;
+    private String listingType;
     private String email;
     private boolean ownedByBank = false;
     private String accountNumber;
