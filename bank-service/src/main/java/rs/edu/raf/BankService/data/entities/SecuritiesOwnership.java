@@ -49,7 +49,4 @@ public class SecuritiesOwnership {
         this.averageBuyingPrice = averageBuyingPrice;
     }
 
-    public double getValue() {
-        return quantity * averageBuyingPrice;
-    }
 }
