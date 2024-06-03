@@ -43,9 +43,10 @@ public class OrderServiceImpl implements OrderService {
     private final OrderTransactionRepository orderTransactionRepository;
     private TradingSimulation tradingSimulation;
     private final BlockingDeque<TradingJob> orders = new LinkedBlockingDeque<>();
+    private final ActionAgentProfitService actionAgentProfitService;
 
     @Autowired
-    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository,OrderTransactionRepository orderTransactionRepository) {
+    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository,OrderTransactionRepository orderTransactionRepository,ActionAgentProfitService actionAgentProfitService) {
         this.transactionService = transactionService;
         this.iamService = iamService;
         this.stockService = stockService;
@@ -56,6 +57,8 @@ public class OrderServiceImpl implements OrderService {
         this.securitiesOwnershipRepository = securitiesOwnershipRepository;
         this.activeTradingJobRepository = activeTradingJobRepository;
         this.orderTransactionRepository=orderTransactionRepository;
+        this.actionAgentProfitService=actionAgentProfitService;
+
 
         //load active trading jobs
         List<ActiveTradingJob> atjList = activeTradingJobRepository.findAll();
@@ -72,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException(e);
             }
         });
-        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository,orderTransactionRepository);
+        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository,orderTransactionRepository,actionAgentProfitService);
         this.tradingSimulation.setTradingJobs(orders);
         Thread thread = new Thread(this.tradingSimulation);
         thread.start();
