@@ -14,10 +14,7 @@ import rs.edu.raf.BankService.data.enums.OrderActionType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.data.enums.WorkingHoursStatus;
 import rs.edu.raf.BankService.repository.*;
-import rs.edu.raf.BankService.service.CurrencyExchangeService;
-import rs.edu.raf.BankService.service.IAMService;
-import rs.edu.raf.BankService.service.StockService;
-import rs.edu.raf.BankService.service.TransactionService;
+import rs.edu.raf.BankService.service.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -44,6 +41,7 @@ public class TradingSimulation implements Runnable {
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     private final ActiveTradingJobRepository activeTradingJobRepository;
     private final OrderTransactionRepository orderTransactionRepository;
+    private final ActionAgentProfitService actionAgentProfitService;
     private Random random = new Random();
     private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
     private static final Object lock = new Object();
@@ -221,6 +219,10 @@ public class TradingSimulation implements Runnable {
         ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
         ot.setPayoffAmount(0.0);
         orderTransactionRepository.save(ot);
+
+
+
+
         try {
             if (!order.isDone())
                 tradingJobs.put(buyTradingJob);
@@ -283,9 +285,12 @@ public class TradingSimulation implements Runnable {
             ot.setUsedOfReservedFunds(0.0);
             ot.setPayoffAmount(amountToReceive*0.85);
             orderTransactionRepository.save(ot);
+
+            //TODO
+            actionAgentProfitService.createAgentProfit(ot,so.get(0),order.getRealizedQuantity());
         }
 
-
+        //TODO
 
         order.setDone(true);
         ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
