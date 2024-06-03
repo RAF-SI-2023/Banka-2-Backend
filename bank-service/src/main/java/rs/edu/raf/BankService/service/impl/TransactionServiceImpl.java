@@ -20,6 +20,7 @@ import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
+import rs.edu.raf.BankService.service.ActionAgentProfitService;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
 
@@ -39,6 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final RabbitTemplate rabbitTemplate;
     private final CurrencyExchangeService currencyExchangeService;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    private final ActionAgentProfitService actionAgentProfitService;
 
     @Transactional
     @Override
@@ -315,7 +317,12 @@ public class TransactionServiceImpl implements TransactionService {
         sellerSo.setQuantity(sellerSo.getQuantity() - quantityToProcess);
         securitiesOwnershipRepository.saveAll(List.of(buyerSo, sellerSo));
 
+        //TODO
+
         transaction.setStatus(TransactionStatus.CONFIRMED);
+        cashTransactionRepository.save(transaction);
+        actionAgentProfitService.createAgentProfit(transaction,sellerSo,quantityToProcess);
+
         return transactionMapper.toGenericTransactionDto(cashTransactionRepository.save(transaction));
 
     }
