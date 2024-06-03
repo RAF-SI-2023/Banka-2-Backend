@@ -24,6 +24,4 @@ public interface ActionAgentProfitService {
 
      List<TotalActionAgentProfitDto> getTotalProfitsByUsers();
 
-     Double getAgentsTotalProfits();
-
 }
