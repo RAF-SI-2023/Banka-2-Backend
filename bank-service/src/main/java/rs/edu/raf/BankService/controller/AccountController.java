@@ -1,9 +1,11 @@
 package rs.edu.raf.BankService.controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
@@ -78,6 +80,18 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/cashe-account-state")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
+    @ApiResponse(responseCode = "200", description = "Returns all account params for account number, and admin,supervisor role can do this")
+    public ResponseEntity<?> findAccountByAccountNumber(@RequestBody AccountNumberDto accountNumberDto) {
+        try {
+            return ResponseEntity.ok(cashAccountService.findAccountByNumber(accountNumberDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
     @PostMapping("/savedAccount/{accountId}/")
     public SavedAccountDto createSavedAccount(@PathVariable Long accountId,
                                               @RequestBody SavedAccountDto savedAccountDto) {
@@ -103,5 +117,6 @@ public class AccountController {
                                                            @RequestBody boolean usedForSecurities) {
         return ResponseEntity.ok(cashAccountService.setIsAccountPrimaryForTrading(accountNumber, usedForSecurities));
     }
+
 
 }

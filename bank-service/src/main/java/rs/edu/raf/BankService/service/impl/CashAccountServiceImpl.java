@@ -130,6 +130,27 @@ public class CashAccountServiceImpl implements CashAccountService {
 
     }
 
+    @Override
+    public AccountDto findAccountByNumber(AccountNumberDto accountNumberDto) throws AccountNotFoundException {
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(accountNumberDto.getAccountNumber());
+        AccountDto accountDto = null;
+        if(cashAccount != null){
+            if(cashAccount instanceof DomesticCurrencyCashAccount){
+                accountDto = accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto((DomesticCurrencyCashAccount) cashAccount);
+            }
+            else if(cashAccount instanceof ForeignCurrencyCashAccount){
+                accountDto = accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto((ForeignCurrencyCashAccount) cashAccount);
+            }
+            else if (cashAccount instanceof BusinessCashAccount) {
+                accountDto = accountMapper.businessAccountToBusinessAccountDto((BusinessCashAccount) cashAccount);
+            }
+        }
+        else{
+            throw new AccountNotFoundException(accountNumberDto.getAccountNumber());
+        }
+        return accountDto;
+    }
+
     @Transactional(dontRollbackOn = Exception.class)
     @Scheduled(cron = "0 */5 * * * *") //every 5 minute
     @SchedulerLock(name = "tasksScheduler-1")

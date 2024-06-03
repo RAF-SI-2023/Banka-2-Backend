@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.controller.AccountController;
 import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
 import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
@@ -280,10 +281,33 @@ public class AccountControllerTests {
         verify(accountService, times(1)).deleteSavedAccount(accountId, savedAccountNumber);
     }
 
+    @Test
+    public void findAccountByAccountNumber_Success(){
+        String accounNumber = "0004444999999999";
+        AccountNumberDto accountNumberDto = new AccountNumberDto(accounNumber);
+        AccountDto accountDto = new AccountDto();
+
+        when(accountService.findAccountByNumber(accountNumberDto)).thenReturn(accountDto);
+
+        ResponseEntity<?> response = accountController.findAccountByAccountNumber(accountNumberDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), accountDto);
+    }
 
 
+    @Test
+    public void findAccountByAccountNumber_NotFound(){
+        String accountNumber = "0004444999999999";
+        AccountNumberDto accountNumberDto = new AccountNumberDto(accountNumber);
 
+        when(accountService.findAccountByNumber(accountNumberDto)).thenThrow(new AccountNotFoundException(accountNumber));
 
+        ResponseEntity<?> response = accountController.findAccountByAccountNumber(accountNumberDto);
 
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Account with account number " + accountNumber + " not found");
+
+    }
 
 }

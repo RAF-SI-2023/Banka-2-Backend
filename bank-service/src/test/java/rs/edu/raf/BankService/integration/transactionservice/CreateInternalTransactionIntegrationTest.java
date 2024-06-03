@@ -1,21 +1,31 @@
 package rs.edu.raf.BankService.integration.transactionservice;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
+import rs.edu.raf.BankService.e2e.account.AccountControllerJwtConst;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CreateInternalTransactionIntegrationTest extends TransactionServiceIntegrationTestConfig {
 
@@ -32,6 +42,14 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
     private CashAccount testReceiverCashAccount;
     private TransactionStatus status;
     private Long transactionId;
+
+    @Autowired
+    private MockMvc mockMvc;
+    private MockHttpServletResponse responseEntity;
+    private String accountNumber;
+    private long amount;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Transactional
     @After
@@ -156,4 +174,35 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
         cashAccount.setEmployeeId(1L);
         return cashAccount;
     }
+
+
+    InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
+    @Given("account number {string} for user and amount {string} thats taken")
+    public void initAccountNumberAndAmount(String s1, String s2){
+        accountNumber = s1;
+        amount = Long.parseLong(s2);
+        internalTransferTransactionDto.setSenderAccountNumber(accountNumber);
+        internalTransferTransactionDto.setAmount(amount);
+    }
+
+    @SneakyThrows
+    @When("request is send for changing user money balance")
+    public void changingUserBalanceAndSavingTransaction(){
+
+        ResultActions resultActions = mockMvc.perform(post("http://localhost:8003/api/transaction/deposit-withdrawal")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(internalTransferTransactionDto))
+        ).andExpect(status().isOk());
+
+        MvcResult mvcResult = resultActions.andReturn();
+        responseEntity = mvcResult.getResponse();
+    }
+
+    @Then("response is back with status ok")
+    public void shoudGetResponseWithStatusOK(){
+        assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
+    }
+
+
 }

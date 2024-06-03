@@ -24,6 +24,7 @@ import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -181,6 +182,36 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public InternalTransferTransactionDto depositWithdrawalTransaction(InternalTransferTransactionDto internalTransferTransactionDto) {
+
+        InternalTransferTransaction internalTransferTransaction = null;
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
+
+        if (cashAccount == null) {
+            throw new AccountNotFoundException(internalTransferTransactionDto.getSenderAccountNumber());
+        }
+
+        if(internalTransferTransactionDto.getAmount() >= 0) {
+            cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() + internalTransferTransactionDto.getAmount());
+        }
+        else {
+            if(cashAccount.getAvailableBalance() > Math.abs(internalTransferTransactionDto.getAmount())) {
+                cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() - Math.abs(internalTransferTransactionDto.getAmount()));
+            }
+            else {
+                return null;
+            }
+        }
+
+        internalTransferTransaction = transactionMapper.toInternalTransferTransactionEntity(internalTransferTransactionDto);
+        cashAccountRepository.save(cashAccount);
+        cashTransactionRepository.save(internalTransferTransaction);
+
+
+        return internalTransferTransactionDto;
+    }
+
+    @Override
     public boolean reserveFunds(String accountNumber, double amount) {
         CashAccount cashAccount = cashAccountRepository.findByAccountNumber(accountNumber);
         if (cashAccount == null) {
@@ -332,4 +363,9 @@ public class TransactionServiceImpl implements TransactionService {
                 "transaction-verification",
                 new TransferTransactionVerificationDto(email, token));
     }
+
+
+
+
+
 }

@@ -1,6 +1,7 @@
 package rs.edu.raf.BankService.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.ContractDto;
@@ -53,5 +54,14 @@ public class TransferTransactionController {
     public ResponseEntity<?> createSecuritiesTransaction(@RequestBody ContractDto contractDto) {
 
         return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
+    }
+
+    @PostMapping(path = "/deposit-withdrawal")
+    public  ResponseEntity<?> depositWithdrawal(@RequestBody InternalTransferTransactionDto internalTransferTransactionDto){
+        try {
+            return ResponseEntity.ok(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

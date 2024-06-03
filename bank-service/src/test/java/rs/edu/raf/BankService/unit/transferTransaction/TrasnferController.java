@@ -2,38 +2,45 @@ package rs.edu.raf.BankService.unit.transferTransaction;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.BankService.controller.TransferTransactionController;
+import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.impl.TransactionServiceImpl;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 
 
+@ExtendWith(MockitoExtension.class)
 public class TrasnferController {
 
     @InjectMocks
-    private TransactionServiceImpl transactionService;
-    @Mock
-    private CashAccountRepository cashAccountRepository;
-    @Mock
-    private CashTransactionRepository cashTransactionRepository;
-
-    @Mock
-    private TransactionMapper transactionMapper;
-
-    @InjectMocks
     private TransferTransactionController trasnferController;
+    @Mock
+    private TransactionServiceImpl transactionService;
 
 
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
+//    @Mock
+//    private CashAccountRepository cashAccountRepository;
+//    @Mock
+//    private CashTransactionRepository cashTransactionRepository;
+//
+//    @Mock
+//    private TransactionMapper transactionMapper;
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
 
     @Test
     void testGetAllTransactionByEmail() throws Exception {
@@ -53,4 +60,30 @@ public class TrasnferController {
 //        assertNotEquals(Collections.emptyList(), responseEntity);
     }
 
+    @Test
+    public void depositWithdrawal_Success(){
+        InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
+
+        when(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto)).thenReturn(internalTransferTransactionDto);
+
+        ResponseEntity<?> response = trasnferController.depositWithdrawal(internalTransferTransactionDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), internalTransferTransactionDto);
+        verify(transactionService, times(1)).depositWithdrawalTransaction(internalTransferTransactionDto);
+    }
+
+    @Test
+    public void depositWithdrawal_NotFound(){
+        InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
+
+        when(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto)).thenThrow(new RuntimeException("No paramethers in object"));
+
+        ResponseEntity<?> response = trasnferController.depositWithdrawal(internalTransferTransactionDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "No paramethers in object");
+        verify(transactionService, times(1)).depositWithdrawalTransaction(internalTransferTransactionDto);
+    }
+    
 }
