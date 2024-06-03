@@ -1,13 +1,10 @@
 package rs.edu.raf.OTCService.integration.contracts;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.cucumber.java.After;
@@ -19,11 +16,8 @@ import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.entity.Contract;
 import rs.edu.raf.OTCService.data.enums.ContractStatus;
 import rs.edu.raf.OTCService.data.enums.ContractType;
-import rs.edu.raf.OTCService.e2e.generators.JwtTokenGenerator;
-import rs.edu.raf.OTCService.integration.contracts.generators.JwtConstant;
 import rs.edu.raf.OTCService.repositories.ContractRepository;
 import rs.edu.raf.OTCService.service.ContractService;
-import rs.edu.raf.OTCService.util.SpringSecurityUtil;
 
 public class ContractsServiceTestsSteps extends ContractsServiceIntegrationTestsConfig{
     
@@ -33,13 +27,11 @@ public class ContractsServiceTestsSteps extends ContractsServiceIntegrationTests
     @Autowired
     private ContractRepository contractRepository;
 
-    private MockedStatic<SpringSecurityUtil> mockedStatic;
     List<Contract> testContracts;
     List<ContractDto> allContractsDto; // used in get all and get all waiting.
     ContractDto contractDto; // used in getById
     ContractDto temporaryContractDto; // delete after using
-    @Autowired
-    JwtConstant jwt;
+    
     @Before    
     public void beforeScenario()
     {
@@ -67,15 +59,7 @@ public class ContractsServiceTestsSteps extends ContractsServiceIntegrationTests
         // for (Contract contract : testContracts) {
         //     System.out.println("Test contract " + contract.getId() + " exists");
         // }
-        MockitoAnnotations.openMocks(this);
-        mockedStatic = mockStatic(SpringSecurityUtil.class);
-        mockedStatic.when(SpringSecurityUtil::isAgent).thenReturn(false);
-        mockedStatic.when(SpringSecurityUtil::isSupervisor).thenReturn(false);
-        mockedStatic.when(SpringSecurityUtil::isUser).thenReturn(false);
-        mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn("lukapavlovic032@gmail.com");
-
     }
-
 
     @After
     public void afterScenario()
@@ -85,7 +69,7 @@ public class ContractsServiceTestsSteps extends ContractsServiceIntegrationTests
         // for (Contract contract : res) {
         //     System.out.println(contract.getId());
         // }
-        mockedStatic.close();
+        
         // allContractsDto.clear(); not needed
         testContracts.clear();
         if (temporaryContractDto != null && contractRepository.existsById(temporaryContractDto.getId()))
