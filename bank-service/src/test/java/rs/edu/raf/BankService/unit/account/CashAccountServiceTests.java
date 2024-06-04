@@ -14,6 +14,7 @@ import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
+import rs.edu.raf.BankService.data.enums.AccountType;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
@@ -480,13 +481,18 @@ public class CashAccountServiceTests {
     public void findAccountByNumber_Success(){
         String accountNumber = "0004444999999999";
         AccountNumberDto accountNumberDto = new AccountNumberDto(accountNumber);
+        DomesticCurrencyCashAccount domesticAccount = new DomesticCurrencyCashAccount();
+        ForeignCurrencyCashAccount foreignAccount = new ForeignCurrencyCashAccount();
+        BusinessCashAccount businessAccount = new BusinessCashAccount();
 
         CashAccount cashAccount = new CashAccount();
+
         AccountDto accountDto = accountMapper.accountToAccountDto(cashAccount);
 
         when(cashAccountRepository.findByAccountNumber(accountNumber)).thenReturn(cashAccount);
 
         assertEquals(accountService.findAccountByNumber(accountNumberDto), accountDto);
+
         verify(cashAccountRepository, times(1)).findByAccountNumber(accountNumber);
     }
 

@@ -129,7 +129,8 @@ public class TransferService {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         String accountNumber = "0932345111111111";
         Long amount = 999990000000000000L;
-        CashAccount cashAccount = new CashAccount();
+        internalTransferTransactionDto.setSenderAccountNumber(accountNumber);
+        internalTransferTransactionDto.setAmount(amount);
 
         assertThrows(RuntimeException.class, () -> transactionService.depositWithdrawalTransaction(internalTransferTransactionDto));
     }
