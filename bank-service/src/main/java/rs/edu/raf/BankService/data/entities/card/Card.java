@@ -30,11 +30,12 @@ public class Card {
     private String cvvCode;
     private Long limitCard;
     private Boolean status;
+    private Boolean block;
 
 
 
 
-    public Card(Long identificationCardNumber, CardType cardType, String nameOfCard, String accountNumber, String cvvCode, Long limitCard, Boolean status) {
+    public Card(Long identificationCardNumber, CardType cardType, String nameOfCard, String accountNumber, String cvvCode, Long limitCard, Boolean status, Boolean block) {
         this.identificationCardNumber = identificationCardNumber;
         this.cardType = cardType;
         this.nameOfCard = nameOfCard;
@@ -47,6 +48,7 @@ public class Card {
         this.cvvCode = cvvCode;
         this.limitCard = limitCard;
         this.status = status;
+        this.block = block;
     }
 
 
@@ -61,5 +63,7 @@ public class Card {
         this.accountNumber = accountNumber;
         this.limitCard = limitCard;
         this.status = true;
+        this.block = false;
+
     }
 }

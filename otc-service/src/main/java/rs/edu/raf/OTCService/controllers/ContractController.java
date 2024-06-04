@@ -33,7 +33,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.getContractById(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -42,7 +42,7 @@ public class ContractController {
         try {
             return ResponseEntity.ok(contractService.createContract(contractDto));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
