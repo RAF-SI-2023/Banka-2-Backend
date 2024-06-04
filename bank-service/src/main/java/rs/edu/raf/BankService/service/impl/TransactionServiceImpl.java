@@ -187,7 +187,9 @@ public class TransactionServiceImpl implements TransactionService {
     public InternalTransferTransactionDto depositWithdrawalTransaction(InternalTransferTransactionDto internalTransferTransactionDto) {
 
         InternalTransferTransaction internalTransferTransaction = null;
-        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
+        CashAccount cashAccount;
+
+        cashAccount = cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
 
         if (cashAccount == null) {
             throw new AccountNotFoundException(internalTransferTransactionDto.getSenderAccountNumber());
@@ -201,7 +203,7 @@ public class TransactionServiceImpl implements TransactionService {
                 cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() - Math.abs(internalTransferTransactionDto.getAmount()));
             }
             else {
-                return null;
+                throw new RuntimeException("amount is more then balance on account");
             }
         }
 

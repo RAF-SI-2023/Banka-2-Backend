@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import rs.edu.raf.BankService.controller.TransferTransactionController;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
+import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
@@ -75,15 +76,30 @@ public class TrasnferController {
 
     @Test
     public void depositWithdrawal_NotFound(){
+        String accountNumber = "0932345111111111";
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
 
-        when(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto)).thenThrow(new RuntimeException("No paramethers in object"));
+        when(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto)).thenThrow(new AccountNotFoundException(accountNumber));
 
         ResponseEntity<?> response = trasnferController.depositWithdrawal(internalTransferTransactionDto);
 
         assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
-        assertEquals(response.getBody(), "No paramethers in object");
+        assertEquals(response.getBody(), "Account with account number " + accountNumber + " not found");
         verify(transactionService, times(1)).depositWithdrawalTransaction(internalTransferTransactionDto);
     }
+
+    @Test
+    public void depositWithdrawal_BigAmount(){
+        InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
+
+        when(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto)).thenThrow(new RuntimeException("amount is more then balance on account"));
+
+        ResponseEntity<?> response = trasnferController.depositWithdrawal(internalTransferTransactionDto);
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "amount is more then balance on account");
+        verify(transactionService, times(1)).depositWithdrawalTransaction(internalTransferTransactionDto);
+    }
+
+
     
 }

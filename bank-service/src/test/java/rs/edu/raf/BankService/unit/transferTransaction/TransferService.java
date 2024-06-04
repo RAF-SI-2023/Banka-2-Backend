@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
@@ -98,11 +99,14 @@ public class TransferService {
         String accountNumber = "0932345111111111";
         Long amount = 100L;
         CashAccount cashAccount = new CashAccount();
+        InternalTransferTransaction internalTransferTransaction = new InternalTransferTransaction();
         InternalTransferTransactionDto internalTransferTransactionDto = mock(InternalTransferTransactionDto.class);
         internalTransferTransactionDto.setSenderAccountNumber(accountNumber);
         internalTransferTransactionDto.setAmount(amount);
 
         when(cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber())).thenReturn(cashAccount);
+        when(transactionMapper.toInternalTransferTransactionEntity(internalTransferTransactionDto)).thenReturn(internalTransferTransaction);
+
         assertEquals(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto), internalTransferTransactionDto);
         verify(cashAccountRepository, times(1)).findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
         verify(cashAccountRepository, times(1)).save(cashAccount);
@@ -120,6 +124,15 @@ public class TransferService {
         verify(cashAccountRepository, times(1)).findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
     }
 
+    @Test
+    public void depositWithdrawalTransaction_ToBigAmount(){
+        InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
+        String accountNumber = "0932345111111111";
+        Long amount = 999990000000000000L;
+        CashAccount cashAccount = new CashAccount();
+
+        assertThrows(RuntimeException.class, () -> transactionService.depositWithdrawalTransaction(internalTransferTransactionDto));
+    }
 
 
 
