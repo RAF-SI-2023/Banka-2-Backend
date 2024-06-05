@@ -34,3 +34,9 @@ Feature: SecuritiesOwnershipsController Scenario
     Given employee is logged in
     When update publicily available quantity
     Then It should return a success response
+
+  Scenario: Successful retrieval of securities values for a specific account
+    Given employee is logged in
+    When the user requests the values of securities for account number "3334444999999999"
+    Then the user should receive a response with status code 200
+    And the response should contain the values of securities

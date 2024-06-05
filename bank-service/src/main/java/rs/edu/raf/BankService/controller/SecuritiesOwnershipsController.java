@@ -5,9 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
+import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.service.SecuritiesOwnershipService;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -55,4 +58,8 @@ public class SecuritiesOwnershipsController {
         return ResponseEntity.ok(securitiesOwnershipService.getAllPubliclyAvailableSecurityOwnershipsFromPrivates());
     }
 
+    @GetMapping("/securities-values/{accountNumber}")
+    public ResponseEntity<Map<ListingType, BigDecimal>> getValuesOfSecurities(@PathVariable String accountNumber) {
+        return ResponseEntity.ok(securitiesOwnershipService.getValuesOfSecurities(accountNumber));
+    }
 }

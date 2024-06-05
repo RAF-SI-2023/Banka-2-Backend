@@ -1,8 +1,10 @@
 package rs.edu.raf.BankService.e2e.securityOwnership;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +15,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.e2e.card.CardControllerTestsConfig;
 import rs.edu.raf.BankService.e2e.generators.JwtTokenGenerator;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -203,4 +210,37 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         }
     }
 
+    @When("the user requests the values of securities for account number {string}")
+    public void theUserRequestsTheValuesOfSecuritiesForAccountNumber(String accountNumber) {
+        String jwtToken = securityOwnershipControllerJwtConst.jwt;
+        try {
+            ResultActions resultActions = mockMvc.perform(
+                    get(BASE_URL + "securities-values/" + accountNumber)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON)
+                            .header("Authorization", "Bearer " + jwtToken)
+            ).andExpect(status().isOk());
+            MvcResult mvcResult = resultActions.andReturn();
+            responseEntity = mvcResult.getResponse();
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Then("the user should receive a response with status code {int}")
+    public void theUserShouldReceiveAResponseWithStatusCode(int statusCode) {
+        assertEquals(statusCode, responseEntity.getStatus());
+    }
+
+    @Then("the response should contain the values of securities")
+    public void theResponseShouldContainTheValuesOfSecurities() {
+        try {
+            Map<ListingType, BigDecimal> values = objectMapper.readValue(responseEntity.getContentAsString(), new TypeReference<Map<ListingType, BigDecimal>>() {});
+            // Add assertions here
+        } catch (JsonProcessingException e) {
+            fail(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

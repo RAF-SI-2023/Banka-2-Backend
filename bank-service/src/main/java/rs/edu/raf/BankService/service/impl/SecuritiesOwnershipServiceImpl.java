@@ -4,12 +4,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
+import rs.edu.raf.BankService.data.enums.ListingType;
+import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.SecuritiesOwnershipMapper;
 import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.SecuritiesOwnershipService;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -58,5 +64,27 @@ public class SecuritiesOwnershipServiceImpl implements SecuritiesOwnershipServic
         return mapper.toDto(securitiesOwnershipRepository.save(security));
     }
 
+    @Override
+    public Map<ListingType, BigDecimal> getValuesOfSecurities(String accountNumber) {
+        boolean accountExists = securitiesOwnershipRepository.existsByAccountNumber(accountNumber);
+
+        if (!accountExists)
+            throw new AccountNotFoundException(accountNumber);
+
+        // Initialize the map with all ListingType values set to zero
+        Map<ListingType, BigDecimal> valuesMap = Arrays.stream(ListingType.values())
+                .collect(Collectors.toMap(type -> type, type -> BigDecimal.ZERO));
+
+        // Fetch and group the actual values from the repository
+        Map<ListingType, BigDecimal> actualValues = securitiesOwnershipRepository.findAllByAccountNumber(accountNumber).stream()
+                .collect(Collectors.groupingBy(SecuritiesOwnership::getListingType,
+                        Collectors.mapping(SecuritiesOwnership::getValue,
+                                Collectors.reducing(BigDecimal.ZERO, BigDecimal::valueOf, BigDecimal::add))));
+
+        // Merge the actual values into the initialized map
+        valuesMap.putAll(actualValues);
+
+        return valuesMap;
+    }
 
 }
