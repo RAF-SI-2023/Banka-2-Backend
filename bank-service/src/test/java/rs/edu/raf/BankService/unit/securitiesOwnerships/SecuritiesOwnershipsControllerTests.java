@@ -9,10 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.controller.SecuritiesOwnershipsController;
 import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
+import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.service.SecuritiesOwnershipService;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doThrow;
@@ -138,5 +142,23 @@ public class SecuritiesOwnershipsControllerTests {
         // Assert
         assertEquals(expectedDtos, responseEntity.getBody());
         assertEquals(200, responseEntity.getStatusCodeValue());
+    }
+
+    @Test
+    public void testGetSecuritiesValues() {
+        // Arrange
+        String accountNumber = "1234567890";
+        Map<ListingType, BigDecimal> expectedValues = new HashMap<>();
+        expectedValues.put(ListingType.STOCK, BigDecimal.valueOf(1000));
+        expectedValues.put(ListingType.FUTURE, BigDecimal.valueOf(2000));
+        when(securitiesOwnershipService.getValuesOfSecurities(accountNumber)).thenReturn(expectedValues);
+
+        // Act
+        ResponseEntity<Map<ListingType, BigDecimal>> responseEntity =
+                securitiesOwnershipsController.getValuesOfSecurities(accountNumber);
+
+        // Assert
+        assertEquals(expectedValues, responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }

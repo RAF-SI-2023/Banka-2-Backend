@@ -9,6 +9,10 @@ import java.util.List;
 public interface ContractService {
     List<ContractDto> getAllWaitingContracts();
 
+    List<ContractDto> getAllApprovedContracts();
+
+    List<ContractDto> getAllRejectedContracts();
+
     List<ContractDto> getAllContracts();
 
     ContractDto createContract(ContractDto contractDto);

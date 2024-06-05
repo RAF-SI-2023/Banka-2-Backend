@@ -28,6 +28,18 @@ public class ContractController {
 
     }
 
+    @GetMapping("/all-approved")
+    public ResponseEntity<?> getAllApprovedContracts() {
+        return ResponseEntity.ok(contractService.getAllApprovedContracts());
+
+    }
+
+    @GetMapping("/all-rejected")
+    public ResponseEntity<?> getAllRejectedContracts() {
+        return ResponseEntity.ok(contractService.getAllRejectedContracts());
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getContractById(@PathVariable Long id) {
         try {
