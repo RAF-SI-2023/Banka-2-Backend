@@ -13,7 +13,7 @@ import rs.edu.raf.BankService.service.ActionAgentProfitService;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/agent-profit", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/agent-profit", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActionAgentProfitController {
 
 
@@ -21,16 +21,23 @@ public class ActionAgentProfitController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
-
         try {
             return ResponseEntity.ok(actionAgentProfitService.getAllProfits());
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
-
     }
 
-    @GetMapping("/all-total-profits")
+    @GetMapping("/total-profit")
+    public ResponseEntity<?> getAgentsTotalProfit() {
+        try {
+            return ResponseEntity.ok(actionAgentProfitService.getAgentsTotalProfits());
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/all-profits-by-users")
     public ResponseEntity<?> getAllTotalProfitsByEmail() {
 
         try {
