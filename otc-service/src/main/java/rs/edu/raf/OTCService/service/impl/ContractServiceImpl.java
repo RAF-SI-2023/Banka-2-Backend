@@ -58,7 +58,7 @@ public class ContractServiceImpl implements ContractService {
         toBeCreated.setSellersPIB(contractDto.getSellersPIB());
         toBeCreated.setSellerConfirmation(false);
         toBeCreated.setBankConfirmation(false);
-        if (contractDto.getSellersEmail() != null)
+        if (contractDto.getSellersEmail() != null && contractDto.getSellersEmail() != "")
             toBeCreated.setContractType(ContractType.PRIVATE_CONTRACT);
         else
             toBeCreated.setContractType(ContractType.LEGAL_ENTITY_CONTRACT);
@@ -93,10 +93,7 @@ public class ContractServiceImpl implements ContractService {
             contract.setDateTimeRealized(System.currentTimeMillis());
             //TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj contract  pre slanja same transakcije.
             bankService.createTransaction(mapper.contractToDto(contract));
-
         }
-
-
         return mapper.contractToDto(contractRepository.save(contract));
 
     }
@@ -141,7 +138,7 @@ public class ContractServiceImpl implements ContractService {
         else
             throw new RuntimeException("Contract with id " + id + " not found");
         if (!contract.getBankConfirmation())
-            throw new RuntimeException("Contract with id " + id + "is already denied by seller");
+            throw new RuntimeException("Contract with id " + id + "is already denied by bank");
         contract.setBankConfirmation(false);
         contract.setComment(message);
         contract.setContractStatus(ContractStatus.REJECTED);
@@ -157,7 +154,7 @@ public class ContractServiceImpl implements ContractService {
         else
             throw new RuntimeException("Contract with id " + id + " not found");
         if (!contract.getSellerConfirmation())
-            throw new RuntimeException("Contract with id " + id + "is already confirmed by seller");
+            throw new RuntimeException("Contract with id " + id + "is already denied by seller");
         String loggedEmail = SpringSecurityUtil.getPrincipalEmail();
         if (!contract.getSellersEmail().equalsIgnoreCase(loggedEmail)) {
             throw new RuntimeException("You are not the seller");

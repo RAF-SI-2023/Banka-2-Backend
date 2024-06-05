@@ -24,6 +24,7 @@ public class SecuritiesOwnershipMapper {
     public SecuritiesOwnershipDto toDto(SecuritiesOwnership so) {
         return new SecuritiesOwnershipDto(
                 so.getId(),
+                so.getListingType().name(),
                 so.getEmail(),
                 so.isOwnedByBank(),
                 so.getAccountNumber(),

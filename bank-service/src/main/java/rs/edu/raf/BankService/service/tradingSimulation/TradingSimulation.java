@@ -169,6 +169,7 @@ public class TradingSimulation implements Runnable {
         if (buySecurities.isEmpty()) {
             //kreiraj
             SecuritiesOwnership so = new SecuritiesOwnership();
+            so.setListingType(order.getListingType());
             so.setAccountNumber(buyTradingJob.getTradingAccountNumber());
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
@@ -192,6 +193,7 @@ public class TradingSimulation implements Runnable {
         transactionService.releaseFunds(account, totalPrice);
         // ...
         SecuritiesOwnership buyerSo = buySecurities.get(0);
+        buyerSo.setListingType(order.getListingType());
         buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
@@ -398,6 +400,7 @@ public class TradingSimulation implements Runnable {
         if (buySecurities.isEmpty()) {
             //kreiraj
             SecuritiesOwnership so = new SecuritiesOwnership();
+            so.setListingType(order.getListingType());
             so.setAccountNumber(buyTradingJob.getTradingAccountNumber());
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
@@ -417,6 +420,7 @@ public class TradingSimulation implements Runnable {
 
 
         SecuritiesOwnership buyerSo = buySecurities.get(0);
+        buyerSo.setListingType(order.getListingType());
         buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
@@ -461,6 +465,7 @@ public class TradingSimulation implements Runnable {
         if (buySecurities.isEmpty()) {
             //kreiraj
             SecuritiesOwnership so = new SecuritiesOwnership();
+            so.setListingType(order.getListingType());
             so.setAccountNumber(buyTradingJob.getTradingAccountNumber());
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
@@ -480,6 +485,7 @@ public class TradingSimulation implements Runnable {
 
 
         SecuritiesOwnership buyerSo = buySecurities.get(0);
+        buyerSo.setListingType(order.getListingType());
         buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
