@@ -176,33 +176,5 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
     }
 
 
-    InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
-    @Given("account number {string} for user and amount {string} thats taken")
-    public void initAccountNumberAndAmount(String s1, String s2){
-        accountNumber = s1;
-        amount = Long.parseLong(s2);
-        internalTransferTransactionDto.setSenderAccountNumber(accountNumber);
-        internalTransferTransactionDto.setAmount(amount);
-    }
-
-    @SneakyThrows
-    @When("request is send for changing user money balance")
-    public void changingUserBalanceAndSavingTransaction(){
-
-        ResultActions resultActions = mockMvc.perform(post("http://localhost:8003/api/transaction/deposit-withdrawal")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(internalTransferTransactionDto))
-        ).andExpect(status().isOk());
-
-        MvcResult mvcResult = resultActions.andReturn();
-        responseEntity = mvcResult.getResponse();
-    }
-
-    @Then("response is back with status ok")
-    public void shoudGetResponseWithStatusOK(){
-        assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
-    }
-
 
 }

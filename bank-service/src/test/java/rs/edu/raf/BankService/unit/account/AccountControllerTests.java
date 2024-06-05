@@ -13,6 +13,7 @@ import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
 import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -282,32 +283,95 @@ public class AccountControllerTests {
     }
 
     @Test
-    public void findAccountByAccountNumber_Success(){
-        String accounNumber = "0004444999999999";
-        AccountNumberDto accountNumberDto = new AccountNumberDto(accounNumber);
-        AccountDto accountDto = new AccountDto();
+    public void findAccountByMoneyStatus_Success(){
+        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
+        List<AccountDto> accountsDto = new ArrayList<>();
 
-        when(accountService.findAccountByNumber(accountNumberDto)).thenReturn(accountDto);
+        when(accountService.findAccountByMoneyStatus(moneyStatusDto)).thenReturn(accountsDto);
 
-        ResponseEntity<?> response = accountController.findAccountByAccountNumber(accountNumberDto);
+        ResponseEntity<?> response = accountController.findAccountByMoneyStatus(moneyStatusDto);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertEquals(response.getBody(), accountDto);
+        assertEquals(response.getBody(), accountsDto);
     }
 
 
     @Test
-    public void findAccountByAccountNumber_NotFound(){
-        String accountNumber = "0004444999999999";
-        AccountNumberDto accountNumberDto = new AccountNumberDto(accountNumber);
+    public void findAccountByMoneyStatus_AccountNotFound(){
+        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
+        List<AccountDto> accountsDto = new ArrayList<>();
 
-        when(accountService.findAccountByNumber(accountNumberDto)).thenThrow(new AccountNotFoundException(accountNumber));
+        when(accountService.findAccountByMoneyStatus(moneyStatusDto)).thenThrow(new AccountNotFoundException(""));
 
-        ResponseEntity<?> response = accountController.findAccountByAccountNumber(accountNumberDto);
+        ResponseEntity<?> response = accountController.findAccountByMoneyStatus(moneyStatusDto);
 
         assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
-        assertEquals(response.getBody(), "Account with account number " + accountNumber + " not found");
+        assertEquals(response.getBody(), "Account with account number  not found");
 
     }
 
+    @Test
+    public void depositWithdrawalAddition_Success(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalAddition(depositWithdrawalDto)).thenReturn(true);
+
+        ResponseEntity<?> response = accountController.depositWithdrawalAddition(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), true);
+        verify(accountService, times(1)).depositWithdrawalAddition(depositWithdrawalDto);
+    }
+
+    @Test
+    public void depositWithdrawalAddition_NotFound(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalAddition(depositWithdrawalDto)).thenThrow(new AccountNotFoundException(""));
+
+        ResponseEntity<?> response = accountController.depositWithdrawalAddition(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Account with account number  not found");
+    }
+
+
+    @Test
+    public void depositWithdrawalSubtraction_Success(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenReturn(true);
+
+        ResponseEntity<?> response = accountController.depositWithdrawalSubtraction(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), true);
+        verify(accountService, times(1)).depositWithdrawalSubtraction(depositWithdrawalDto);
+    }
+
+
+    @Test
+    public void depositWithdrawalSubtraction_NotFound(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenThrow(new AccountNotFoundException(""));
+
+        ResponseEntity<?> response = accountController.depositWithdrawalSubtraction(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Account with account number  not found");
+
+    }
+
+    @Test
+    public void depositWithdrawalSubtraction_BigAmount(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenThrow(new RuntimeException("Not enough money in balance to pay"));
+
+        ResponseEntity<?> response = accountController.depositWithdrawalSubtraction(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Not enough money in balance to pay");
+    }
 }

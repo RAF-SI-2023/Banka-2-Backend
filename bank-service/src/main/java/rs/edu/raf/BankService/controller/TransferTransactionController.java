@@ -56,12 +56,4 @@ public class TransferTransactionController {
         return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
     }
 
-    @PostMapping(path = "/deposit-withdrawal")
-    public  ResponseEntity<?> depositWithdrawal(@RequestBody InternalTransferTransactionDto internalTransferTransactionDto){
-        try {
-            return ResponseEntity.ok(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
 }

@@ -83,9 +83,28 @@ public class AccountController {
     @GetMapping("/cashe-account-state")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
     @ApiResponse(responseCode = "200", description = "Returns all account params for account number, and admin,supervisor role can do this")
-    public ResponseEntity<?> findAccountByAccountNumber(@RequestBody AccountNumberDto accountNumberDto) {
+    public ResponseEntity<?> findAccountByMoneyStatus(@RequestBody MoneyStatusDto moneyStatusDto) {
         try {
-            return ResponseEntity.ok(cashAccountService.findAccountByNumber(accountNumberDto));
+            return ResponseEntity.ok(cashAccountService.findAccountByMoneyStatus(moneyStatusDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+    @PostMapping(path = "/deposit-withdrawal/payment-addition")
+    public  ResponseEntity<?> depositWithdrawalAddition(@RequestBody DepositWithdrawalDto depositWithdrawalDtod){
+        try {
+            return ResponseEntity.ok(cashAccountService.depositWithdrawalAddition(depositWithdrawalDtod));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/deposit-withdrawal/payment-subtraction")
+    public  ResponseEntity<?> depositWithdrawalSubtraction(@RequestBody DepositWithdrawalDto depositWithdrawalDto){
+        try {
+            return ResponseEntity.ok(cashAccountService.depositWithdrawalSubtraction(depositWithdrawalDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -118,5 +137,15 @@ public class AccountController {
         return ResponseEntity.ok(cashAccountService.setIsAccountPrimaryForTrading(accountNumber, usedForSecurities));
     }
 
+//    @GetMapping("/cashe-account-state1")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
+//    @ApiResponse(responseCode = "200", description = "Returns all account params for account number, and admin,supervisor role can do this")
+//    public ResponseEntity<?> findAccountByAccountNumber(@RequestBody AccountNumberDto accountNumberDto) {
+//        try {
+//            return ResponseEntity.ok(cashAccountService.findAccountByNumber(accountNumberDto));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//        }
+//    }
 
 }

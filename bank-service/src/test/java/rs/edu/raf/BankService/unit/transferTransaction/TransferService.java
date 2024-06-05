@@ -94,47 +94,6 @@ public class TransferService {
         assertTrue(result.contains(receivedTransactionDto));
     }
 
-    @Test
-    public void depositWithdrawalTransaction_Success(){
-        String accountNumber = "0932345111111111";
-        Long amount = 100L;
-        CashAccount cashAccount = new CashAccount();
-        InternalTransferTransaction internalTransferTransaction = new InternalTransferTransaction();
-        InternalTransferTransactionDto internalTransferTransactionDto = mock(InternalTransferTransactionDto.class);
-        internalTransferTransactionDto.setSenderAccountNumber(accountNumber);
-        internalTransferTransactionDto.setAmount(amount);
-
-        when(cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber())).thenReturn(cashAccount);
-        when(transactionMapper.toInternalTransferTransactionEntity(internalTransferTransactionDto)).thenReturn(internalTransferTransaction);
-
-        assertEquals(transactionService.depositWithdrawalTransaction(internalTransferTransactionDto), internalTransferTransactionDto);
-        verify(cashAccountRepository, times(1)).findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
-        verify(cashAccountRepository, times(1)).save(cashAccount);
-        verify(cashTransactionRepository, times(1)).save(transactionMapper.toInternalTransferTransactionEntity(internalTransferTransactionDto));
-    }
-
-
-    @Test
-    public void depositWithdrawalTransaction_NotFound(){
-        InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
-
-        when(cashAccountRepository.findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber())).thenReturn(null);
-
-        assertThrows(AccountNotFoundException.class, () -> transactionService.depositWithdrawalTransaction(internalTransferTransactionDto));
-        verify(cashAccountRepository, times(1)).findByAccountNumber(internalTransferTransactionDto.getSenderAccountNumber());
-    }
-
-    @Test
-    public void depositWithdrawalTransaction_ToBigAmount(){
-        InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
-        String accountNumber = "0932345111111111";
-        Long amount = 999990000000000000L;
-        internalTransferTransactionDto.setSenderAccountNumber(accountNumber);
-        internalTransferTransactionDto.setAmount(amount);
-
-        assertThrows(RuntimeException.class, () -> transactionService.depositWithdrawalTransaction(internalTransferTransactionDto));
-    }
-
 
 
 

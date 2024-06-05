@@ -15,8 +15,3 @@ Feature: Create internal transfer transactions
     Then the internal transfer should be declined
     And the sender's new balance should be 1000 after internal transaction - insufficientFunds
     And the receiver's new balance should be 5000 after internal transaction - insufficientFunds
-
-  Scenario: Taking or giving cashe assets, to account depending on amount
-    Given account number "0932345111111111" for user and amount "100" thats taken
-    When request is send for changing user money balance
-    Then response is back with status ok

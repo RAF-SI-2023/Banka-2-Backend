@@ -31,7 +31,13 @@ public interface CashAccountService {
 
     List<AccountDto> findAccountsByEmail(String email);
 
-    AccountDto findAccountByNumber(AccountNumberDto accountNumberDto) throws AccountNotFoundException;
+    List<AccountDto> findAccountByMoneyStatus(MoneyStatusDto moneyStatusDto) throws AccountNotFoundException;
+
+    boolean depositWithdrawalAddition(DepositWithdrawalDto depositWithdrawalDto) throws AccountNotFoundException;
+    boolean depositWithdrawalSubtraction(DepositWithdrawalDto depositWithdrawalDto) throws AccountNotFoundException;
+
+
+    //AccountDto findAccountByNumber(AccountNumberDto accountNumberDto) throws AccountNotFoundException;
 
     SavedAccountDto updateSavedAccount(Long accountId, String savedAccountNumber, SavedAccountDto dto);
 

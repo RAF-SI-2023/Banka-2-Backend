@@ -1,5 +1,6 @@
 package rs.edu.raf.BankService.unit.account;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,14 +15,21 @@ import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.card.Card;
+import rs.edu.raf.BankService.data.entities.transactions.AdditionTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.SubtractionTransferTransaction;
 import rs.edu.raf.BankService.data.enums.AccountType;
+import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
+import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.repository.UserAccountUserProfileActivationCodeRepository;
 import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +49,13 @@ public class CashAccountServiceTests {
     private CashAccountRepository cashAccountRepository;
 
     @Mock
+    private CashTransactionRepository cashTransactionRepository;
+
+    @Mock
     private AccountMapper accountMapper;
+
+    @Mock
+    private TransactionMapper transactionMapper;
 
     @Mock
     private RabbitTemplate mockRabbitTemplate;
@@ -50,6 +64,7 @@ public class CashAccountServiceTests {
 //    public void setup() {
 //        MockitoAnnotations.openMocks(this);
 //    }
+
 
     @Test
     public void whenAccountNotFound_thenThrowAccountNotFoundException() {
@@ -478,33 +493,119 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void findAccountByNumber_Success(){
-        String accountNumber = "0004444999999999";
-        AccountNumberDto accountNumberDto = new AccountNumberDto(accountNumber);
+    public void findAccountByMoneyStatus_Success(){
+        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
         DomesticCurrencyCashAccount domesticAccount = new DomesticCurrencyCashAccount();
         ForeignCurrencyCashAccount foreignAccount = new ForeignCurrencyCashAccount();
         BusinessCashAccount businessAccount = new BusinessCashAccount();
 
-        CashAccount cashAccount = new CashAccount();
+        domesticAccount.setCurrencyCode("RSD");
+        domesticAccount.setAvailableBalance(1000);
+        domesticAccount.setReservedFunds(1000);
 
-        AccountDto accountDto = accountMapper.accountToAccountDto(cashAccount);
+        foreignAccount.setCurrencyCode("RSD");
+        foreignAccount.setAvailableBalance(1000);
+        foreignAccount.setReservedFunds(1000);
 
-        when(cashAccountRepository.findByAccountNumber(accountNumber)).thenReturn(cashAccount);
+        businessAccount.setCurrencyCode("RSD");
+        businessAccount.setAvailableBalance(1000);
+        businessAccount.setReservedFunds(1000);
 
-        assertEquals(accountService.findAccountByNumber(accountNumberDto), accountDto);
+        moneyStatusDto.setCurrency("RSD");
+        moneyStatusDto.setTotal(2000);
+        moneyStatusDto.setAvailableBalance(1000);
+        moneyStatusDto.setReservedFunds(1000);
 
-        verify(cashAccountRepository, times(1)).findByAccountNumber(accountNumber);
+       List< CashAccount> cashAccount = Arrays.asList(domesticAccount, foreignAccount, businessAccount);
+       when(cashAccountRepository.findAll()).thenReturn(cashAccount);
+
+        DomesticCurrencyAccountDto domesticDto = new DomesticCurrencyAccountDto();
+        ForeignCurrencyAccountDto foreignDto = new ForeignCurrencyAccountDto();
+        BusinessAccountDto businessDto = new BusinessAccountDto();
+
+        when(accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto(domesticAccount)).thenReturn(domesticDto);
+        when(accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto(foreignAccount)).thenReturn(foreignDto);
+        when(accountMapper.businessAccountToBusinessAccountDto(businessAccount)).thenReturn(businessDto);
+
+        List<AccountDto> result = accountService.findAccountByMoneyStatus(moneyStatusDto);
+
+
+        assertEquals(3, result.size(), "Expected three accounts");
+        assertTrue(result.contains(domesticDto), "Expected domestic account DTO");
+        assertTrue(result.contains(foreignDto), "Expected foreign account DTO");
+        assertTrue(result.contains(businessDto), "Expected business account DTO");
     }
 
     @Test
-    public void findAccountByNumber_AccountNotFound(){
-        String accountNumber = "0004444999999999";
-        AccountNumberDto accountNumberDto = new AccountNumberDto(accountNumber);
+    public void findAccountByMoneyStatus_AccountNotFound(){
+        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
 
-        when(cashAccountRepository.findByAccountNumber(accountNumber)).thenReturn(null);
+        when(cashAccountRepository.findAll()).thenReturn(null);
 
-        assertThrows(AccountNotFoundException.class, () -> accountService.findAccountByNumber(accountNumberDto));
-        verify(cashAccountRepository, times(1)).findByAccountNumber(accountNumber);
+        assertThrows(AccountNotFoundException.class, () -> accountService.findAccountByMoneyStatus(moneyStatusDto));
+        verify(cashAccountRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void depositWithdrawalAddition_Success(){
+        String accountNumber = "0932345111111111";
+        Long amount = 100L;
+        CashAccount cashAccount = new CashAccount();
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
+
+        when(cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber())).thenReturn(cashAccount);
+
+        assertEquals(accountService.depositWithdrawalAddition(depositWithdrawalDto), true);
+        verify(cashAccountRepository, times(1)).findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+        verify(cashAccountRepository, times(1)).save(cashAccount);
+    }
+
+    @Test
+    public void depositWithdrawalAddition_NotFound(){
+        String accountNumber = "0932345111111111";
+        Long amount = 100L;
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
+
+        when(cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber())).thenReturn(null);
+
+        assertThrows(AccountNotFoundException.class, () -> accountService.depositWithdrawalAddition(depositWithdrawalDto));
+        verify(cashAccountRepository, times(1)).findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+    }
+
+    @Test
+    public void depositWithdrawalSubtraction_Success(){
+        String accountNumber = "0932345111111111";
+        Long amount = -10L;
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAvailableBalance(100000L);
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
+
+        when(cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber())).thenReturn(cashAccount);
+
+        assertEquals(accountService.depositWithdrawalSubtraction(depositWithdrawalDto), true);
+        verify(cashAccountRepository, times(1)).findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+        verify(cashAccountRepository, times(1)).save(cashAccount);
+    }
+
+    @Test
+    public void depositWithdrawalSubtraction_AccountNotFound(){
+        String accountNumber = "0932345111111111";
+        Long amount = 100L;
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
+
+        when(cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber())).thenReturn(null);
+
+        assertThrows(AccountNotFoundException.class, () -> accountService.depositWithdrawalSubtraction(depositWithdrawalDto));
+        verify(cashAccountRepository, times(1)).findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+    }
+
+    @Test
+    public void depositWithdrawalSubtraction_ToBigAmount(){
+        String accountNumber = "0932345111111111";
+        Long amount = 1000000000000000000L;
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
+
+        assertThrows(RuntimeException.class, () -> accountService.depositWithdrawalSubtraction(depositWithdrawalDto));
     }
 
 }
