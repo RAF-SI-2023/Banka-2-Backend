@@ -12,5 +12,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("select contract from Contract contract where contract.contractStatus='WAITING'")
     List<Contract> getAllWaitingContracts();
 
+    @Query("select contract from Contract contract where contract.contractStatus='APPROVED'")
+    List<Contract> getAllApprovedContracts();
 
+    @Query("select contract from Contract contract where contract.contractStatus='REJECTED'")
+    List<Contract> getAllRejectedContracts();
 }
