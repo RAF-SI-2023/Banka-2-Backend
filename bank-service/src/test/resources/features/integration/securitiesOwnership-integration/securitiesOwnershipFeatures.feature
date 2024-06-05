@@ -34,4 +34,8 @@ Feature: User interacting with securityOwnerships
 #    When the user updates the publicly available quantity to 120 for the securities ownership with id 2
 #    Then the response should contain an error message "cannot set amount to more than u have"
 
-
+  Scenario: User requests securities values for a given account number
+    Given user has securities ownerships with account number "1234567890"
+    When the user requests securities values for account number "1234567890"
+    Then the user should receive a response with status code 200
+    And the response should contain the securities values
