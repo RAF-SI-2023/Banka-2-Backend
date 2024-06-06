@@ -8,7 +8,7 @@ import rs.edu.raf.BankService.data.enums.ListingType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MarginsAccountDto {
+public class MarginsAccountResponseDto {
 
     private Long id;
     private String currencyCode;
