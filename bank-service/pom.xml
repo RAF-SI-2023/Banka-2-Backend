@@ -227,8 +227,9 @@
 						<exclude>**/mapper/**</exclude>
 						<exclude>**/repository/**</exclude>
 						<exclude>**/tradingSimulation/**</exclude>
-						<exclude>**/OrderServiceImpl/**</exclude>
-						<exclude>**/IAMServiceImpl/**</exclude>
+						<exclude>**/OrderServiceImpl.java/**</exclude>
+						<exclude>**/IAMServiceImpl.java/**</exclude>
+						<exclude>**/springSecurityUtil/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
