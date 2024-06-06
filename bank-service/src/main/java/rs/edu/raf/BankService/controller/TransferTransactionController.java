@@ -1,6 +1,7 @@
 package rs.edu.raf.BankService.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.BankService.data.dto.ContractDto;
@@ -54,4 +55,5 @@ public class TransferTransactionController {
 
         return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
     }
+
 }
