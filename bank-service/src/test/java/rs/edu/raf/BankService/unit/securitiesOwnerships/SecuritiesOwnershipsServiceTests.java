@@ -8,13 +8,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
 import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
+import rs.edu.raf.BankService.data.enums.ListingType;
+import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.SecuritiesOwnershipMapper;
 import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.impl.SecuritiesOwnershipServiceImpl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -230,6 +231,49 @@ public class SecuritiesOwnershipsServiceTests {
         // Verify result
         assertNotNull(resultDto);
         // Add more assertions based on the specific logic of your method
+    }
+
+    @Test
+    public void testGetValuesOfSecurities() {
+        // Arrange
+        String accountNumber = "1234567890";
+        SecuritiesOwnership ownership1 = new SecuritiesOwnership(/* initialize with test data */);
+        ownership1.setAccountNumber(accountNumber);
+        ownership1.setAverageBuyingPrice(100.0);
+        ownership1.setQuantity(10);
+        ownership1.setListingType(ListingType.STOCK);
+        SecuritiesOwnership ownership2 = new SecuritiesOwnership(/* initialize with test data */);
+        ownership2.setAccountNumber(accountNumber);
+        ownership2.setAverageBuyingPrice(200.0);
+        ownership2.setQuantity(20);
+        ownership2.setListingType(ListingType.FOREX);
+        List<SecuritiesOwnership> ownershipList = Arrays.asList(ownership1, ownership2);
+
+        Map<ListingType, BigDecimal> expectedValues = new HashMap<>();
+        expectedValues.put(ListingType.STOCK, BigDecimal.valueOf(1000.0));
+        expectedValues.put(ListingType.FOREX, BigDecimal.valueOf(4000.0));
+        expectedValues.put(ListingType.OPTION, BigDecimal.ZERO);
+        expectedValues.put(ListingType.FUTURE, BigDecimal.ZERO);
+
+        when(securitiesOwnershipRepository.existsByAccountNumber(accountNumber)).thenReturn(true);
+        when(securitiesOwnershipRepository.findAllByAccountNumber(accountNumber)).thenReturn(ownershipList);
+
+        // Act
+        Map<ListingType, BigDecimal> actualValues = securitiesOwnershipService.getValuesOfSecurities(accountNumber);
+
+        // Assert
+        assertEquals(expectedValues, actualValues);
+    }
+
+    @Test
+    public void testGetValuesOfSecurities_WhenAccountNotFound() {
+        // Arrange
+        String accountNumber = "1234567890";
+
+        when(securitiesOwnershipRepository.existsByAccountNumber(accountNumber)).thenReturn(false);
+
+        // Act and Assert
+        assertThrows(AccountNotFoundException.class, () -> securitiesOwnershipService.getValuesOfSecurities(accountNumber));
     }
 
 }
