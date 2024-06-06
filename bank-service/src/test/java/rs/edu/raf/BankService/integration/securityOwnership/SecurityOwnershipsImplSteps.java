@@ -129,6 +129,14 @@ public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
         assertEquals(updatedPubliclyAvailableQuantity, updatedDto.getQuantityOfPubliclyAvailable());
     }
 
+    @When("the user requests securities values for account number {string}")
+    public void userRequestsSecuritiesValues(String accountNumber) {
+        responseEntity = new ResponseEntity<>(securitiesOwnershipService.getValuesOfSecurities(accountNumber), null, 200);
+    }
 
+    @Then("the response should contain the securities values")
+    public void responseContainsSecuritiesValues() {
+        assertNotNull(responseEntity.getBody());
+    }
 }
 

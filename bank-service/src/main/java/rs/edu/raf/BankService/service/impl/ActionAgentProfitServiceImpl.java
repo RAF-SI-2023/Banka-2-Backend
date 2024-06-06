@@ -109,5 +109,14 @@ public class ActionAgentProfitServiceImpl implements ActionAgentProfitService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Double getAgentsTotalProfits() {
+        List<ActionAgentProfit> actionAgentProfits = actionAgentProfitRepository.findAll();
+
+        return actionAgentProfits.stream()
+                .mapToDouble(ActionAgentProfit::getProfit)
+                .sum();
+    }
+
 
 }

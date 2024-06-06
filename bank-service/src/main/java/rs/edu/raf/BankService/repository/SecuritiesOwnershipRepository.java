@@ -28,4 +28,5 @@ public interface SecuritiesOwnershipRepository extends JpaRepository<SecuritiesO
     List<SecuritiesOwnership> findSecuritiesOwnershipByQuantityOfPubliclyAvailableAndIsPrivate();
 
 
+    boolean existsByAccountNumber(String accountNumber);
 }
