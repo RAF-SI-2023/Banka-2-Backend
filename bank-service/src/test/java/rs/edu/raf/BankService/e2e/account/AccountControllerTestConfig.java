@@ -1,4 +1,4 @@
-package rs.edu.raf.IAMService.e2e.usercontroller;
+package rs.edu.raf.BankService.e2e.account;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,6 +8,6 @@ import org.springframework.test.context.ContextConfiguration;
 @CucumberContextConfiguration
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTestConfig {
+public class AccountControllerTestConfig {
 
 }
