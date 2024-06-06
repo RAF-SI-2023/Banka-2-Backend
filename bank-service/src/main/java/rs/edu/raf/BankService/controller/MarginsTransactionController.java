@@ -23,20 +23,11 @@ public class MarginsTransactionController {
     }
 
     @GetMapping
-    public List<MarginsTransactionResponseDto> getFilteredTransactions(
+    public List<MarginsTransactionResponseDto> getTransactions(
             @RequestParam String currencyCode,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate) {
-        return marginsTransactionService.getFilteredTransactions(currencyCode, startDate, endDate);
-    }
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate) {
 
-    @GetMapping("/account/{accountId}")
-    public List<MarginsTransactionResponseDto> getTransactionsByAccountId(@PathVariable Long accountId) {
-        return marginsTransactionService.getTransactionsByAccountId(accountId);
-    }
-
-    @GetMapping("/all-email/{email}")
-    public List<MarginsTransactionResponseDto> getAllTransactionsByEmail(@PathVariable String email) {
-        return marginsTransactionService.findAllByEmail(email);
+        return marginsTransactionService.getTransactions(currencyCode, startDate, endDate);
     }
 }

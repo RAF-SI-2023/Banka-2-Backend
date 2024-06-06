@@ -22,7 +22,7 @@ public class MarginsTransaction {
     @ManyToOne
     private MarginsAccount marginsAccount;
 
-    private Long createdAt;
+    private LocalDateTime createdAt;
     private Long orderId;
     private Long userId;
     private String description;
@@ -44,10 +44,6 @@ public class MarginsTransaction {
     public void setFallbackValues(ListingType listingType) {
         if (this.loanValue < 0) {
             this.loanValue = 0.0;
-        }
-
-        if (this.interest < 0) {
-            this.interest = 0.0;
         }
 
         if (ListingType.FUTURE.equals(listingType)) {
