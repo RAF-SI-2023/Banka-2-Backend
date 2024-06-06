@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.BankService.controller.AccountController;
 import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.exception.AccountNumberAlreadyExistException;
 import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -280,10 +282,92 @@ public class AccountControllerTests {
         verify(accountService, times(1)).deleteSavedAccount(accountId, savedAccountNumber);
     }
 
+    @Test
+    public void findBankAccounts_Success(){
+        List<AccountValuesDto> accountsDto = new ArrayList<>();
+
+        when(accountService.findBankAccounts()).thenReturn(accountsDto);
+
+        ResponseEntity<?> response = accountController.findBankAccounts();
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), accountsDto);
+    }
 
 
+    @Test
+    public void findAccountByMoneyStatus_AccountNotFound(){
+        when(accountService.findBankAccounts()).thenThrow(new AccountNotFoundException(""));
+
+        ResponseEntity<?> response = accountController.findBankAccounts();
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Account with account number  not found");
+
+    }
+
+    @Test
+    public void depositWithdrawalAddition_Success(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalAddition(depositWithdrawalDto)).thenReturn(true);
+
+        ResponseEntity<?> response = accountController.depositWithdrawalAddition(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), true);
+        verify(accountService, times(1)).depositWithdrawalAddition(depositWithdrawalDto);
+    }
+
+    @Test
+    public void depositWithdrawalAddition_NotFound(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalAddition(depositWithdrawalDto)).thenThrow(new AccountNotFoundException(""));
+
+        ResponseEntity<?> response = accountController.depositWithdrawalAddition(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Account with account number  not found");
+    }
 
 
+    @Test
+    public void depositWithdrawalSubtraction_Success(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenReturn(true);
+
+        ResponseEntity<?> response = accountController.depositWithdrawalSubtraction(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), true);
+        verify(accountService, times(1)).depositWithdrawalSubtraction(depositWithdrawalDto);
+    }
 
 
+    @Test
+    public void depositWithdrawalSubtraction_NotFound(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenThrow(new AccountNotFoundException(""));
+
+        ResponseEntity<?> response = accountController.depositWithdrawalSubtraction(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Account with account number  not found");
+
+    }
+
+    @Test
+    public void depositWithdrawalSubtraction_BigAmount(){
+        DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
+
+        when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenThrow(new RuntimeException("Not enough money in balance to pay"));
+
+        ResponseEntity<?> response = accountController.depositWithdrawalSubtraction(depositWithdrawalDto);
+
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
+        assertEquals(response.getBody(), "Not enough money in balance to pay");
+    }
 }

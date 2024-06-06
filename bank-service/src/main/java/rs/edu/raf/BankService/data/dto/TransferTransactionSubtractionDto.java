@@ -10,13 +10,11 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InternalTransferTransactionDto {
-
+public class TransferTransactionSubtractionDto {
     private String id;
     private String senderAccountNumber;
     private String receiverAccountNumber;
     private Long amount;
     private LocalDateTime createdAt;
     private TransactionStatus status;
-
 }
