@@ -678,5 +678,11 @@ public class OrderServiceTests {
         verify(orderRepository).findById(orderId);
     }
 
+    @Test
+    public void testFindAllByUserId(){
+        Long orderId = 1L;
+        List<Order> o =  orderService.findAllByUserId(orderId);
 
+        assertNull(o);
+    }
 }
