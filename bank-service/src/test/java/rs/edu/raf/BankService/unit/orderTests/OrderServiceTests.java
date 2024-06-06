@@ -18,7 +18,7 @@ import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
 import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.*;
-import rs.edu.raf.BankService.service.impl.toIgnore.IAMServiceImpl;
+import rs.edu.raf.BankService.service.impl.IAMServiceImpl;
 import rs.edu.raf.BankService.service.impl.OrderServiceImpl;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
@@ -259,16 +259,16 @@ public class OrderServiceTests {
         when(cashAccountRepository.findPrimaryTradingAccount("bankAccount@bank.rs")).thenReturn(cashAccount);
         when(stockService.getSecuritiesByOrder(order)).thenReturn(listingDto);
         when(stockService.getExchangeExchangeAcronym(listingDto.getExchange())).thenReturn(exchangeDto);
-//        when(currencyExchangeService.calculateAmountInDefaultCurrency(currency, totalPrice)).thenReturn(100.0);
- //       when(currencyExchangeService.calculateAmountBetweenCurrencies(currency, cashAccount.getCurrencyCode(), totalPrice)).thenReturn(100.0);
+        when(currencyExchangeService.calculateAmountInDefaultCurrency(currency, totalPrice)).thenReturn(100.0);
+        when(currencyExchangeService.calculateAmountBetweenCurrencies(currency, cashAccount.getCurrencyCode(), totalPrice)).thenReturn(100.0);
         when(orderRepository.save(order)).thenReturn(order);
-//        when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
+        when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
 
         boolean result = orderService.createOrder(orderDto);
 
         assertTrue(result);
         verify(orderRepository, times(1)).save(order);
-        verify(transactionService, times(1)).reserveFunds(cashAccount, 0.0);
+        verify(transactionService, times(1)).reserveFunds(cashAccount, 100.0);
     }
 
     @Test
@@ -280,7 +280,7 @@ public class OrderServiceTests {
         Order order = new Order();
         order.setId(1L);
         order.setQuantity(5);
-        order.setOrderStatus(OrderStatus.WAITING_FOR_APPROVAL);
+        order.setOrderStatus(OrderStatus.APPROVED);
         order.setOwnedByBank(true);
         order.setInitiatedByUserId(33L);
         order.setOrderActionType(OrderActionType.SELL);
@@ -309,11 +309,11 @@ public class OrderServiceTests {
         when(cashAccountRepository.findPrimaryTradingAccount("bankAccount@bank.rs")).thenReturn(cashAccount);
         when(stockService.getSecuritiesByOrder(order)).thenReturn(listingDto);
         when(stockService.getExchangeExchangeAcronym(listingDto.getExchange())).thenReturn(exchangeDto);
-//        when(currencyExchangeService.calculateAmountInDefaultCurrency(currency, totalPrice)).thenReturn(100.0);
+        when(currencyExchangeService.calculateAmountInDefaultCurrency(currency, totalPrice)).thenReturn(100.0);
         when(currencyExchangeService.calculateAmountBetweenCurrencies(currency, cashAccount.getCurrencyCode(), totalPrice)).thenReturn(100.0);
         when(orderRepository.save(order)).thenReturn(order);
- //       when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
-   //     when(iamServiceImpl.isApprovalNeeded(anyLong())).thenReturn(true);
+        when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
+        when(iamServiceImpl.isApprovalNeeded(anyLong())).thenReturn(true);
 
         boolean result = orderService.createOrder(orderDto);
 
