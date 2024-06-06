@@ -8,6 +8,7 @@ import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.edu.raf.BankService.data.dto.*;
+import rs.edu.raf.BankService.data.entities.ActiveTradingJob;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.ListingType;
@@ -16,17 +17,18 @@ import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
 import rs.edu.raf.BankService.repository.*;
-import rs.edu.raf.BankService.service.ActionAgentProfitService;
-import rs.edu.raf.BankService.service.CurrencyExchangeService;
-import rs.edu.raf.BankService.service.StockService;
-import rs.edu.raf.BankService.service.TransactionService;
+import rs.edu.raf.BankService.service.*;
 import rs.edu.raf.BankService.service.impl.IAMServiceImpl;
 import rs.edu.raf.BankService.service.impl.OrderServiceImpl;
+import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -625,7 +627,44 @@ public class OrderServiceTests {
         verify(orderRepository, times(1)).findById(orderId);
         verify(orderRepository, never()).save(any());
     }
+    @Test
+    public void testUpdateOrderStatus_Contains_Order_Success() {
+        // Given
+        Long orderId = 1L;
+        Order order = new Order();
+        order.setId(orderId);
+        OrderStatus status = OrderStatus.APPROVED;
 
+        when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
+
+        TradingJob tradingJob = new TradingJob(order, null, "tradingAccount", null, 100.0);
+
+        // Mock the orders deque
+        BlockingDeque<TradingJob> ordersMock = new LinkedBlockingDeque<>();
+        ordersMock.add(tradingJob);
+
+        // Inject the mock orders deque using reflection
+        Field ordersField = null;
+        try {
+            ordersField = OrderServiceImpl.class.getDeclaredField("orders");
+            ordersField.setAccessible(true);
+            ordersField.set(orderService, ordersMock);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        // When
+        boolean updated = orderService.updateOrderStatus(orderId, status);
+
+        // Then
+        assertEquals(true, updated);
+        verify(orderRepository, times(1)).findById(orderId);
+        verify(orderRepository, times(1)).save(order);
+        verify(transactionService, times(1)).reserveFunds("tradingAccount", 100.0);
+    }
 
     @Test
     public void testFindDtoById_Success() {
@@ -685,4 +724,36 @@ public class OrderServiceTests {
 
         assertNull(o);
     }
+    @Test
+    void testConstructor_withActiveTradingJobs_success() {
+        // Given
+        ActiveTradingJob activeJob = mock(ActiveTradingJob.class);
+        when(activeJob.isActive()).thenReturn(true);
+        when(activeJob.getOrderId()).thenReturn(1L);
+        when(activeTradingJobRepository.findAll()).thenReturn(Arrays.asList(activeJob));
+
+        Order order = mock(Order.class);
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        // When
+        OrderService o = new OrderServiceImpl(transactionService, iamServiceImpl, stockService, currencyExchangeService,
+                orderMapper, orderRepository, cashAccountRepository, securitiesOwnershipRepository,
+                activeTradingJobRepository, orderTransactionRepository, actionAgentProfitService);
+
+        // Then
+        // Access private field 'orders' using reflection
+        Field ordersField = null;
+        try {
+            ordersField = OrderServiceImpl.class.getDeclaredField("orders");
+            ordersField.setAccessible(true);
+            BlockingDeque<TradingJob> orders = (BlockingDeque<TradingJob>) ordersField.get(o);
+            assertFalse(orders.isEmpty(), "Orders should contain the TradingJob");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
