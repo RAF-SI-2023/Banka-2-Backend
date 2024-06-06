@@ -59,6 +59,11 @@ public class RabbitMQListeners {
         emailService.sendSimpleMailMessage(transactionVerification.getEmail(), transactionVerification.getSubject(), transactionVerification.getContent());
     }
 
+    @RabbitListener(queues = "margin-call-violation")
+    public void marginCallViolation(MarginCallViolationDto marginCallViolationDto) throws IOException {
+        emailService.sendSimpleMailMessage(marginCallViolationDto.getEmail(), marginCallViolationDto.getSubject(), "ASDF");
+    }
+
 
     private <T> boolean isValid(T dto) {
         Set<ConstraintViolation<T>> violations = validator.validate(dto);

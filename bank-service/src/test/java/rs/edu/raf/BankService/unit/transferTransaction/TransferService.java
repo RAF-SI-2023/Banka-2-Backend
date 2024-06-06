@@ -1,12 +1,15 @@
 package rs.edu.raf.BankService.unit.transferTransaction;
 
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
+import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
+import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
@@ -14,9 +17,14 @@ import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.impl.TransactionServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
@@ -85,5 +93,8 @@ public class TransferService {
         assertTrue(result.contains(sentTransactionDto));
         assertTrue(result.contains(receivedTransactionDto));
     }
+
+
+
 
 }

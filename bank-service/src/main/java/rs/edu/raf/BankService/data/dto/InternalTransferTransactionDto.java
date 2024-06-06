@@ -18,4 +18,5 @@ public class InternalTransferTransactionDto {
     private Long amount;
     private LocalDateTime createdAt;
     private TransactionStatus status;
+
 }
