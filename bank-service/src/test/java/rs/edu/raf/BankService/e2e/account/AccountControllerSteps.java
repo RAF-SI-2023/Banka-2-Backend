@@ -31,11 +31,6 @@ public class AccountControllerSteps extends AccountControllerTestConfig{
     @Autowired
     AccountControllerJwtConst accountControllerJwtConst;
     private MockHttpServletResponse responseEntity;
-    private MockHttpServletResponse responseEntityFail;
-    private String currency;
-    private double available;
-    private double reserved;
-    private double total;
 
     @Autowired
     private ObjectMapper objectMapper;
