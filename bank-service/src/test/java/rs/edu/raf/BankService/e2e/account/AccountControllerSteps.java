@@ -43,7 +43,7 @@ public class AccountControllerSteps extends AccountControllerTestConfig{
     @When("they send request for accounts informations to get account paramethers")
     public void sendingForAccountInformations() throws Exception {
 
-        ResultActions resultActions = mockMvc.perform(get(BASE_URL+"/cash-account-state")
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL+"/cashe-account-state")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accountControllerJwtConst.jwt)

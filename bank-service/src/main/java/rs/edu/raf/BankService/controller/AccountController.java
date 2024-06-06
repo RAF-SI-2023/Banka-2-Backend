@@ -80,7 +80,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/cash-account-state")
+    @GetMapping("/cashe-account-state")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
     @ApiResponse(responseCode = "200", description = "Returns params for bank account, and admin,supervisor role can do this")
     public ResponseEntity<?> findBankAccounts() {
