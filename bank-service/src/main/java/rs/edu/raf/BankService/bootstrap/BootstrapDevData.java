@@ -454,6 +454,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so1.setEmail(myEmail1);
                 so1.setAccountNumber("3334444999999999");
                 so1.setOwnedByBank(false);
+                so1.setListingType(ListingType.STOCK);
                 so1.setSecuritiesSymbol(symbols1[i]);
                 int quantity = new Random().nextInt(100);
                 so1.setQuantity(quantity + 50);
@@ -466,6 +467,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so2.setEmail(myEmail2);
                 so2.setAccountNumber("3334444111111111");
                 so2.setOwnedByBank(false);
+                so1.setListingType(ListingType.STOCK);
                 so2.setSecuritiesSymbol(symbols2[i]);
                 int quantity1 = new Random().nextInt(150);
                 so2.setQuantity(30 + quantity1);
@@ -477,6 +479,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
                 so3.setEmail(myEmail3);
+                so1.setListingType(ListingType.STOCK);
                 so3.setAccountNumber("1112222333333333");
                 so3.setOwnedByBank(false);
                 so3.setSecuritiesSymbol(symbols3[i]);
