@@ -151,6 +151,10 @@ public class OptionServiceImpl implements OptionService {
         return null;
     }
 
+    @Override
+    public List<Option> findAll() {
+        return optionRepository.findAll();
+    }
 
 }
 
