@@ -91,7 +91,7 @@ public class ExchangeControllerTestsSteps extends ExchangeControllerTestsConfig 
     public void userRequestsExchangeWithExistingName(String exchangeName) {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("/api/exchange/exchange-name/" + exchangeName)
+                    get("/api/exchange/exchange-name?exchange=" + exchangeName)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
             ).andExpect(status().isOk());
@@ -119,7 +119,7 @@ public class ExchangeControllerTestsSteps extends ExchangeControllerTestsConfig 
     public void userRequestsExchangeWithNonExistingName(String exchangeName) {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("/api/exchange/exchange-name/" + exchangeName)
+                    get("/api/exchange/exchange-name?exchange=" + exchangeName)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
             ).andExpect(status().isNotFound());
