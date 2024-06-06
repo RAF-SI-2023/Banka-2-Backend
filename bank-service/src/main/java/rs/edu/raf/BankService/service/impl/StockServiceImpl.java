@@ -136,7 +136,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public ExchangeDto getExchangeExchangeAcronym(String exchangeAcronym) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/exchange/exchange-acronym?exchange=" + URLEncoder.encode(exchangeAcronym, StandardCharsets.UTF_8)))
+                .uri(URI.create(STOCK_SERVICE_URL + "/exchange/exchange-name?exchange=" + URLEncoder.encode(exchangeAcronym, StandardCharsets.UTF_8)))
                 //        .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
