@@ -1,12 +1,15 @@
 package rs.edu.raf.BankService.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import rs.edu.raf.BankService.data.dto.BankStockDto;
-import rs.edu.raf.BankService.data.dto.MarginsTransactionDto;
+import rs.edu.raf.BankService.data.dto.MarginsTransactionRequestDto;
+import rs.edu.raf.BankService.data.dto.MarginsTransactionResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
 import rs.edu.raf.BankService.data.entities.MarginsTransaction;
 import rs.edu.raf.BankService.data.entities.Order;
@@ -14,8 +17,13 @@ import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.mapper.MarginsTransactionMapper;
 import rs.edu.raf.BankService.repository.MarginsAccountRepository;
 import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
+import rs.edu.raf.BankService.repository.specification.MarginsTransactionSpecification;
 import rs.edu.raf.BankService.service.MarginsTransactionService;
 import rs.edu.raf.BankService.service.OrderService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -31,36 +39,64 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
 
     @Override
-    public MarginsTransactionDto createTransaction(MarginsTransactionDto marginsTransactionDto) {
-        // ostaje da se azuziraju podaci na marznom nalogu
-        MarginsAccount account = marginsAccountRepository.findById(marginsTransactionDto.getMarginsAccountId())
-                .orElseThrow(() -> new RuntimeException("Margin account not found"));
-        Order order = orderService.findById(marginsTransactionDto.getOrderId());
+    public List<MarginsTransactionResponseDto> getTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate) {
+        Specification<MarginsTransaction> spec = Specification
+                .where(MarginsTransactionSpecification.hasCurrency(currencyCode))
+                .and(MarginsTransactionSpecification.isBetweenDates(startDate, endDate));
+
+        return marginsTransactionRepository
+                .findAll(spec)
+                .stream().map(transactionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public MarginsTransactionResponseDto createTransaction(MarginsTransactionRequestDto marginsTransactionRequestDto) {
+        Order order = orderService.findById(marginsTransactionRequestDto.getOrderId());
+
         Double listPricePerUnit = getListingPrice(order.getListingId(), order.getListingType());
         Double orderPrice = order.getQuantity() * listPricePerUnit;
+        Double initialMargin =  marginsTransactionRequestDto.getInitialMargin();
+        Double loanValue = orderPrice - initialMargin;
+        Double interest = loanValue * 0.05;
 
-        // moramo da vidimo sta se sve dobija ja fronta, a sta jurimo na backu
-        Double initialMargin =  marginsTransactionDto.getInitialMargin();
-
-        MarginsTransaction transaction = transactionMapper.toEntity(marginsTransactionDto);
-        transaction.setInvestmentAmount(initialMargin);
-
-        Double loan = orderPrice - initialMargin;
-        if (loan < 0) {
-            loan = 0.0;
-        }
-
-        Double interest = loan * 0.05;
-        if (order.getListingType().equals(ListingType.FUTURE)) {
-            interest = 0.0;
-        }
-
-        transaction.setLoanValue(loan);
+        MarginsTransaction transaction = transactionMapper.toEntity(marginsTransactionRequestDto);
+        transaction.setOrderPrice(orderPrice);
+        transaction.setLoanValue(loanValue);
         transaction.setInterest(interest);
         transaction.setInvestmentAmount(initialMargin);
-        marginsTransactionRepository.save(transaction);
+        // popraviti da koristi id iz security context-a tj. jwt (ili ostaviti ovako je lakse)
+        transaction.setUserId(marginsTransactionRequestDto.getUserId());
+        transaction.setFallbackValues(order.getListingType());
 
-        return marginsTransactionDto;
+        MarginsAccount updatedMarginsAccount = updateMarginsAccount(marginsTransactionRequestDto.getMarginsAccountId(), transaction);
+        transaction.setMarginsAccount(updatedMarginsAccount);
+
+        MarginsTransaction savedTransaction = marginsTransactionRepository.save(transaction);
+
+        return transactionMapper.toDto(savedTransaction);
+    }
+
+    private MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {
+        MarginsAccount marginsAccount = marginsAccountRepository.findById(marginsAccountId)
+                .orElseThrow(() -> new RuntimeException("Margin account not found"));
+
+        if (transaction.isTransactionDeposit()) {
+            marginsAccount.setBalance(marginsAccount.getBalance() - transaction.getInvestmentAmount());
+            marginsAccount.setLoanValue(marginsAccount.getLoanValue() + transaction.getLoanValue());
+            marginsAccount.setMaintenanceMargin(
+                    marginsAccount.getMaintenanceMargin() + transaction.getMaintenanceMargin());
+        }
+        else {
+            marginsAccount.setBalance(marginsAccount.getBalance() + transaction.getInvestmentAmount());
+            marginsAccount.setMaintenanceMargin(
+                    marginsAccount.getMaintenanceMargin() - transaction.getMaintenanceMargin());
+        }
+
+        marginsAccount.setFallbackValues();
+        marginsAccount.addTransaction(transaction);
+        return marginsAccountRepository.save(marginsAccount);
     }
 
     private Double getListingPrice(Long listingId, ListingType listingType) {
