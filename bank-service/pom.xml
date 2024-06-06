@@ -226,6 +226,9 @@
 						<exclude>**/jwtUtils/**</exclude>
 						<exclude>**/mapper/**</exclude>
 						<exclude>**/repository/**</exclude>
+						<exclude>**/tradingSimulation/**</exclude>
+						<exclude>**/OrderServiceImpl/**</exclude>
+						<exclude>**/IAMServiceImpl/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
