@@ -1,6 +1,5 @@
 package rs.edu.raf.BankService.unit.account;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,12 +13,6 @@ import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
-import rs.edu.raf.BankService.data.entities.card.Card;
-import rs.edu.raf.BankService.data.entities.transactions.AdditionTransferTransaction;
-import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.transactions.SubtractionTransferTransaction;
-import rs.edu.raf.BankService.data.enums.AccountType;
-import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
@@ -29,7 +22,6 @@ import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.repository.UserAccountUserProfileActivationCodeRepository;
 import rs.edu.raf.BankService.service.impl.CashAccountServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -493,56 +485,27 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void findAccountByMoneyStatus_Success(){
-        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
-        DomesticCurrencyCashAccount domesticAccount = new DomesticCurrencyCashAccount();
-        ForeignCurrencyCashAccount foreignAccount = new ForeignCurrencyCashAccount();
-        BusinessCashAccount businessAccount = new BusinessCashAccount();
+    public void findBankAccounts_Success(){
+        AccountValuesDto accountValuesDto = new AccountValuesDto();
+        CashAccount cashAcc = new CashAccount();
+        cashAcc.setOwnedByBank(true);
+        List< CashAccount> cashAccount = Arrays.asList(cashAcc);
 
-        domesticAccount.setCurrencyCode("RSD");
-        domesticAccount.setAvailableBalance(1000);
-        domesticAccount.setReservedFunds(1000);
-
-        foreignAccount.setCurrencyCode("RSD");
-        foreignAccount.setAvailableBalance(1000);
-        foreignAccount.setReservedFunds(1000);
-
-        businessAccount.setCurrencyCode("RSD");
-        businessAccount.setAvailableBalance(1000);
-        businessAccount.setReservedFunds(1000);
-
-        moneyStatusDto.setCurrency("RSD");
-        moneyStatusDto.setTotal(2000);
-        moneyStatusDto.setAvailableBalance(1000);
-        moneyStatusDto.setReservedFunds(1000);
-
-       List< CashAccount> cashAccount = Arrays.asList(domesticAccount, foreignAccount, businessAccount);
-       when(cashAccountRepository.findAll()).thenReturn(cashAccount);
-
-        DomesticCurrencyAccountDto domesticDto = new DomesticCurrencyAccountDto();
-        ForeignCurrencyAccountDto foreignDto = new ForeignCurrencyAccountDto();
-        BusinessAccountDto businessDto = new BusinessAccountDto();
-
-        when(accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto(domesticAccount)).thenReturn(domesticDto);
-        when(accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto(foreignAccount)).thenReturn(foreignDto);
-        when(accountMapper.businessAccountToBusinessAccountDto(businessAccount)).thenReturn(businessDto);
-
-        List<AccountDto> result = accountService.findAccountByMoneyStatus(moneyStatusDto);
+        when(cashAccountRepository.findAll()).thenReturn(cashAccount);
 
 
-        assertEquals(3, result.size(), "Expected three accounts");
-        assertTrue(result.contains(domesticDto), "Expected domestic account DTO");
-        assertTrue(result.contains(foreignDto), "Expected foreign account DTO");
-        assertTrue(result.contains(businessDto), "Expected business account DTO");
+        List<AccountValuesDto> result = accountService.findBankAccounts();
+
+
+        assertEquals(1, result.size(), "Expected one accounts");
+        verify(cashAccountRepository, times(1)).findAll();
     }
 
     @Test
-    public void findAccountByMoneyStatus_AccountNotFound(){
-        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
-
+    public void findBankAccounts_AccountNotFound(){
         when(cashAccountRepository.findAll()).thenReturn(null);
 
-        assertThrows(AccountNotFoundException.class, () -> accountService.findAccountByMoneyStatus(moneyStatusDto));
+        assertThrows(AccountNotFoundException.class, () -> accountService.findBankAccounts());
         verify(cashAccountRepository, times(1)).findAll();
     }
 

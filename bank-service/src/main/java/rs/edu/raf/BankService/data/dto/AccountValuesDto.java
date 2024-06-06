@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MoneyStatusDto {
+public class AccountValuesDto {
 
     private String currency;
     private double total;

@@ -283,13 +283,12 @@ public class AccountControllerTests {
     }
 
     @Test
-    public void findAccountByMoneyStatus_Success(){
-        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
-        List<AccountDto> accountsDto = new ArrayList<>();
+    public void findBankAccounts_Success(){
+        List<AccountValuesDto> accountsDto = new ArrayList<>();
 
-        when(accountService.findAccountByMoneyStatus(moneyStatusDto)).thenReturn(accountsDto);
+        when(accountService.findBankAccounts()).thenReturn(accountsDto);
 
-        ResponseEntity<?> response = accountController.findAccountByMoneyStatus(moneyStatusDto);
+        ResponseEntity<?> response = accountController.findBankAccounts();
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals(response.getBody(), accountsDto);
@@ -298,12 +297,9 @@ public class AccountControllerTests {
 
     @Test
     public void findAccountByMoneyStatus_AccountNotFound(){
-        MoneyStatusDto moneyStatusDto = new MoneyStatusDto();
-        List<AccountDto> accountsDto = new ArrayList<>();
+        when(accountService.findBankAccounts()).thenThrow(new AccountNotFoundException(""));
 
-        when(accountService.findAccountByMoneyStatus(moneyStatusDto)).thenThrow(new AccountNotFoundException(""));
-
-        ResponseEntity<?> response = accountController.findAccountByMoneyStatus(moneyStatusDto);
+        ResponseEntity<?> response = accountController.findBankAccounts();
 
         assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
         assertEquals(response.getBody(), "Account with account number  not found");

@@ -1,8 +1,8 @@
 Feature: AccountController Scenario
 
   Scenario: Admin or supervisor need to get accounts information
-    Given they are giving currency "RSD" available balance "100000" reserved funds "0" and total "100000"
-    When they send request for accounts informations to get
+    Given no paramethers to give
+    When they send request for accounts informations to get account paramethers
     Then response is back with status ok and accounts informations
 
   Scenario: Addition cashe assets to account

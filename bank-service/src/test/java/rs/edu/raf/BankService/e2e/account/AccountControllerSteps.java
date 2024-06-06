@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.java.eo.Do;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,11 +11,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import rs.edu.raf.BankService.data.dto.AccountNumberDto;
 import rs.edu.raf.BankService.data.dto.DepositWithdrawalDto;
-import rs.edu.raf.BankService.data.dto.MoneyStatusDto;
+import rs.edu.raf.BankService.data.dto.AccountValuesDto;
 import rs.edu.raf.BankService.e2e.generators.JwtTokenGenerator;
-import rs.edu.raf.BankService.mapper.AccountMapper;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,21 +40,18 @@ public class AccountControllerSteps extends AccountControllerTestConfig{
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Given("they are giving currency {string} available balance {string} reserved funds {string} and total {string}")
-    public void initAccountNuberAndCheckAuth(String s, String s1, String s2, String s3){
-       this.currency = s; this.available = Double.parseDouble(s1); this.reserved = Double.parseDouble(s2); this.total = Double.parseDouble(s3);
+    @Given("no paramethers to give")
+    public void initAccountNuberAndCheckAuth(){
        accountControllerJwtConst.jwt = JwtTokenGenerator.generateToken(9L, "dummyAdminUser@gmail.com", "ADMIN", "");
     }
 
-    @When("they send request for accounts informations to get")
+    @When("they send request for accounts informations to get account paramethers")
     public void sendingForAccountInformations() throws Exception {
-        MoneyStatusDto moneyStatusDto = new MoneyStatusDto(currency, total, available, reserved);
 
         ResultActions resultActions = mockMvc.perform(get(BASE_URL+"/cashe-account-state")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accountControllerJwtConst.jwt)
-                .content(objectMapper.writeValueAsString(moneyStatusDto))
         ).andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
@@ -175,7 +170,7 @@ public class AccountControllerSteps extends AccountControllerTestConfig{
     public  void shouldReturneStatusNotFoundForSubtraction(){
         assertEquals(MockHttpServletResponse.SC_INTERNAL_SERVER_ERROR, responseEntity.getStatus());
     }
-//////////
+
     @Given("data of account number {string} and amount {string} for tihs subtraction")
     public void initDepositWithdrawalSubtractionToBigAmount(String s1, String s2){
         accountNum = s1;

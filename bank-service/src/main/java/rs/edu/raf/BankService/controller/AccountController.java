@@ -82,10 +82,10 @@ public class AccountController {
 
     @GetMapping("/cashe-account-state")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPERVISOR')")
-    @ApiResponse(responseCode = "200", description = "Returns all account params for account number, and admin,supervisor role can do this")
-    public ResponseEntity<?> findAccountByMoneyStatus(@RequestBody MoneyStatusDto moneyStatusDto) {
+    @ApiResponse(responseCode = "200", description = "Returns params for bank account, and admin,supervisor role can do this")
+    public ResponseEntity<?> findBankAccounts() {
         try {
-            return ResponseEntity.ok(cashAccountService.findAccountByMoneyStatus(moneyStatusDto));
+            return ResponseEntity.ok(cashAccountService.findBankAccounts());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

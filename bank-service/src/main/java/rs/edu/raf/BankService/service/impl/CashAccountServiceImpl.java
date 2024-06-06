@@ -141,24 +141,20 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
-    public List<AccountDto> findAccountByMoneyStatus(MoneyStatusDto moneyStatusDto) throws AccountNotFoundException{
+    public List<AccountValuesDto> findBankAccounts() throws AccountNotFoundException{
         List<CashAccount> cashAccounts = cashAccountRepository.findAll();
-        List<AccountDto> accountsDto = new ArrayList<>();
+        List<AccountValuesDto> accountsDto = new ArrayList<>();
+
         if(cashAccounts != null){
             for (CashAccount ca : cashAccounts) {
-                if ( (ca.getCurrencyCode().equals(moneyStatusDto.getCurrency())) && (moneyStatusDto.getAvailableBalance() == ca.getAvailableBalance())
-                        && (ca.getReservedFunds() == moneyStatusDto.getReservedFunds()) && ((ca.getReservedFunds()+ca.getAvailableBalance()) == moneyStatusDto.getTotal())
-                        && (ca instanceof DomesticCurrencyCashAccount)) {
-                    accountsDto.add(accountMapper.domesticCurrencyAccountToDomesticCurrencyAccountDtoDto((DomesticCurrencyCashAccount) ca));
-                } else if ((ca.getCurrencyCode().equals(moneyStatusDto.getCurrency())) && (moneyStatusDto.getAvailableBalance() == ca.getAvailableBalance())
-                        && (ca.getReservedFunds() == moneyStatusDto.getReservedFunds()) && ((ca.getReservedFunds()+ca.getAvailableBalance()) == moneyStatusDto.getTotal())
-                        &&(ca instanceof ForeignCurrencyCashAccount)) {
-                    accountsDto.add(accountMapper.foreignCurrencyAccountToForeignCurrencyAccountDtoDto((ForeignCurrencyCashAccount) ca));
-                } else if ((ca.getCurrencyCode().equals(moneyStatusDto.getCurrency())) && (moneyStatusDto.getAvailableBalance() == ca.getAvailableBalance())
-                        && (ca.getReservedFunds() == moneyStatusDto.getReservedFunds()) && ((ca.getReservedFunds()+ca.getAvailableBalance()) == moneyStatusDto.getTotal())
-                        &&(ca instanceof BusinessCashAccount)) {
-                    accountsDto.add(accountMapper.businessAccountToBusinessAccountDto((BusinessCashAccount) ca));
-                }
+                AccountValuesDto accountValuesDto = new AccountValuesDto();
+              if(ca.isOwnedByBank()){
+                      accountValuesDto.setCurrency(ca.getCurrencyCode());
+                      accountValuesDto.setAvailableBalance(ca.getAvailableBalance());
+                      accountValuesDto.setReservedFunds(ca.getReservedFunds());
+                      accountValuesDto.setTotal(ca.getAvailableBalance() + ca.getReservedFunds());
+                      accountsDto.add(accountValuesDto);
+              }
             }
         }
         else{
