@@ -228,10 +228,10 @@
 						<exclude>**/repository/**</exclude>
 						<exclude>**/tradingSimulation/**</exclude>
 						<exclude>**/springSecurityUtil/**</exclude>
-						<exclude>**/StockServiceImpl.java</exclude>
-						<exclude>**/IAMServiceImpl.java</exclude>
-						<exclude>**/BankServiceApplication.java</exclude>
-						<exclude>**/MarginsAccountMaintainScheduler.java</exclude>
+						<exclude>**/StockServiceImpl</exclude>
+						<exclude>**/IAMServiceImpl</exclude>
+						<exclude>**/BankServiceApplication</exclude>
+						<exclude>**/MarginsAccountMaintainScheduler</exclude>
 					</excludes>
 				</configuration>
 				<executions>
