@@ -16,7 +16,7 @@ import rs.edu.raf.StockService.services.SecuritiesService;
 import java.time.LocalDate;
 import java.util.List;
 
-public class SecuritiesControllerTestsSteps {
+public class SecuritiesControllerTestsSteps extends SecuritiesControllerTestsConfig {
 
     private final RestTemplate restTemplate = new RestTemplateBuilder().build();
     private final String baseUrl = "http://localhost:8001/api/securities/get-by-settlement-date";
