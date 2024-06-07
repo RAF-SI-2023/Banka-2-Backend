@@ -3,11 +3,14 @@ package rs.edu.raf.BankService.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
+import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.BankTransferTransactionDetails;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeRates;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 import rs.edu.raf.BankService.mapper.BankTransferTransactionDetailsMapper;
 import rs.edu.raf.BankService.repository.BankTransferTransactionDetailsRepository;
+import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.BankTransferTransactionDetailsService;
 
 import java.util.List;
@@ -21,6 +24,7 @@ public class BankTransferTransactionDetailsServiceImpl implements BankTransferTr
 
     private final BankTransferTransactionDetailsRepository bankTransferTransactionDetailsRepository;
     private final BankTransferTransactionDetailsMapper bankTransferTransactionDetailsMapper;
+    private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
 
     @Override
     public List<BankTransferTransactionDetailsDto> getAllBankExchangeRates() {
@@ -53,6 +57,7 @@ public class BankTransferTransactionDetailsServiceImpl implements BankTransferTr
     @Override
     public BankTransferTransactionDetailsDto createBankTransferTransactionDetails(ExchangeTransferTransactionDetails exchangeTransferTransactionDetails) {
 
+
         BankTransferTransactionDetails bankTransferTransactionDetails = new BankTransferTransactionDetails();
         bankTransferTransactionDetails.setExchangeTransferTransactionDetails(exchangeTransferTransactionDetails);
         bankTransferTransactionDetails.setAmount(exchangeTransferTransactionDetails.getAmount());
@@ -61,13 +66,10 @@ public class BankTransferTransactionDetailsServiceImpl implements BankTransferTr
         bankTransferTransactionDetails.setSoldCurrency(exchangeTransferTransactionDetails.getToCurrency());
         bankTransferTransactionDetails.setAmount(exchangeTransferTransactionDetails.getAmount());
 
-        double soldCurrency = Integer.parseInt(bankTransferTransactionDetails.getSoldCurrency().split(" ")[0]);
-        double boughtCurrency = Integer.parseInt(bankTransferTransactionDetails.getBoughtCurrency().split(" ")[0]);
-        double avg = (soldCurrency + boughtCurrency) / 2;
-        double diff = Math.abs(soldCurrency - boughtCurrency);
-        double totalProfit = diff / avg * 100;
-
-        bankTransferTransactionDetails.setTotalProfit(totalProfit + bankTransferTransactionDetails.getFee());
+        double currentCost =exchangeTransferTransactionDetails.getExchangeRate();
+        double sellerCost = exchangeTransferTransactionDetails.getExchangeRate() * 1.02;
+        double avgCost = Math.abs(currentCost - sellerCost);
+        bankTransferTransactionDetails.setTotalProfit(avgCost*bankTransferTransactionDetails.getAmount()+bankTransferTransactionDetails.getFee());
 
         bankTransferTransactionDetailsRepository.save(bankTransferTransactionDetails);
 
