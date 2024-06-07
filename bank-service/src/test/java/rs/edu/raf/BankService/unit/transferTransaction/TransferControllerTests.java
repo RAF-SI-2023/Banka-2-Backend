@@ -12,11 +12,7 @@ import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
-import rs.edu.raf.BankService.mapper.TransactionMapper;
-import rs.edu.raf.BankService.repository.CashAccountRepository;
-import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
-import rs.edu.raf.BankService.service.impl.TransactionServiceImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +22,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 
-public class TransferController {
+public class TransferControllerTests {
 
     @InjectMocks
     private TransferTransactionController transferTransactionController;

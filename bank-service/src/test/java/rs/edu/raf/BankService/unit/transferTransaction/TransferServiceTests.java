@@ -1,11 +1,11 @@
 package rs.edu.raf.BankService.unit.transferTransaction;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.webjars.NotFoundException;
@@ -29,7 +29,6 @@ import rs.edu.raf.BankService.service.ActionAgentProfitService;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.impl.TransactionServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,12 +36,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-public class TransferService {
+@ExtendWith(MockitoExtension.class)
+public class TransferServiceTests {
 
     @InjectMocks
     private TransactionServiceImpl transactionService;
@@ -62,10 +60,10 @@ public class TransferService {
     private ActionAgentProfitService actionAgentProfitService;
 
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
 
 
     @Test
@@ -828,4 +826,92 @@ public class TransferService {
             transactionService.createSecuritiesTransaction(contractDto);
         });
     }
+
+    @Test
+    void testDepositWithdrawalTransaction() {
+        InternalTransferTransactionDto dto = new InternalTransferTransactionDto();
+        dto.setSenderAccountNumber("123");
+        dto.setAmount(100L);
+
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAvailableBalance(200.0);
+        cashAccount.setAccountNumber("123");
+
+        when(cashAccountRepository.findByAccountNumber(dto.getSenderAccountNumber())).thenReturn(cashAccount);
+        when(transactionMapper.toInternalTransferTransactionEntity(dto)).thenReturn(new InternalTransferTransaction());
+
+        InternalTransferTransactionDto result = transactionService.depositWithdrawalTransaction(dto);
+
+        assertEquals(dto.getAmount(), result.getAmount());
+        assertEquals(300.0, cashAccount.getAvailableBalance(), 0.0);
+    }
+
+    @Test
+    void testDepositWithdrawalTransaction_AccNotFound() {
+        InternalTransferTransactionDto dto = new InternalTransferTransactionDto();
+        dto.setSenderAccountNumber("123");
+
+        when(cashAccountRepository.findByAccountNumber(dto.getSenderAccountNumber())).thenReturn(null);
+
+        assertThrows(AccountNotFoundException.class, () -> {
+            transactionService.depositWithdrawalTransaction(dto);
+        });
+    }
+
+    @Test
+    void testDepositWithdrawalTransaction_Deposit() {
+        InternalTransferTransactionDto dto = new InternalTransferTransactionDto();
+        dto.setSenderAccountNumber("123");
+        dto.setAmount(100L);
+
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAvailableBalance(200.0);
+        cashAccount.setAccountNumber("123");
+
+        when(cashAccountRepository.findByAccountNumber(dto.getSenderAccountNumber())).thenReturn(cashAccount);
+        when(transactionMapper.toInternalTransferTransactionEntity(dto)).thenReturn(new InternalTransferTransaction());
+
+        InternalTransferTransactionDto result = transactionService.depositWithdrawalTransaction(dto);
+
+        assertEquals(dto.getAmount(), result.getAmount());
+        assertEquals(300.0, cashAccount.getAvailableBalance(), 0.0);
+    }
+
+    @Test
+    void testDepositWithdrawalTransaction_Withdrawal() {
+        InternalTransferTransactionDto dto = new InternalTransferTransactionDto();
+        dto.setSenderAccountNumber("123");
+        dto.setAmount(-100L);
+
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAvailableBalance(200.0);
+        cashAccount.setAccountNumber("123");
+
+        when(cashAccountRepository.findByAccountNumber(dto.getSenderAccountNumber())).thenReturn(cashAccount);
+        when(transactionMapper.toInternalTransferTransactionEntity(dto)).thenReturn(new InternalTransferTransaction());
+
+        InternalTransferTransactionDto result = transactionService.depositWithdrawalTransaction(dto);
+
+        assertEquals(dto.getAmount(), result.getAmount());
+        assertEquals(100.0, cashAccount.getAvailableBalance(), 0.0);
+    }
+
+    @Test
+    void testDepositWithdrawalTransaction_WithdrawalNotEnoughBalance() {
+        InternalTransferTransactionDto dto = new InternalTransferTransactionDto();
+        dto.setSenderAccountNumber("123");
+        dto.setAmount(-300L);
+
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setAvailableBalance(200.0);
+        cashAccount.setAccountNumber("123");
+
+        when(cashAccountRepository.findByAccountNumber(dto.getSenderAccountNumber())).thenReturn(cashAccount);
+
+        assertThrows(RuntimeException.class, () -> {
+            transactionService.depositWithdrawalTransaction(dto);
+        });
+    }
+
+
 }
