@@ -58,6 +58,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ExchangeTransferDetailsDto exchangeCurrency(ExchangeRequestDto exchangeRequestDto) {
+
+
         CashAccount from = cashAccountRepository.findByAccountNumber(exchangeRequestDto.getFromAccount());
         CashAccount to = cashAccountRepository.findByAccountNumber(exchangeRequestDto.getToAccount());
         List<CashAccount> bankCashAccounts = cashAccountRepository.findAllByEmail("bankAccount@bank.rs");
