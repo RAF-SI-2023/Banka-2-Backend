@@ -62,8 +62,8 @@ public class BankTransferTransactionDetailsServiceImpl implements BankTransferTr
         bankTransferTransactionDetails.setExchangeTransferTransactionDetails(exchangeTransferTransactionDetails);
         bankTransferTransactionDetails.setAmount(exchangeTransferTransactionDetails.getAmount());
         bankTransferTransactionDetails.setFee(200);
-        bankTransferTransactionDetails.setBoughtCurrency("116 RSD");
-        bankTransferTransactionDetails.setSoldCurrency("119 RSD");
+        bankTransferTransactionDetails.setBoughtCurrency(exchangeTransferTransactionDetails.getFromCurrency());
+        bankTransferTransactionDetails.setSoldCurrency(exchangeTransferTransactionDetails.getToCurrency());
         bankTransferTransactionDetails.setAmount(exchangeTransferTransactionDetails.getAmount());
 
         double currentCost =exchangeTransferTransactionDetails.getExchangeRate();
