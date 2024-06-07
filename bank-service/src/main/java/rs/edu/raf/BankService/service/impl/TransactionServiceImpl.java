@@ -373,8 +373,4 @@ public class TransactionServiceImpl implements TransactionService {
                 new TransferTransactionVerificationDto(email, token));
     }
 
-
-
-
-
 }
