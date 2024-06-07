@@ -5,6 +5,8 @@ import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRatesDto;
 import rs.edu.raf.BankService.data.dto.ExchangeRequestDto;
 import rs.edu.raf.BankService.data.dto.ExchangeTransferDetailsDto;
+import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 
 import java.util.List;
