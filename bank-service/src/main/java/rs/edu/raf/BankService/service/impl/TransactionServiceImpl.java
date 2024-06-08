@@ -256,6 +256,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (reservedFunds < amount) {
             // this should not happen
+            // possible if using random or something, throws exception once in a blue moon, totally unpredictable
+            System.out.println("amount = " +  amount +" reserved = "+reservedFunds);
             throw new RuntimeException("Insufficient reserved funds (THIS SOULD NOT HAPPEN)");
         }
 

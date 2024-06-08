@@ -174,7 +174,7 @@ public class TradingSimulation implements Runnable {
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
             so.setSecuritiesSymbol(listingDto.getSymbol());
-            so.setOwnedByBank(false);
+            so.setOwnedByBank(account.isOwnedByBank());
             so.setQuantityOfPubliclyAvailable(0);
             so.setAverageBuyingPrice(0.0);
             securitiesOwnershipRepository.save(so);
@@ -397,6 +397,7 @@ public class TradingSimulation implements Runnable {
         Order order = buyTradingJob.getOrder();
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyTradingJob.getTradingAccountNumber(), order.getListingSymbol());
+
         if (buySecurities.isEmpty()) {
             //kreiraj
             SecuritiesOwnership so = new SecuritiesOwnership();
@@ -405,7 +406,7 @@ public class TradingSimulation implements Runnable {
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
             so.setSecuritiesSymbol(order.getListingSymbol());
-            so.setOwnedByBank(false);
+            so.setOwnedByBank( account.isOwnedByBank());
             so.setQuantityOfPubliclyAvailable(0);
             so.setAverageBuyingPrice(0.0);
             securitiesOwnershipRepository.save(so);
@@ -470,7 +471,7 @@ public class TradingSimulation implements Runnable {
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
             so.setSecuritiesSymbol(order.getListingSymbol());
-            so.setOwnedByBank(false);
+            so.setOwnedByBank( account.isOwnedByBank());
             so.setAverageBuyingPrice(0.0);
             so.setQuantityOfPubliclyAvailable(0);
             securitiesOwnershipRepository.save(so);
