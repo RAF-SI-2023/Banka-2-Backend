@@ -3,6 +3,7 @@ package rs.edu.raf.StockService.integration.securitiesservice;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,11 +14,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
-public class SecuritiesServiceImplSteps {
+@RequiredArgsConstructor
+public class SecuritiesServiceImplSteps extends SecuritiesServiceImplTestsConfig {
 
     @MockBean
-    private SecuritiesService securitiesService;
+    private final SecuritiesService securitiesService;
 
     private LocalDate settlementDate;
     private List<SecuritiesDto> securities;
