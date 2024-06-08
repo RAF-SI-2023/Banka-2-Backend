@@ -1,14 +1,9 @@
 package rs.edu.raf.BankService.mapper;
 
 import org.springframework.stereotype.Component;
-import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
-import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
-import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
+import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
-import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
-import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
-import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.*;
 import rs.edu.raf.BankService.data.enums.TransactionType;
 
 import java.time.LocalDateTime;
@@ -64,6 +59,7 @@ public class TransactionMapper {
         return entity;
     }
 
+
     // mapira transakcije za prikaz u listi(po specifikaciji)
     public GenericTransactionDto toGenericTransactionDto(TransferTransaction transferTransaction) {
         GenericTransactionDto dto = new GenericTransactionDto();
@@ -86,8 +82,46 @@ public class TransactionMapper {
             dto.setAmount(amount.longValue());
             dto.setType(TransactionType.SECURITY);
         }
+        return dto;
+    }
 
+    public TransferTransactionAdditionDto toTransferTransactionAdditionDto(AdditionTransferTransaction transaction) {
+        TransferTransactionAdditionDto dto = new TransferTransactionAdditionDto();
+        dto.setId(transaction.getId().toString());
+        dto.setAmount(transaction.getAmount());
+        dto.setStatus(transaction.getStatus());
+        dto.setCreatedAt(transaction.getCreatedAt());
+        dto.setSenderAccountNumber(transaction.getSenderCashAccount().getAccountNumber());
+        dto.setReceiverAccountNumber(transaction.getReceiverCashAccount().getAccountNumber());
 
         return dto;
+    }
+
+    public TransferTransactionSubtractionDto toTransferTransactionSubtractionDto(SubtractionTransferTransaction transaction){
+        TransferTransactionSubtractionDto dto = new TransferTransactionSubtractionDto();
+        dto.setId(transaction.getId().toString());
+        dto.setAmount(transaction.getAmount());
+        dto.setStatus(transaction.getStatus());
+        dto.setCreatedAt(transaction.getCreatedAt());
+        dto.setSenderAccountNumber(transaction.getSenderCashAccount().getAccountNumber());
+        dto.setReceiverAccountNumber(transaction.getReceiverCashAccount().getAccountNumber());
+
+        return dto;
+    }
+
+    public AdditionTransferTransaction toAdditionTransferTransactionEntity(TransferTransactionAdditionDto dto){
+        AdditionTransferTransaction entity = new AdditionTransferTransaction();
+        entity.setAmount(dto.getAmount());
+        entity.setCreatedAt(LocalDateTime.now());
+
+        return entity;
+    }
+
+    public SubtractionTransferTransaction toSubtractionTransferTransactionEntity(TransferTransactionSubtractionDto dto){
+        SubtractionTransferTransaction entity = new SubtractionTransferTransaction();
+        entity.setAmount(dto.getAmount());
+        entity.setCreatedAt(LocalDateTime.now());
+
+        return entity;
     }
 }

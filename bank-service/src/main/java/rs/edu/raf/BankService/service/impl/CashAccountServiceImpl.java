@@ -15,13 +15,20 @@ import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.DomesticCurrencyCashAccount;
 import rs.edu.raf.BankService.data.entities.accounts.ForeignCurrencyCashAccount;
+import rs.edu.raf.BankService.data.entities.transactions.AdditionTransferTransaction;
+import rs.edu.raf.BankService.data.entities.transactions.SubtractionTransferTransaction;
+import rs.edu.raf.BankService.data.enums.TransactionStatus;
 import rs.edu.raf.BankService.data.enums.UserAccountUserProfileLinkState;
 import rs.edu.raf.BankService.exception.*;
 import rs.edu.raf.BankService.mapper.AccountMapper;
+import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
+import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.repository.UserAccountUserProfileActivationCodeRepository;
 import rs.edu.raf.BankService.service.CashAccountService;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -32,9 +39,12 @@ public class CashAccountServiceImpl implements CashAccountService {
     private static final Logger logger = LoggerFactory.getLogger(CashAccountServiceImpl.class);
 
     private final AccountMapper accountMapper;
+    private final TransactionMapper transactionMapper;
     private final CashAccountRepository cashAccountRepository;
     private final UserAccountUserProfileActivationCodeRepository userAccountUserProfileActivationCodeRepository;
+    private final CashTransactionRepository cashTransactionRepository;
     private final RabbitTemplate rabbitTemplate;
+
 
     @Override
     public boolean userAccountUserProfileConnectionAttempt(AccountNumberDto accountNumberDto) {
@@ -129,6 +139,31 @@ public class CashAccountServiceImpl implements CashAccountService {
         }).toList();
 
     }
+
+    @Override
+    public List<AccountValuesDto> findBankAccounts() throws AccountNotFoundException{
+        List<CashAccount> cashAccounts = cashAccountRepository.findAll();
+        List<AccountValuesDto> accountsDto = new ArrayList<>();
+
+        if(cashAccounts != null){
+            for (CashAccount ca : cashAccounts) {
+                AccountValuesDto accountValuesDto = new AccountValuesDto();
+              if(ca.isOwnedByBank()){
+                      accountValuesDto.setCurrency(ca.getCurrencyCode());
+                      accountValuesDto.setAvailableBalance(ca.getAvailableBalance());
+                      accountValuesDto.setReservedFunds(ca.getReservedFunds());
+                      accountValuesDto.setTotal(ca.getAvailableBalance() + ca.getReservedFunds());
+                      accountsDto.add(accountValuesDto);
+              }
+            }
+        }
+        else{
+            throw new AccountNotFoundException("");
+        }
+        return accountsDto;
+    }
+
+
 
     @Transactional(dontRollbackOn = Exception.class)
     @Scheduled(cron = "0 */5 * * * *") //every 5 minute
@@ -234,4 +269,62 @@ public class CashAccountServiceImpl implements CashAccountService {
     public boolean setIsAccountPrimaryForTrading(String accountNumber) {
         return false;
     }
+
+    @Override
+    public boolean depositWithdrawalAddition(DepositWithdrawalDto depositWithdrawalDto) {
+
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+        if(cashAccount == null){
+            throw new AccountNotFoundException(depositWithdrawalDto.getAccountNumber());
+        }
+
+        cashAccount.setAvailableBalance(cashAccount.getAvailableBalance()+depositWithdrawalDto.getAmount());
+        cashAccountRepository.save(cashAccount);
+
+        AdditionTransferTransaction additionTransferTransaction = new AdditionTransferTransaction();
+        additionTransferTransaction.setAmount(depositWithdrawalDto.getAmount());
+        additionTransferTransaction.setSenderCashAccount(cashAccount);
+        additionTransferTransaction.setReceiverCashAccount(cashAccount);
+        additionTransferTransaction.setCreatedAt(LocalDateTime.now());
+        additionTransferTransaction.setStatus(TransactionStatus.CONFIRMED);
+
+        cashTransactionRepository.save(additionTransferTransaction);
+
+        return true;
+    }
+
+    @Override
+    public boolean depositWithdrawalSubtraction(DepositWithdrawalDto depositWithdrawalDto) {
+
+       CashAccount cashAccount = cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+
+        if(cashAccount == null){
+            throw new AccountNotFoundException(depositWithdrawalDto.getAccountNumber());
+        }
+
+        if(Math.abs(depositWithdrawalDto.getAmount()) < cashAccount.getAvailableBalance()) {
+            cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() - Math.abs(depositWithdrawalDto.getAmount()));
+            cashAccountRepository.save(cashAccount);
+
+        }
+        else{
+            throw new RuntimeException("Not enough money in balance to pay");
+        }
+
+
+        SubtractionTransferTransaction transferTransaction = new SubtractionTransferTransaction();
+        transferTransaction.setAmount(depositWithdrawalDto.getAmount());
+        transferTransaction.setSenderCashAccount(cashAccount);
+        transferTransaction.setReceiverCashAccount(cashAccount);
+        transferTransaction.setCreatedAt(LocalDateTime.now());
+        transferTransaction.setStatus(TransactionStatus.CONFIRMED);
+
+
+        cashTransactionRepository.save(transferTransaction);
+
+        return true;
+    }
+
+
+
 }
