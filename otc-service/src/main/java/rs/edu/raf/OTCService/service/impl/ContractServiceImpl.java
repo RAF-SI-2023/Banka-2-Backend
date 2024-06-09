@@ -63,16 +63,6 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ContractDto> getAllApprovedContracts() {
-        return contractRepository.getAllApprovedContracts().stream().map(mapper::contractToDto).toList();
-    }
-
-    @Override
-    public List<ContractDto> getAllRejectedContracts() {
-        return contractRepository.getAllRejectedContracts().stream().map(mapper::contractToDto).toList();
-    }
-
-    @Override
     public List<ContractDto> getAllContracts() {
         String email =SpringSecurityUtil.getPrincipalEmail();
         if(SpringSecurityUtil.isUser())
