@@ -20,6 +20,7 @@ public class MarginsTransactionResponseDto {
     private String description;
     private String currencyCode;
     private TransactionDirection type;
+    private Double loanValue;
     private Double initialMargin;
     private Double maintenanceMargin;
 }
