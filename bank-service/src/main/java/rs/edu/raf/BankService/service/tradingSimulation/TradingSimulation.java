@@ -60,11 +60,11 @@ public class TradingSimulation implements Runnable {
     private void processOrders() throws InterruptedException {
         while (true) {
 
-            Thread.sleep(1000);
+          //  Thread.sleep(1000);
 
             TradingJob tradingJob = tradingJobs.take();
 
-            synchronized (TradingSimulation.lock) {
+           // synchronized (TradingSimulation.lock) {
                 if (tradingJob.getOrder().getOrderStatus() != OrderStatus.APPROVED) {
                     tradingJobs.put(tradingJob);
                     if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent()){
@@ -82,7 +82,7 @@ public class TradingSimulation implements Runnable {
                         processBuyOrder(tradingJob);}
                     case SELL -> processSellToStockMarketOrder(tradingJob);
                 }
-            }
+        //    }
 
         }
     }
@@ -142,19 +142,11 @@ public class TradingSimulation implements Runnable {
         //mockujemo podatke
         listingDto.setPrice(listingDto.getPrice());
         listingDto.setVolume(mockQuantity(listingDto.getVolume()));
-
         if(listingDto.getHigh()==null)
             listingDto.setHigh(-1.0);
         if(listingDto.getLow()==null)
             listingDto.setLow(-1.0);
-        if (listingDto.getVolume() == -1) {
-            try {
-                tradingJobs.put(buyTradingJob);
-            } catch (InterruptedException e) {
-                System.out.println("volume is 0");
-                throw new RuntimeException(e);
-            }
-        }
+
         CashAccount account = cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber());
 
         boolean doNotProcessOrder =
@@ -162,7 +154,6 @@ public class TradingSimulation implements Runnable {
                         (order.isAllOrNone() && (order.getQuantity() > listingDto.getVolume())) ||
                         !checkLimitPrice(order, listingDto.getLow(), listingDto.getHigh()) ||
                         !checkStopPrice(order, listingDto.getLow(), listingDto.getHigh());
-
         if (doNotProcessOrder) {
             try {
                 order.setTimeOfLastModification(System.currentTimeMillis());
@@ -208,7 +199,6 @@ public class TradingSimulation implements Runnable {
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         buyerSo.setListingType(order.getListingType());
         buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
-        System.out.println("\n " + "totalPrice=" + totalPrice + "  averageBuying=" + buyerSo.getAverageBuyingPrice() + ", quantityToProcess=" + quantityToProcess + "  " + "\n");
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
@@ -261,45 +251,29 @@ public class TradingSimulation implements Runnable {
         if (tradingJob.getOrder().getOrderActionType() != OrderActionType.SELL) {
             throw new RuntimeException("wrong order type");
         }
-        System.out.println("Ulazi u prodjau stocka na stock marketu " + tradingJob.getOrder());
         Order order = tradingJob.getOrder();
         Object listingDto = fetchSecuritiesByOrder(order);
-        ExchangeDto exchangeDto=null;
-        System.out.println("fetched listing dto" + listingDto);
         double price=0;
         String symbol=null;
         if(order.getListingType()==(ListingType.STOCK) || order.getListingType()==ListingType.FOREX){
             price=((ListingDto)listingDto).getPrice();
             symbol=((ListingDto) listingDto).getSymbol();
-          exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto)listingDto).getExchange());
         }
         //sanity check da moze da se prodaje samo stock i forex
-        if (price == 0 || symbol == null) {
-            System.out.println("sanity check failed " + price + symbol);
+        if(price==0 || symbol==null)
             return;
-        }
 
         if (!order.isDone() && order.getQuantity() - order.getRealizedQuantity() > 0) {
             double amountToReceive = (order.getQuantity() - order.getRealizedQuantity()) * price;
-           CashAccount ca= cashAccountRepository.findByAccountNumber(tradingJob.getTradingAccountNumber());
-            amountToReceive = currencyExchangeService.calculateAmountBetweenCurrencies(exchangeDto.getCurrency(), ca.getCurrencyCode(), amountToReceive);
-
+            CashAccount ca= cashAccountRepository.findByAccountNumber(tradingJob.getTradingAccountNumber());
             transactionService.addFunds(ca, amountToReceive*0.85); //sebi ostaje 85% valjda je izracunavanje dobro
             List<SecuritiesOwnership> so = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(tradingJob.getTradingAccountNumber(), symbol);
             if (so.size() == 1) {
-                SecuritiesOwnership securitiesOwnership = so.get(0);
-                securitiesOwnership.setQuantity(securitiesOwnership.getQuantity() - (order.getQuantity() - order.getRealizedQuantity()));
-                if(securitiesOwnership.getQuantityOfPubliclyAvailable()>securitiesOwnership.getQuantity()){
-                    securitiesOwnership.setQuantityOfPubliclyAvailable(0);
-                }
+                so.get(0).setQuantity(order.getQuantity() - order.getRealizedQuantity());
             } else {
                 //ovde je greska?
-                SecuritiesOwnership securitiesOwnership = so.get(0);
-                securitiesOwnership.setQuantity(securitiesOwnership.getQuantity() - (order.getQuantity() - order.getRealizedQuantity()));
-                if(securitiesOwnership.getQuantityOfPubliclyAvailable()>securitiesOwnership.getQuantity()){
-                    securitiesOwnership.setQuantityOfPubliclyAvailable(0);
-                }
-                throw new RuntimeException("Something might've went wrong! during selling of stock");
+                so.get(0).setQuantity(order.getQuantity() - order.getRealizedQuantity());
+                throw new RuntimeException("Something went wrong!");
             }
             securitiesOwnershipRepository.saveAll(so);
             order.setRealizedQuantity(order.getQuantity() - order.getRealizedQuantity());
@@ -383,11 +357,7 @@ public class TradingSimulation implements Runnable {
     // mock-ujemo kolicinu koja se kupuje,
     // jer su podaci koji se dovlace sa stock servisa staticni
     private Integer mockQuantity(Integer realQuantity) {
-        if (realQuantity == 0)
-            return -1;
-        else if (realQuantity == 1)
-            return 1;
-        return random.nextInt(1, realQuantity);
+        return random.nextInt(realQuantity);
     }
 
     // mock-ujemo kolicinu koja se kupuje,
