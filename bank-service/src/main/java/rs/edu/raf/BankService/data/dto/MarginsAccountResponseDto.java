@@ -11,6 +11,8 @@ import rs.edu.raf.BankService.data.enums.ListingType;
 public class MarginsAccountResponseDto {
 
     private Long id;
+    private Long userId;
+    private String email;
     private String currencyCode;
     private String accountNumber;
     private ListingType type;
