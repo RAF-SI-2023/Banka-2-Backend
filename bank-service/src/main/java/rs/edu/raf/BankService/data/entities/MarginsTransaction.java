@@ -22,7 +22,7 @@ public class MarginsTransaction {
     @ManyToOne
     private MarginsAccount marginsAccount;
 
-    private LocalDateTime createdAt;
+    private Long createdAt;
     private Long orderId;
     private Long userId;
     private String description;

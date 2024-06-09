@@ -33,4 +33,9 @@ public class MarginsTransactionSpecification {
             }
         };
     }
+
+    public static Specification<MarginsTransaction> hasEmail(String email) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("marginsAccount").get("email"), email);
+    }
 }

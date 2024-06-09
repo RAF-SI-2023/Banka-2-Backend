@@ -91,6 +91,17 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         return transactionMapper.toDto(savedTransaction);
     }
 
+    @Override
+    public List<MarginsTransactionResponseDto> findAllByEmail(String email) {
+        Specification<MarginsTransaction> spec = MarginsTransactionSpecification.hasEmail(email);
+
+        return marginsTransactionRepository
+                .findAll(spec)
+                .stream()
+                .map(transactionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     private MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {
         MarginsAccount marginsAccount = marginsAccountRepository.findById(marginsAccountId)
                 .orElseThrow(() -> new RuntimeException("Margin account not found"));
