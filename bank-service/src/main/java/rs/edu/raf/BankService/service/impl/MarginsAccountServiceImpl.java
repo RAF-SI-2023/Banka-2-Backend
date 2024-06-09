@@ -66,6 +66,14 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
         return marginsAccountMapper.toDto(marginsAccount);
     }
 
+    @Override
+    public MarginsAccountResponseDto findByUserId(Long userId) {
+        MarginsAccount marginsAccount = marginsAccountRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Margins account with user id " + userId + " doesn't exist"));
+
+        return marginsAccountMapper.toDto(marginsAccount);
+    }
+
     // ovde na frontu ako margin call nije promenjen, onda moze da ispise da je neuspela akcija
     @Override
     public MarginsAccountResponseDto settleMarginCall(Long id, Double deposit) {

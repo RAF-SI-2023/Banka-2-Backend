@@ -5,12 +5,16 @@ import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
 
+import java.util.Random;
+
 @Component
 public class MarginsAccountMapper {
 
     public MarginsAccountResponseDto toDto(MarginsAccount marginsAccount) {
         MarginsAccountResponseDto dto = new MarginsAccountResponseDto();
         dto.setId(marginsAccount.getId());
+        dto.setEmail(marginsAccount.getEmail());
+        dto.setUserId(marginsAccount.getUserId());
         dto.setAccountNumber(marginsAccount.getAccountNumber());
         dto.setBalance(marginsAccount.getBalance());
         dto.setMarginCall(marginsAccount.isMarginCall());
@@ -26,7 +30,7 @@ public class MarginsAccountMapper {
         MarginsAccount entity = new MarginsAccount();
         entity.setUserId(marginsAccountRequestDto.getUserId());
         entity.setEmail(marginsAccountRequestDto.getEmail());
-        entity.setAccountNumber(marginsAccountRequestDto.getAccountNumber());
+        entity.setAccountNumber(generateAccountNumber());
         entity.setBalance(marginsAccountRequestDto.getBalance());
         entity.setMarginCall(marginsAccountRequestDto.isMarginCall());
         entity.setListingType(marginsAccountRequestDto.getType());
@@ -35,5 +39,11 @@ public class MarginsAccountMapper {
         entity.setLoanValue(marginsAccountRequestDto.getLoanValue());
 
         return entity;
+    }
+
+    public static String generateAccountNumber() {
+        Random random = new Random();
+        int number = 10000000 + random.nextInt(90000000);
+        return String.valueOf(number);
     }
 }

@@ -46,6 +46,10 @@ public class MarginsTransaction {
             this.loanValue = 0.0;
         }
 
+        if (this.interest < 0) {
+            this.interest = 0.0;
+        }
+
         if (ListingType.FUTURE.equals(listingType)) {
             this.interest = 0.0;
         }
