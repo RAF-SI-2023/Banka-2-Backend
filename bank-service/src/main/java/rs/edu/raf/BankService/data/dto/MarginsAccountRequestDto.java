@@ -16,6 +16,7 @@ public class MarginsAccountRequestDto {
     private String currencyCode;
     private ListingType type;
     private Double balance;
+    private String accountNumber;
     private Double loanValue;
     private Double maintenanceMargin;
     private boolean marginCall;

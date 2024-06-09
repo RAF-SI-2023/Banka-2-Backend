@@ -19,4 +19,12 @@ public interface MarginsAccountRepository extends JpaRepository<MarginsAccount, 
     Optional<MarginsAccount> findByEmail(String email);
 
     Optional<MarginsAccount> findByAccountNumber(String accountNumber);
+
+    List<MarginsAccount> findAllById(Long id);
+
+    List<MarginsAccount> findAllByUserId(Long userId);
+
+    List<MarginsAccount>  findAllByEmail(String email);
+
+    List<MarginsAccount>  findAllByAccountNumber(String accountNumber);
 }
