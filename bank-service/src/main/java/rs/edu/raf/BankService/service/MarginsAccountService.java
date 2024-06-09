@@ -11,4 +11,6 @@ public interface MarginsAccountService {
     MarginsAccountResponseDto findById(Long id);
     MarginsAccountResponseDto findByUserId(Long userId);
     MarginsAccountResponseDto settleMarginCall(Long id, Double deposit);
+    MarginsAccountResponseDto findByEmail(String email);
+    MarginsAccountResponseDto findByAccountNumber(String accountNumber);
 }
