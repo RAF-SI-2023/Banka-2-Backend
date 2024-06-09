@@ -34,4 +34,9 @@ public class MarginsTransactionController {
     public List<MarginsTransactionResponseDto> getTransactionsByAccountId(@PathVariable Long accountId) {
         return marginsTransactionService.getTransactionsByAccountId(accountId);
     }
+
+    @GetMapping("/all-email/{email}")
+    public List<MarginsTransactionResponseDto> getAllTransactionsByEmail(@PathVariable String email) {
+        return marginsTransactionService.findAllByEmail(email);
+    }
 }
