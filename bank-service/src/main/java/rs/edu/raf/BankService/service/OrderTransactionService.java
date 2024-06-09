@@ -11,4 +11,6 @@ public interface OrderTransactionService {
     OrderTransaction findByOrderId(long orderId);
     List<OrderTransaction> findAll();
     List<OrderTransaction> findAllByAccountNumber(String accountNumber);
+
+    List<OrderTransaction> findAllByEmail(String email);
 }
