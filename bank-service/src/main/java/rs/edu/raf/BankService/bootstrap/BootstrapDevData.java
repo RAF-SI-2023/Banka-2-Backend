@@ -444,7 +444,7 @@ public class BootstrapDevData implements CommandLineRunner {
     private void loadSecurityOwnerships() {
         if (securitiesOwnershipRepository.count() == 0) {
 
-            String[] symbols1 = {"AAPL", "GOOGL", "Z", "AGXLW"};
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
             String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
             String[] symbols3 = {"K", "TT", "CC", "I"};
 
