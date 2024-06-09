@@ -25,12 +25,11 @@ public class MarginsAccountMapper {
 
         return dto;
     }
-
     public MarginsAccount toEntity(MarginsAccountRequestDto marginsAccountRequestDto) {
         MarginsAccount entity = new MarginsAccount();
         entity.setUserId(marginsAccountRequestDto.getUserId());
         entity.setEmail(marginsAccountRequestDto.getEmail());
-        entity.setAccountNumber(generateAccountNumber());
+        entity.setAccountNumber(marginsAccountRequestDto.getAccountNumber());
         entity.setBalance(marginsAccountRequestDto.getBalance());
         entity.setMarginCall(marginsAccountRequestDto.isMarginCall());
         entity.setListingType(marginsAccountRequestDto.getType());
@@ -41,9 +40,4 @@ public class MarginsAccountMapper {
         return entity;
     }
 
-    public static String generateAccountNumber() {
-        Random random = new Random();
-        int number = 10000000 + random.nextInt(90000000);
-        return String.valueOf(number);
-    }
 }

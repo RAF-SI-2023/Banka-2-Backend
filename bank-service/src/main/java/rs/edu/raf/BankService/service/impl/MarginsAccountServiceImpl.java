@@ -2,6 +2,7 @@ package rs.edu.raf.BankService.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
@@ -13,7 +14,7 @@ import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
 import rs.edu.raf.BankService.service.MarginsAccountService;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -40,8 +41,7 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
             MarginsAccount updatedMarginsAccount =
                     marginsAccountRepository.save(marginsAccountMapper.toEntity(marginsAccountRequestDto));
             return marginsAccountMapper.toDto(updatedMarginsAccount);
-        }
-        else {
+        } else {
             throw new RuntimeException("Margins account with id " + id + " doesn't exist");
         }
     }
@@ -52,26 +52,28 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
 
         if (isPresent) {
             marginsAccountRepository.deleteById(id);
-        }
-        else {
+        } else {
             throw new RuntimeException("Margins account with id " + id + " doesn't exist");
         }
     }
 
     @Override
-    public MarginsAccountResponseDto findById(Long id) {
-        MarginsAccount marginsAccount = marginsAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Margins account with id " + id + " doesn't exist"));
+    public List<MarginsAccountResponseDto> findById(Long id) {
+        List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllById(id);
 
-        return marginsAccountMapper.toDto(marginsAccount);
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
+
     }
 
     @Override
-    public MarginsAccountResponseDto findByUserId(Long userId) {
-        MarginsAccount marginsAccount = marginsAccountRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Margins account with user id " + userId + " doesn't exist"));
+    public List<MarginsAccountResponseDto> findByUserId(Long userId) {
+        List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByUserId(userId);
 
-        return marginsAccountMapper.toDto(marginsAccount);
+            return marginsAccounts.stream()
+                    .map(marginsAccountMapper::toDto)
+                    .toList();
     }
 
     // ovde na frontu ako margin call nije promenjen, onda moze da ispise da je neuspela akcija
@@ -94,27 +96,28 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
             MarginsAccount updatedAccount = marginsAccountRepository.save(marginsAccount);
 
             return marginsAccountMapper.toDto(updatedAccount);
-        }
-        else {
+        } else {
             return marginsAccountMapper.toDto(marginsAccount);
         }
     }
 
     @Override
-    public MarginsAccountResponseDto findByEmail(String email) {
-        MarginsAccount marginsAccount = marginsAccountRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Margins account with email " + email + " doesn't exist"));
+    public List<MarginsAccountResponseDto> findByEmail(String email) {
+        List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByEmail(email);
 
-        return marginsAccountMapper.toDto(marginsAccount);
+            return marginsAccounts.stream()
+                    .map(marginsAccountMapper::toDto)
+                    .toList();
     }
 
 
     @Override
-    public MarginsAccountResponseDto findByAccountNumber(String accountNumber) {
-        MarginsAccount marginsAccount = marginsAccountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("Margins account with account number " + accountNumber + " doesn't exist"));
+    public List<MarginsAccountResponseDto> findByAccountNumber(String accountNumber) {
+        List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByAccountNumber(accountNumber);
 
-        return marginsAccountMapper.toDto(marginsAccount);
+                return marginsAccounts.stream()
+                        .map(marginsAccountMapper::toDto)
+                        .toList();
     }
 
     private MarginsTransaction createTransactionForMarginCallSettlement(Double deposit) {
