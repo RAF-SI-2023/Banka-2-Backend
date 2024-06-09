@@ -60,11 +60,11 @@ public class TradingSimulation implements Runnable {
     private void processOrders() throws InterruptedException {
         while (true) {
 
-            Thread.sleep(100);
+          //  Thread.sleep(1000);
 
             TradingJob tradingJob = tradingJobs.take();
 
-            synchronized (TradingSimulation.lock) {
+           // synchronized (TradingSimulation.lock) {
                 if (tradingJob.getOrder().getOrderStatus() != OrderStatus.APPROVED) {
                     tradingJobs.put(tradingJob);
                     if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent()){
@@ -77,10 +77,12 @@ public class TradingSimulation implements Runnable {
                     continue;
                 }
                 switch (tradingJob.getOrder().getOrderActionType()) {
-                    case BUY -> processBuyOrder(tradingJob);
+                    case BUY -> {
+                        System.out.println("Usao u buy "+ tradingJob);
+                        processBuyOrder(tradingJob);}
                     case SELL -> processSellToStockMarketOrder(tradingJob);
                 }
-            }
+        //    }
 
         }
     }
@@ -88,7 +90,8 @@ public class TradingSimulation implements Runnable {
 
     private void processBuyOrder(TradingJob tradingJob) {
         if (tradingJob.getOrder().getOrderActionType() == OrderActionType.BUY &&
-                ((System.currentTimeMillis() - tradingJob.getOrder().getTimeOfLastModification() > 8640000))) {
+                ((System.currentTimeMillis() - tradingJob.getOrder().getTimeOfLastModification() > 1))) {
+            System.out.println("processBuyOrder"+tradingJob);
             switch (tradingJob.getOrder().getListingType()) {
                 case STOCK -> {
                     processStockBuyOrder(tradingJob,(ListingDto) fetchSecuritiesByOrder(tradingJob.getOrder()));
@@ -165,6 +168,7 @@ public class TradingSimulation implements Runnable {
 
         //mora i ovo da se updateuje zar ne?
         //trebalo bi da bude unique acc# + securityName as a key
+        System.out.println("still in processStockBuyOrder"+ buyTradingJob);
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyTradingJob.getTradingAccountNumber(), listingDto.getSymbol());
         if (buySecurities.isEmpty()) {
             //kreiraj
@@ -211,6 +215,7 @@ public class TradingSimulation implements Runnable {
 
         Optional<OrderTransaction> oot= orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
         OrderTransaction ot=null;
+        System.out.println("still in processStockBuyOrder creating orderTransaction");
         ot = oot.orElseGet(OrderTransaction::new);
         ot.setOrderId(order.getId());
         ot.setDate(System.currentTimeMillis());

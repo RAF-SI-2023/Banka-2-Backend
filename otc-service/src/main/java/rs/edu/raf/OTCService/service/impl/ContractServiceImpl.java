@@ -25,22 +25,54 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<ContractDto> getAllWaitingContracts() {
-        return contractRepository.getAllWaitingContracts().stream().map(mapper::contractToDto).toList();
+        String email =SpringSecurityUtil.getPrincipalEmail();
+        if(SpringSecurityUtil.isUser())
+            return contractRepository.getAllWaitingContracts().stream().
+                    filter(
+                            val->val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email)
+                    ).map(mapper::contractToDto).toList();
+        else
+            return contractRepository.getAllWaitingContracts().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public List<ContractDto> getAllApprovedContracts() {
-        return contractRepository.getAllApprovedContracts().stream().map(mapper::contractToDto).toList();
+        String email =SpringSecurityUtil.getPrincipalEmail();
+        if(SpringSecurityUtil.isUser())
+            return contractRepository.getAllApprovedContracts().stream().
+                    filter(
+                            val->val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email)
+                    ).map(mapper::contractToDto).toList();
+        else
+            return contractRepository.getAllApprovedContracts().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public List<ContractDto> getAllRejectedContracts() {
-        return contractRepository.getAllRejectedContracts().stream().map(mapper::contractToDto).toList();
+        String email =SpringSecurityUtil.getPrincipalEmail();
+        if(SpringSecurityUtil.isUser())
+            return contractRepository.getAllRejectedContracts().stream().
+                    filter(
+                            val->val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email)
+                    ).map(mapper::contractToDto).toList();
+        else
+            return contractRepository.getAllRejectedContracts().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public List<ContractDto> getAllContracts() {
-        return contractRepository.findAll().stream().map(mapper::contractToDto).toList();
+        String email =SpringSecurityUtil.getPrincipalEmail();
+        if(SpringSecurityUtil.isUser())
+            return contractRepository.findAll().stream().
+                    filter(
+                            val->val.getBuyersEmail().equals(email)
+                            || val.getSellersEmail().equals(email)
+            ).map(mapper::contractToDto).toList();
+        else
+            return contractRepository.findAll().stream().map(mapper::contractToDto).toList();
     }
 
     @Override

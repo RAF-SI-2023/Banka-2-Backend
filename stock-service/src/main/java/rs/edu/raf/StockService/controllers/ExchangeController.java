@@ -43,7 +43,7 @@ public class ExchangeController {
         try {
             return ResponseEntity.ok(exchangeService.findByExchangeName(exchangeName));
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
