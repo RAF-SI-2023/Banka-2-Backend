@@ -1,17 +1,12 @@
 package rs.edu.raf.BankService.service.tradingSimulation;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import rs.edu.raf.BankService.data.dto.ExchangeDto;
 import rs.edu.raf.BankService.data.entities.Order;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Data
 public class TradingJob {
     private Order order;
     private ExchangeDto exchangeDto;

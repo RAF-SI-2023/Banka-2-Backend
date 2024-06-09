@@ -34,6 +34,11 @@ public class OrderTransactionController {
         return ResponseEntity.ok().body(orderTransactionService.findAllByAccountNumber(accountNumber));
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> findAllByEmail(@PathVariable String email){
+        return ResponseEntity.ok().body(orderTransactionService.findAllByEmail(email));
+    }
+
 
 
 }
