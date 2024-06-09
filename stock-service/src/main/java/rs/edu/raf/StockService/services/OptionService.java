@@ -24,4 +24,6 @@ public interface OptionService {
     Option findOptionByTickerSymbol(String tickerSymbol);
 
 //    public void checkIfOptionExistsAndUpdate(Option option);
+
+    List<Option> findAll();
 }

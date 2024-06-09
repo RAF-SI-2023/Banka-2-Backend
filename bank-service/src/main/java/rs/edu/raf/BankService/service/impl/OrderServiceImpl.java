@@ -153,6 +153,7 @@ public class OrderServiceImpl implements OrderService {
        }
 
         order = orderRepository.save(order);
+        System.out.println("ZAPOCET ORDER "+ order);
         try {
             orders.put(new TradingJob(order, exchangeDto, tradingCashAccount.getAccountNumber(), SpringSecurityUtil.getUserRole(), totalPriceInTradingCashAccountCurrency));
         } catch (InterruptedException e) {

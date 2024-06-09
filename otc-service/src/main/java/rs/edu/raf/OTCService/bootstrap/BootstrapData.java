@@ -21,7 +21,6 @@ public class BootstrapData implements CommandLineRunner {
     Trenutno koriste iste email kao i u BankServisu
 
      */
-
     @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
