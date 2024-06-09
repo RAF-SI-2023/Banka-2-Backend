@@ -48,4 +48,14 @@ public class MarginsAccountController {
             @RequestParam Double deposit) {
         return marginsAccountService.settleMarginCall(id, deposit);
     }
+
+    @GetMapping("/email/{email}")
+    public MarginsAccountResponseDto getMarginsAccountByEmail(@PathVariable String email) {
+        return marginsAccountService.findByEmail(email);
+    }
+
+    @GetMapping("/account-number/{accountNumber}")
+    public MarginsAccountResponseDto getMarginsAccountByAccountNumber(@PathVariable String accountNumber) {
+        return marginsAccountService.findByAccountNumber(accountNumber);
+    }
 }

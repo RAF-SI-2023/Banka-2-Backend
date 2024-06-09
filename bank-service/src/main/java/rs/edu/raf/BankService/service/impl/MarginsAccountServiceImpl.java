@@ -100,10 +100,27 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
         }
     }
 
+    @Override
+    public MarginsAccountResponseDto findByEmail(String email) {
+        MarginsAccount marginsAccount = marginsAccountRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Margins account with email " + email + " doesn't exist"));
+
+        return marginsAccountMapper.toDto(marginsAccount);
+    }
+
+
+    @Override
+    public MarginsAccountResponseDto findByAccountNumber(String accountNumber) {
+        MarginsAccount marginsAccount = marginsAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("Margins account with account number " + accountNumber + " doesn't exist"));
+
+        return marginsAccountMapper.toDto(marginsAccount);
+    }
+
     private MarginsTransaction createTransactionForMarginCallSettlement(Double deposit) {
         MarginsTransaction marginsTransaction = new MarginsTransaction();
         marginsTransaction.setInvestmentAmount(deposit);
-        marginsTransaction.setCreatedAt(LocalDateTime.now());
+        marginsTransaction.setCreatedAt(System.currentTimeMillis());
         marginsTransaction.setUserId(SpringSecurityUtil.getPrincipalId());
         marginsTransaction.setType(TransactionDirection.DEPOSIT);
         marginsTransaction.setDescription("MARGIN CALL DEPOSIT " + deposit);
