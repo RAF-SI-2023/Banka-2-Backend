@@ -107,7 +107,7 @@ public class BootstrapDevData implements CommandLineRunner {
     private void loadMarginsTransactions() {
         if (marginsTransactionRepository.count()==0){
             MarginsTransaction mt1 = new MarginsTransaction();
-            mt1.setMarginsAccount(marginAccountRepository.findByAccountNumber("3334444999999999").get());
+            mt1.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
             mt1.setUserId(1L);
             mt1.setCurrencyCode("RSD");
             mt1.setDescription("Kupovina akcija");
@@ -118,16 +118,17 @@ public class BootstrapDevData implements CommandLineRunner {
             mt1.setType(TransactionDirection.DEPOSIT);
             mt1.setCreatedAt(System.currentTimeMillis());
             marginsTransactionRepository.save(mt1);
+
             MarginsTransaction mt2 = new MarginsTransaction();
-            mt2.setMarginsAccount(marginAccountRepository.findByAccountNumber("3334444999999999").get());
+            mt2.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
             mt2.setUserId(1L);
             mt2.setCurrencyCode("RSD");
-            mt2.setDescription("Kupovina akcija 2");
+            mt2.setDescription("Akcija 1");
             mt2.setInvestmentAmount(100.0);
             mt2.setLoanValue(0.0);
             mt2.setInterest(0.0);
             mt2.setOrderPrice(100.0);
-            mt2.setType(TransactionDirection.DEPOSIT);
+            mt2.setType(TransactionDirection.WITHDRAW);
             mt2.setCreatedAt(System.currentTimeMillis());
 
             marginsTransactionRepository.save(mt2);
@@ -149,6 +150,19 @@ public class BootstrapDevData implements CommandLineRunner {
             marginsAccount1.setMarginCall(false);
             marginsAccount1.setUserId(1L);
             marginAccountRepository.save(marginsAccount1);
+
+            MarginsAccount marginsAccount2 = new MarginsAccount();
+            marginsAccount2.setAccountNumber("3334444999999999");
+            marginsAccount2.setEmail(myEmail1);
+            marginsAccount2.setCurrencyCode("RSD");
+            marginsAccount2.setListingType(ListingType.FOREX);
+            marginsAccount2.setBalance(10000.0);
+            marginsAccount2.setLoanValue(0.0);
+            marginsAccount2.setMaintenanceMargin(0.0);
+            marginsAccount2.setMarginCall(false);
+            marginsAccount2.setUserId(1L);
+
+            marginAccountRepository.save(marginsAccount2);
 
         }
     }

@@ -6,6 +6,8 @@ import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.service.MarginsAccountService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/margins-account")
 @RequiredArgsConstructor
@@ -33,12 +35,12 @@ public class MarginsAccountController {
     }
 
     @GetMapping("/{id}")
-    public MarginsAccountResponseDto getMarginsAccountById(@PathVariable Long id) {
+    public List<MarginsAccountResponseDto> getMarginsAccountById(@PathVariable Long id) {
         return marginsAccountService.findById(id);
     }
 
-    @GetMapping("/user/{userId}")
-    public MarginsAccountResponseDto getMarginsAccountByUserId(@PathVariable Long userId) {
+    @GetMapping("/all-userId/{userId}")
+    public List<MarginsAccountResponseDto> getMarginsAccountByUserId(@PathVariable Long userId) {
         return marginsAccountService.findByUserId(userId);
     }
 
@@ -49,13 +51,13 @@ public class MarginsAccountController {
         return marginsAccountService.settleMarginCall(id, deposit);
     }
 
-    @GetMapping("/email/{email}")
-    public MarginsAccountResponseDto getMarginsAccountByEmail(@PathVariable String email) {
+    @GetMapping("/all-email/{email}")
+    public List<MarginsAccountResponseDto> getMarginsAccountByEmail(@PathVariable String email) {
         return marginsAccountService.findByEmail(email);
     }
 
-    @GetMapping("/account-number/{accountNumber}")
-    public MarginsAccountResponseDto getMarginsAccountByAccountNumber(@PathVariable String accountNumber) {
+    @GetMapping("/all-account-number/{accountNumber}")
+    public List<MarginsAccountResponseDto> getMarginsAccountByAccountNumber(@PathVariable String accountNumber) {
         return marginsAccountService.findByAccountNumber(accountNumber);
     }
 }
