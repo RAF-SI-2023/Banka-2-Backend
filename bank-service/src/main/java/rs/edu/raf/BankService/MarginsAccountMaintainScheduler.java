@@ -21,7 +21,7 @@ public class MarginsAccountMaintainScheduler {
 
     @Scheduled(cron = "0 0 0,12 * * *")
     public void updateMarginsCalls() {
-        List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAll();
+        List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllWithTransactions();
         marginsAccounts.forEach(this::processMarginsAccount);
     }
 

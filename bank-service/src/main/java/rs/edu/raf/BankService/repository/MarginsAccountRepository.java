@@ -15,16 +15,4 @@ public interface MarginsAccountRepository extends JpaRepository<MarginsAccount, 
 
     @Query("SELECT m FROM MarginsAccount m LEFT JOIN FETCH m.marginsTransactions")
     List<MarginsAccount> findAllWithTransactions();
-
-    Optional<MarginsAccount> findByEmail(String email);
-
-    Optional<MarginsAccount> findByAccountNumber(String accountNumber);
-
-    List<MarginsAccount> findAllById(Long id);
-
-    List<MarginsAccount> findAllByUserId(Long userId);
-
-    List<MarginsAccount>  findAllByEmail(String email);
-
-    List<MarginsAccount>  findAllByAccountNumber(String accountNumber);
 }
