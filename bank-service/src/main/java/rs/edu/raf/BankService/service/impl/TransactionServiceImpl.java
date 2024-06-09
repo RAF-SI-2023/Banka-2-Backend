@@ -254,7 +254,7 @@ public class TransactionServiceImpl implements TransactionService {
         double availableBalance = cashAccount.getAvailableBalance();
         double reservedFunds = cashAccount.getReservedFunds();
 
-        if (reservedFunds < amount) {
+        if (reservedFunds - amount< -0.01) {
             // this should not happen
             // possible if using random or something, throws exception once in a blue moon, totally unpredictable
             System.out.println("amount = " +  amount +" reserved = "+reservedFunds);
@@ -262,7 +262,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         cashAccount.setAvailableBalance(availableBalance - amount);
-        cashAccount.setReservedFunds(reservedFunds - amount);
+        cashAccount.setReservedFunds(Math.abs(reservedFunds - amount)<0.01?0:reservedFunds-amount);
         cashAccountRepository.save(cashAccount);
         return true;
     }

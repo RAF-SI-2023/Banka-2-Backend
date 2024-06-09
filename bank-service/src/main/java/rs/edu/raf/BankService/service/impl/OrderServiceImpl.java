@@ -113,10 +113,12 @@ public class OrderServiceImpl implements OrderService {
                     case OPTION -> {
                         currency = ((OptionDto) listingDto).getCurrency();
                         totalPrice = calculateOrderPrice(order.getQuantity(), ((OptionDto) listingDto).getStrikePrice());
+                        order.setSettlementDate(((OptionDto) listingDto).getSettlementDate());
                     }
                     case FUTURE -> {
                         currency= "RSD";
                         totalPrice=(calculateOrderPrice(order.getQuantity(),((FuturesContractDto)listingDto).getFuturesContractPrice()));
+                        order.setSettlementDate(((FuturesContractDto) listingDto).getSettlementDate());
                     }
                     }
                 }
