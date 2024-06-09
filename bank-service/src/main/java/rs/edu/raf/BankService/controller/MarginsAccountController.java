@@ -37,6 +37,11 @@ public class MarginsAccountController {
         return marginsAccountService.findById(id);
     }
 
+    @GetMapping("/user/{userId}")
+    public MarginsAccountResponseDto getMarginsAccountByUserId(@PathVariable Long userId) {
+        return marginsAccountService.findByUserId(userId);
+    }
+
     @PatchMapping("/{id}")
     public MarginsAccountResponseDto settleMarginCall(
             @PathVariable Long id,

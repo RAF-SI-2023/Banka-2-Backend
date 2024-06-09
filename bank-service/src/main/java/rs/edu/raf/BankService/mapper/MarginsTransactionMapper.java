@@ -28,7 +28,9 @@ public class MarginsTransactionMapper {
         dto.setCurrencyCode(entity.getCurrencyCode());
         dto.setOrderId(entity.getOrderId());
         dto.setType(entity.getType());
+        dto.setLoanValue(entity.getLoanValue());
         dto.setInitialMargin(entity.getInvestmentAmount());
+        dto.setMaintenanceMargin(entity.getMaintenanceMargin());
         dto.setOrderId(entity.getOrderId());
         dto.setUserId(entity.getUserId());
         dto.setCreatedAt(entity.getCreatedAt());

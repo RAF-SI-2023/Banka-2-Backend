@@ -9,5 +9,6 @@ public interface MarginsAccountService {
     MarginsAccountResponseDto updateMarginsAccount(Long id, MarginsAccountRequestDto marginsAccountRequestDto);
     void deleteById(Long id);
     MarginsAccountResponseDto findById(Long id);
+    MarginsAccountResponseDto findByUserId(Long userId);
     MarginsAccountResponseDto settleMarginCall(Long id, Double deposit);
 }
