@@ -60,7 +60,7 @@ public class TradingSimulation implements Runnable {
     private void processOrders() throws InterruptedException {
         while (true) {
 
-            Thread.sleep(100);
+            Thread.sleep(1000);
 
             TradingJob tradingJob = tradingJobs.take();
 
