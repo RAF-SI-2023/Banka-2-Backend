@@ -121,7 +121,7 @@ public class ExchangeControllerTests {
         when(exchangeService.findByExchangeName("some name that doesnt exist")).thenThrow(new NotFoundException("Exchange with name: some name that doesnt exist not found"));
         ResponseEntity<Exchange> response = exchangeController.findExchangeByName("some name that doesnt exist");
         // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
 

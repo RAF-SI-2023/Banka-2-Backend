@@ -29,10 +29,6 @@ import static org.junit.Assert.assertEquals;
 //@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class OptionControllerTestsSteps extends OptionControllerTestsConfig {
 
-    //    @LocalServerPort
-//private String port
-    private String Stockport = "8001";
-
     @Autowired
     private ObjectMapper objectMapper;
 
