@@ -17,6 +17,7 @@ public class MarginsTransactionResponseDto {
     private Long userId;
     private Long createdAt;
     private Long marginsAccountId;
+    private String accountNumber;
     private String description;
     private String currencyCode;
     private TransactionDirection type;
