@@ -403,6 +403,19 @@ public class BootstrapDevData implements CommandLineRunner {
         dca2.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(dca2);
 
+        DomesticCurrencyCashAccount domesticCurrencyAccount3 = new DomesticCurrencyCashAccount();
+        domesticCurrencyAccount2.setAccountNumber("1112222666666666");
+        domesticCurrencyAccount2.setEmail(myEmail3);
+        domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
+        domesticCurrencyAccount2.setEmployeeId(2L);
+        domesticCurrencyAccount2.setMaintenanceFee(220.00);
+        domesticCurrencyAccount2.setAvailableBalance(1000000L);
+        domesticCurrencyAccount2.setCurrencyCode("RSD");
+        domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
+        domesticCurrencyAccount2.setInterestRate(2.5);
+        domesticCurrencyAccount2.setPrimaryTradingAccount(true);
+        addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount2);
+
         ForeignCurrencyCashAccount foreignCurrencyAccount12 = new ForeignCurrencyCashAccount();
         foreignCurrencyAccount12.setAccountNumber("1112222444444444");
         foreignCurrencyAccount12.setEmail(myEmail3);
@@ -550,7 +563,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
                 so3.setEmail(myEmail3);
                 so1.setListingType(ListingType.STOCK);
-                so3.setAccountNumber("1112222333333333");
+                so3.setAccountNumber("1112222666666666");
                 so3.setOwnedByBank(false);
                 so3.setSecuritiesSymbol(symbols3[i]);
                 int quantity2 = new Random().nextInt(250);
