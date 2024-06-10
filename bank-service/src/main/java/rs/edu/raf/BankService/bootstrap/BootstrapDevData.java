@@ -12,6 +12,8 @@ import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiRespon
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
 import rs.edu.raf.BankService.data.dto.CardDto;
 import rs.edu.raf.BankService.data.dto.CreateCardDto;
+import rs.edu.raf.BankService.data.entities.MarginsAccount;
+import rs.edu.raf.BankService.data.entities.MarginsTransaction;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
 import rs.edu.raf.BankService.data.entities.accounts.BusinessCashAccount;
@@ -64,6 +66,8 @@ public class BootstrapDevData implements CommandLineRunner {
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     private final CashTransactionRepository cashTransactionRepository;
     private final OrderRepository orderRepository;
+    private final MarginsAccountRepository marginAccountRepository;
+    private final MarginsTransactionRepository marginsTransactionRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -86,6 +90,10 @@ public class BootstrapDevData implements CommandLineRunner {
 
             loadOrders();
 
+            loadMarginAccounts();
+
+            loadMarginsTransactions();
+
             addCardIfIdentificationCardNumberIsNotPresent(new Card( 7767588514263210L, CardType.DEBIT, "Visa", "3330000000000000", "444", 11110L, true, false));
 
             logger.info("BankService: DEV DATA LOADING FINISHED...");
@@ -96,6 +104,68 @@ public class BootstrapDevData implements CommandLineRunner {
 
     }
 
+    private void loadMarginsTransactions() {
+        if (marginsTransactionRepository.count()==0){
+            MarginsTransaction mt1 = new MarginsTransaction();
+            mt1.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
+            mt1.setUserId(1L);
+            mt1.setCurrencyCode("RSD");
+            mt1.setDescription("Kupovina akcija");
+            mt1.setInvestmentAmount(1000.0);
+            mt1.setLoanValue(0.0);
+            mt1.setInterest(0.0);
+            mt1.setOrderPrice(1000.0);
+            mt1.setType(TransactionDirection.DEPOSIT);
+            mt1.setCreatedAt(System.currentTimeMillis());
+            marginsTransactionRepository.save(mt1);
+
+            MarginsTransaction mt2 = new MarginsTransaction();
+            mt2.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
+            mt2.setUserId(1L);
+            mt2.setCurrencyCode("RSD");
+            mt2.setDescription("Akcija 1");
+            mt2.setInvestmentAmount(100.0);
+            mt2.setLoanValue(0.0);
+            mt2.setInterest(0.0);
+            mt2.setOrderPrice(100.0);
+            mt2.setType(TransactionDirection.WITHDRAW);
+            mt2.setCreatedAt(System.currentTimeMillis());
+
+            marginsTransactionRepository.save(mt2);
+
+        }
+    }
+
+    private void loadMarginAccounts() {
+        if (marginAccountRepository.count() == 0) {
+
+            MarginsAccount marginsAccount1 = new MarginsAccount();
+            marginsAccount1.setAccountNumber("3334444999999999");
+            marginsAccount1.setEmail(myEmail1);
+            marginsAccount1.setCurrencyCode("RSD");
+            marginsAccount1.setListingType(ListingType.STOCK);
+            marginsAccount1.setBalance(1000000.0);
+            marginsAccount1.setLoanValue(0.0);
+            marginsAccount1.setMaintenanceMargin(0.0);
+            marginsAccount1.setMarginCall(false);
+            marginsAccount1.setUserId(1L);
+            marginAccountRepository.save(marginsAccount1);
+
+            MarginsAccount marginsAccount2 = new MarginsAccount();
+            marginsAccount2.setAccountNumber("3334444999999999");
+            marginsAccount2.setEmail(myEmail1);
+            marginsAccount2.setCurrencyCode("RSD");
+            marginsAccount2.setListingType(ListingType.FOREX);
+            marginsAccount2.setBalance(10000.0);
+            marginsAccount2.setLoanValue(0.0);
+            marginsAccount2.setMaintenanceMargin(0.0);
+            marginsAccount2.setMarginCall(false);
+            marginsAccount2.setUserId(1L);
+
+            marginAccountRepository.save(marginsAccount2);
+
+        }
+    }
     private void loadOrders() {
 
         if (orderRepository.count() == 0) {
@@ -444,7 +514,7 @@ public class BootstrapDevData implements CommandLineRunner {
     private void loadSecurityOwnerships() {
         if (securitiesOwnershipRepository.count() == 0) {
 
-            String[] symbols1 = {"AAPL", "GOOGL", "Z", "AGXLW"};
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
             String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
             String[] symbols3 = {"K", "TT", "CC", "I"};
 

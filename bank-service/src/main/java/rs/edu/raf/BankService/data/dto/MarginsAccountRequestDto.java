@@ -14,9 +14,9 @@ public class MarginsAccountRequestDto {
     // Nadam se da postoji email na frontu, mnogo je lakse nego da ga jurim kad mi zatreba po drugim servisima na osnovu userId
     private String email;
     private String currencyCode;
-    private String accountNumber;
     private ListingType type;
     private Double balance;
+    private String accountNumber;
     private Double loanValue;
     private Double maintenanceMargin;
     private boolean marginCall;

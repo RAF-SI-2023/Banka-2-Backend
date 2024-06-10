@@ -12,7 +12,7 @@ public class MarginsTransactionMapper {
 
     public MarginsTransaction toEntity(MarginsTransactionRequestDto dto) {
         MarginsTransaction entity = new MarginsTransaction();
-        entity.setCreatedAt(LocalDateTime.now());
+        entity.setCreatedAt(System.currentTimeMillis());
         entity.setDescription(dto.getDescription());
         entity.setCurrencyCode(dto.getCurrencyCode());
         entity.setOrderId(dto.getOrderId());
@@ -28,7 +28,9 @@ public class MarginsTransactionMapper {
         dto.setCurrencyCode(entity.getCurrencyCode());
         dto.setOrderId(entity.getOrderId());
         dto.setType(entity.getType());
+        dto.setLoanValue(entity.getLoanValue());
         dto.setInitialMargin(entity.getInvestmentAmount());
+        dto.setMaintenanceMargin(entity.getMaintenanceMargin());
         dto.setOrderId(entity.getOrderId());
         dto.setUserId(entity.getUserId());
         dto.setCreatedAt(entity.getCreatedAt());

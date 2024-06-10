@@ -39,10 +39,21 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
 
     @Override
-    public List<MarginsTransactionResponseDto> getTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate) {
         Specification<MarginsTransaction> spec = Specification
                 .where(MarginsTransactionSpecification.hasCurrency(currencyCode))
                 .and(MarginsTransactionSpecification.isBetweenDates(startDate, endDate));
+
+        return marginsTransactionRepository
+                .findAll(spec)
+                .stream().map(transactionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MarginsTransactionResponseDto> getTransactionsByAccountId(Long marginsAccountId) {
+        Specification<MarginsTransaction> spec = Specification
+                .where(MarginsTransactionSpecification.hasMarginAccountId(marginsAccountId));
 
         return marginsTransactionRepository
                 .findAll(spec)
@@ -58,6 +69,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         Double listPricePerUnit = getListingPrice(order.getListingId(), order.getListingType());
         Double orderPrice = order.getQuantity() * listPricePerUnit;
         Double initialMargin =  marginsTransactionRequestDto.getInitialMargin();
+        Double maintenanceMargin = marginsTransactionRequestDto.getMaintenanceMargin();
         Double loanValue = orderPrice - initialMargin;
         Double interest = loanValue * 0.05;
 
@@ -66,6 +78,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         transaction.setLoanValue(loanValue);
         transaction.setInterest(interest);
         transaction.setInvestmentAmount(initialMargin);
+        transaction.setMaintenanceMargin(maintenanceMargin);
         // popraviti da koristi id iz security context-a tj. jwt (ili ostaviti ovako je lakse)
         transaction.setUserId(marginsTransactionRequestDto.getUserId());
         transaction.setFallbackValues(order.getListingType());
@@ -76,6 +89,17 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         MarginsTransaction savedTransaction = marginsTransactionRepository.save(transaction);
 
         return transactionMapper.toDto(savedTransaction);
+    }
+
+    @Override
+    public List<MarginsTransactionResponseDto> findAllByEmail(String email) {
+        Specification<MarginsTransaction> spec = MarginsTransactionSpecification.hasEmail(email);
+
+        return marginsTransactionRepository
+                .findAll(spec)
+                .stream()
+                .map(transactionMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {

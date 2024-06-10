@@ -9,5 +9,7 @@ import java.util.List;
 public interface MarginsTransactionService {
 
     MarginsTransactionResponseDto createTransaction(MarginsTransactionRequestDto marginsTransactionRequestDto);
-    List<MarginsTransactionResponseDto> getTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate);
+    List<MarginsTransactionResponseDto> findAllByEmail(String email);
+    List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate);
+    List<MarginsTransactionResponseDto> getTransactionsByAccountId(Long marginsAccountId);
 }

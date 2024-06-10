@@ -15,11 +15,13 @@ public class MarginsTransactionResponseDto {
     private Long id;
     private Long orderId;
     private Long userId;
-    private LocalDateTime createdAt;
+    private Long createdAt;
     private Long marginsAccountId;
+    private String accountNumber;
     private String description;
     private String currencyCode;
     private TransactionDirection type;
+    private Double loanValue;
     private Double initialMargin;
     private Double maintenanceMargin;
 }

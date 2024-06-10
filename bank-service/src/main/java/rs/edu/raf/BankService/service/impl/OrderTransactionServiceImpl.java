@@ -38,4 +38,9 @@ public class OrderTransactionServiceImpl implements OrderTransactionService {
     public List<OrderTransaction> findAllByAccountNumber(String accountNumber) {
         return orderTransactionRepository.findAllByAccountNumber(accountNumber);
     }
+
+    @Override
+    public List<OrderTransaction> findAllByEmail(String email) {
+        return orderTransactionRepository.findAllByEmail(email);
+    }
 }
