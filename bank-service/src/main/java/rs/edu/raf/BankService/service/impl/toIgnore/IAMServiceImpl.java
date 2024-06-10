@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.service.impl;
+package rs.edu.raf.BankService.service.impl.toIgnore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -62,8 +62,9 @@ public class IAMServiceImpl implements IAMService {
     )
     public boolean reduceAgentLimit(Long agentId, Double amount) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(IAM_SERVICE_URL + "/reduce-daily-limit?agentId="+agentId+"&amount="+amount))
+                .uri(URI.create(IAM_SERVICE_URL + "/users/reduce-daily-limit?agentId="+agentId+"&amount="+amount))
                 .method("PUT", HttpRequest.BodyPublishers.noBody())
+                .header("Authorization",SpringSecurityUtil.getAuthorizationHeader())
                 .build();
 
         HttpResponse<String> response;
@@ -71,6 +72,8 @@ public class IAMServiceImpl implements IAMService {
         try {
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String jsonUserListing = response.body();
+            System.out.println(response);
+            System.out.println(jsonUserListing);
             answer = objectMapper.readValue(jsonUserListing, Boolean.class);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -87,7 +90,7 @@ public class IAMServiceImpl implements IAMService {
     )
     public Boolean isApprovalNeeded(Long agentId) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(IAM_SERVICE_URL + "/" + agentId))
+                .uri(URI.create(IAM_SERVICE_URL + "/users/" + agentId))
                 .header("Authorization", SpringSecurityUtil.getAuthorizationHeader())
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
@@ -97,6 +100,8 @@ public class IAMServiceImpl implements IAMService {
         try {
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String jsonUserListing = response.body();
+            System.out.println(response);
+            System.out.println(response.body());
             agent = objectMapper.readValue(jsonUserListing, AgentDto.class);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);

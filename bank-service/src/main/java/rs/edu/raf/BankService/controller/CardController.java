@@ -52,6 +52,19 @@ public class CardController {
 
     }
 
+
+
+    @PutMapping(value = "/changeBlock/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER','ROLE_AGENT','ROLE_SUPERVISOR')")
+    public ResponseEntity<?> changeBlockCard(@PathVariable Long identificationCardNumber) {
+        try {
+            return ResponseEntity.ok(cardService.changeBlockCard(identificationCardNumber));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
     @GetMapping(value = "/account-number/{accountNumber}",consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER','ROLE_AGENT','ROLE_SUPERVISOR')")
     public ResponseEntity<?> getCardsByAccountNumber(@PathVariable String accountNumber) {

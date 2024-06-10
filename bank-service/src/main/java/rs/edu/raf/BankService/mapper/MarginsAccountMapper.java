@@ -1,15 +1,20 @@
 package rs.edu.raf.BankService.mapper;
 
 import org.springframework.stereotype.Component;
-import rs.edu.raf.BankService.data.dto.MarginsAccountDto;
+import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
+import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
+
+import java.util.Random;
 
 @Component
 public class MarginsAccountMapper {
 
-    public MarginsAccountDto toDto(MarginsAccount marginsAccount) {
-        MarginsAccountDto dto = new MarginsAccountDto();
+    public MarginsAccountResponseDto toDto(MarginsAccount marginsAccount) {
+        MarginsAccountResponseDto dto = new MarginsAccountResponseDto();
         dto.setId(marginsAccount.getId());
+        dto.setEmail(marginsAccount.getEmail());
+        dto.setUserId(marginsAccount.getUserId());
         dto.setAccountNumber(marginsAccount.getAccountNumber());
         dto.setBalance(marginsAccount.getBalance());
         dto.setMarginCall(marginsAccount.isMarginCall());
@@ -20,17 +25,19 @@ public class MarginsAccountMapper {
 
         return dto;
     }
-
-    public MarginsAccount toEntity(MarginsAccountDto marginsAccountDto) {
+    public MarginsAccount toEntity(MarginsAccountRequestDto marginsAccountRequestDto) {
         MarginsAccount entity = new MarginsAccount();
-        entity.setAccountNumber(marginsAccountDto.getAccountNumber());
-        entity.setBalance(marginsAccountDto.getBalance());
-        entity.setMarginCall(marginsAccountDto.isMarginCall());
-        entity.setListingType(marginsAccountDto.getType());
-        entity.setMaintenanceMargin(marginsAccountDto.getMaintenanceMargin());
-        entity.setCurrencyCode(marginsAccountDto.getCurrencyCode());
-        entity.setLoanValue(marginsAccountDto.getLoanValue());
+        entity.setUserId(marginsAccountRequestDto.getUserId());
+        entity.setEmail(marginsAccountRequestDto.getEmail());
+        entity.setAccountNumber(marginsAccountRequestDto.getAccountNumber());
+        entity.setBalance(marginsAccountRequestDto.getBalance());
+        entity.setMarginCall(marginsAccountRequestDto.isMarginCall());
+        entity.setListingType(marginsAccountRequestDto.getType());
+        entity.setMaintenanceMargin(marginsAccountRequestDto.getMaintenanceMargin());
+        entity.setCurrencyCode(marginsAccountRequestDto.getCurrencyCode());
+        entity.setLoanValue(marginsAccountRequestDto.getLoanValue());
 
         return entity;
     }
+
 }

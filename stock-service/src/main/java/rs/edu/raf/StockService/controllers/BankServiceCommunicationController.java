@@ -13,7 +13,7 @@ public class BankServiceCommunicationController {
 
     private final BankStockFacadeImpl bankStockFacade;
 
-    @GetMapping("/listing-price")
+    @PostMapping("/listing-price")
     public Double findPrice(@RequestBody BankStockDto bankStockDto) {
         return bankStockFacade.findPriceOfUnit(bankStockDto);
     }

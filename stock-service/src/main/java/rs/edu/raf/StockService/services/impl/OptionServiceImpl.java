@@ -108,7 +108,11 @@ public class OptionServiceImpl implements OptionService {
                     optionDtoCall.setSettlementDate(expirationDate);
                     optionDtoCall.setStrikePrice(call.getDouble("strike"));
                     optionDtoCall.setImpliedVolatility(call.getDouble("impliedVolatility"));
-                    optionDtoCall.setOpenInterest(call.getDouble("openInterest"));
+                    try { // Not all options have open interest
+                        optionDtoCall.setOpenInterest(call.getDouble("openInterest"));
+                    } catch (JSONException e) {
+                        optionDtoCall.setOpenInterest(0.0);
+                    }
                     optionDtoCall.setOptionType(OptionType.CALL);
                     Option optionCall = optionMapper.optionDtoToOption(optionDtoCall);
             //        checkIfOptionExistsAndUpdate(optionCall);
@@ -124,7 +128,11 @@ public class OptionServiceImpl implements OptionService {
                     optionDtoPut.setSettlementDate(expirationDate);
                     optionDtoPut.setStrikePrice(put.getDouble("strike"));
                     optionDtoPut.setImpliedVolatility(put.getDouble("impliedVolatility"));
-                    optionDtoPut.setOpenInterest(put.getDouble("openInterest"));
+                    try { // Not all options have open interest
+                        optionDtoPut.setOpenInterest(put.getDouble("openInterest"));
+                    } catch (JSONException e) {
+                        optionDtoPut.setOpenInterest(0.0);
+                    }
                     optionDtoPut.setOptionType(OptionType.PUT);
 
 
@@ -151,6 +159,10 @@ public class OptionServiceImpl implements OptionService {
         return null;
     }
 
+    @Override
+    public List<Option> findAll() {
+        return optionRepository.findAll();
+    }
 
 }
 

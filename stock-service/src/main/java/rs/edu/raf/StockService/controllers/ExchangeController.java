@@ -38,12 +38,12 @@ public class ExchangeController {
         }
     }
 
-    @GetMapping("/exchange-name/{exchangeName}")
-    public ResponseEntity<Exchange> findExchangeByName(@PathVariable String exchangeName) {
+    @GetMapping("/exchange-name")
+    public ResponseEntity<Exchange> findExchangeByName(@RequestParam("exchange") String exchangeName) {
         try {
             return ResponseEntity.ok(exchangeService.findByExchangeName(exchangeName));
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 

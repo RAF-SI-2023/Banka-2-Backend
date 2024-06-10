@@ -11,11 +11,13 @@ import rs.edu.raf.BankService.data.entities.ActiveTradingJob;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.ListingType;
+import rs.edu.raf.BankService.data.enums.OrderActionType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
 import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.*;
+import rs.edu.raf.BankService.service.impl.toIgnore.IAMServiceImpl;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingSimulation;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
@@ -43,9 +45,10 @@ public class OrderServiceImpl implements OrderService {
     private final OrderTransactionRepository orderTransactionRepository;
     private TradingSimulation tradingSimulation;
     private final BlockingDeque<TradingJob> orders = new LinkedBlockingDeque<>();
+    private final ActionAgentProfitService actionAgentProfitService;
 
     @Autowired
-    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository,OrderTransactionRepository orderTransactionRepository) {
+    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository, OrderTransactionRepository orderTransactionRepository, ActionAgentProfitService actionAgentProfitService) {
         this.transactionService = transactionService;
         this.iamService = iamService;
         this.stockService = stockService;
@@ -56,6 +59,8 @@ public class OrderServiceImpl implements OrderService {
         this.securitiesOwnershipRepository = securitiesOwnershipRepository;
         this.activeTradingJobRepository = activeTradingJobRepository;
         this.orderTransactionRepository=orderTransactionRepository;
+        this.actionAgentProfitService=actionAgentProfitService;
+
 
         //load active trading jobs
         List<ActiveTradingJob> atjList = activeTradingJobRepository.findAll();
@@ -72,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException(e);
             }
         });
-        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository,orderTransactionRepository);
+        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository,orderTransactionRepository,actionAgentProfitService);
         this.tradingSimulation.setTradingJobs(orders);
         Thread thread = new Thread(this.tradingSimulation);
         thread.start();
@@ -110,10 +115,12 @@ public class OrderServiceImpl implements OrderService {
                     case OPTION -> {
                         currency = ((OptionDto) listingDto).getCurrency();
                         totalPrice = calculateOrderPrice(order.getQuantity(), ((OptionDto) listingDto).getStrikePrice());
+                        order.setSettlementDate(((OptionDto) listingDto).getSettlementDate());
                     }
                     case FUTURE -> {
                         currency= "RSD";
                         totalPrice=(calculateOrderPrice(order.getQuantity(),((FuturesContractDto)listingDto).getFuturesContractPrice()));
+                        order.setSettlementDate(((FuturesContractDto) listingDto).getSettlementDate());
                     }
                     }
                 }
@@ -135,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        if (isBankOrder) {
+        if (isBankOrder && order.getOrderActionType().equals(OrderActionType.BUY)) {
             handleIfOrderInitiatedByAgent(order, initiatedByUserId, currency, totalPrice);
         }
 
@@ -150,6 +157,7 @@ public class OrderServiceImpl implements OrderService {
        }
 
         order = orderRepository.save(order);
+        System.out.println("ZAPOCET ORDER "+ order);
         try {
             orders.put(new TradingJob(order, exchangeDto, tradingCashAccount.getAccountNumber(), SpringSecurityUtil.getUserRole(), totalPriceInTradingCashAccountCurrency));
         } catch (InterruptedException e) {

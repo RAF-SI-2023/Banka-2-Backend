@@ -1,10 +1,11 @@
-package rs.edu.raf.BankService.service.impl;
+package rs.edu.raf.BankService.service.impl.toIgnore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import org.yaml.snakeyaml.util.UriEncoder;
 import rs.edu.raf.BankService.data.dto.*;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.service.StockService;
@@ -100,7 +101,7 @@ public class StockServiceImpl implements StockService {
 
     private FuturesContractDto getFuturesContractBySymbol(String listingSymbol) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/futures/name/" + listingSymbol))
+                .uri(URI.create(STOCK_SERVICE_URL + "/futures/name/" + UriEncoder.encode(listingSymbol)))
 //                .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .GET()
                 .build();
@@ -136,7 +137,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public ExchangeDto getExchangeExchangeAcronym(String exchangeAcronym) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(STOCK_SERVICE_URL + "/exchange/exchange-acronym?exchange=" + URLEncoder.encode(exchangeAcronym, StandardCharsets.UTF_8)))
+                .uri(URI.create(STOCK_SERVICE_URL + "/exchange/exchange-name?exchange=" + URLEncoder.encode(exchangeAcronym, StandardCharsets.UTF_8)))
                 //        .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();

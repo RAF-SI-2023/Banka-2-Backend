@@ -2,6 +2,7 @@ package rs.edu.raf.StockService.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -72,8 +74,24 @@ public class OptionServiceImplTests {
     @Mock
     private HttpClient httpClientMock;
 
+    @Test
+    public void testFindAll() {
+        // Arrange
+        Option option1 = new Option();
+        Option option2 = new Option();
+        List<Option> expectedOptions = Arrays.asList(option1, option2);
+        when(optionRepository.findAll()).thenReturn(expectedOptions);
 
-@Mock
+        // Act
+        List<Option> actualOptions = optionService.findAll();
+
+        // Assert
+        Assertions.assertEquals(expectedOptions, actualOptions);
+    }
+
+
+
+    @Mock
 private HttpResponse<String> httpResponse;
 
     @Mock

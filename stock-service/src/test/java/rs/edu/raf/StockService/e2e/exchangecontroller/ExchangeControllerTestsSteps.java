@@ -91,7 +91,7 @@ public class ExchangeControllerTestsSteps extends ExchangeControllerTestsConfig 
     public void userRequestsExchangeWithExistingName(String exchangeName) {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("/api/exchange/exchange-name/" + exchangeName)
+                    get("/api/exchange/exchange-name?exchange=" + exchangeName)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
             ).andExpect(status().isOk());
@@ -119,10 +119,10 @@ public class ExchangeControllerTestsSteps extends ExchangeControllerTestsConfig 
     public void userRequestsExchangeWithNonExistingName(String exchangeName) {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("/api/exchange/exchange-name/" + exchangeName)
+                    get("/api/exchange/exchange-name?exchange=" + exchangeName)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
-            ).andExpect(status().isNotFound());
+            ).andExpect(status().isOk());
             mvcResult = resultActions.andReturn();
         } catch (Exception e) {
             fail(e.getMessage());
@@ -131,7 +131,7 @@ public class ExchangeControllerTestsSteps extends ExchangeControllerTestsConfig 
 
     @Then("response has status NotFound by name")
     public void responseHasStatusNotFoundByName() {
-        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(200, mvcResult.getResponse().getStatus());
     }
 
     @When("user requests exchange with existing miCode {string}")

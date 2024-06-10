@@ -21,7 +21,6 @@ public class BootstrapData implements CommandLineRunner {
     Trenutno koriste iste email kao i u BankServisu
 
      */
-
     @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 
@@ -53,9 +52,9 @@ public class BootstrapData implements CommandLineRunner {
 
         if(contractRepository.count() == 0) {
 
-            String [] symbols1 ={"AAPL", "GOOGL", "Z","AGXLW"};
-            String [] symbols2 ={"NTFL" ,"TSLA","MSFT","FB"};
-            String [] symbols3 ={"K","TT","CC","I"};
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
+            String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
+            String[] symbols3 = {"K", "TT", "CC", "I"};
 
             for(int i = 0; i < 4; i++){
                 Contract contract1 = new Contract();
