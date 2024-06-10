@@ -268,7 +268,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
     }
-
+    private String tempPrimaryBankAccount;
     private void loadBankOwnedCashAccounts() {
         // Create bank accounts for all allowed currencies
         int i = 0;
@@ -277,6 +277,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 //TODO OVDE STAVITI DA BUDU BUSINESS
                 DomesticCurrencyCashAccount domesticBankAccount = new DomesticCurrencyCashAccount();
                 domesticBankAccount.setAccountNumber("000000000000000" + i);
+                tempPrimaryBankAccount=domesticBankAccount.getAccountNumber();
                 domesticBankAccount.setEmail("bankAccount@bank.rs");
                 domesticBankAccount.setAccountType(AccountType.BANK_ACCOUNT);
                 domesticBankAccount.setEmployeeId(2L);
@@ -573,6 +574,16 @@ public class BootstrapDevData implements CommandLineRunner {
                 so3.setAverageBuyingPrice(so3.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so3);
 
+                SecuritiesOwnership so4 = new SecuritiesOwnership();
+                so4.setEmail("bankAccount@bank.rs");
+                so4.setListingType(ListingType.STOCK);
+                so4.setAccountNumber(tempPrimaryBankAccount!=null?tempPrimaryBankAccount:"0000000000000005");
+                so4.setOwnedByBank(true);
+                so4.setSecuritiesSymbol(symbols3[i]);
+                so4.setQuantity(quantity2 + 100);
+                so4.setQuantityOfPubliclyAvailable(0);
+                so4.setAverageBuyingPrice(so4.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
+                securitiesOwnershipRepository.save(so4);
             }
 
 
