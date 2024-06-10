@@ -289,14 +289,14 @@ public class TradingSimulation implements Runnable {
             if (so.size() == 1) {
                 SecuritiesOwnership securitiesOwnership = so.get(0);
                 securitiesOwnership.setQuantity(securitiesOwnership.getQuantity() - (order.getQuantity() - order.getRealizedQuantity()));
-                if(securitiesOwnership.getQuantityOfPubliclyAvailable()<securitiesOwnership.getQuantity()){
+                if(securitiesOwnership.getQuantityOfPubliclyAvailable()>securitiesOwnership.getQuantity()){
                     securitiesOwnership.setQuantityOfPubliclyAvailable(0);
                 }
             } else {
                 //ovde je greska?
                 SecuritiesOwnership securitiesOwnership = so.get(0);
                 securitiesOwnership.setQuantity(securitiesOwnership.getQuantity() - (order.getQuantity() - order.getRealizedQuantity()));
-                if(securitiesOwnership.getQuantityOfPubliclyAvailable()<securitiesOwnership.getQuantity()){
+                if(securitiesOwnership.getQuantityOfPubliclyAvailable()>securitiesOwnership.getQuantity()){
                     securitiesOwnership.setQuantityOfPubliclyAvailable(0);
                 }
                 throw new RuntimeException("Something might've went wrong! during selling of stock");
