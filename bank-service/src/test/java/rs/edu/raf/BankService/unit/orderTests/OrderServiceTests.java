@@ -18,7 +18,7 @@ import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
 import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.*;
-import rs.edu.raf.BankService.service.impl.IAMServiceImpl;
+import rs.edu.raf.BankService.service.impl.toIgnore.IAMServiceImpl;
 import rs.edu.raf.BankService.service.impl.OrderServiceImpl;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;

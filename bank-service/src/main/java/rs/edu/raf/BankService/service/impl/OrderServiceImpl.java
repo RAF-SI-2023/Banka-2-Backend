@@ -16,6 +16,7 @@ import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
 import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.*;
+import rs.edu.raf.BankService.service.impl.toIgnore.IAMServiceImpl;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingJob;
 import rs.edu.raf.BankService.service.tradingSimulation.TradingSimulation;
 import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
@@ -46,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
     private final ActionAgentProfitService actionAgentProfitService;
 
     @Autowired
-    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository,OrderTransactionRepository orderTransactionRepository,ActionAgentProfitService actionAgentProfitService) {
+    public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository, OrderTransactionRepository orderTransactionRepository, ActionAgentProfitService actionAgentProfitService) {
         this.transactionService = transactionService;
         this.iamService = iamService;
         this.stockService = stockService;
