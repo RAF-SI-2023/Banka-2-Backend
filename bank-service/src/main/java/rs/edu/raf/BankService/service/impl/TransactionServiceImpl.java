@@ -319,7 +319,7 @@ public class TransactionServiceImpl implements TransactionService {
         boolean doNotProcessOrder =
                 securitiesTransactionDto.getAmount() > buyer.getAvailableBalance() || sellSecurities.isEmpty() || sellSecurities.get(0).getQuantityOfPubliclyAvailable() < securitiesTransactionDto.getAmount();
 
-        if (!doNotProcessOrder) {
+        if (doNotProcessOrder) {
             transaction.setStatus(TransactionStatus.DECLINED);
             cashTransactionRepository.save(transaction);
 
