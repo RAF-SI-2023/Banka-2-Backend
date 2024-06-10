@@ -268,7 +268,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
     }
-
+    private String tempPrimaryBankAccount;
     private void loadBankOwnedCashAccounts() {
         // Create bank accounts for all allowed currencies
         int i = 0;
@@ -277,6 +277,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 //TODO OVDE STAVITI DA BUDU BUSINESS
                 DomesticCurrencyCashAccount domesticBankAccount = new DomesticCurrencyCashAccount();
                 domesticBankAccount.setAccountNumber("000000000000000" + i);
+                tempPrimaryBankAccount=domesticBankAccount.getAccountNumber();
                 domesticBankAccount.setEmail("bankAccount@bank.rs");
                 domesticBankAccount.setAccountType(AccountType.BANK_ACCOUNT);
                 domesticBankAccount.setEmployeeId(2L);
@@ -402,6 +403,19 @@ public class BootstrapDevData implements CommandLineRunner {
         dca2.setIdentificationNumber("123456789");
         dca2.setPrimaryTradingAccount(true);
         addAccountIfCashAccountNumberIsNotPresent(dca2);
+
+        DomesticCurrencyCashAccount domesticCurrencyAccount3 = new DomesticCurrencyCashAccount();
+        domesticCurrencyAccount2.setAccountNumber("1112222666666666");
+        domesticCurrencyAccount2.setEmail(myEmail3);
+        domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
+        domesticCurrencyAccount2.setEmployeeId(2L);
+        domesticCurrencyAccount2.setMaintenanceFee(220.00);
+        domesticCurrencyAccount2.setAvailableBalance(1000000L);
+        domesticCurrencyAccount2.setCurrencyCode("RSD");
+        domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
+        domesticCurrencyAccount2.setInterestRate(2.5);
+        domesticCurrencyAccount2.setPrimaryTradingAccount(true);
+        addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount2);
 
         ForeignCurrencyCashAccount foreignCurrencyAccount12 = new ForeignCurrencyCashAccount();
         foreignCurrencyAccount12.setAccountNumber("1112222444444444");
@@ -550,7 +564,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
                 so3.setEmail(myEmail3);
                 so1.setListingType(ListingType.STOCK);
-                so3.setAccountNumber("1112222333333333");
+                so3.setAccountNumber("1112222666666666");
                 so3.setOwnedByBank(false);
                 so3.setSecuritiesSymbol(symbols3[i]);
                 int quantity2 = new Random().nextInt(250);
@@ -560,6 +574,16 @@ public class BootstrapDevData implements CommandLineRunner {
                 so3.setAverageBuyingPrice(so3.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so3);
 
+                SecuritiesOwnership so4 = new SecuritiesOwnership();
+                so4.setEmail("bankAccount@bank.rs");
+                so4.setListingType(ListingType.STOCK);
+                so4.setAccountNumber(tempPrimaryBankAccount!=null?tempPrimaryBankAccount:"0000000000000005");
+                so4.setOwnedByBank(true);
+                so4.setSecuritiesSymbol(symbols3[i]);
+                so4.setQuantity(quantity2 + 100);
+                so4.setQuantityOfPubliclyAvailable(0);
+                so4.setAverageBuyingPrice(so4.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
+                securitiesOwnershipRepository.save(so4);
             }
 
 
