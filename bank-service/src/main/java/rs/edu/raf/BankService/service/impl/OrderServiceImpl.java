@@ -11,6 +11,7 @@ import rs.edu.raf.BankService.data.entities.ActiveTradingJob;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.ListingType;
+import rs.edu.raf.BankService.data.enums.OrderActionType;
 import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.exception.OrderNotFoundException;
 import rs.edu.raf.BankService.mapper.OrderMapper;
@@ -141,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        if (isBankOrder) {
+        if (isBankOrder && order.getOrderActionType().equals(OrderActionType.BUY)) {
             handleIfOrderInitiatedByAgent(order, initiatedByUserId, currency, totalPrice);
         }
 

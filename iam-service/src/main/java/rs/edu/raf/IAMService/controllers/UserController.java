@@ -253,8 +253,12 @@ public class UserController {
     @PutMapping(path = "/reduce-daily-limit", consumes = MediaType.ALL_VALUE)
     @CrossOrigin(origins = "http://localhost:8001")
     @PreAuthorize(value = "hasRole('ROLE_AGENT')")
-    public ResponseEntity<Boolean> reduceTheAgentLimit(@PathParam("agentId") int id, @PathParam("amount") int amount) {
-        return null;
+    public ResponseEntity<Boolean> reduceTheAgentLimit(@PathParam("agentId") Integer agentId, @PathParam("amount") Double amount) {
+        try {
+            return ResponseEntity.ok().body(userService.reduceAgentLimit(agentId, amount));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
