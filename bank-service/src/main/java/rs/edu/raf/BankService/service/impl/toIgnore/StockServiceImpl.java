@@ -1,4 +1,4 @@
-package rs.edu.raf.BankService.service.impl;
+package rs.edu.raf.BankService.service.impl.toIgnore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
