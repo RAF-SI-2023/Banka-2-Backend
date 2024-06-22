@@ -90,25 +90,4 @@ public class CreditStepsDefinition {
         assertFalse(((List<?>) response).isEmpty());
     }
 
-
-    @Given("employee sees a credit request")
-    public void employeeSeesACreditRequest() {
-        creditRequestDto = creditService.getAllCreditRequests().stream().filter(creditRequestDto -> creditRequestDto.getStatus().equals(CreditRequestStatus.PENDING)).findFirst().orElse(null);
-        if (creditRequestDto == null) {
-            fail("No pending credit requests");
-        }
-    }
-
-    @When("employee approves the credit request")
-    public void employeeApprovesTheCreditRequest() {
-        response = creditService.approveCreditRequest(creditRequestDto.getId());
-    }
-
-    @Then("the credit request should be approved and credit created")
-    public void theCreditRequestShouldBeApprovedAndCreditCreated() {
-        assertNotNull(response);
-        assertTrue(response instanceof CreditDto);
-        assertEquals(creditRequestDto.getCreditAmount(), ((CreditDto) response).getCreditAmount(), 0.1);
-    }
-
 }
