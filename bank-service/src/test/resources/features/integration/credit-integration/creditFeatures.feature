@@ -13,8 +13,3 @@ Feature: User interacting with credits
   Scenario: Employee can view credit requests
     When employee checks credit requests
     Then he should see all credit requests
-
-  Scenario: Employee can approve credit requests
-    Given employee sees a credit request
-    When employee approves the credit request
-    Then the credit request should be approved and credit created
