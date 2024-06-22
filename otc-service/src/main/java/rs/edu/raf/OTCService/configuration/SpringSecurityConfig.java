@@ -37,18 +37,17 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         requests -> requests
+                                .requestMatchers(new AntPathRequestMatcher("/api/v1/otcTrade/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/otc/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/v1/otcTrade/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()  // Ensure other requests are authenticated
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -56,5 +55,6 @@ public class SpringSecurityConfig {
 
         return http.build();
     }
+
 
 }
