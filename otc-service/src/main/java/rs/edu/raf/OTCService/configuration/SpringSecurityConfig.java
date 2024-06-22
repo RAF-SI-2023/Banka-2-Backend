@@ -44,6 +44,7 @@ public class SpringSecurityConfig {
                         requests -> requests
                                 .requestMatchers(new AntPathRequestMatcher("/api/v1/otcTrade/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/otc/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/v1/otcTrade/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .anyRequest().authenticated()  // Ensure other requests are authenticated
