@@ -37,13 +37,14 @@ public class BootstrapData implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final ContractRepository contractRepository;
-    MyStockRepository myStockRepository;
+    private final MyStockRepository myStockRepository;
 
     @Override
     public void run(String... args) {
+        myStockRepository.deleteAll();
         if(myStockRepository.count() == 0) {
             MyStock stok1 = new MyStock();
-            stok1.setTicker("STK1");
+            stok1.setTicker("IBM");
             stok1.setAmount(100);
             stok1.setCurrencyMark("RSD");
             stok1.setPrivateAmount(50);
@@ -53,7 +54,7 @@ public class BootstrapData implements CommandLineRunner {
             stok1.setMinimumPrice(500.0);
 
             MyStock stok2 = new MyStock();
-            stok2.setTicker("STK2");
+            stok2.setTicker("NVDA");
             stok2.setAmount(100);
             stok2.setCurrencyMark("RSD");
             stok2.setPrivateAmount(50);
@@ -63,7 +64,7 @@ public class BootstrapData implements CommandLineRunner {
             stok2.setMinimumPrice(1500.0);
 
             MyStock stok3 = new MyStock();
-            stok3.setTicker("STK3");
+            stok3.setTicker("KRX");
             stok3.setAmount(100);
             stok3.setCurrencyMark("RSD");
             stok3.setPrivateAmount(50);
