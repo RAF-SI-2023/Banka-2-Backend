@@ -316,4 +316,30 @@ public class BankOtcService {
         }
     }
 
+    //DELETE: /deleteMyOffer/id
+    //kada treba neka nasu ponuda da obrisemo iz baze
+    public boolean deleteMyOffer(Long id){
+        Optional<MyOffer> myOfferOptional = myOfferRepository.findById(id);
+        if(myOfferOptional.isPresent()) {
+            MyOffer myOffer = myOfferOptional.get();
+            myOfferRepository.delete(myOffer);
+            return true;
+        }
+
+        return false;
+    }
+
+    //DELETE: /deleteOffer/id
+    //kada treba neka tudju ponuda da obrisemo iz baze
+    public boolean deleteOffer(Long id){
+        Optional<Offer> offerOptional = offerRepository.findById(id);
+        if(offerOptional.isPresent()) {
+            Offer offer = offerOptional.get();
+            offerRepository.delete(offer);
+            return true;
+        }
+
+        return false;
+    }
+
 }
