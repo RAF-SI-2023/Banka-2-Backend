@@ -96,6 +96,8 @@ public class BootstrapDevData implements CommandLineRunner {
 
             addCardIfIdentificationCardNumberIsNotPresent(new Card( 7767588514263210L, CardType.DEBIT, "Visa", "3330000000000000", "444", 11110L, true, false));
 
+            loadBank3FakeAccount();
+
             logger.info("BankService: DEV DATA LOADING FINISHED...");
 
         } catch (Exception e){
@@ -589,6 +591,23 @@ public class BootstrapDevData implements CommandLineRunner {
 
         }
 
+    }
+
+    private void loadBank3FakeAccount(){
+        DomesticCurrencyCashAccount domesticBank3Account = new DomesticCurrencyCashAccount();
+        domesticBank3Account.setAccountNumber("3333333333333333");
+        domesticBank3Account.setEmail("bank3Account@bank.rs");
+        domesticBank3Account.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
+        domesticBank3Account.setEmployeeId(2L);
+        domesticBank3Account.setMaintenanceFee(0.00);
+        domesticBank3Account.setInterestRate(0.0);
+        domesticBank3Account.setCurrencyCode("RSD");
+        domesticBank3Account.setAvailableBalance(0.00);
+        domesticBank3Account.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
+        domesticBank3Account.setOwnedByBank(false);
+        domesticBank3Account.setPrimaryTradingAccount(true);
+
+        addAccountIfCashAccountNumberIsNotPresent(domesticBank3Account);
     }
 
     private void addCardIfIdentificationCardNumberIsNotPresent(Card card) {
