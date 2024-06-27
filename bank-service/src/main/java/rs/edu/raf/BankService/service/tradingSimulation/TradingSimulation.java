@@ -278,6 +278,23 @@ public class TradingSimulation implements Runnable {
             System.out.println("sanity check failed " + price + symbol);
             return;
         }
+        boolean doNotProcessOrder =
+                (order.isAllOrNone() && ((ListingDto) listingDto).getVolume() < (order.getQuantity() - order.getRealizedQuantity())) ||
+                        (order.isAllOrNone() && (order.getQuantity() > ((ListingDto) listingDto).getVolume())) ||
+                        !checkLimitPrice(order, ((ListingDto) listingDto).getLow(), ((ListingDto) listingDto).getHigh()) ||
+                        !checkStopPrice(order, ((ListingDto) listingDto).getLow(), ((ListingDto) listingDto).getHigh());
+
+        if (doNotProcessOrder) {
+            try {
+                order.setTimeOfLastModification(System.currentTimeMillis());
+                orderRepository.save(order);
+                tradingJobs.put(tradingJob);
+                System.out.println("Its do not process order");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
 
         if (!order.isDone() && order.getQuantity() - order.getRealizedQuantity() > 0) {
             double amountToReceive = (order.getQuantity() - order.getRealizedQuantity()) * price;
@@ -414,7 +431,8 @@ public class TradingSimulation implements Runnable {
     }
 
     private boolean checkLimitPrice(Order order, double low, double high) {
-        return order.getLimitPrice() == -1 ||
+        return order.getLimitPrice() == -1  //false
+                ||
                 ((order.getOrderActionType() == OrderActionType.SELL) ? low > order.getLimitPrice() : high < order.getLimitPrice());
 
     }
