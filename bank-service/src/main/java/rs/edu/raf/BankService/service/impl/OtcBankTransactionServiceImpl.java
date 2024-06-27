@@ -39,7 +39,7 @@ public class OtcBankTransactionServiceImpl implements OtcBankTransactionService 
         SecuritiesTransaction transaction = createSecuritiesTransaction(banksAccount, bank3Account, otcOfferDto);
 
         double price = otcOfferDto.getPrice();
-        if(price > banksAccount.getAvailableBalance()){
+        if (price > banksAccount.getAvailableBalance()) {
             transaction.setStatus(TransactionStatus.DECLINED);
             cashTransactionRepository.save(transaction);
             return transactionMapper.toGenericTransactionDto(transaction);
@@ -69,7 +69,7 @@ public class OtcBankTransactionServiceImpl implements OtcBankTransactionService 
 
         SecuritiesTransaction transaction = createSecuritiesTransaction(bank3Account, banksAccount, otcOfferDto);
 
-        if(security == null || security.getQuantity() < otcOfferDto.getAmount()){
+        if (security == null || security.getQuantity() < otcOfferDto.getAmount()) {
             transaction.setStatus(TransactionStatus.DECLINED);
             cashTransactionRepository.save(transaction);
             return transactionMapper.toGenericTransactionDto(transaction);
@@ -90,7 +90,7 @@ public class OtcBankTransactionServiceImpl implements OtcBankTransactionService 
 
     }
 
-    private SecuritiesOwnership getSecurity(CashAccount banksAccount, String ticker){
+    private SecuritiesOwnership getSecurity(CashAccount banksAccount, String ticker) {
         List<SecuritiesOwnership> securitiesOwnerships = securitiesOwnershipRepository.findAllByAccountNumber(banksAccount.getAccountNumber());
         return securitiesOwnerships.stream()
                 .filter(securitiesOwnership -> securitiesOwnership.getSecuritiesSymbol().equals(ticker))
@@ -107,19 +107,19 @@ public class OtcBankTransactionServiceImpl implements OtcBankTransactionService 
                 });
     }
 
-    private CashAccount getBanksCashAccount(){
+    private CashAccount getBanksCashAccount() {
         CashAccount cashAccount = cashAccountRepository.findPrimaryTradingAccount(null);
-        if(cashAccount == null) throw new NotFoundException("Banks account not found.");
+        if (cashAccount == null) throw new NotFoundException("Banks account not found.");
         return cashAccount;
     }
 
-    private CashAccount getBanks3Account(){
+    private CashAccount getBanks3Account() {
         CashAccount cashAccount = cashAccountRepository.findPrimaryTradingAccount(bank3Email);
-        if(cashAccount == null) throw new NotFoundException("Bank3 account not found.");
+        if (cashAccount == null) throw new NotFoundException("Bank3 account not found.");
         return cashAccount;
     }
 
-    private SecuritiesTransaction createSecuritiesTransaction(CashAccount sender, CashAccount receiver, OtcOfferDto otcOfferDto){
+    private SecuritiesTransaction createSecuritiesTransaction(CashAccount sender, CashAccount receiver, OtcOfferDto otcOfferDto) {
         SecuritiesTransaction transaction = new SecuritiesTransaction();
         transaction.setAmount(otcOfferDto.getPrice());
         transaction.setCreatedAt(LocalDateTime.now());

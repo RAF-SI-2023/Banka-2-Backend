@@ -28,9 +28,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class BankServiceImpl implements BankService {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Value("${bank.service.url:http://bank-service:8003/api}")
     private String BANK_SERVICE_URL;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Boolean createTransaction(ContractDto contractDto) {
@@ -77,8 +77,7 @@ public class BankServiceImpl implements BankService {
         headers.set("Content-Type", "application/json");
         HttpEntity<MyOfferDto> requestEntity = new HttpEntity<>(myOfferDto, headers);
         ResponseEntity<GenericTransactionDto> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, GenericTransactionDto.class);
-        if(responseEntity.getStatusCode().is2xxSuccessful()){
-            System.out.println(Objects.requireNonNull(responseEntity.getBody()).toString());
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return Objects.requireNonNull(responseEntity.getBody()).getStatus() == TransactionStatus.CONFIRMED;
         }
         return false;
@@ -93,8 +92,7 @@ public class BankServiceImpl implements BankService {
         headers.set("Content-Type", "application/json");
         HttpEntity<OfferDto> requestEntity = new HttpEntity<>(offerDto, headers);
         ResponseEntity<GenericTransactionDto> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, GenericTransactionDto.class);
-        if(responseEntity.getStatusCode().is2xxSuccessful()){
-            System.out.println(Objects.requireNonNull(responseEntity.getBody()).toString());
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return Objects.requireNonNull(responseEntity.getBody()).getStatus() == TransactionStatus.CONFIRMED;
         }
         return false;

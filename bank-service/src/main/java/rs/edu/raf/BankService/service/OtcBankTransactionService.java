@@ -7,5 +7,6 @@ import rs.edu.raf.BankService.data.dto.OtcOfferDto;
 @Service
 public interface OtcBankTransactionService {
     GenericTransactionDto buyStock(OtcOfferDto otcOfferDto);
+
     GenericTransactionDto sellStock(OtcOfferDto otcOfferDto);
 }

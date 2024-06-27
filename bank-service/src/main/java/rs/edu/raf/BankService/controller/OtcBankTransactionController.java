@@ -16,11 +16,12 @@ public class OtcBankTransactionController {
     private final OtcBankTransactionService otcBankTransactionService;
 
     @PostMapping("/buy-stock")
-    public ResponseEntity<GenericTransactionDto> buyOtcStock(@RequestBody OtcOfferDto otcOfferDto){
+    public ResponseEntity<GenericTransactionDto> buyOtcStock(@RequestBody OtcOfferDto otcOfferDto) {
         return ResponseEntity.ok(otcBankTransactionService.buyStock(otcOfferDto));
     }
+
     @PostMapping("/sell-stock")
-    public ResponseEntity<GenericTransactionDto> sellOtcStock(@RequestBody OtcOfferDto otcOfferDto){
+    public ResponseEntity<GenericTransactionDto> sellOtcStock(@RequestBody OtcOfferDto otcOfferDto) {
         return ResponseEntity.ok(otcBankTransactionService.sellStock(otcOfferDto));
     }
 }
