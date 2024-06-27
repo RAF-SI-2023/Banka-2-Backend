@@ -33,8 +33,8 @@ public class BankOtcService {
     private final MyOfferRepository myOfferRepository;
 
     //URL
-    private static final String URL_TO_BANK3 =  "https://banka-3-dev.si.raf.edu.rs/exchange-service/api/v1/otcTrade";
-//    private static final String URL_TO_BANK3 =  "http://localhost:8083/api/v1/otcTrade";
+//    private static final String URL_TO_BANK3 =  "https://banka-3-dev.si.raf.edu.rs/exchange-service/api/v1/otcTrade";
+    private static final String URL_TO_BANK3 =  "http://localhost:8083/api/v1/otcTrade";
 
     //GET: /getOurStocks
     //dohvatamo sve Stocks koje mi nudimo

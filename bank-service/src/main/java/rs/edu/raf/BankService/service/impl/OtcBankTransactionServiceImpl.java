@@ -46,10 +46,11 @@ public class OtcBankTransactionServiceImpl implements OtcBankTransactionService 
         }
 
         SecuritiesOwnership security = getSecurity(banksAccount, otcOfferDto.getTicker());
-
+        transactionService.reserveFunds(banksAccount, price);
         //Videti za oporezivanje
-        banksAccount.setAvailableBalance(banksAccount.getAvailableBalance() - price);
-        cashAccountRepository.save(banksAccount);
+//        banksAccount.setAvailableBalance(banksAccount.getAvailableBalance() - price);
+//        cashAccountRepository.save(banksAccount);
+        transactionService.releaseFunds(banksAccount, price);
 
         security.setQuantity(security.getQuantity() + otcOfferDto.getAmount());
         securitiesOwnershipRepository.save(security);
@@ -80,8 +81,9 @@ public class OtcBankTransactionServiceImpl implements OtcBankTransactionService 
 
         double price = otcOfferDto.getPrice();
         //Videti za oporezivanje
-        banksAccount.setAvailableBalance(banksAccount.getAvailableBalance() + price);
-        cashAccountRepository.save(banksAccount);
+//        banksAccount.setAvailableBalance(banksAccount.getAvailableBalance() + price);
+//        cashAccountRepository.save(banksAccount);
+        transactionService.addFunds(banksAccount, price);
 
         transaction.setStatus(TransactionStatus.CONFIRMED);
         cashTransactionRepository.save(transaction);
