@@ -1,5 +1,5 @@
 # Pravila
- - Koristiti camelCase
+ - Koristiti camelCase DEL
  - Koristiti nazive na engleskom
  - Ne koristiti skracenice
  - Za datum i vreme koristiti epoch time,
