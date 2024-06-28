@@ -10,8 +10,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateApiResponse;
 import rs.edu.raf.BankService.bootstrap.exchangeRatesUtils.ExchangeRateBootstrapUtil;
-import rs.edu.raf.BankService.data.dto.CardDto;
-import rs.edu.raf.BankService.data.dto.CreateCardDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
 import rs.edu.raf.BankService.data.entities.MarginsTransaction;
 import rs.edu.raf.BankService.data.entities.Order;
@@ -46,16 +44,6 @@ import java.util.Random;
 @Profile("dev")
 public class BootstrapDevData implements CommandLineRunner {
 
-    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
-    private String myEmail1;
-
-    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
-    private String myEmail2;
-
-    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
-    private String myEmail3;
-
-
     private static final Logger logger = LoggerFactory.getLogger(BootstrapDevData.class);
     private final CashAccountRepository cashAccountRepository;
     private final CreditRepository creditRepository;
@@ -68,6 +56,13 @@ public class BootstrapDevData implements CommandLineRunner {
     private final OrderRepository orderRepository;
     private final MarginsAccountRepository marginAccountRepository;
     private final MarginsTransactionRepository marginsTransactionRepository;
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
+    private String myEmail1;
+    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
+    private String myEmail2;
+    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
+    private String myEmail3;
+    private String tempPrimaryBankAccount;
 
     @Override
     public void run(String... args) throws Exception {
@@ -94,18 +89,20 @@ public class BootstrapDevData implements CommandLineRunner {
 
             loadMarginsTransactions();
 
-            addCardIfIdentificationCardNumberIsNotPresent(new Card( 7767588514263210L, CardType.DEBIT, "Visa", "3330000000000000", "444", 11110L, true, false));
+            addCardIfIdentificationCardNumberIsNotPresent(new Card(7767588514263210L, CardType.DEBIT, "Visa", "3330000000000000", "444", 11110L, true, false));
+
+            loadBank3FakeAccount();
 
             logger.info("BankService: DEV DATA LOADING FINISHED...");
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
     private void loadMarginsTransactions() {
-        if (marginsTransactionRepository.count()==0){
+        if (marginsTransactionRepository.count() == 0) {
             MarginsTransaction mt1 = new MarginsTransaction();
             mt1.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
             mt1.setUserId(1L);
@@ -166,6 +163,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
         }
     }
+
     private void loadOrders() {
 
         if (orderRepository.count() == 0) {
@@ -179,7 +177,7 @@ public class BootstrapDevData implements CommandLineRunner {
             order1.setRealizedQuantity(0);
             order1.setOrderStatus(OrderStatus.APPROVED);
             LocalDateTime now = LocalDateTime.now();
-            LocalDateTime threeDaysFromNow = now.plus(3, ChronoUnit.DAYS);
+            LocalDateTime threeDaysFromNow = now.plusDays(3);
             long nowEpochMilli = now.toInstant(ZoneOffset.UTC).toEpochMilli();
             long threeDaysFromNowEpochMilli = threeDaysFromNow.toInstant(ZoneOffset.UTC).toEpochMilli();
             order1.setSettlementDate(threeDaysFromNowEpochMilli);
@@ -206,7 +204,7 @@ public class BootstrapDevData implements CommandLineRunner {
             order2.setRealizedQuantity(0);
             order2.setOrderStatus(OrderStatus.WAITING_FOR_APPROVAL);
             LocalDateTime now1 = LocalDateTime.now();
-            LocalDateTime threeDaysFromNow1 = now.plus(3, ChronoUnit.DAYS);
+            LocalDateTime threeDaysFromNow1 = now.plusDays(3);
             long nowEpochMilli1 = now1.toInstant(ZoneOffset.UTC).toEpochMilli();
             long threeDaysFromNowEpochMilli1 = threeDaysFromNow1.toInstant(ZoneOffset.UTC).toEpochMilli();
             order2.setSettlementDate(threeDaysFromNowEpochMilli1);
@@ -268,7 +266,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
     }
-    private String tempPrimaryBankAccount;
+
     private void loadBankOwnedCashAccounts() {
         // Create bank accounts for all allowed currencies
         int i = 0;
@@ -277,7 +275,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 //TODO OVDE STAVITI DA BUDU BUSINESS
                 DomesticCurrencyCashAccount domesticBankAccount = new DomesticCurrencyCashAccount();
                 domesticBankAccount.setAccountNumber("000000000000000" + i);
-                tempPrimaryBankAccount=domesticBankAccount.getAccountNumber();
+                tempPrimaryBankAccount = domesticBankAccount.getAccountNumber();
                 domesticBankAccount.setEmail("bankAccount@bank.rs");
                 domesticBankAccount.setAccountType(AccountType.BANK_ACCOUNT);
                 domesticBankAccount.setEmployeeId(2L);
@@ -544,7 +542,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so1.setQuantity(quantity + 50);
                 so1.setQuantityOfPubliclyAvailable(quantity);
                 so1.setReservedQuantity(0);
-                so1.setAverageBuyingPrice(so1.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
+                so1.setAverageBuyingPrice(so1.getQuantity() * new Random().nextDouble(100, 1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so1);
 
                 SecuritiesOwnership so2 = new SecuritiesOwnership();
@@ -557,7 +555,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so2.setQuantity(30 + quantity1);
                 so2.setQuantityOfPubliclyAvailable(quantity1);
                 so2.setReservedQuantity(25);
-                so2.setAverageBuyingPrice(so2.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
+                so2.setAverageBuyingPrice(so2.getQuantity() * new Random().nextDouble(100, 1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so2);
 
 
@@ -571,24 +569,41 @@ public class BootstrapDevData implements CommandLineRunner {
                 so3.setQuantity(quantity2 + 100);
                 so3.setQuantityOfPubliclyAvailable(quantity2);
                 so3.setReservedQuantity(5);
-                so3.setAverageBuyingPrice(so3.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
+                so3.setAverageBuyingPrice(so3.getQuantity() * new Random().nextDouble(100, 1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so3);
 
                 SecuritiesOwnership so4 = new SecuritiesOwnership();
                 so4.setEmail("bankAccount@bank.rs");
                 so4.setListingType(ListingType.STOCK);
-                so4.setAccountNumber(tempPrimaryBankAccount!=null?tempPrimaryBankAccount:"0000000000000005");
+                so4.setAccountNumber(tempPrimaryBankAccount != null ? tempPrimaryBankAccount : "0000000000000005");
                 so4.setOwnedByBank(true);
                 so4.setSecuritiesSymbol(symbols3[i]);
                 so4.setQuantity(quantity2 + 100);
                 so4.setQuantityOfPubliclyAvailable(0);
-                so4.setAverageBuyingPrice(so4.getQuantity()*new Random().nextDouble(100,1600));//ne postoji bolji nacin???
+                so4.setAverageBuyingPrice(so4.getQuantity() * new Random().nextDouble(100, 1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so4);
             }
 
 
         }
 
+    }
+
+    private void loadBank3FakeAccount() {
+        DomesticCurrencyCashAccount domesticBank3Account = new DomesticCurrencyCashAccount();
+        domesticBank3Account.setAccountNumber("3333333333333333");
+        domesticBank3Account.setEmail("bank3Account@bank.rs");
+        domesticBank3Account.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
+        domesticBank3Account.setEmployeeId(2L);
+        domesticBank3Account.setMaintenanceFee(0.00);
+        domesticBank3Account.setInterestRate(0.0);
+        domesticBank3Account.setCurrencyCode("RSD");
+        domesticBank3Account.setAvailableBalance(0.00);
+        domesticBank3Account.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
+        domesticBank3Account.setOwnedByBank(false);
+        domesticBank3Account.setPrimaryTradingAccount(true);
+
+        addAccountIfCashAccountNumberIsNotPresent(domesticBank3Account);
     }
 
     private void addCardIfIdentificationCardNumberIsNotPresent(Card card) {
