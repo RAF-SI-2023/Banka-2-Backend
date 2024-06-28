@@ -231,7 +231,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
             CashAccount sender1 = cashAccountRepository.findAllByEmail(myEmail1).get(0);
             CashAccount sender2 = cashAccountRepository.findAllByEmail(myEmail2).get(0);
-            CashAccount sender3 = cashAccountRepository.findAllByEmail(myEmail2).get(0);
+            CashAccount sender3 = cashAccountRepository.findAllByEmail(myEmail3).get(0);
 
             InternalTransferTransaction itt = new InternalTransferTransaction();
             itt.setAmount(1000L);
@@ -391,7 +391,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
         BusinessCashAccount dca2 = new BusinessCashAccount();
         dca2.setAccountNumber("1112222333333333");
-        dca2.setEmail("myEmail1@gmail.com");
+        dca2.setEmail("company_employee_1@company.com");
         dca2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
         dca2.setEmployeeId(2L);
         dca2.setMaintenanceFee(220.00);
@@ -403,17 +403,17 @@ public class BootstrapDevData implements CommandLineRunner {
         addAccountIfCashAccountNumberIsNotPresent(dca2);
 
         DomesticCurrencyCashAccount domesticCurrencyAccount3 = new DomesticCurrencyCashAccount();
-        domesticCurrencyAccount2.setAccountNumber("1112222666666666");
-        domesticCurrencyAccount2.setEmail(myEmail3);
-        domesticCurrencyAccount2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
-        domesticCurrencyAccount2.setEmployeeId(2L);
-        domesticCurrencyAccount2.setMaintenanceFee(220.00);
-        domesticCurrencyAccount2.setAvailableBalance(1000000L);
-        domesticCurrencyAccount2.setCurrencyCode("RSD");
-        domesticCurrencyAccount2.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
-        domesticCurrencyAccount2.setInterestRate(2.5);
-        domesticCurrencyAccount2.setPrimaryTradingAccount(true);
-        addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount2);
+        domesticCurrencyAccount3.setAccountNumber("1112222666666666");
+        domesticCurrencyAccount3.setEmail(myEmail3);
+        domesticCurrencyAccount3.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
+        domesticCurrencyAccount3.setEmployeeId(2L);
+        domesticCurrencyAccount3.setMaintenanceFee(220.00);
+        domesticCurrencyAccount3.setAvailableBalance(1000000L);
+        domesticCurrencyAccount3.setCurrencyCode("RSD");
+        domesticCurrencyAccount3.setDomesticCurrencyAccountType(DomesticCurrencyAccountType.PERSONAL);
+        domesticCurrencyAccount3.setInterestRate(2.5);
+        domesticCurrencyAccount3.setPrimaryTradingAccount(true);
+        addAccountIfCashAccountNumberIsNotPresent(domesticCurrencyAccount3);
 
         ForeignCurrencyCashAccount foreignCurrencyAccount12 = new ForeignCurrencyCashAccount();
         foreignCurrencyAccount12.setAccountNumber("1112222444444444");

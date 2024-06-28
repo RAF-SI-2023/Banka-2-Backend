@@ -124,7 +124,11 @@ public class ContractServiceImpl implements ContractService {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
             //TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj contract  pre slanja same transakcije.
-            bankService.createTransaction(mapper.contractToDto(contract));
+            try {
+                bankService.createTransaction(mapper.contractToDto(contract));
+            }catch (Exception e){
+                throw new RuntimeException(e);
+            }
         }
         return mapper.contractToDto(contractRepository.save(contract));
 

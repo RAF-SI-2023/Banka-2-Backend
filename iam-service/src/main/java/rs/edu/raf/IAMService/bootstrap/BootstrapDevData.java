@@ -277,8 +277,8 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
         Long[] pib = {123456789L, 987654321L, 456789123L, 789123456L, 654321987L};
-        String[] emails = {"myEmail1@gmail.com", "myEmail2@gmail.com", "myEmail3@gmail.com", myEmail4, myEmail5};
-        String[] usernames = {"companyEmployee1", "companyEmployee2", "companyEmployee3", "companyEmployee4", "companyEmployee5"};
+        String[] emails = {"company_employee_1@company.com", "company_employee_2@company.com", "company_employee_3@company.com", myEmail4, myEmail5};
+        String[] usernames = {"company_employee_1@company.com", "company_employee_2@company.com", "company_employee_3@company.com", myEmail4,  myEmail5 };
         String[] phoneNumbers = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
         String[] addresses = {"Pariske komune 5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Jurija Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
         Long[] dateOfBirth = {511739146L, 606433546L, 473765600L, 204155146L, 216596746L};

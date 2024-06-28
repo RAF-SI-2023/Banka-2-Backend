@@ -62,9 +62,11 @@ public class BankServiceImpl implements BankService {
         try {
 
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            GenericTransactionDto res = objectMapper.readValue(response.body(), GenericTransactionDto.class);
-            if (res.getStatus() == TransactionStatus.CONFIRMED)
-                isSent = true;
+            if(response.statusCode()==200) {
+                GenericTransactionDto res = objectMapper.readValue(response.body(), GenericTransactionDto.class);
+                if (res.getStatus() == TransactionStatus.CONFIRMED)
+                    isSent = true;
+            }else throw new RuntimeException(response.body());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
