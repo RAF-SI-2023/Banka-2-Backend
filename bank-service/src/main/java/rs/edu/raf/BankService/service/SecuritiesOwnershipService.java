@@ -24,4 +24,6 @@ public interface SecuritiesOwnershipService {
     SecuritiesOwnershipDto updatePubliclyAvailableQuantity(SecuritiesOwnershipDto soDto);
 
     Map<ListingType, BigDecimal> getValuesOfSecurities(String accountNumber);
+
+    List<SecuritiesOwnershipDto> getBanksPubliclyAvailableSecurities();
 }
