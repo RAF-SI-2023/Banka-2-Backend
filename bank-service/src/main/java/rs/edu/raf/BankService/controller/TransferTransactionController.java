@@ -52,8 +52,11 @@ public class TransferTransactionController {
     @PostMapping("/securities")
 
     public ResponseEntity<?> createSecuritiesTransaction(@RequestBody ContractDto contractDto) {
-
-        return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
+        try {
+            return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
+        }catch (Exception e){
+            return ResponseEntity.status(402).body(e);
+        }
     }
 
 }
