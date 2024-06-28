@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.dto.GenericTransactionDto;
+import rs.edu.raf.OTCService.data.dto.SecurityOwnershipDto;
 import rs.edu.raf.OTCService.data.dto.testing.MyOfferDto;
 import rs.edu.raf.OTCService.data.dto.testing.OfferDto;
 import rs.edu.raf.OTCService.data.enums.TransactionStatus;
@@ -22,6 +24,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -96,5 +100,21 @@ public class BankServiceImpl implements BankService {
             return Objects.requireNonNull(responseEntity.getBody()).getStatus() == TransactionStatus.CONFIRMED;
         }
         return false;
+    }
+
+    @Override
+    public List<SecurityOwnershipDto> getSecurityOwnerships() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = BANK_SERVICE_URL + "/securities-ownerships/banks-securities/publicly-available";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", SpringSecurityUtil.getAuthorizationHeader());
+        headers.set("Content-Type", "application/json");
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<List<SecurityOwnershipDto>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SecurityOwnershipDto>>() {
+        });
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            return Objects.requireNonNull(responseEntity.getBody());
+        }
+        return new ArrayList<>();
     }
 }
