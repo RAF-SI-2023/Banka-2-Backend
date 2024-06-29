@@ -63,24 +63,19 @@ public class StockServiceImpl implements StockService {
 //                .header("Authorization", SpringSecurityUtil.getJwtToken())
                 .GET()
                 .build();
-
         HttpResponse<String> response;
         StockDto stockDto;
         try {
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             String jsonUserListing = response.body();
-
-
             stockDto = objectMapper.readValue(jsonUserListing, StockDto.class);
-
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
         if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
             throw new NotFoundException("Stock not found");
-        }
 
+        }
         if (stockDto == null) {
             throw new NullPointerException("stockDto is null");
         }

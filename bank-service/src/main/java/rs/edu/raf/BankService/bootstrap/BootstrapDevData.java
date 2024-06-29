@@ -393,7 +393,7 @@ public class BootstrapDevData implements CommandLineRunner {
 
         BusinessCashAccount dca2 = new BusinessCashAccount();
         dca2.setAccountNumber("1112222333333333");
-        dca2.setEmail("myEmail1@gmail.com");
+        dca2.setEmail("my_email1@gmail.com");
         dca2.setAccountType(AccountType.DOMESTIC_CURRENCY_ACCOUNT);
         dca2.setEmployeeId(2L);
         dca2.setMaintenanceFee(220.00);

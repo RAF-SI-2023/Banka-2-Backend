@@ -108,7 +108,7 @@ public class BootstrapData implements CommandLineRunner {
                 contract1.setContractStatus(ContractStatus.WAITING);
                 //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
                 //     contract1.setSellersPIB();
-                contract1.setBuyersEmail(myEmail1);
+                contract1.setBuyersEmail(myEmail3);
                 contract1.setSellersEmail(myEmail2);
                 contract1.setContractType(ContractType.PRIVATE_CONTRACT);
 
@@ -126,7 +126,7 @@ public class BootstrapData implements CommandLineRunner {
                 //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
                 //     contract1.setSellersPIB();
                 contract2.setBuyersEmail(myEmail2);
-                contract2.setSellersEmail(myEmail1);
+                contract2.setSellersEmail(myEmail3);
                 contract2.setContractType(ContractType.PRIVATE_CONTRACT);
 
                 contractRepository.save(contract2);
@@ -142,7 +142,7 @@ public class BootstrapData implements CommandLineRunner {
                 contract3.setContractStatus(ContractStatus.WAITING);
                 //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
                 //     contract1.setSellersPIB();
-                contract3.setBuyersEmail(myEmail1);
+                contract3.setBuyersEmail(myEmail2);
                 contract3.setSellersEmail(myEmail3);
                 contract3.setContractType(ContractType.PRIVATE_CONTRACT);
 

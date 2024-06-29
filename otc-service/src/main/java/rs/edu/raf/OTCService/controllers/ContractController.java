@@ -71,7 +71,7 @@ public class ContractController {
     }
 
     @PutMapping("/approve-bank/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_AGENT','ROLE_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER')")
     public ResponseEntity<?> bankApproveContractById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(contractService.bankApproveContractById(id));

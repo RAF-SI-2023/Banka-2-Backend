@@ -26,12 +26,19 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<ContractDto> getAllWaitingContracts() {
         String email =SpringSecurityUtil.getPrincipalEmail();
-        if(SpringSecurityUtil.isUser())
-            return contractRepository.getAllWaitingContracts().stream().
+        if(SpringSecurityUtil.isUser()){
+
+            List<ContractDto> contracts = contractRepository.getAllWaitingContracts().stream().
                     filter(
                             val->val.getBuyersEmail().equals(email)
                                     || val.getSellersEmail().equals(email)
                     ).map(mapper::contractToDto).toList();
+
+            ContractDto s=contracts.get(0);
+            System.out.println(s);
+        System.out.println(contracts+" contracts");
+
+            return contracts;}
         else
             return contractRepository.getAllWaitingContracts().stream().map(mapper::contractToDto).toList();
     }

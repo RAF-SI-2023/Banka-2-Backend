@@ -277,7 +277,7 @@ public class OrderServiceImpl implements OrderService {
         return cashAccount;
     }
 
-    private Object fetchSecuritiesByOrder(Order order) {
+    public Object fetchSecuritiesByOrder(Order order) {
         Object listingDto = stockService.getSecuritiesByOrder(order);
         if (listingDto == null) {
             throw new NullPointerException("Null pointer exception when tried to get current price for symbol " + order.getListingSymbol());
