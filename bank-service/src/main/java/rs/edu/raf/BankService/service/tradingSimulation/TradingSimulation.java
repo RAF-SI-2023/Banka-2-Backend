@@ -15,6 +15,7 @@ import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.data.enums.WorkingHoursStatus;
 import rs.edu.raf.BankService.repository.*;
 import rs.edu.raf.BankService.service.*;
+import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -336,8 +337,10 @@ public class TradingSimulation implements Runnable {
             ot.setPayoffAmount(amountToReceive*0.85);
             orderTransactionRepository.save(ot);
 
-            //TODO
-            actionAgentProfitService.createAgentProfit(ot,so.get(0),order.getRealizedQuantity());
+            // if agent ili supervisior
+            if(SpringSecurityUtil.isAgent() || SpringSecurityUtil.isSupervisor()){
+                actionAgentProfitService.createAgentProfit(ot,so.get(0),order.getRealizedQuantity());
+            }
         }
 
         //TODO
