@@ -37,13 +37,14 @@ public class BootstrapData implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final ContractRepository contractRepository;
-    MyStockRepository myStockRepository;
+    private final MyStockRepository myStockRepository;
 
     @Override
     public void run(String... args) {
+        myStockRepository.deleteAll();
         if(myStockRepository.count() == 0) {
             MyStock stok1 = new MyStock();
-            stok1.setTicker("STK1");
+            stok1.setTicker("IBM");
             stok1.setAmount(100);
             stok1.setCurrencyMark("RSD");
             stok1.setPrivateAmount(50);
@@ -53,7 +54,7 @@ public class BootstrapData implements CommandLineRunner {
             stok1.setMinimumPrice(500.0);
 
             MyStock stok2 = new MyStock();
-            stok2.setTicker("STK2");
+            stok2.setTicker("NVDA");
             stok2.setAmount(100);
             stok2.setCurrencyMark("RSD");
             stok2.setPrivateAmount(50);
@@ -63,7 +64,7 @@ public class BootstrapData implements CommandLineRunner {
             stok2.setMinimumPrice(1500.0);
 
             MyStock stok3 = new MyStock();
-            stok3.setTicker("STK3");
+            stok3.setTicker("KRX");
             stok3.setAmount(100);
             stok3.setCurrencyMark("RSD");
             stok3.setPrivateAmount(50);
@@ -112,23 +113,6 @@ public class BootstrapData implements CommandLineRunner {
                 contract1.setContractType(ContractType.PRIVATE_CONTRACT);
 
                 contractRepository.save(contract1);
-
-                Contract contract2 = new Contract();
-                contract2.setBankConfirmation(false);
-                contract2.setSellerConfirmation(false);
-                //    contract1.setContractNumber("123"); pitanje je da li treba da se postavi
-                //     contract1.setDescription("Test contract 1");
-                contract2.setTicker(symbols1[i]);
-                contract2.setVolume(6);
-                contract2.setTotalPrice(100D);
-                contract2.setContractStatus(ContractStatus.REJECTED);
-                //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
-                //     contract1.setSellersPIB();
-                contract2.setBuyersEmail(myEmail2);
-                contract2.setSellersEmail(myEmail1);
-                contract2.setContractType(ContractType.PRIVATE_CONTRACT);
-
-                contractRepository.save(contract2);
 
                 Contract contract3 = new Contract();
                 contract3.setBankConfirmation(false);
