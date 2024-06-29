@@ -363,7 +363,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setStatus(TransactionStatus.CONFIRMED);
         cashTransactionRepository.save(transaction);
 
-        if(SpringSecurityUtil.isAgent() || SpringSecurityUtil.isSupervisor()) {
+        if(sellerSo.isOwnedByBank()) {
             actionAgentProfitService.createAgentProfit(transaction, sellerSo, quantityToProcess);
         }
 
