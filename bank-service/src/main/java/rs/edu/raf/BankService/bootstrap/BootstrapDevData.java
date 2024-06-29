@@ -579,7 +579,7 @@ public class BootstrapDevData implements CommandLineRunner {
                 so4.setOwnedByBank(true);
                 so4.setSecuritiesSymbol(symbols3[i]);
                 so4.setQuantity(quantity2 + 100);
-                so4.setQuantityOfPubliclyAvailable(0);
+                so4.setQuantityOfPubliclyAvailable(50);
                 so4.setAverageBuyingPrice(so4.getQuantity() * new Random().nextDouble(100, 1600));//ne postoji bolji nacin???
                 securitiesOwnershipRepository.save(so4);
             }
