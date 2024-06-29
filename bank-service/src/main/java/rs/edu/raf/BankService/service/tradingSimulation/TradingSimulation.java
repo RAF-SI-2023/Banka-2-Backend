@@ -337,8 +337,7 @@ public class TradingSimulation implements Runnable {
             ot.setPayoffAmount(amountToReceive*0.85);
             orderTransactionRepository.save(ot);
 
-            // if agent ili supervisior
-            if(SpringSecurityUtil.isAgent() || SpringSecurityUtil.isSupervisor()){
+            if(order.isOwnedByBank()){
                 actionAgentProfitService.createAgentProfit(ot,so.get(0),order.getRealizedQuantity());
             }
         }
