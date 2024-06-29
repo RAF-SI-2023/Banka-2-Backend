@@ -271,24 +271,10 @@ public class BootstrapDevData implements CommandLineRunner {
         privateClient1.setGender("M");
         privateClient1.setPrimaryAccountNumber("1112222333333333");
 
-        PrivateClient privateClient3 = new PrivateClient();
-        privateClient3.setEmail("andrejbaja@gmail.com");
-        privateClient3.setUsername("andrejbaja@gmail.com");
-        privateClient3.setPassword(passwordEncoder.encode("private"));
-        privateClient3.setRole(userRole);
-        privateClient3.setPhone("+38111962517");
-        privateClient3.setAddress("Karadjordjeva 69, Varos nova, Srbija???");
-        privateClient3.setDateOfBirth(1006863918000L);
-        privateClient3.setPermissions(List.of(per1, per2));
-        privateClient3.setName("Andrej");
-        privateClient3.setSurname("Djenadic");
-        privateClient3.setGender("F");
-        privateClient3.setPrimaryAccountNumber("3334444999999999");
-
 
         Long[] pib = {123456789L, 987654321L, 456789123L, 789123456L, 654321987L};
-        String[] emails = {"my_email1@gmail.com", "my_email2@gmail.com", "my_email3@gmail.com", myEmail4, myEmail5};
-        String[] usernames = {"companyEmployee1", "companyEmployee2", "companyEmployee3", "companyEmployee4", "companyEmployee5"};
+        String[] emails = {"company_employee_1@company.com", "company_employee_2@company.com", "company_employee_3@company.com", myEmail4, myEmail5};
+        String[] usernames = {"company_employee_1@company.com", "company_employee_2@company.com", "company_employee_3@company.com", myEmail4,  myEmail5 };
         String[] phoneNumbers = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
         String[] addresses = {"Pariske komune 5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Jurija Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
         Long[] dateOfBirth = {511739146L, 606433546L, 473765600L, 204155146L, 216596746L};
@@ -318,7 +304,6 @@ public class BootstrapDevData implements CommandLineRunner {
         saveUserIfNotExists(supervisor2);
         saveUserIfNotExists(privateClient);
         saveUserIfNotExists(privateClient1);
-        saveUserIfNotExists(privateClient3);
 
 
     }

@@ -62,4 +62,9 @@ public class SecuritiesOwnershipsController {
     public ResponseEntity<Map<ListingType, BigDecimal>> getValuesOfSecurities(@PathVariable String accountNumber) {
         return ResponseEntity.ok(securitiesOwnershipService.getValuesOfSecurities(accountNumber));
     }
+
+    @GetMapping("/banks-securities/publicly-available")
+    public ResponseEntity<List<SecuritiesOwnershipDto>> getBanksPublicSecurities() {
+        return ResponseEntity.ok(securitiesOwnershipService.getBanksPubliclyAvailableSecurities());
+    }
 }
