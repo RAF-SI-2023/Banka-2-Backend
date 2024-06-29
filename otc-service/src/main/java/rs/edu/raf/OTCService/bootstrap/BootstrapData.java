@@ -108,11 +108,28 @@ public class BootstrapData implements CommandLineRunner {
                 contract1.setContractStatus(ContractStatus.WAITING);
                 //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
                 //     contract1.setSellersPIB();
-                contract1.setBuyersEmail(myEmail1);
+                contract1.setBuyersEmail(myEmail3);
                 contract1.setSellersEmail(myEmail2);
                 contract1.setContractType(ContractType.PRIVATE_CONTRACT);
 
                 contractRepository.save(contract1);
+
+                Contract contract2 = new Contract();
+                contract2.setBankConfirmation(false);
+                contract2.setSellerConfirmation(false);
+                //    contract1.setContractNumber("123"); pitanje je da li treba da se postavi
+                //     contract1.setDescription("Test contract 1");
+                contract2.setTicker(symbols1[i]);
+                contract2.setVolume(6);
+                contract2.setTotalPrice(100D);
+                contract2.setContractStatus(ContractStatus.REJECTED);
+                //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
+                //     contract1.setSellersPIB();
+                contract2.setBuyersEmail(myEmail2);
+                contract2.setSellersEmail(myEmail3);
+                contract2.setContractType(ContractType.PRIVATE_CONTRACT);
+
+                contractRepository.save(contract2);
 
                 Contract contract3 = new Contract();
                 contract3.setBankConfirmation(false);
@@ -125,7 +142,7 @@ public class BootstrapData implements CommandLineRunner {
                 contract3.setContractStatus(ContractStatus.WAITING);
                 //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
                 //     contract1.setSellersPIB();
-                contract3.setBuyersEmail(myEmail1);
+                contract3.setBuyersEmail(myEmail2);
                 contract3.setSellersEmail(myEmail3);
                 contract3.setContractType(ContractType.PRIVATE_CONTRACT);
 
