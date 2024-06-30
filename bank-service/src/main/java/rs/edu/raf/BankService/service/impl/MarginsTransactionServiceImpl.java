@@ -102,7 +102,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
                 .collect(Collectors.toList());
     }
 
-    private MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {
+    public MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {
         MarginsAccount marginsAccount = marginsAccountRepository.findById(marginsAccountId)
                 .orElseThrow(() -> new RuntimeException("Margin account not found"));
 

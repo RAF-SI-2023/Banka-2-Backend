@@ -120,7 +120,7 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
                         .toList();
     }
 
-    private MarginsTransaction createTransactionForMarginCallSettlement(Double deposit) {
+    public MarginsTransaction createTransactionForMarginCallSettlement(Double deposit) {
         MarginsTransaction marginsTransaction = new MarginsTransaction();
         marginsTransaction.setInvestmentAmount(deposit);
         marginsTransaction.setCreatedAt(System.currentTimeMillis());

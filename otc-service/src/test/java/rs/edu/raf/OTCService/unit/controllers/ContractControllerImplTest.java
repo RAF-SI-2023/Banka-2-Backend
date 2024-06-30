@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,14 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import rs.edu.raf.OTCService.controllers.ContractController;
@@ -45,43 +39,39 @@ public class ContractControllerImplTest {
     private ContractController contractController;
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(contractController).build();
     }
 
     @Test
-    void getAllContracts_Success() throws Exception
-    {
+    void getAllContracts_Success() throws Exception {
         List<ContractDto> contracts = new ArrayList<>();
         contracts.add(new ContractDto(
-            1L, false,
-            false, "comment",
-            1L, 1L,
-            "12345", "description",
-            "ticker", 1,
-            100.0, ContractStatus.WAITING,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.PRIVATE_CONTRACT)
-        );
+                1L, false,
+                false, "comment",
+                1L, 1L,
+                "12345", "description",
+                "ticker", 1,
+                100.0, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.PRIVATE_CONTRACT));
         contracts.add(new ContractDto(
-            2L, false,
-            false, "comment",
-            1L, 1L,
-            "11111", "description",
-            "ticker", 1,
-            100000.00, ContractStatus.WAITING,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.LEGAL_ENTITY_CONTRACT)
-        );
+                2L, false,
+                false, "comment",
+                1L, 1L,
+                "11111", "description",
+                "ticker", 1,
+                100000.00, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.LEGAL_ENTITY_CONTRACT));
 
         when(contractService.getAllContracts()).thenReturn(contracts);
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/all")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2))
@@ -90,51 +80,47 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void getAllWaitingContracts_Success() throws Exception
-    {
+    void getAllWaitingContracts_Success() throws Exception {
         List<ContractDto> contracts = new ArrayList<>();
         contracts.add(new ContractDto(
-            1L, false,
-            false, "comment",
-            1L, 1L,
-            "12345", "description",
-            "ticker", 1,
-            100.0, ContractStatus.WAITING,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.PRIVATE_CONTRACT)
-        );
+                1L, false,
+                false, "comment",
+                1L, 1L,
+                "12345", "description",
+                "ticker", 1,
+                100.0, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.PRIVATE_CONTRACT));
         contracts.add(new ContractDto(
-            2L, false,
-            false, "comment",
-            1L, 1L,
-            "11111", "description",
-            "ticker", 1,
-            100000.00, ContractStatus.WAITING,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.LEGAL_ENTITY_CONTRACT)
-        );
+                2L, false,
+                false, "comment",
+                1L, 1L,
+                "11111", "description",
+                "ticker", 1,
+                100000.00, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.LEGAL_ENTITY_CONTRACT));
         contracts.add(new ContractDto(
-            3L, false,
-            false, "comment",
-            1L, 1L,
-            "11111", "description",
-            "ticker", 1,
-            123.00, ContractStatus.APPROVED,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.LEGAL_ENTITY_CONTRACT)
-        );
-        
+                3L, false,
+                false, "comment",
+                1L, 1L,
+                "11111", "description",
+                "ticker", 1,
+                123.00, ContractStatus.APPROVED,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.LEGAL_ENTITY_CONTRACT));
+
         when(contractService.getAllWaitingContracts()).thenReturn(
-            contracts.stream()
-            .filter(x -> x.getContractStatus() == ContractStatus.WAITING)
-            .collect(Collectors.toList()));
+                contracts.stream()
+                        .filter(x -> x.getContractStatus() == ContractStatus.WAITING)
+                        .collect(Collectors.toList()));
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/all-waiting")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2))
@@ -142,30 +128,28 @@ public class ContractControllerImplTest {
                 .andExpect(jsonPath("$[1].id").value(2L));
     }
 
-    ContractDto getTestContractDto()
-    {
+    ContractDto getTestContractDto() {
         return new ContractDto(
-            1L, false,
-            false, "comment",
-            1L, 1L,
-            "12345", "description",
-            "ticker", 1,
-            100.0, ContractStatus.WAITING,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.PRIVATE_CONTRACT);
+                1L, false,
+                false, "comment",
+                1L, 1L,
+                "12345", "description",
+                "ticker", 1,
+                100.0, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.PRIVATE_CONTRACT);
     }
 
     @Test
-    void getContractById_Success() throws Exception
-    {
+    void getContractById_Success() throws Exception {
         ContractDto contractDto = getTestContractDto();
 
         when(contractService.getContractById(anyLong())).thenReturn(contractDto);
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -173,29 +157,28 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void getContractById_Exception() throws Exception
-    {
+    void getContractById_Exception() throws Exception {
         String errorMessage = "Contract id does not exist";
 
         when(contractService.getContractById(anyLong())).thenThrow(
-            new RuntimeException(errorMessage));
+                new RuntimeException(errorMessage));
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(errorMessage));
     }
 
     @Test
-    void createContract_Success() throws Exception{
+    void createContract_Success() throws Exception {
         ContractDto contractDto = getTestContractDto();
 
         when(contractService.createContract(any(ContractDto.class))).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(post("/api/contracts/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(contractDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(contractDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -203,22 +186,22 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void createContract_Exception() throws Exception{
+    void createContract_Exception() throws Exception {
         // Perform GET request and validate response
         mockMvc.perform(post("/api/contracts/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("BAD STRING"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("BAD STRING"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void sellerApproveContractById_Success() throws Exception{
+    void sellerApproveContractById_Success() throws Exception {
         ContractDto contractDto = getTestContractDto();
 
         when(contractService.sellerApproveContractById(1L)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-seller/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -226,24 +209,23 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void sellerApproveContractById_Exception() throws Exception{
+    void sellerApproveContractById_Exception() throws Exception {
         when(contractService.sellerApproveContractById(1L)).thenThrow(
-            new RuntimeException("Error")
-        );
+                new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-seller/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void bankApproveContractById_Success() throws Exception{
+    void bankApproveContractById_Success() throws Exception {
         ContractDto contractDto = getTestContractDto();
 
         when(contractService.bankApproveContractById(1L)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-bank/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -251,26 +233,25 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void bankApproveContractById_Exception() throws Exception{
+    void bankApproveContractById_Exception() throws Exception {
         when(contractService.bankApproveContractById(1L)).thenThrow(
-            new RuntimeException("Error")
-        );
+                new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-bank/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void sellerDenyContractById_Success() throws Exception{
+    void sellerDenyContractById_Success() throws Exception {
         ContractDto contractDto = getTestContractDto();
         String comment = "TestComment123";
 
         when(contractService.sellerDenyContractById(1L, comment)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-seller/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(comment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(comment))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -278,29 +259,28 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void sellerDenyContractById_Exception() throws Exception{
+    void sellerDenyContractById_Exception() throws Exception {
         String comment = "TestComment123";
 
         when(contractService.sellerDenyContractById(1L, comment)).thenThrow(
-            new RuntimeException("Error")
-        );
+                new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-seller/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(comment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(comment))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void bankDenyContractById_Success() throws Exception{
+    void bankDenyContractById_Success() throws Exception {
         ContractDto contractDto = getTestContractDto();
         String comment = "TestComment123";
 
         when(contractService.bankDenyContractById(1L, comment)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-bank/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(comment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(comment))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -308,16 +288,15 @@ public class ContractControllerImplTest {
     }
 
     @Test
-    void bankDenyContractById_Exception() throws Exception{
+    void bankDenyContractById_Exception() throws Exception {
         String comment = "TestComment123";
 
         when(contractService.bankDenyContractById(1L, comment)).thenThrow(
-            new RuntimeException("Error")
-        );
+                new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-bank/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(comment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(comment))
                 .andExpect(status().isNotFound());
     }
 }
