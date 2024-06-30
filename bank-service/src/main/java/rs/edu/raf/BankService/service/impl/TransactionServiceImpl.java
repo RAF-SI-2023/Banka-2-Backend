@@ -23,6 +23,7 @@ import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.ActionAgentProfitService;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
+import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -361,7 +362,10 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setStatus(TransactionStatus.CONFIRMED);
         cashTransactionRepository.save(transaction);
-        actionAgentProfitService.createAgentProfit(transaction,sellerSo,quantityToProcess);
+
+        if(sellerSo.isOwnedByBank()) {
+            actionAgentProfitService.createAgentProfit(transaction, sellerSo, quantityToProcess);
+        }
 
         return transactionMapper.toGenericTransactionDto(cashTransactionRepository.save(transaction));
 
