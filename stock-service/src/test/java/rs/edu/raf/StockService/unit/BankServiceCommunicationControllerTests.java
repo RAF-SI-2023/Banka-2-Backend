@@ -25,11 +25,11 @@ public class BankServiceCommunicationControllerTests {
     @Test
     public void testFindPrice() {
         BankStockDto dto1 = new BankStockDto();
-        dto1.setListingId(1l);
+        dto1.setListingName("GOOGL");
         dto1.setListingType("FOREX");
 
         BankStockDto dto2 = new BankStockDto();
-        dto2.setListingId(2l);
+        dto2.setListingName("DT");
         dto2.setListingType("STOCK");
 
         Forex forex = new Forex();

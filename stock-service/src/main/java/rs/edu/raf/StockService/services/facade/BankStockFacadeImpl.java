@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.StockService.data.dto.BankStockDto;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
+import rs.edu.raf.StockService.data.dto.StockDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.data.entities.Option;
@@ -27,21 +28,21 @@ public class BankStockFacadeImpl {
     public Double findPriceOfUnit(BankStockDto bankStockDto) {
         Double price;
         String type = bankStockDto.getListingType();
-        Long id = bankStockDto.getListingId();
+        String name = bankStockDto.getListingName();
         switch (type) {
             case "FOREX": {
-                Forex forex = forexService.findById(id);
+                Forex forex = forexService.findBySymbol(name);
                 price = forex.getPrice();
                 break;
             }
             case "STOCK": {
-                Stock stock = stockService.findById(id);
+                StockDto stock = stockService.findBySymbol(name);
                 price = stock.getPrice();
                 break;
             }
             case "FUTURE": {
                 try {
-                    FuturesContractDto future = futuresContractService.findById(id);
+                    FuturesContractDto future = futuresContractService.findByName(name);
                     price = future.getFuturesContractPrice();
                 }
                 catch (Exception e) {
