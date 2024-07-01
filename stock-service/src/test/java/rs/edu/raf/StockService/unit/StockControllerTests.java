@@ -9,12 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.controllers.StockController;
+import rs.edu.raf.StockService.data.dto.SecuritiesPriceDto;
 import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.services.impl.StockServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +29,7 @@ public class StockControllerTests {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -45,8 +47,7 @@ public class StockControllerTests {
                 1.0,
                 1,
                 1,
-                1.0
-        ));
+                1.0));
         stocks.add(new Stock(
                 "Stock2 Symbol",
                 "Stock2 Description",
@@ -58,8 +59,7 @@ public class StockControllerTests {
                 2.0,
                 2,
                 2,
-                2.0
-        ));
+                2.0));
 
         when(stockService.findAll()).thenReturn(stocks);
 
@@ -82,8 +82,7 @@ public class StockControllerTests {
                 1.0,
                 1,
                 1,
-                1.0
-        );
+                1.0);
         when(stockService.findById(1L)).thenReturn(stock);
 
         ResponseEntity<Stock> response = stockController.findStockById(1L);
@@ -117,8 +116,7 @@ public class StockControllerTests {
                 1.0,
                 1,
                 1,
-                1.0
-        );
+                1.0);
         List<Stock> stocks = new ArrayList<>();
         stocks.add(stock);
         when(stockService.findBySymbolDEPRICATED("Stock1 Symbol")).thenReturn(stocks);
@@ -128,5 +126,39 @@ public class StockControllerTests {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(stock, response.getBody().get(0));
+    }
+
+    @Test
+    public void findStockBySymbol_Exception() {
+        when(stockService.findBySymbol("Invalid")).thenThrow(new NotFoundException(""));
+        ResponseEntity<?> response = stockController.findStockBySymbol("Invalid");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void findCurrentStockPriceBySymbol_Success() {
+        Stock stock = new Stock();
+        stock.setSymbol("Symbol");
+        stock.setId(1l);
+        stock.setPrice(100.0);
+        stock.setLow(20.0);
+        stock.setHigh(60.0);
+
+        when(stockService.findCurrentPriceBySymbol("Symbol"))
+                .thenReturn(new SecuritiesPriceDto(stock.getPrice(), stock.getHigh(), stock.getLow()));
+
+        ResponseEntity<SecuritiesPriceDto> res = stockController.findCurrentStockPriceBySymbol("Symbol");
+
+        assertEquals(HttpStatus.OK, res.getStatusCode());
+        assertEquals(stock.getPrice(), res.getBody().getPrice());
+        assertEquals(stock.getHigh(), res.getBody().getHigh());
+        assertEquals(stock.getLow(), res.getBody().getLow());
+    }
+
+    @Test
+    public void findCurrentStockPriceBySymbol_Error() {
+        when(stockService.findCurrentPriceBySymbol("Invalid")).thenThrow(new NotFoundException(""));
+        ResponseEntity<SecuritiesPriceDto> res = stockController.findCurrentStockPriceBySymbol("Invalid");
+        assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 }

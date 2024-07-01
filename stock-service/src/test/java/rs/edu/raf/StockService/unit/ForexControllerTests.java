@@ -1,5 +1,6 @@
 package rs.edu.raf.StockService.unit;
 
+import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.controllers.ForexController;
+import rs.edu.raf.StockService.data.dto.SecuritiesPriceDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.services.impl.ForexServiceImpl;
 
@@ -27,7 +29,7 @@ public class ForexControllerTests {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -45,8 +47,7 @@ public class ForexControllerTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        ));
+                "Forex1 quoteCurrency"));
         forexes.add(new Forex(
                 "Forex2 Symbol",
                 "Forex2 Description",
@@ -58,8 +59,7 @@ public class ForexControllerTests {
                 2.0,
                 2,
                 "Forex2 baseCurrency",
-                "Forex2 quoteCurrency"
-        ));
+                "Forex2 quoteCurrency"));
 
         when(forexService.findAll()).thenReturn(forexes);
 
@@ -82,8 +82,7 @@ public class ForexControllerTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        );
+                "Forex1 quoteCurrency");
         when(forexService.findById(1L)).thenReturn(forex);
 
         ResponseEntity<Forex> response = forexController.findForexById(1L);
@@ -91,6 +90,28 @@ public class ForexControllerTests {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(forex, response.getBody());
+    }
+
+    @Test
+    public void testFindForexBySymbol_Success() {
+        Forex forex = new Forex("Forex1 Symbol",
+                "Forex1 Description",
+                "Forex1 Exchange",
+                1L,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1,
+                "Forex1 baseCurrency",
+                "Forex1 quoteCurrency");
+
+        when(forexService.findBySymbol("Forex1 Symbol")).thenReturn(forex);
+
+        ResponseEntity<Forex> responseEntity = forexController.findForexBySymbol("Forex1 Symbol");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(forex, responseEntity.getBody());
     }
 
     @Test
@@ -114,8 +135,7 @@ public class ForexControllerTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        );
+                "Forex1 quoteCurrency");
         List<Forex> forexes = new ArrayList<>();
         forexes.add(forex);
         when(forexService.findByBaseCurrency("Forex1 baseCurrency")).thenReturn(forexes);
@@ -125,6 +145,13 @@ public class ForexControllerTests {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(forex, response.getBody().get(0));
+    }
+
+    @Test
+    public void testFindBySymbol_Error() {
+        when(forexService.findById(0l)).thenThrow(new NotFoundException("Forex not found"));
+        ResponseEntity<Forex> response = forexController.findForexById(0L);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
@@ -140,8 +167,7 @@ public class ForexControllerTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        );
+                "Forex1 quoteCurrency");
         List<Forex> forexes = new ArrayList<>();
         forexes.add(forex);
         when(forexService.findByQuoteCurrency("Forex1 quoteCurrency")).thenReturn(forexes);
@@ -153,4 +179,38 @@ public class ForexControllerTests {
         assertEquals(forex, response.getBody().get(0));
     }
 
+    @Test
+    public void findCurrentStockPriceBySymbol_Success() {
+        Forex forex = new Forex(
+                "Forex1 Symbol",
+                "Forex1 Description",
+                "Forex1 Exchange",
+                1L,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1,
+                "Forex1 baseCurrency",
+                "Forex1 quoteCurrency");
+
+        when(forexService.findCurrentPriceBySymbol("Forex1 Symbol"))
+                .thenReturn(new SecuritiesPriceDto(forex.getPrice(), forex.getHigh(), forex.getLow()));
+
+        ResponseEntity<SecuritiesPriceDto> respponse = forexController.findCurrentStockPriceBySymbol("Forex1 Symbol");
+        SecuritiesPriceDto price = respponse.getBody();
+
+        assertEquals(HttpStatus.OK, respponse.getStatusCode());
+        assertEquals(forex.getPrice(), price.getPrice());
+        assertEquals(forex.getHigh(), price.getHigh());
+        assertEquals(forex.getLow(), price.getLow());
+    }
+
+    public void findCurrentStockPriceBySymbol_Error() {
+        when(forexService.findCurrentPriceBySymbol("Invalid")).thenThrow(new NotFoundException(""));
+
+        ResponseEntity<SecuritiesPriceDto> response = forexController.findCurrentStockPriceBySymbol("Invalid");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 }
