@@ -109,7 +109,7 @@ public class MarginsTransactionServiceImplTests {
 
         @Test
         public void testCreateTransaction_Successful() {
-                // Mock data
+             
                 MarginsTransactionRequestDto requestDto = new MarginsTransactionRequestDto();
                 requestDto.setOrderId(1L);
                 requestDto.setInitialMargin(100.0);
@@ -144,16 +144,13 @@ public class MarginsTransactionServiceImplTests {
                                 .thenReturn(new MarginsTransactionResponseDto());
                 when(marginsTransactionRepository.save(any())).thenReturn(mockTransaction);
 
-                // Test the service method
                 MarginsTransactionResponseDto result = marginsTransactionService.createTransaction(requestDto);
 
-                // Assertions
                 assertEquals(null, result.getId());
         }
 
         @Test
         public void testUpdateMarginsAccount_Successful() {
-                // Mock data
                 MarginsTransaction transaction = new MarginsTransaction();
                 transaction.setId(1L);
                 transaction.setInvestmentAmount(100.0);
@@ -171,16 +168,11 @@ public class MarginsTransactionServiceImplTests {
 
                 when(marginsAccountRepository.findById(anyLong())).thenReturn(Optional.of(mockMarginsAccount));
                 when(marginsAccountRepository.save(any(MarginsAccount.class))).thenReturn(mockMarginsAccount);
-
-                // Test the service method
                 MarginsAccount result = marginsTransactionService.updateMarginsAccount(1L, transaction);
-
-                // Assertions
                 assertEquals(900.0, result.getBalance()); // 1000 - 100 (investment amount)
                 assertEquals(1500.0, result.getLoanValue()); // 1000 + 500 (loan value)
                 assertEquals(250.0, result.getMaintenanceMargin()); // 200 + 50 (maintenance margin)
 
-                // Verify repository method calls
                 verify(marginsAccountRepository, times(1)).findById(1L);
                 verify(marginsAccountRepository, times(1)).save(any(MarginsAccount.class));
         }

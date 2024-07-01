@@ -59,7 +59,6 @@ public class MarginsAccountServiceImplTests {
         securityContext
                 .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l, "email"), null, "test"));
         SecurityContextHolder.setContext(securityContext);
-
     }
 
     @Test
@@ -199,6 +198,28 @@ public class MarginsAccountServiceImplTests {
     }
 
     @Test
+    public void testSettleMarginCall_Success() {
+        MarginsAccount mockAccount = new MarginsAccount();
+        mockAccount.setId(1l);
+        mockAccount.setMarginCall(true);
+        mockAccount.setMaintenanceMargin(20.0);
+        mockAccount.setBalance(40.0);
+
+        when(marginsAccountRepository.findById(1l)).thenReturn(Optional.of(mockAccount));
+        when(marginsAccountRepository.save(any())).thenReturn(mockAccount);
+
+        MarginsAccountResponseDto expected = new MarginsAccountResponseDto();
+        expected.setId(1l);
+
+        when(marginsAccountMapper.toDto(any())).thenReturn(expected);
+
+        MarginsAccountResponseDto actual = marginsAccountService.settleMarginCall(1l, 20.0);
+
+        assertEquals(expected.getId(), actual.getId());
+
+    }
+
+    @Test
     public void testFindByEmail() {
         String email = "test@example.com";
         MarginsAccount marginsAccount = new MarginsAccount();
@@ -246,5 +267,4 @@ public class MarginsAccountServiceImplTests {
 
         assertEquals(expected.getId(), actual.getId());
     }
-
 }
