@@ -142,7 +142,7 @@ public class BootstrapTestData implements CommandLineRunner {
     private void loadMarginsTransactions() {
         if (marginsTransactionRepository.count() == 0) {
             MarginsTransaction mt1 = new MarginsTransaction();
-            mt1.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
+            mt1.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("10000001").get(0));
             mt1.setUserId(1L);
             mt1.setCurrencyCode("RSD");
             mt1.setDescription("Kupovina akcija");
@@ -155,7 +155,7 @@ public class BootstrapTestData implements CommandLineRunner {
             marginsTransactionRepository.save(mt1);
 
             MarginsTransaction mt2 = new MarginsTransaction();
-            mt2.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("3334444999999999").get(0));
+            mt2.setMarginsAccount(marginAccountRepository.findAllByAccountNumber("10000001").get(0));
             mt2.setUserId(1L);
             mt2.setCurrencyCode("RSD");
             mt2.setDescription("Akcija 1");
@@ -175,7 +175,7 @@ public class BootstrapTestData implements CommandLineRunner {
         if (marginAccountRepository.count() == 0) {
 
             MarginsAccount marginsAccount1 = new MarginsAccount();
-            marginsAccount1.setAccountNumber("3334444999999999");
+            marginsAccount1.setAccountNumber("10000001");
             marginsAccount1.setEmail(myEmail1);
             marginsAccount1.setCurrencyCode("RSD");
             marginsAccount1.setListingType(ListingType.STOCK);
@@ -187,11 +187,11 @@ public class BootstrapTestData implements CommandLineRunner {
             marginAccountRepository.save(marginsAccount1);
 
             MarginsAccount marginsAccount2 = new MarginsAccount();
-            marginsAccount2.setAccountNumber("3334444999999999");
+            marginsAccount2.setAccountNumber("10000002");
             marginsAccount2.setEmail(myEmail1);
             marginsAccount2.setCurrencyCode("RSD");
             marginsAccount2.setListingType(ListingType.FOREX);
-            marginsAccount2.setBalance(10000.0);
+            marginsAccount2.setBalance(1000000.0);
             marginsAccount2.setLoanValue(0.0);
             marginsAccount2.setMaintenanceMargin(0.0);
             marginsAccount2.setMarginCall(false);

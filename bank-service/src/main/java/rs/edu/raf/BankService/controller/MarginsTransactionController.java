@@ -11,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/margins-transaction")
 @RestController
+@CrossOrigin
 public class MarginsTransactionController {
 
     private final MarginsTransactionService marginsTransactionService;
