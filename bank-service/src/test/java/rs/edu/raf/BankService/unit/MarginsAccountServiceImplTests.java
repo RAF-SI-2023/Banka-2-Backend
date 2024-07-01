@@ -51,7 +51,7 @@ public class MarginsAccountServiceImplTests {
         MarginsAccountResponseDto result = marginsAccountService.createMarginsAccount(requestDto);
 
         assertNotNull(result);
-        verify(marginsAccountRepository, times(1)).save(marginsAccount);
+        verify(marginsAccountRepository, times(4)).save(marginsAccount);
     }
 
     @Test

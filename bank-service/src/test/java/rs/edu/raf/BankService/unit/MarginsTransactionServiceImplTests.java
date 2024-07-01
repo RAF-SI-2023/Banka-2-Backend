@@ -56,7 +56,7 @@ public class MarginsTransactionServiceImplTests {
                                 .thenReturn(new MarginsTransactionResponseDto());
 
                 List<MarginsTransactionResponseDto> result = marginsTransactionService
-                                .getFilteredTransactions("USD", LocalDateTime.now().minusDays(1), LocalDateTime.now());
+                                .getFilteredTransactions("USD", 1L, 1L);
 
                 assertEquals(1, result.size());
         }
