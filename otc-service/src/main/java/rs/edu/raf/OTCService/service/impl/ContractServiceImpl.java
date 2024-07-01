@@ -22,62 +22,57 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper mapper;
     private final BankService bankService;
 
-
     @Override
     public List<ContractDto> getAllWaitingContracts() {
-        String email =SpringSecurityUtil.getPrincipalEmail();
-        if(SpringSecurityUtil.isUser())
-            return contractRepository.getAllWaitingContracts().stream().
-                    filter(
-                            val->val.getBuyersEmail().equals(email)
-                                    || val.getSellersEmail().equals(email)
-                    ).map(mapper::contractToDto).toList();
+        String email = SpringSecurityUtil.getPrincipalEmail();
+        if (SpringSecurityUtil.isUser())
+            return contractRepository.getAllWaitingContracts().stream().filter(
+                    val -> val.getBuyersEmail().equals(email)
+                            || val.getSellersEmail().equals(email))
+                    .map(mapper::contractToDto).toList();
         else
             return contractRepository.getAllWaitingContracts().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public List<ContractDto> getAllApprovedContracts() {
-        String email =SpringSecurityUtil.getPrincipalEmail();
-        if(SpringSecurityUtil.isUser())
-            return contractRepository.getAllApprovedContracts().stream().
-                    filter(
-                            val->val.getBuyersEmail().equals(email)
-                                    || val.getSellersEmail().equals(email)
-                    ).map(mapper::contractToDto).toList();
+        String email = SpringSecurityUtil.getPrincipalEmail();
+        if (SpringSecurityUtil.isUser())
+            return contractRepository.getAllApprovedContracts().stream().filter(
+                    val -> val.getBuyersEmail().equals(email)
+                            || val.getSellersEmail().equals(email))
+                    .map(mapper::contractToDto).toList();
         else
             return contractRepository.getAllApprovedContracts().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public List<ContractDto> getAllRejectedContracts() {
-        String email =SpringSecurityUtil.getPrincipalEmail();
-        if(SpringSecurityUtil.isUser())
-            return contractRepository.getAllRejectedContracts().stream().
-                    filter(
-                            val->val.getBuyersEmail().equals(email)
-                                    || val.getSellersEmail().equals(email)
-                    ).map(mapper::contractToDto).toList();
+        String email = SpringSecurityUtil.getPrincipalEmail();
+        if (SpringSecurityUtil.isUser())
+            return contractRepository.getAllRejectedContracts().stream().filter(
+                    val -> val.getBuyersEmail().equals(email)
+                            || val.getSellersEmail().equals(email))
+                    .map(mapper::contractToDto).toList();
         else
             return contractRepository.getAllRejectedContracts().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public List<ContractDto> getAllContracts() {
-        String email =SpringSecurityUtil.getPrincipalEmail();
-        if(SpringSecurityUtil.isUser())
-            return contractRepository.findAll().stream().
-                    filter(
-                            val->val.getBuyersEmail().equals(email)
-                            || val.getSellersEmail().equals(email)
-            ).map(mapper::contractToDto).toList();
+        String email = SpringSecurityUtil.getPrincipalEmail();
+        if (SpringSecurityUtil.isUser())
+            return contractRepository.findAll().stream().filter(
+                    val -> val.getBuyersEmail().equals(email)
+                            || val.getSellersEmail().equals(email))
+                    .map(mapper::contractToDto).toList();
         else
             return contractRepository.findAll().stream().map(mapper::contractToDto).toList();
     }
 
     @Override
     public ContractDto createContract(ContractDto contractDto) {
-        //provera
+        // provera
         Contract toBeCreated = new Contract();
         toBeCreated.setContractStatus(ContractStatus.WAITING);
         toBeCreated.setDateTimeCreated(System.currentTimeMillis());
@@ -96,7 +91,6 @@ public class ContractServiceImpl implements ContractService {
             toBeCreated.setContractType(ContractType.LEGAL_ENTITY_CONTRACT);
         return mapper.contractToDto(contractRepository.save(toBeCreated));
     }
-
 
     @Override
     public ContractDto getContractById(Long id) {
@@ -119,14 +113,14 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("Contract with id " + id + "is already confirmed by bank");
         contract.setBankConfirmation(true);
 
-
         if (contract.getBankConfirmation() && contract.getSellerConfirmation()) {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
-            //TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj contract  pre slanja same transakcije.
+            // TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj
+            // contract pre slanja same transakcije.
             try {
                 bankService.createTransaction(mapper.contractToDto(contract));
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -149,15 +143,14 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("You are not the seller");
         }
 
-
         contract.setSellerConfirmation(true);
-
 
         if (contract.getBankConfirmation() && contract.getSellerConfirmation()) {
             contract.setContractStatus(ContractStatus.APPROVED);
             contract.setDateTimeRealized(System.currentTimeMillis());
 
-            //TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj contract  pre slanja same transakcije.
+            // TODO OVDE videti da li i dalje postoje securitiesOwnership vezano za ovaj
+            // contract pre slanja same transakcije.
             bankService.createTransaction(mapper.contractToDto(contract));
 
         }

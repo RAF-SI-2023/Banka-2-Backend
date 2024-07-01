@@ -20,10 +20,10 @@ import java.util.List;
 public class BootstrapData implements CommandLineRunner {
 
     /*
-
-    Sa kojim email adresava seedovati bazu?
-    Trenutno koriste iste email kao i u BankServisu
-
+     * 
+     * Sa kojim email adresava seedovati bazu?
+     * Trenutno koriste iste email kao i u BankServisu
+     * 
      */
     @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
@@ -34,7 +34,6 @@ public class BootstrapData implements CommandLineRunner {
     @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
     private String myEmail3;
 
-
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final ContractRepository contractRepository;
     private final MyStockRepository myStockRepository;
@@ -42,7 +41,7 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) {
         myStockRepository.deleteAll();
-        if(myStockRepository.count() == 0) {
+        if (myStockRepository.count() == 0) {
             MyStock stok1 = new MyStock();
             stok1.setTicker("IBM");
             stok1.setAmount(100);
@@ -76,38 +75,38 @@ public class BootstrapData implements CommandLineRunner {
             myStockRepository.saveAll(List.of(stok1, stok2, stok3));
         }
 
-        try{
+        try {
             logger.info("OTCService: DEV DATA LOADING IN PROGRESS...");
-
 
             loadContracts();
 
             logger.info("OTCService: DEV DATA LOADING FINISHED...");
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void loadContracts() {
 
-        if(contractRepository.count() == 0) {
+        if (contractRepository.count() == 0) {
 
-            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
-            String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
-            String[] symbols3 = {"K", "TT", "CC", "I"};
+            String[] symbols1 = { "AAPL", "GOOGL", "Z", "NEXOY" };
+            String[] symbols2 = { "NTFL", "TSLA", "MSFT", "FB" };
+            String[] symbols3 = { "K", "TT", "CC", "I" };
 
-            for(int i = 0; i < 4; i++){
+            for (int i = 0; i < 4; i++) {
                 Contract contract1 = new Contract();
                 contract1.setBankConfirmation(false);
                 contract1.setSellerConfirmation(false);
-                //    contract1.setContractNumber("123"); pitanje je da li treba da se postavi
-                //     contract1.setDescription("Test contract 1");
+                // contract1.setContractNumber("123"); pitanje je da li treba da se postavi
+                // contract1.setDescription("Test contract 1");
                 contract1.setTicker(symbols2[i]);
                 contract1.setVolume(4);
                 contract1.setTotalPrice(200D);
                 contract1.setContractStatus(ContractStatus.WAITING);
-                //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
-                //     contract1.setSellersPIB();
+                // contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz
+                // company employee
+                // contract1.setSellersPIB();
                 contract1.setBuyersEmail(myEmail1);
                 contract1.setSellersEmail(myEmail2);
                 contract1.setContractType(ContractType.PRIVATE_CONTRACT);
@@ -117,16 +116,17 @@ public class BootstrapData implements CommandLineRunner {
                 Contract contract3 = new Contract();
                 contract3.setBankConfirmation(false);
                 contract3.setSellerConfirmation(false);
-                //    contract1.setContractNumber("123"); pitanje je da li treba da se postavi
-                //     contract1.setDescription("Test contract 1");
+                // contract1.setContractNumber("123"); pitanje je da li treba da se postavi
+                // contract1.setDescription("Test contract 1");
                 contract3.setTicker(symbols3[i]);
                 contract3.setVolume(5);
                 contract3.setTotalPrice(150D);
                 contract3.setContractStatus(ContractStatus.WAITING);
-                //     contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz company employee
-                //     contract1.setSellersPIB();
-                contract3.setBuyersEmail(myEmail1);
-                contract3.setSellersEmail(myEmail3);
+                // contract1.setBuyersPIB(); trenutno ne radi nista ali treba koristi pib iz
+                // company employee
+                // contract1.setSellersPIB();
+                contract3.setBuyersEmail(myEmail3);
+                contract3.setSellersEmail(myEmail2);
                 contract3.setContractType(ContractType.PRIVATE_CONTRACT);
 
                 contractRepository.save(contract3);
