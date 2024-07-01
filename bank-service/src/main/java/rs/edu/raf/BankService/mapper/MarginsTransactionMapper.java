@@ -5,8 +5,6 @@ import rs.edu.raf.BankService.data.dto.MarginsTransactionRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsTransactionResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsTransaction;
 
-import java.time.LocalDateTime;
-
 @Component
 public class MarginsTransactionMapper {
 
