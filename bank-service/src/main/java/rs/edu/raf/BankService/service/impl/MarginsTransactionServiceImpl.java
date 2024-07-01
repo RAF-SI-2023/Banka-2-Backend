@@ -38,7 +38,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     private final RestTemplate restTemplate;
     private final OrderService orderService;
 
-    private final static String STOCK_SERVICE_URL = "http://localhost:8001/api";
+    private final static String STOCK_SERVICE_URL = "http://stock-service:8001/api";
     private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
 
     @Override
@@ -77,7 +77,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     public MarginsTransactionResponseDto createTransaction(MarginsTransactionRequestDto marginsTransactionRequestDto) {
         Order order = orderService.findById(marginsTransactionRequestDto.getOrderId());
 
-        Double listPricePerUnit = getListingPrice(order.getListingId(), order.getListingType());
+        Double listPricePerUnit = getListingPrice(order.getListingSymbol(), order.getListingType());
         Double orderPrice = order.getQuantity() * listPricePerUnit;
         Double initialMargin =  marginsTransactionRequestDto.getInitialMargin();
         Double maintenanceMargin = marginsTransactionRequestDto.getMaintenanceMargin();
@@ -135,10 +135,10 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         return marginsAccountRepository.save(marginsAccount);
     }
 
-    private Double getListingPrice(Long listingId, ListingType listingType) {
+    private Double getListingPrice(String listingSymbol, ListingType listingType) {
         String url = STOCK_SERVICE_URL + PRICE_ENDPOINT;
         BankStockDto bankStockDto = new BankStockDto();
-        bankStockDto.setListingId(listingId);
+        bankStockDto.setListingName(listingSymbol);
         bankStockDto.setListingType(listingType.name());
         HttpEntity<BankStockDto> request = new HttpEntity<>(bankStockDto);
 
