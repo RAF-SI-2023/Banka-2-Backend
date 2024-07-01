@@ -318,7 +318,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 
         boolean doNotProcessOrder =
-                securitiesTransactionDto.getAmount() > buyer.getAvailableBalance() || sellSecurities.isEmpty() || sellSecurities.get(0).getQuantityOfPubliclyAvailable() < securitiesTransactionDto.getAmount();
+                securitiesTransactionDto.getAmount() > buyer.getAvailableBalance() ||
+                        sellSecurities.isEmpty() ||
+                        sellSecurities.get(0).getQuantityOfPubliclyAvailable() < securitiesTransactionDto.getQuantityToTransfer();
 
         if (doNotProcessOrder) {
             transaction.setStatus(TransactionStatus.DECLINED);
@@ -350,8 +352,8 @@ public class TransactionServiceImpl implements TransactionService {
         //..
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         SecuritiesOwnership sellerSo = sellSecurities.get(0);
-        buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
+        buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         sellerSo.setQuantity(sellerSo.getQuantity() - quantityToProcess);
         if(sellerSo.getQuantityOfPubliclyAvailable()-quantityToProcess>0)
             sellerSo.setQuantityOfPubliclyAvailable(sellerSo.getQuantityOfPubliclyAvailable()-quantityToProcess);
