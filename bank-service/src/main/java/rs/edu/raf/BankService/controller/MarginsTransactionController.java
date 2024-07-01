@@ -6,7 +6,6 @@ import rs.edu.raf.BankService.data.dto.MarginsTransactionRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsTransactionResponseDto;
 import rs.edu.raf.BankService.service.MarginsTransactionService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,8 +24,8 @@ public class MarginsTransactionController {
     @GetMapping
     public List<MarginsTransactionResponseDto> getFilteredTransactions(
             @RequestParam String currencyCode,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate) {
+            @RequestParam Long startDate,
+            @RequestParam Long endDate) {
         return marginsTransactionService.getFilteredTransactions(currencyCode, startDate, endDate);
     }
 
