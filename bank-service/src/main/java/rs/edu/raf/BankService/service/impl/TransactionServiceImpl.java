@@ -23,6 +23,7 @@ import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.ActionAgentProfitService;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
+import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -337,6 +338,7 @@ public class TransactionServiceImpl implements TransactionService {
             so.setSecuritiesSymbol(securitiesTransactionDto.getSecuritiesSymbol());
             so.setOwnedByBank(false);
             so.setQuantityOfPubliclyAvailable(0);
+            so.setAverageBuyingPrice(0.0);
             securitiesOwnershipRepository.save(so);
             buySecurities.add(so);
         }
@@ -349,14 +351,21 @@ public class TransactionServiceImpl implements TransactionService {
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         SecuritiesOwnership sellerSo = sellSecurities.get(0);
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
         sellerSo.setQuantity(sellerSo.getQuantity() - quantityToProcess);
+        if(sellerSo.getQuantityOfPubliclyAvailable()-quantityToProcess>0)
+            sellerSo.setQuantityOfPubliclyAvailable(sellerSo.getQuantityOfPubliclyAvailable()-quantityToProcess);
+        else sellerSo.setQuantityOfPubliclyAvailable(0);
         securitiesOwnershipRepository.saveAll(List.of(buyerSo, sellerSo));
 
         //TODO
 
         transaction.setStatus(TransactionStatus.CONFIRMED);
         cashTransactionRepository.save(transaction);
-        actionAgentProfitService.createAgentProfit(transaction,sellerSo,quantityToProcess);
+
+        if(sellerSo.isOwnedByBank()) {
+            actionAgentProfitService.createAgentProfit(transaction, sellerSo, quantityToProcess);
+        }
 
         return transactionMapper.toGenericTransactionDto(cashTransactionRepository.save(transaction));
 
