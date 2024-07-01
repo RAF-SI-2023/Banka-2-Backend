@@ -74,7 +74,7 @@ public class MarginsAccountServiceImplTests {
         MarginsAccountResponseDto result = marginsAccountService.createMarginsAccount(requestDto);
 
         assertNotNull(result);
-        verify(marginsAccountRepository, times(1)).save(marginsAccount);
+        verify(marginsAccountRepository, times(4)).save(marginsAccount);
     }
 
     @Test
@@ -263,7 +263,7 @@ public class MarginsAccountServiceImplTests {
         expected.setType(TransactionDirection.DEPOSIT);
         expected.setDescription("MARGIN CALL DEPOSIT " + 2.0);
 
-        MarginsTransaction actual = marginsAccountService.createTransactionForMarginCallSettlement(2.0);
+        MarginsTransaction actual = marginsAccountService.createTransactionForMarginCallSettlement(2.0, 1l);
 
         assertEquals(expected.getId(), actual.getId());
     }

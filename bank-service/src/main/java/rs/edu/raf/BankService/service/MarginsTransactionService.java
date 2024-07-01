@@ -10,6 +10,6 @@ public interface MarginsTransactionService {
 
     MarginsTransactionResponseDto createTransaction(MarginsTransactionRequestDto marginsTransactionRequestDto);
     List<MarginsTransactionResponseDto> findAllByEmail(String email);
-    List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate);
+    List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, Long startDate, Long endDate);
     List<MarginsTransactionResponseDto> getTransactionsByAccountId(Long marginsAccountId);
 }

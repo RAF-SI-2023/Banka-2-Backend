@@ -1,5 +1,7 @@
 package rs.edu.raf.OTCService.unit.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -47,13 +49,9 @@ public class BankServiceImplTest {
                                 eq(GenericTransactionDto.class)))
                                 .thenReturn((ResponseEntity) responseEntityMock);
 
-                try {
-                        boolean result = bankService.createTransaction(contractDto);
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-
-                assertTrue(true);
+                assertThrows(Exception.class, () -> {
+                        bankService.createTransaction(contractDto);
+                });
         }
 
         @Test
@@ -71,14 +69,9 @@ public class BankServiceImplTest {
                                 eq(GenericTransactionDto.class)))
                                 .thenReturn(responseEntityMock);
 
-                try {
-                        boolean result = bankService.buyBank3Stock(myOfferDto);
-                } catch (Exception e) {
-                        e.printStackTrace();
-
-                }
-
-                assertTrue(true);
+                assertThrows(Exception.class, () -> {
+                        bankService.buyBank3Stock(myOfferDto);
+                });
 
         }
 
@@ -97,13 +90,9 @@ public class BankServiceImplTest {
                                 eq(GenericTransactionDto.class)))
                                 .thenReturn(responseEntityMock);
 
-                try {
-                        boolean result = bankService.sellStockToBank3(offerDto);
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-
-                assertTrue(true);
+                assertThrows(Exception.class, () -> {
+                        bankService.sellStockToBank3(offerDto);
+                });
         }
 
         @Test
@@ -119,11 +108,8 @@ public class BankServiceImplTest {
                                 any(ParameterizedTypeReference.class)))
                                 .thenReturn(responseEntityMock);
 
-                try {
-                        List<SecurityOwnershipDto> result = bankService.getSecurityOwnerships();
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-                assertTrue(true);
+                assertThrows(Exception.class, () -> {
+                        bankService.getSecurityOwnerships();
+                });
         }
 }
