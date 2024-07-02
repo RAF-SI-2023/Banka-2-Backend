@@ -18,6 +18,7 @@ import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.mapper.MarginsTransactionMapper;
 import rs.edu.raf.BankService.repository.MarginsAccountRepository;
 import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
+import rs.edu.raf.BankService.repository.OrderRepository;
 import rs.edu.raf.BankService.repository.specification.MarginsTransactionSpecification;
 import rs.edu.raf.BankService.service.MarginsTransactionService;
 import rs.edu.raf.BankService.service.OrderService;
@@ -37,6 +38,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     private final MarginsTransactionMapper transactionMapper;
     private final RestTemplate restTemplate;
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     private final static String STOCK_SERVICE_URL = "http://stock-service:8001/api";
     private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
@@ -98,7 +100,10 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         transaction.setMarginsAccount(updatedMarginsAccount);
 
         MarginsTransaction savedTransaction = marginsTransactionRepository.save(transaction);
-        order.setOrderStatus(OrderStatus.APPROVED);
+   //     order.setOrderStatus(OrderStatus.APPROVED);
+        order.setMargin(true);
+        orderRepository.save(order);
+        orderService.updateOrderStatus(order.getId(),OrderStatus.APPROVED);
 
         return transactionMapper.toDto(savedTransaction);
     }

@@ -202,9 +202,11 @@ public class TradingSimulation implements Runnable {
         double totalPrice = quantityToProcess * listingDto.getPrice();
 
         //menjanje valute //TODo Mozda ovde treba da se zamene parametri, proveriti u nekom trenutku
-        totalPrice = currencyExchangeService.calculateAmountBetweenCurrencies(exchangeDto.getCurrency(), account.getCurrencyCode(), totalPrice);
-        //KOME DATI KES? trenutno samo releasuje funds u abyss, tako po specifikaciji
-        transactionService.releaseFunds(account, totalPrice);
+        if(!order.isMargin()){
+            totalPrice = currencyExchangeService.calculateAmountBetweenCurrencies(exchangeDto.getCurrency(), account.getCurrencyCode(), totalPrice);
+            //KOME DATI KES? trenutno samo releasuje funds u abyss, tako po specifikaciji
+            transactionService.releaseFunds(account, totalPrice);
+        }
         // ...
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         buyerSo.setListingType(order.getListingType());
