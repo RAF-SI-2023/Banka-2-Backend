@@ -39,13 +39,6 @@ public class BankServiceImpl implements BankService {
     @Override
     public Boolean createTransaction(ContractDto contractDto) {
         HttpRequest request = null;
-        System.out.println("ULAZI OVDE");
-        try {
-            System.out.println(contractDto);
-            System.out.println(objectMapper.writeValueAsString(contractDto));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage());
-        }
         try {
             request = HttpRequest.newBuilder()
                     .uri(URI.create(BANK_SERVICE_URL + "/transaction/securities"))
@@ -56,11 +49,8 @@ public class BankServiceImpl implements BankService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e.getMessage());
         }
-
-
         Boolean isSent = false;
         try {
-
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             if(response.statusCode()==200) {
                 GenericTransactionDto res = objectMapper.readValue(response.body(), GenericTransactionDto.class);
@@ -70,7 +60,6 @@ public class BankServiceImpl implements BankService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         return isSent;
     }
 

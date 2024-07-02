@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.service.ContractService;
-import rs.edu.raf.OTCService.util.SpringSecurityUtil;
 
 @RestController
 @RequestMapping("/api/contracts")
@@ -16,12 +15,10 @@ import rs.edu.raf.OTCService.util.SpringSecurityUtil;
 public class ContractController {
     private final ContractService contractService;
 
-
     @GetMapping("/all")
     public ResponseEntity<?> getAllContracts() {
         return ResponseEntity.ok(contractService.getAllContracts());
     }
-
 
     @GetMapping("/all-waiting")
     public ResponseEntity<?> getAllWaitingContracts() {
@@ -67,7 +64,6 @@ public class ContractController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
-
     }
 
     @PutMapping("/approve-bank/{id}")
@@ -99,7 +95,5 @@ public class ContractController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
-
 
 }

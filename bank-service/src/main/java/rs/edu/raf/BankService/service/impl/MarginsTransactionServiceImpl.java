@@ -14,14 +14,18 @@ import rs.edu.raf.BankService.data.entities.MarginsAccount;
 import rs.edu.raf.BankService.data.entities.MarginsTransaction;
 import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.data.enums.ListingType;
+import rs.edu.raf.BankService.data.enums.OrderStatus;
 import rs.edu.raf.BankService.mapper.MarginsTransactionMapper;
 import rs.edu.raf.BankService.repository.MarginsAccountRepository;
 import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
+import rs.edu.raf.BankService.repository.OrderRepository;
 import rs.edu.raf.BankService.repository.specification.MarginsTransactionSpecification;
 import rs.edu.raf.BankService.service.MarginsTransactionService;
 import rs.edu.raf.BankService.service.OrderService;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,15 +38,24 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     private final MarginsTransactionMapper transactionMapper;
     private final RestTemplate restTemplate;
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
-    private final static String STOCK_SERVICE_URL = "http://localhost:8001/api";
+    private final static String STOCK_SERVICE_URL = "http://stock-service:8001/api";
     private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
 
     @Override
-    public List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, Long startDate, Long endDate) {
+        LocalDateTime localStartDate = Instant.ofEpochMilli(startDate)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        LocalDateTime localEndDate = Instant.ofEpochMilli(endDate)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
         Specification<MarginsTransaction> spec = Specification
                 .where(MarginsTransactionSpecification.hasCurrency(currencyCode))
-                .and(MarginsTransactionSpecification.isBetweenDates(startDate, endDate));
+                .and(MarginsTransactionSpecification.isBetweenDates(localStartDate, localEndDate));
 
         return marginsTransactionRepository
                 .findAll(spec)
@@ -66,7 +79,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
     public MarginsTransactionResponseDto createTransaction(MarginsTransactionRequestDto marginsTransactionRequestDto) {
         Order order = orderService.findById(marginsTransactionRequestDto.getOrderId());
 
-        Double listPricePerUnit = getListingPrice(order.getListingId(), order.getListingType());
+        Double listPricePerUnit = getListingPrice(order.getListingSymbol(), order.getListingType());
         Double orderPrice = order.getQuantity() * listPricePerUnit;
         Double initialMargin =  marginsTransactionRequestDto.getInitialMargin();
         Double maintenanceMargin = marginsTransactionRequestDto.getMaintenanceMargin();
@@ -87,6 +100,10 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         transaction.setMarginsAccount(updatedMarginsAccount);
 
         MarginsTransaction savedTransaction = marginsTransactionRepository.save(transaction);
+   //     order.setOrderStatus(OrderStatus.APPROVED);
+        order.setMargin(true);
+        orderRepository.save(order);
+        orderService.updateOrderStatus(order.getId(),OrderStatus.APPROVED);
 
         return transactionMapper.toDto(savedTransaction);
     }
@@ -102,7 +119,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
                 .collect(Collectors.toList());
     }
 
-    private MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {
+    public MarginsAccount updateMarginsAccount(Long marginsAccountId, MarginsTransaction transaction) {
         MarginsAccount marginsAccount = marginsAccountRepository.findById(marginsAccountId)
                 .orElseThrow(() -> new RuntimeException("Margin account not found"));
 
@@ -123,10 +140,10 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         return marginsAccountRepository.save(marginsAccount);
     }
 
-    private Double getListingPrice(Long listingId, ListingType listingType) {
+    private Double getListingPrice(String listingSymbol, ListingType listingType) {
         String url = STOCK_SERVICE_URL + PRICE_ENDPOINT;
         BankStockDto bankStockDto = new BankStockDto();
-        bankStockDto.setListingId(listingId);
+        bankStockDto.setListingName(listingSymbol);
         bankStockDto.setListingType(listingType.name());
         HttpEntity<BankStockDto> request = new HttpEntity<>(bankStockDto);
 

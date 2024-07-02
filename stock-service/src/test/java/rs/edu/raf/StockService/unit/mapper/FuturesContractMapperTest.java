@@ -32,8 +32,7 @@ class FuturesContractMapperTest {
                 1200,
                 FuturesContractType.AGRICULTURE,
                 20.0,
-                20.0
-        );
+                20.0);
 
         // When
         FuturesContractDto futuresContractDto = mapper.futuresContractToFuturesContractDto(futuresContract);
@@ -49,21 +48,20 @@ class FuturesContractMapperTest {
         assertEquals(1200, futuresContractDto.getMaintenanceMargin());
         assertEquals(FuturesContractType.AGRICULTURE, futuresContractDto.getType());
     }
-/*
+
     @Test
     public void futuresContractDtoToFuturesContract_Success() {
         // Given
-        FuturesContractDto futuresContractDto = new FuturesContractDto(
-                1L,
-                "Name",
-                "Code",
-                100,
-                "Unit",
-                200,
-                860379441,
-                1200,
-                FuturesContractType.AGRICULTURE
-        );
+        FuturesContractDto futuresContractDto = new FuturesContractDto();
+        futuresContractDto.setId(1L);
+        futuresContractDto.setName("Name");
+        futuresContractDto.setCode("Code");
+        futuresContractDto.setContractUnit("Unit");
+        futuresContractDto.setContractSize(100);
+        futuresContractDto.setOpenInterest(200);
+        futuresContractDto.setSettlementDate(860379441);
+        futuresContractDto.setMaintenanceMargin(1200);
+        futuresContractDto.setType(FuturesContractType.AGRICULTURE);
 
         // When
         FuturesContract futuresContract = mapper.futuresContractDtoToFuturesContract(futuresContractDto);
@@ -79,5 +77,5 @@ class FuturesContractMapperTest {
         assertEquals(1200, futuresContract.getMaintenanceMargin());
         assertEquals(FuturesContractType.AGRICULTURE, futuresContract.getType());
     }
-    */
+
 }

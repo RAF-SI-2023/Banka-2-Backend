@@ -1,4 +1,6 @@
 package rs.edu.raf.OTCService.unit.services;
+
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,18 +13,23 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.checkerframework.checker.units.qual.C;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.entity.Contract;
 import rs.edu.raf.OTCService.data.enums.ContractStatus;
 import rs.edu.raf.OTCService.data.enums.ContractType;
+import rs.edu.raf.OTCService.filters.principal.CustomUserPrincipal;
 import rs.edu.raf.OTCService.mappers.ContractMapper;
 import rs.edu.raf.OTCService.repositories.ContractRepository;
 import rs.edu.raf.OTCService.service.BankService;
@@ -44,41 +51,207 @@ public class ContractServiceImplTest {
     private ContractServiceImpl contractService;
 
     // Get ContractDto for testing, it uses same args as Test Contract below
-    ContractDto getTestContractDto()
-    {
+    ContractDto getTestContractDto() {
         // some args don't matter as they will be set in `createContract()`
         return new ContractDto(
-            1L, false,
-            false, "comment",
-            1L, 1L,
-            "12345", "description",
-            "ticker", 1,
-            100.0, ContractStatus.WAITING,
-            1L, 2L,
-            "buyer@gmail.com", "seller@gmail.com",
-            ContractType.PRIVATE_CONTRACT);
+                1L, false,
+                false, "comment",
+                1L, 1L,
+                "12345", "description",
+                "ticker", 1,
+                100.0, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.PRIVATE_CONTRACT);
     }
 
     // Get Contract for testing, it uses same args as Test ContractDto above
-    Contract getTestContract()
-    {
+    Contract getTestContract() {
         return new Contract(1L, false,
-        false, "comment",
-        1L, 1L,
-        "12345", "description",
-        "ticker", 1,
-        100.0, ContractStatus.WAITING,
-        1L, 2L,
-        "buyer@gmail.com", "seller@gmail.com",
-        ContractType.PRIVATE_CONTRACT);
+                false, "comment",
+                1L, 1L,
+                "12345", "description",
+                "ticker", 1,
+                100.0, ContractStatus.WAITING,
+                1L, 2L,
+                "buyer@gmail.com", "seller@gmail.com",
+                ContractType.PRIVATE_CONTRACT);
     }
 
     @Test
-    void createContract_Success()
-    {
+    public void testGetAllWaitingContracts() {
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext
+                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l,
+                        "seller@gmail.com"), null, "test"));
+        SecurityContextHolder.setContext(securityContext);
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expected = List.of(getTestContractDto());
+
+        when(contractRepository.getAllWaitingContracts()).thenReturn(contracts);
+
+        List<ContractDto> actual = contractService.getAllWaitingContracts();
+
+        assertEquals(expected.size(), actual.size());
+        securityContext.setAuthentication(null);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    @Test
+    public void testGetAllWaitingContracts_isUser() {
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expectedDtos = List.of(getTestContractDto());
+
+        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
+            mockedStatic.when(SpringSecurityUtil::isUser).thenReturn(true);
+            mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(getTestContract().getSellersEmail());
+
+            when(contractRepository.getAllWaitingContracts()).thenReturn(contracts);
+            when(mapper.contractToDto(any(Contract.class))).thenReturn(expectedDtos.get(0));
+
+            List<ContractDto> actualDtos = contractService.getAllWaitingContracts();
+
+            assertEquals(1, actualDtos.size());
+            assertEquals(expectedDtos.get(0), actualDtos.get(0));
+
+            verify(contractRepository, times(1)).getAllWaitingContracts();
+            verify(mapper, times(1)).contractToDto(any(Contract.class));
+        }
+    }
+
+    @Test
+    public void testGetAllApprovedContracts_isUser() {
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expectedDtos = List.of(getTestContractDto());
+
+        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
+            mockedStatic.when(SpringSecurityUtil::isUser).thenReturn(true);
+            mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(getTestContractDto().getSellersEmail());
+
+            when(contractRepository.getAllApprovedContracts()).thenReturn(contracts);
+            when(mapper.contractToDto(any(Contract.class))).thenReturn(expectedDtos.get(0));
+
+            List<ContractDto> actualDtos = contractService.getAllApprovedContracts();
+
+            assertEquals(1, actualDtos.size());
+            assertEquals(expectedDtos.get(0), actualDtos.get(0));
+
+            verify(contractRepository, times(1)).getAllApprovedContracts();
+            verify(mapper, times(1)).contractToDto(any(Contract.class));
+        }
+    }
+
+    @Test
+    public void testGetAllRejectedContracts_isUser() {
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expectedDtos = List.of(getTestContractDto());
+
+        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
+            mockedStatic.when(SpringSecurityUtil::isUser).thenReturn(true);
+            mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(getTestContractDto().getSellersEmail());
+
+            when(contractRepository.getAllRejectedContracts()).thenReturn(contracts);
+            when(mapper.contractToDto(any(Contract.class))).thenReturn(expectedDtos.get(0));
+
+            List<ContractDto> actualDtos = contractService.getAllRejectedContracts();
+
+            assertEquals(1, actualDtos.size());
+            assertEquals(expectedDtos.get(0), actualDtos.get(0));
+
+            verify(contractRepository, times(1)).getAllRejectedContracts();
+            verify(mapper, times(1)).contractToDto(any(Contract.class));
+        }
+    }
+
+    @Test
+    public void testGetAllContracts_isUser() {
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expectedDtos = List.of(getTestContractDto());
+
+        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
+            mockedStatic.when(SpringSecurityUtil::isUser).thenReturn(true);
+            mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(getTestContractDto().getSellersEmail());
+
+            when(contractRepository.findAll()).thenReturn(contracts);
+            when(mapper.contractToDto(any(Contract.class))).thenReturn(expectedDtos.get(0));
+
+            List<ContractDto> actualDtos = contractService.getAllContracts();
+
+            assertEquals(1, actualDtos.size());
+            assertEquals(expectedDtos.get(0), actualDtos.get(0));
+
+            verify(contractRepository, times(1)).findAll();
+            verify(mapper, times(1)).contractToDto(any(Contract.class));
+        }
+    }
+
+    @Test
+    public void testGetAllApprovedContracts() {
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext
+                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l,
+                        "seller@gmail.com"), null, "test"));
+        SecurityContextHolder.setContext(securityContext);
+
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expected = List.of(getTestContractDto());
+
+        when(contractRepository.getAllApprovedContracts()).thenReturn(contracts);
+
+        List<ContractDto> actual = contractService.getAllApprovedContracts();
+
+        assertEquals(expected.size(), actual.size());
+        securityContext.setAuthentication(null);
+        SecurityContextHolder.setContext(securityContext);
+
+    }
+
+    @Test
+    public void testGetAllRejectedContracts() {
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext
+                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l,
+                        "seller@gmail.com"), null, "test"));
+        SecurityContextHolder.setContext(securityContext);
+
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expected = List.of(getTestContractDto());
+
+        when(contractRepository.getAllRejectedContracts()).thenReturn(contracts);
+
+        List<ContractDto> actual = contractService.getAllRejectedContracts();
+
+        assertEquals(expected.size(), actual.size());
+        securityContext.setAuthentication(null);
+        SecurityContextHolder.setContext(securityContext);
+
+    }
+
+    @Test
+    public void testGetAllContracts() {
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext
+                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l,
+                        "seller@gmail.com"), null, "test"));
+        SecurityContextHolder.setContext(securityContext);
+
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expected = List.of(getTestContractDto());
+
+        when(contractRepository.findAll()).thenReturn(contracts);
+
+        List<ContractDto> actual = contractService.getAllContracts();
+
+        assertEquals(expected.size(), actual.size());
+        securityContext.setAuthentication(null);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    @Test
+    void createContract_Success() {
         // create with dto, save and return new dto
         ContractDto contractDto = getTestContractDto();
-        
+
         Contract contract = getTestContract();
 
         when(contractRepository.save(any(Contract.class))).thenReturn(contract);
@@ -94,8 +267,7 @@ public class ContractServiceImplTest {
     }
 
     @Test
-    void getContractById_Success()
-    {
+    void getContractById_Success() {
         ContractDto contractDto = getTestContractDto();
         Contract contract = getTestContract();
         long testId = 1L;
@@ -114,24 +286,22 @@ public class ContractServiceImplTest {
 
     // id not found
     @Test
-    void getContractById_Exception()
-    {
+    void getContractById_Exception() {
         long testId = 1L;
 
         when(contractRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(
-            RuntimeException.class,
-            () -> {
-                ContractDto createdContractDto = contractService.getContractById(testId);
-            });
+                RuntimeException.class,
+                () -> {
+                    contractService.getContractById(testId);
+                });
 
         verify(contractRepository, times(1)).findById(testId);
     }
 
     @Test
-    void bankApproveContractById_Success()
-    {
+    void bankApproveContractById_Success() {
         ContractDto contractDto = getTestContractDto();
         contractDto.setBankConfirmation(true);
         contractDto.setSellerConfirmation(true);
@@ -152,7 +322,7 @@ public class ContractServiceImplTest {
         when(mapper.contractToDto(contract)).thenReturn(contractDto);
 
         ContractDto createdContractDto = contractService.bankApproveContractById(testId);
-        
+
         verify(contractRepository, times(1)).findById(testId);
         verify(mapper, times(2)).contractToDto(any(Contract.class));
         verify(contractRepository, times(1)).save(any(Contract.class));
@@ -166,8 +336,7 @@ public class ContractServiceImplTest {
 
     // id not found and id already confirmed by bank
     @Test
-    void bankApproveContractById_Exception()
-    {
+    void bankApproveContractById_Exception() {
         Contract contract = getTestContract();
         contract.setBankConfirmation(true);
 
@@ -179,19 +348,18 @@ public class ContractServiceImplTest {
         when(contractRepository.findById(testId)).thenReturn(Optional.of(contract));
 
         // not found
-        assertThrows(RuntimeException.class, () ->{
-            ContractDto createdContractDto = contractService.bankApproveContractById(badId);
+        assertThrows(RuntimeException.class, () -> {
+            contractService.bankApproveContractById(badId);
         });
 
         // `BankConfirmation` is True
-        assertThrows(RuntimeException.class, () ->{
-            ContractDto createdContractDto = contractService.bankApproveContractById(testId);
+        assertThrows(RuntimeException.class, () -> {
+            contractService.bankApproveContractById(testId);
         });
     }
 
     @Test
-    void sellerApproveContractById_Success()
-    {
+    void sellerApproveContractById_Success() {
         ContractDto contractDto = getTestContractDto();
         contractDto.setSellerConfirmation(true);
         contractDto.setBankConfirmation(true);
@@ -213,12 +381,12 @@ public class ContractServiceImplTest {
         when(bankService.createTransaction(any(ContractDto.class))).thenReturn(true);
         // contractDto has edited properties and will be same as createdContractDto
         when(mapper.contractToDto(contract)).thenReturn(contractDto);
-        
-        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)){
+
+        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
             mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(testEmail);
 
             ContractDto createdContractDto = contractService.sellerApproveContractById(testId);
-            
+
             verify(contractRepository, times(1)).findById(testId);
             verify(mapper, times(2)).contractToDto(any(Contract.class));
             verify(contractRepository, times(1)).save(any(Contract.class));
@@ -233,8 +401,7 @@ public class ContractServiceImplTest {
 
     // id not found and id already confirmed and wrong email
     @Test
-    void sellerApproveContractById_Exception()
-    {
+    void sellerApproveContractById_Exception() {
         String testEmail = "testEmail@gmail.com";
         String wrongEmail = "badEmail@gmail.com";
 
@@ -254,30 +421,29 @@ public class ContractServiceImplTest {
         when(contractRepository.findById(badId)).thenReturn(Optional.empty());
         when(contractRepository.findById(testIdConfirmed)).thenReturn(Optional.of(contractConfirmed));
         when(contractRepository.findById(testIdNotTheSeller)).thenReturn(Optional.of(contractNotTheSeller));
-        
+
         // not found
         assertThrows(RuntimeException.class, () -> {
-            ContractDto createdContractDto = contractService.sellerApproveContractById(badId);
+            contractService.sellerApproveContractById(badId);
         });
 
         // already confirmed
         assertThrows(RuntimeException.class, () -> {
-            ContractDto createdContractDto = contractService.sellerApproveContractById(testIdConfirmed);
+            contractService.sellerApproveContractById(testIdConfirmed);
         });
 
         // wrong user email
         assertThrows(RuntimeException.class, () -> {
-            try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)){
+            try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
                 mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(testEmail);
 
-                ContractDto createdContractDto = contractService.sellerApproveContractById(testIdNotTheSeller);
+                contractService.sellerApproveContractById(testIdNotTheSeller);
             }
         });
     }
 
     @Test
-    void bankDenyContractById_Success()
-    {
+    void bankDenyContractById_Success() {
         String comment = "testComment";
         ContractDto contractDto = getTestContractDto();
         contractDto.setBankConfirmation(false);
@@ -297,7 +463,7 @@ public class ContractServiceImplTest {
         when(mapper.contractToDto(contract)).thenReturn(contractDto);
 
         ContractDto createdContractDto = contractService.bankDenyContractById(testId, comment);
-        
+
         verify(contractRepository, times(1)).findById(testId);
         verify(mapper, times(1)).contractToDto(any(Contract.class));
         verify(contractRepository, times(1)).save(any(Contract.class));
@@ -310,8 +476,7 @@ public class ContractServiceImplTest {
 
     // id not found and already denied
     @Test
-    void bankDenyContractById_Exception()
-    {
+    void bankDenyContractById_Exception() {
         String comment = "testComment";
         Contract contract = getTestContract();
         contract.setBankConfirmation(false); // not denied
@@ -325,18 +490,17 @@ public class ContractServiceImplTest {
 
         // not found
         assertThrows(RuntimeException.class, () -> {
-            ContractDto createdContractDto = contractService.bankDenyContractById(badId, comment);
+            contractService.bankDenyContractById(badId, comment);
         });
-        
+
         // already denied
         assertThrows(RuntimeException.class, () -> {
-            ContractDto createdContractDto = contractService.bankDenyContractById(testId, comment);
+            contractService.bankDenyContractById(testId, comment);
         });
     }
 
     @Test
-    void sellerDenyContractById_Success()
-    {
+    void sellerDenyContractById_Success() {
         String comment = "testComment";
         ContractDto contractDto = getTestContractDto();
         contractDto.setSellerConfirmation(false);
@@ -357,11 +521,11 @@ public class ContractServiceImplTest {
         // contractDto has edited properties and will be same as createdContractDto
         when(mapper.contractToDto(contract)).thenReturn(contractDto);
 
-        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)){
+        try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
             mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(testEmail);
 
             ContractDto createdContractDto = contractService.sellerDenyContractById(testId, comment);
-            
+
             verify(contractRepository, times(1)).findById(testId);
             verify(mapper, times(1)).contractToDto(any(Contract.class));
             verify(contractRepository, times(1)).save(any(Contract.class));
@@ -375,8 +539,7 @@ public class ContractServiceImplTest {
 
     // id not found and already denied and wrong email
     @Test
-    void sellerDenyContractById_Exception()
-    {
+    void sellerDenyContractById_Exception() {
         String comment = "testComment";
         String testEmail = "testEmail@gmail.com";
         String wrongEmail = "badEmail@gmail.com";
@@ -396,23 +559,23 @@ public class ContractServiceImplTest {
         when(contractRepository.findById(badId)).thenReturn(Optional.empty());
         when(contractRepository.findById(testIdConfirmed)).thenReturn(Optional.of(contractConfirmed));
         when(contractRepository.findById(testIdNotTheSeller)).thenReturn(Optional.of(contractNotTheSeller));
-        
+
         // not found
         assertThrows(RuntimeException.class, () -> {
-            ContractDto createdContractDto = contractService.sellerDenyContractById(badId, comment);
+            contractService.sellerDenyContractById(badId, comment);
         });
 
         // already denied
         assertThrows(RuntimeException.class, () -> {
-            ContractDto createdContractDto = contractService.sellerDenyContractById(testIdConfirmed, comment);
+            contractService.sellerDenyContractById(testIdConfirmed, comment);
         });
 
         // wrong user email
         assertThrows(RuntimeException.class, () -> {
-            try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)){
+            try (MockedStatic<SpringSecurityUtil> mockedStatic = mockStatic(SpringSecurityUtil.class)) {
                 mockedStatic.when(SpringSecurityUtil::getPrincipalEmail).thenReturn(testEmail);
 
-                ContractDto createdContractDto = contractService.sellerDenyContractById(testIdNotTheSeller, comment);
+                contractService.sellerDenyContractById(testIdNotTheSeller, comment);
             }
         });
     }

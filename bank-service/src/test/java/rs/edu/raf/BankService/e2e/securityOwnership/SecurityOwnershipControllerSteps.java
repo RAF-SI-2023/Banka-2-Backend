@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig {
 
-
     private final String BASE_URL = "http://localhost:8003/api/securities-ownerships/";
 
     @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
@@ -39,7 +38,6 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
 
     private MockHttpServletResponse responseEntity;
     private MockHttpServletResponse responseEntityFail;
-
 
     @Autowired
     private SecurityOwnershipControllerJwtConst securityOwnershipControllerJwtConst;
@@ -52,35 +50,24 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
 
     @Given("employee is logged in")
     public void userIsLoggedInAsEmployee() {
-        securityOwnershipControllerJwtConst.jwt = JwtTokenGenerator.generateToken(1L, "lazar@gmail.com", "EMPLOYEE", "");
+        securityOwnershipControllerJwtConst.jwt = JwtTokenGenerator.generateToken(1L, "lazar@gmail.com", "EMPLOYEE",
+                "PERMISSION_4");
     }
 
     @When("I visit the securities ownerships page")
     public void iVisitTheSecuritiesOwnershipsPage() {
-        CashAccount cashAccount = new CashAccount();
-        cashAccount.setAccountNumber("3334444999999999");
-
-        String requestData;
-        try {
-            requestData = objectMapper.writeValueAsString("3334444999999999");
-        } catch (JsonProcessingException e) {
-            // Handle JSON serialization exception
-            e.printStackTrace();
-            requestData = ""; // Or any default value
-        }
-
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL+"account-number/3334444999999999")
+                    get(BASE_URL + "account-number/3334444999999999")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-            ).andExpect(status().isOk());
+                            .header("Authorization", "Bearer " + jwtToken))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -91,22 +78,21 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         assertEquals(200, responseEntity.getStatus());
     }
 
-
     @When("I visit the securities ownerships page with security")
     public void iVisitTheSecuritiesOwnershipsPageWithSecurity() {
 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL+"security-name/Z")
+                    get(BASE_URL + "security-name/Z")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-            ).andExpect(status().isOk());
+                            .header("Authorization", "Bearer " + jwtToken))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -118,21 +104,22 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL+"all-available")
+                    get(BASE_URL + "all-available")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-            ).andExpect(status().isOk());
+                            .header("Authorization", "Bearer " + jwtToken))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
-    //    When I visit the securities ownerships page to get all publicily available from companies
+    // When I visit the securities ownerships page to get all publicily available
+    // from companies
 
     @When("I visit the securities ownerships page to get all publicily available from companies")
     public void iVisitTheSecuritiesOwnershipsPageToGetAllFromCompanies() {
@@ -140,15 +127,15 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL+"all-available-companies")
+                    get(BASE_URL + "all-available-companies")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-            ).andExpect(status().isOk());
+                            .header("Authorization", "Bearer " + jwtToken))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -159,24 +146,24 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL+"all-available-private")
+                    get(BASE_URL + "all-available-private")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-            ).andExpect(status().isOk());
+                            .header("Authorization", "Bearer " + jwtToken))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
-//    Scenario: update publicily available quantity
-//    Given employee is logged in
-//    When update publicily available quantity
-//    Then It should return a success response
+    // Scenario: update publicily available quantity
+    // Given employee is logged in
+    // When update publicily available quantity
+    // Then It should return a success response
 
     @When("update publicily available quantity")
     public void updatePublicilyAviableQuntatiy() {
@@ -190,21 +177,19 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         inputDto.setReservedQuantity(0);
         inputDto.setOwnedByBank(false);
 
-
-
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    put(BASE_URL+"update-publicly-available")
+                    put(BASE_URL + "update-publicly-available")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + jwtToken)
-                            .content(objectMapper.writeValueAsString(inputDto))
-            ).andExpect(status().isOk());
+                            .content(objectMapper.writeValueAsString(inputDto)))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
 
-
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -218,10 +203,12 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
                     get(BASE_URL + "securities-values/" + accountNumber)
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-            ).andExpect(status().isOk());
+                            .header("Authorization", "Bearer " + jwtToken))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
+
+            assertEquals(MockHttpServletResponse.SC_OK, responseEntity.getStatus());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -235,7 +222,9 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
     @Then("the response should contain the values of securities")
     public void theResponseShouldContainTheValuesOfSecurities() {
         try {
-            Map<ListingType, BigDecimal> values = objectMapper.readValue(responseEntity.getContentAsString(), new TypeReference<Map<ListingType, BigDecimal>>() {});
+            Map<ListingType, BigDecimal> values = objectMapper.readValue(responseEntity.getContentAsString(),
+                    new TypeReference<Map<ListingType, BigDecimal>>() {
+                    });
             // Add assertions here
         } catch (JsonProcessingException e) {
             fail(e.getMessage());

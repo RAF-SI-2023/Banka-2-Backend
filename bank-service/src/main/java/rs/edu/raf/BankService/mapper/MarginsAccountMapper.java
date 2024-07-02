@@ -29,10 +29,9 @@ public class MarginsAccountMapper {
         MarginsAccount entity = new MarginsAccount();
         entity.setUserId(marginsAccountRequestDto.getUserId());
         entity.setEmail(marginsAccountRequestDto.getEmail());
-        entity.setAccountNumber(marginsAccountRequestDto.getAccountNumber());
+        entity.setAccountNumber(generateAccountNumber());
         entity.setBalance(marginsAccountRequestDto.getBalance());
         entity.setMarginCall(marginsAccountRequestDto.isMarginCall());
-        entity.setListingType(marginsAccountRequestDto.getType());
         entity.setMaintenanceMargin(marginsAccountRequestDto.getMaintenanceMargin());
         entity.setCurrencyCode(marginsAccountRequestDto.getCurrencyCode());
         entity.setLoanValue(marginsAccountRequestDto.getLoanValue());
@@ -40,4 +39,9 @@ public class MarginsAccountMapper {
         return entity;
     }
 
+    private String generateAccountNumber() {
+        Random random = new Random();
+        int number = 10000000 + random.nextInt(90000000);
+        return String.valueOf(number);
+    }
 }
