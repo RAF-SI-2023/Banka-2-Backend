@@ -4,14 +4,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContext;
+import org.springframework.security.test.context.support.WithSecurityContextFactory;
+
 import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
+import rs.edu.raf.BankService.data.entities.MarginsTransaction;
+import rs.edu.raf.BankService.data.enums.TransactionDirection;
+import rs.edu.raf.BankService.filters.principal.CustomUserPrincipal;
 import rs.edu.raf.BankService.mapper.MarginsAccountMapper;
 import rs.edu.raf.BankService.repository.MarginsAccountRepository;
 import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
 import rs.edu.raf.BankService.service.impl.MarginsAccountServiceImpl;
+import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +36,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class MarginsAccountServiceImplTests {
+
+    @Mock
+    private SpringSecurityUtil springSecurityUtilMock;
 
     @Mock
     private MarginsAccountRepository marginsAccountRepository;
@@ -36,6 +55,10 @@ public class MarginsAccountServiceImplTests {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext
+                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l, "email"), null, "test"));
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
@@ -175,6 +198,28 @@ public class MarginsAccountServiceImplTests {
     }
 
     @Test
+    public void testSettleMarginCall_Success() {
+        MarginsAccount mockAccount = new MarginsAccount();
+        mockAccount.setId(1l);
+        mockAccount.setMarginCall(true);
+        mockAccount.setMaintenanceMargin(20.0);
+        mockAccount.setBalance(40.0);
+
+        when(marginsAccountRepository.findById(1l)).thenReturn(Optional.of(mockAccount));
+        when(marginsAccountRepository.save(any())).thenReturn(mockAccount);
+
+        MarginsAccountResponseDto expected = new MarginsAccountResponseDto();
+        expected.setId(1l);
+
+        when(marginsAccountMapper.toDto(any())).thenReturn(expected);
+
+        MarginsAccountResponseDto actual = marginsAccountService.settleMarginCall(1l, 20.0);
+
+        assertEquals(expected.getId(), actual.getId());
+
+    }
+
+    @Test
     public void testFindByEmail() {
         String email = "test@example.com";
         MarginsAccount marginsAccount = new MarginsAccount();
@@ -208,4 +253,18 @@ public class MarginsAccountServiceImplTests {
         verify(marginsAccountRepository, times(1)).findAllByAccountNumber(accountNumber);
     }
 
+    @Test
+    public void testCreateTransactionForMarginCallSettlement() {
+        Long currentTimestamp = System.currentTimeMillis();
+        MarginsTransaction expected = new MarginsTransaction();
+        expected.setInvestmentAmount(2.0);
+        expected.setCreatedAt(currentTimestamp);
+        expected.setUserId(1l);
+        expected.setType(TransactionDirection.DEPOSIT);
+        expected.setDescription("MARGIN CALL DEPOSIT " + 2.0);
+
+        MarginsTransaction actual = marginsAccountService.createTransactionForMarginCallSettlement(2.0, 1l);
+
+        assertEquals(expected.getId(), actual.getId());
+    }
 }
