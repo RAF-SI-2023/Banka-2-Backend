@@ -33,11 +33,11 @@ import rs.edu.raf.OTCService.filters.principal.CustomUserPrincipal;
 import rs.edu.raf.OTCService.mappers.ContractMapper;
 import rs.edu.raf.OTCService.repositories.ContractRepository;
 import rs.edu.raf.OTCService.service.BankService;
-import rs.edu.raf.OTCService.service.impl.ContractServiceImpl;
+import rs.edu.raf.OTCService.service.impl.ContractServiceAltImpl;
 import rs.edu.raf.OTCService.util.SpringSecurityUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class ContractServiceImplTest {
+public class ContractServiceAltImplTest {
     @Mock
     private ContractRepository contractRepository;
 
@@ -48,7 +48,7 @@ public class ContractServiceImplTest {
     private BankService bankService;
 
     @InjectMocks
-    private ContractServiceImpl contractService;
+    private ContractServiceAltImpl contractService;
 
     // Get ContractDto for testing, it uses same args as Test Contract below
     ContractDto getTestContractDto() {
@@ -76,25 +76,6 @@ public class ContractServiceImplTest {
                 1L, 2L,
                 "buyer@gmail.com", "seller@gmail.com",
                 ContractType.PRIVATE_CONTRACT);
-    }
-
-    @Test
-    public void testGetAllWaitingContracts() {
-        SecurityContext securityContext = new SecurityContextImpl();
-        securityContext
-                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l,
-                        "seller@gmail.com"), null, "test"));
-        SecurityContextHolder.setContext(securityContext);
-        List<Contract> contracts = List.of(getTestContract());
-        List<ContractDto> expected = List.of(getTestContractDto());
-
-        when(contractRepository.getAllWaitingContracts()).thenReturn(contracts);
-
-        List<ContractDto> actual = contractService.getAllWaitingContracts();
-
-        assertEquals(expected.size(), actual.size());
-        securityContext.setAuthentication(null);
-        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
@@ -186,6 +167,24 @@ public class ContractServiceImplTest {
     }
 
     @Test
+    public void testGetAllWaitingContracts() {
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext
+                .setAuthentication(new TestingAuthenticationToken(new CustomUserPrincipal(1l,
+                        "seller@gmail.com"), null, "test"));
+        SecurityContextHolder.setContext(securityContext);
+        List<Contract> contracts = List.of(getTestContract());
+        List<ContractDto> expected = List.of(getTestContractDto());
+
+        when(contractRepository.getAllWaitingContracts()).thenReturn(contracts);
+
+        List<ContractDto> actual = contractService.getAllWaitingContracts();
+
+        assertEquals(expected.size(), actual.size());
+        SecurityContextHolder.clearContext();
+    }
+
+    @Test
     public void testGetAllApprovedContracts() {
         SecurityContext securityContext = new SecurityContextImpl();
         securityContext
@@ -201,8 +200,7 @@ public class ContractServiceImplTest {
         List<ContractDto> actual = contractService.getAllApprovedContracts();
 
         assertEquals(expected.size(), actual.size());
-        securityContext.setAuthentication(null);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.clearContext();
 
     }
 
@@ -222,8 +220,7 @@ public class ContractServiceImplTest {
         List<ContractDto> actual = contractService.getAllRejectedContracts();
 
         assertEquals(expected.size(), actual.size());
-        securityContext.setAuthentication(null);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.clearContext();
 
     }
 
@@ -243,8 +240,7 @@ public class ContractServiceImplTest {
         List<ContractDto> actual = contractService.getAllContracts();
 
         assertEquals(expected.size(), actual.size());
-        securityContext.setAuthentication(null);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.clearContext();
     }
 
     @Test

@@ -43,8 +43,8 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
         boolean isPresent = marginsAccountRepository.existsById(id);
 
         if (isPresent) {
-            MarginsAccount updatedMarginsAccount =
-                    marginsAccountRepository.save(marginsAccountMapper.toEntity(marginsAccountRequestDto));
+            MarginsAccount updatedMarginsAccount = marginsAccountRepository
+                    .save(marginsAccountMapper.toEntity(marginsAccountRequestDto));
             return marginsAccountMapper.toDto(updatedMarginsAccount);
         } else {
             throw new RuntimeException("Margins account with id " + id + " doesn't exist");
@@ -76,12 +76,13 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
     public List<MarginsAccountResponseDto> findByUserId(Long userId) {
         List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByUserId(userId);
 
-            return marginsAccounts.stream()
-                    .map(marginsAccountMapper::toDto)
-                    .toList();
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
     }
 
-    // ovde na frontu ako margin call nije promenjen, onda moze da ispise da je neuspela akcija
+    // ovde na frontu ako margin call nije promenjen, onda moze da ispise da je
+    // neuspela akcija
     @Override
     public MarginsAccountResponseDto settleMarginCall(Long id, Double deposit) {
         MarginsAccount marginsAccount = marginsAccountRepository.findById(id)
@@ -112,22 +113,21 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
     public List<MarginsAccountResponseDto> findByEmail(String email) {
         List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByEmail(email);
 
-            return marginsAccounts.stream()
-                    .map(marginsAccountMapper::toDto)
-                    .toList();
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
     }
-
 
     @Override
     public List<MarginsAccountResponseDto> findByAccountNumber(String accountNumber) {
         List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByAccountNumber(accountNumber);
 
-                return marginsAccounts.stream()
-                        .map(marginsAccountMapper::toDto)
-                        .toList();
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
     }
 
-    private MarginsTransaction createTransactionForMarginCallSettlement(Double deposit, Long userId) {
+    public MarginsTransaction createTransactionForMarginCallSettlement(Double deposit, Long userId) {
         MarginsTransaction marginsTransaction = new MarginsTransaction();
         marginsTransaction.setInvestmentAmount(deposit);
         marginsTransaction.setCreatedAt(System.currentTimeMillis());
