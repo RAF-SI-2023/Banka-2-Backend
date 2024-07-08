@@ -25,16 +25,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CreditControllerTestSteps extends CreditControllerConfigTests {
+    Object response;
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private CreditControllerStateTests userControllerTestsState;
-
-    Object response;
 
     @Given("user is logged in as employee;")
     public void userIsLoggedInAsEmployee() {
@@ -69,10 +66,10 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
     public void creditRequestIsCreatedAndWeCanSeeItInTheListOfCreditRequests() {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("http://localhost:8003/api/credit/credit-requests/all-pending")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + userControllerTestsState.jwt))
+                            get("http://localhost:8003/api/credit/credit-requests/all-pending")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + userControllerTestsState.jwt))
                     .andExpect(status().isOk());
 
             MvcResult mvcResult = resultActions.andReturn();
@@ -98,11 +95,11 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
         creditRequestDto.setPaymentPeriodMonths(12L);
         try {
             ResultActions resultActions = mockMvc.perform(
-                    post("http://localhost:8003/api/credit/credit-requests/create")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + userControllerTestsState.jwt)
-                            .content(objectMapper.writeValueAsString(creditRequestDto)))
+                            post("http://localhost:8003/api/credit/credit-requests/create")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + userControllerTestsState.jwt)
+                                    .content(objectMapper.writeValueAsString(creditRequestDto)))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CreditRequestDto.class);
@@ -133,11 +130,11 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
     public void creditRequestIsApprovedAndWeCanSeeCreditInTheListOfApprovedCreditsForTheClient() {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("http://localhost:8003/api/credit/all/account-number/"
-                            + ((CreditDto) response).getAccountNumber())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + userControllerTestsState.jwt))
+                            get("http://localhost:8003/api/credit/all/account-number/"
+                                    + ((CreditDto) response).getAccountNumber())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + userControllerTestsState.jwt))
                     .andExpect(status().isOk());
 
             MvcResult mvcResult = resultActions.andReturn();

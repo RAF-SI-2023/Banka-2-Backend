@@ -1,12 +1,5 @@
 package rs.edu.raf.OTCService.unit.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +8,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.edu.raf.OTCService.data.entity.listing.BankOTCStock;
 import rs.edu.raf.OTCService.data.entity.offer.Offer;
-import rs.edu.raf.OTCService.data.enums.OrderStatus;
 import rs.edu.raf.OTCService.service.impl.UtilityServiceImpl;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UtilityServiceImplTest {

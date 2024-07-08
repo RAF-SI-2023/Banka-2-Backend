@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("SubtractionTransferTransaction")
 @Data
 @NoArgsConstructor
-public class SubtractionTransferTransaction extends TransferTransaction{
+public class SubtractionTransferTransaction extends TransferTransaction {
     private Long amount;
 }

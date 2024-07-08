@@ -15,16 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Permission {
 
+    @ManyToMany(mappedBy = "permissions")
+    List<User> users;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Enumerated(EnumType.STRING)
     @Column(unique = true)
     private PermissionType permissionType;
-
-    @ManyToMany(mappedBy = "permissions")
-    List<User> users;
 
 
     public Permission(PermissionType permissionType) {

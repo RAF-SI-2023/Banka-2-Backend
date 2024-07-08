@@ -1,13 +1,6 @@
 package rs.edu.raf.OTCService.unit.controllers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,14 +10,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import rs.edu.raf.OTCService.controllers.ContractController;
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.enums.ContractStatus;
 import rs.edu.raf.OTCService.data.enums.ContractType;
 import rs.edu.raf.OTCService.service.ContractService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -71,7 +69,7 @@ public class ContractControllerImplTest {
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/all")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2))
@@ -120,7 +118,7 @@ public class ContractControllerImplTest {
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/all-waiting")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2))
@@ -149,7 +147,7 @@ public class ContractControllerImplTest {
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -165,7 +163,7 @@ public class ContractControllerImplTest {
 
         // Perform GET request and validate response
         mockMvc.perform(get("/api/contracts/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(errorMessage));
     }
@@ -177,8 +175,8 @@ public class ContractControllerImplTest {
         when(contractService.createContract(any(ContractDto.class))).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(post("/api/contracts/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(contractDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(contractDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -189,8 +187,8 @@ public class ContractControllerImplTest {
     void createContract_Exception() throws Exception {
         // Perform GET request and validate response
         mockMvc.perform(post("/api/contracts/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("BAD STRING"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("BAD STRING"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -201,7 +199,7 @@ public class ContractControllerImplTest {
         when(contractService.sellerApproveContractById(1L)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-seller/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -214,7 +212,7 @@ public class ContractControllerImplTest {
                 new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-seller/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -225,7 +223,7 @@ public class ContractControllerImplTest {
         when(contractService.bankApproveContractById(1L)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-bank/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -238,7 +236,7 @@ public class ContractControllerImplTest {
                 new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/approve-bank/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -250,8 +248,8 @@ public class ContractControllerImplTest {
         when(contractService.sellerDenyContractById(1L, comment)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-seller/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comment))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -266,8 +264,8 @@ public class ContractControllerImplTest {
                 new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-seller/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comment))
                 .andExpect(status().isNotFound());
     }
 
@@ -279,8 +277,8 @@ public class ContractControllerImplTest {
         when(contractService.bankDenyContractById(1L, comment)).thenReturn(contractDto);
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-bank/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comment))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -295,8 +293,8 @@ public class ContractControllerImplTest {
                 new RuntimeException("Error"));
         // Perform GET request and validate response
         mockMvc.perform(put("/api/contracts/deny-bank/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comment))
                 .andExpect(status().isNotFound());
     }
 }

@@ -26,6 +26,7 @@ public class CardServiceImpl implements CardService {
     private final CardMapper cardMapper;
     private final CardRepository cardRepository;
     private final CashAccountRepository cashAccountRepository;
+
     @Override
     public CardDto createCard(CreateCardDto cardDto) {
 
@@ -166,7 +167,7 @@ public class CardServiceImpl implements CardService {
         if (card == null) {
             throw new RuntimeException("Card with identification card number " + identificationCardNumber + " not found");
         }
-        
+
 
         card.setBlock(!card.getBlock());
         cardRepository.save(card);

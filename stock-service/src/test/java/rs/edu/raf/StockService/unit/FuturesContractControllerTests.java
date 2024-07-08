@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.edu.raf.StockService.controllers.FuturesContractController;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
-import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.services.FuturesContractService;
 
 import java.util.ArrayList;

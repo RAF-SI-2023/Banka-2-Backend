@@ -97,7 +97,7 @@ public class TransactionMapper {
         return dto;
     }
 
-    public TransferTransactionSubtractionDto toTransferTransactionSubtractionDto(SubtractionTransferTransaction transaction){
+    public TransferTransactionSubtractionDto toTransferTransactionSubtractionDto(SubtractionTransferTransaction transaction) {
         TransferTransactionSubtractionDto dto = new TransferTransactionSubtractionDto();
         dto.setId(transaction.getId().toString());
         dto.setAmount(transaction.getAmount());
@@ -109,7 +109,7 @@ public class TransactionMapper {
         return dto;
     }
 
-    public AdditionTransferTransaction toAdditionTransferTransactionEntity(TransferTransactionAdditionDto dto){
+    public AdditionTransferTransaction toAdditionTransferTransactionEntity(TransferTransactionAdditionDto dto) {
         AdditionTransferTransaction entity = new AdditionTransferTransaction();
         entity.setAmount(dto.getAmount());
         entity.setCreatedAt(LocalDateTime.now());
@@ -117,7 +117,7 @@ public class TransactionMapper {
         return entity;
     }
 
-    public SubtractionTransferTransaction toSubtractionTransferTransactionEntity(TransferTransactionSubtractionDto dto){
+    public SubtractionTransferTransaction toSubtractionTransferTransactionEntity(TransferTransactionSubtractionDto dto) {
         SubtractionTransferTransaction entity = new SubtractionTransferTransaction();
         entity.setAmount(dto.getAmount());
         entity.setCreatedAt(LocalDateTime.now());

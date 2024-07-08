@@ -9,7 +9,7 @@ import rs.edu.raf.BankService.data.entities.profit.ActionAgentProfit;
 @Component
 public class ActionAgentProfitMapper {
 
-    public ActionAgentProfitDto actionAgentProfitToActionAgentProfitDto(ActionAgentProfit actionAgentProfit){
+    public ActionAgentProfitDto actionAgentProfitToActionAgentProfitDto(ActionAgentProfit actionAgentProfit) {
         return new ActionAgentProfitDto(
                 actionAgentProfit.getId(),
                 actionAgentProfit.getUserEmail(),
@@ -20,7 +20,7 @@ public class ActionAgentProfitMapper {
         );
     }
 
-    public ActionAgentProfit actionAgentProfitDtoToActionAgentProfit(ActionAgentProfitDto actionAgentProfitDto){
+    public ActionAgentProfit actionAgentProfitDtoToActionAgentProfit(ActionAgentProfitDto actionAgentProfitDto) {
         return new ActionAgentProfit(
                 actionAgentProfitDto.getId(),
                 actionAgentProfitDto.getUserEmail(),
@@ -31,7 +31,7 @@ public class ActionAgentProfitMapper {
         );
     }
 
-    public TotalActionAgentProfitDto actionAgentProfitToTotalActionAgentProfitDto(ActionAgentProfit actionAgentProfit){
+    public TotalActionAgentProfitDto actionAgentProfitToTotalActionAgentProfitDto(ActionAgentProfit actionAgentProfit) {
         return new TotalActionAgentProfitDto(
                 actionAgentProfit.getUserEmail(),
                 actionAgentProfit.getProfit()

@@ -4,7 +4,6 @@ package rs.edu.raf.StockService.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rs.edu.raf.StockService.data.dto.OptionDto;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
@@ -32,14 +31,15 @@ public class OptionController {
         }
         return ResponseEntity.ok(lista);
     }
+
     @GetMapping("/ticker-symbol/{tickerSymbol}")
     //listing Ticker + YY + MM + DD + C ili P + Strike Price
-    public ResponseEntity<?> findOptionByTickerSymbol(@PathVariable String tickerSymbol){
-     try {
-         return ResponseEntity.ok() .body(optionServiceImpl.findOptionByTickerSymbol(tickerSymbol));
-     }catch (Exception e){
-         return ResponseEntity.notFound().build();
-     }
+    public ResponseEntity<?> findOptionByTickerSymbol(@PathVariable String tickerSymbol) {
+        try {
+            return ResponseEntity.ok().body(optionServiceImpl.findOptionByTickerSymbol(tickerSymbol));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

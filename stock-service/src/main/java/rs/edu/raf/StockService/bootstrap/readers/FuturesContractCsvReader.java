@@ -8,7 +8,6 @@ import rs.edu.raf.StockService.data.enums.FuturesContractType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class FuturesContractCsvReader {
 
     public List<FuturesContract> readFromFile() {
         List<FuturesContract> futuresContracts = new ArrayList<>();
-        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             long id = 0;
             String line = reader.readLine(); // Read header column
             while ((line = reader.readLine()) != null) {

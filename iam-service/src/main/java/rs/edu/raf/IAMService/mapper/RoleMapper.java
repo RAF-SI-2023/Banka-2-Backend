@@ -6,14 +6,14 @@ import rs.edu.raf.IAMService.data.entites.Role;
 
 @Component
 public class RoleMapper {
-    public Role roleDtoToRole(RoleDto roleDto){
+    public Role roleDtoToRole(RoleDto roleDto) {
         return new Role(
-            roleDto.getId(),
-            roleDto.getRoleType()
+                roleDto.getId(),
+                roleDto.getRoleType()
         );
     }
 
-    public RoleDto roleToRoleDto(Role role){
+    public RoleDto roleToRoleDto(Role role) {
         return new RoleDto(
                 role.getId(),
                 role.getRoleType()

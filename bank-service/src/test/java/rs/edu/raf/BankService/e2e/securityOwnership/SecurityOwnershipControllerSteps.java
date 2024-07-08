@@ -59,10 +59,10 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL + "account-number/3334444999999999")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(BASE_URL + "account-number/3334444999999999")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -84,10 +84,10 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL + "security-name/Z")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(BASE_URL + "security-name/Z")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -104,10 +104,10 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL + "all-available")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(BASE_URL + "all-available")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -127,10 +127,10 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL + "all-available-companies")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(BASE_URL + "all-available-companies")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -146,10 +146,10 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL + "all-available-private")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(BASE_URL + "all-available-private")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -180,11 +180,11 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    put(BASE_URL + "update-publicly-available")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-                            .content(objectMapper.writeValueAsString(inputDto)))
+                            put(BASE_URL + "update-publicly-available")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken)
+                                    .content(objectMapper.writeValueAsString(inputDto)))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -200,10 +200,10 @@ public class SecurityOwnershipControllerSteps extends CardControllerTestsConfig 
         String jwtToken = securityOwnershipControllerJwtConst.jwt;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(BASE_URL + "securities-values/" + accountNumber)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(BASE_URL + "securities-values/" + accountNumber)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
