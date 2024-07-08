@@ -43,138 +43,138 @@ import rs.edu.raf.BankService.service.impl.MarginsTransactionServiceImpl;
 
 public class MarginsTransactionServiceImplTests {
 
-        @Mock
-        private MarginsAccountRepository marginsAccountRepository;
+    @Mock
+    private MarginsAccountRepository marginsAccountRepository;
 
-        @Mock
-        private MarginsTransactionRepository marginsTransactionRepository;
+    @Mock
+    private MarginsTransactionRepository marginsTransactionRepository;
 
-        @Mock
-        private MarginsTransactionMapper transactionMapper;
+    @Mock
+    private MarginsTransactionMapper transactionMapper;
 
-        @Mock
-        private RestTemplate restTemplate;
+    @Mock
+    private RestTemplate restTemplate;
 
-        @Mock
-        private OrderService orderService;
+    @Mock
+    private OrderService orderService;
 
-        @InjectMocks
-        private MarginsTransactionServiceImpl marginsTransactionService;
+    @InjectMocks
+    private MarginsTransactionServiceImpl marginsTransactionService;
 
-        @BeforeEach
-        public void setUp() {
-                MockitoAnnotations.openMocks(this);
-        }
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-        @Test
-        public void testGetFilteredTransactions() {
-                MarginsTransaction transaction = new MarginsTransaction();
-                when(marginsTransactionRepository.findAll(any(Specification.class)))
-                                .thenReturn(Collections.singletonList(transaction));
-                when(transactionMapper.toDto(any(MarginsTransaction.class)))
-                                .thenReturn(new MarginsTransactionResponseDto());
+    @Test
+    public void testGetFilteredTransactions() {
+        MarginsTransaction transaction = new MarginsTransaction();
+        when(marginsTransactionRepository.findAll(any(Specification.class)))
+                .thenReturn(Collections.singletonList(transaction));
+        when(transactionMapper.toDto(any(MarginsTransaction.class)))
+                .thenReturn(new MarginsTransactionResponseDto());
 
-                List<MarginsTransactionResponseDto> result = marginsTransactionService
-                                .getFilteredTransactions("USD", 1L, 1L);
+        List<MarginsTransactionResponseDto> result = marginsTransactionService
+                .getFilteredTransactions("USD", 1L, 1L);
 
-                assertEquals(1, result.size());
-        }
+        assertEquals(1, result.size());
+    }
 
-        @Test
-        public void testGetTransactionsByAccountId() {
-                MarginsTransaction transaction = new MarginsTransaction();
-                when(marginsTransactionRepository.findAll(any(Specification.class)))
-                                .thenReturn(Collections.singletonList(transaction));
-                when(transactionMapper.toDto(any(MarginsTransaction.class)))
-                                .thenReturn(new MarginsTransactionResponseDto());
+    @Test
+    public void testGetTransactionsByAccountId() {
+        MarginsTransaction transaction = new MarginsTransaction();
+        when(marginsTransactionRepository.findAll(any(Specification.class)))
+                .thenReturn(Collections.singletonList(transaction));
+        when(transactionMapper.toDto(any(MarginsTransaction.class)))
+                .thenReturn(new MarginsTransactionResponseDto());
 
-                List<MarginsTransactionResponseDto> result = marginsTransactionService.getTransactionsByAccountId(1L);
+        List<MarginsTransactionResponseDto> result = marginsTransactionService.getTransactionsByAccountId(1L);
 
-                assertEquals(1, result.size());
-        }
+        assertEquals(1, result.size());
+    }
 
-        @Test
-        public void testFindAllByEmail() {
-                MarginsTransaction transaction = new MarginsTransaction();
-                when(marginsTransactionRepository.findAll(any(Specification.class)))
-                                .thenReturn(Collections.singletonList(transaction));
-                when(transactionMapper.toDto(any(MarginsTransaction.class)))
-                                .thenReturn(new MarginsTransactionResponseDto());
+    @Test
+    public void testFindAllByEmail() {
+        MarginsTransaction transaction = new MarginsTransaction();
+        when(marginsTransactionRepository.findAll(any(Specification.class)))
+                .thenReturn(Collections.singletonList(transaction));
+        when(transactionMapper.toDto(any(MarginsTransaction.class)))
+                .thenReturn(new MarginsTransactionResponseDto());
 
-                List<MarginsTransactionResponseDto> result = marginsTransactionService
-                                .findAllByEmail("test@example.com");
+        List<MarginsTransactionResponseDto> result = marginsTransactionService
+                .findAllByEmail("test@example.com");
 
-                assertEquals(1, result.size());
-        }
+        assertEquals(1, result.size());
+    }
 
-        @Test
-        public void testCreateTransaction_Successful() {
+    @Test
+    public void testCreateTransaction_Successful() {
 
-                // MarginsTransactionRequestDto requestDto = new MarginsTransactionRequestDto();
-                // requestDto.setOrderId(1L);
-                // requestDto.setInitialMargin(100.0);
-                // requestDto.setMarginsAccountId(1l);
-                // requestDto.setMaintenanceMargin(50.0);
-                // requestDto.setUserId(1l);
-                // requestDto.setType(TransactionDirection.DEPOSIT);
+        // MarginsTransactionRequestDto requestDto = new MarginsTransactionRequestDto();
+        // requestDto.setOrderId(1L);
+        // requestDto.setInitialMargin(100.0);
+        // requestDto.setMarginsAccountId(1l);
+        // requestDto.setMaintenanceMargin(50.0);
+        // requestDto.setUserId(1l);
+        // requestDto.setType(TransactionDirection.DEPOSIT);
 
-                // Order mockOrder = new Order();
-                // mockOrder.setListingId(1L);
-                // mockOrder.setListingType(ListingType.STOCK);
-                // mockOrder.setQuantity(10);
+        // Order mockOrder = new Order();
+        // mockOrder.setListingId(1L);
+        // mockOrder.setListingType(ListingType.STOCK);
+        // mockOrder.setQuantity(10);
 
-                // when(orderService.findById(1L)).thenReturn(mockOrder);
-                // when(restTemplate.postForEntity(anyString(), any(), eq(Double.class)))
-                // .thenReturn(ResponseEntity.ok(100.0));
+        // when(orderService.findById(1L)).thenReturn(mockOrder);
+        // when(restTemplate.postForEntity(anyString(), any(), eq(Double.class)))
+        // .thenReturn(ResponseEntity.ok(100.0));
 
-                // MarginsAccount mockMarginsAccount = new MarginsAccount();
-                // mockMarginsAccount.setId(1L);
-                // mockMarginsAccount.setBalance(1000.0);
-                // mockMarginsAccount.setLoanValue(1000.0);
-                // mockMarginsAccount.setMaintenanceMargin(200.0);
-                // mockMarginsAccount.setMarginsTransactions(new ArrayList<>());
+        // MarginsAccount mockMarginsAccount = new MarginsAccount();
+        // mockMarginsAccount.setId(1L);
+        // mockMarginsAccount.setBalance(1000.0);
+        // mockMarginsAccount.setLoanValue(1000.0);
+        // mockMarginsAccount.setMaintenanceMargin(200.0);
+        // mockMarginsAccount.setMarginsTransactions(new ArrayList<>());
 
-                // when(marginsAccountRepository.findById(anyLong())).thenReturn(Optional.of(mockMarginsAccount));
-                // when(marginsAccountRepository.save(any(MarginsAccount.class))).thenReturn(mockMarginsAccount);
+        // when(marginsAccountRepository.findById(anyLong())).thenReturn(Optional.of(mockMarginsAccount));
+        // when(marginsAccountRepository.save(any(MarginsAccount.class))).thenReturn(mockMarginsAccount);
 
-                // MarginsTransaction mockTransaction = new MarginsTransaction();
-                // mockTransaction.setId(1L);
-                // when(transactionMapper.toEntity(any(MarginsTransactionRequestDto.class))).thenReturn(mockTransaction);
-                // when(transactionMapper.toDto(any(MarginsTransaction.class)))
-                // .thenReturn(new MarginsTransactionResponseDto());
-                // when(marginsTransactionRepository.save(any())).thenReturn(mockTransaction);
+        // MarginsTransaction mockTransaction = new MarginsTransaction();
+        // mockTransaction.setId(1L);
+        // when(transactionMapper.toEntity(any(MarginsTransactionRequestDto.class))).thenReturn(mockTransaction);
+        // when(transactionMapper.toDto(any(MarginsTransaction.class)))
+        // .thenReturn(new MarginsTransactionResponseDto());
+        // when(marginsTransactionRepository.save(any())).thenReturn(mockTransaction);
 
-                // MarginsTransactionResponseDto result =
-                // marginsTransactionService.createTransaction(requestDto);
+        // MarginsTransactionResponseDto result =
+        // marginsTransactionService.createTransaction(requestDto);
 
-                // assertEquals(null, result.getId());
-        }
+        // assertEquals(null, result.getId());
+    }
 
-        @Test
-        public void testUpdateMarginsAccount_Successful() {
-                MarginsTransaction transaction = new MarginsTransaction();
-                transaction.setId(1L);
-                transaction.setInvestmentAmount(100.0);
-                transaction.setLoanValue(500.0);
-                transaction.setMaintenanceMargin(50.0);
-                transaction.setType(TransactionDirection.DEPOSIT);
+    @Test
+    public void testUpdateMarginsAccount_Successful() {
+        MarginsTransaction transaction = new MarginsTransaction();
+        transaction.setId(1L);
+        transaction.setInvestmentAmount(100.0);
+        transaction.setLoanValue(500.0);
+        transaction.setMaintenanceMargin(50.0);
+        transaction.setType(TransactionDirection.DEPOSIT);
 
-                MarginsAccount mockMarginsAccount = new MarginsAccount();
-                mockMarginsAccount.setId(1L);
-                mockMarginsAccount.setBalance(1000.0);
-                mockMarginsAccount.setLoanValue(1000.0);
-                mockMarginsAccount.setMaintenanceMargin(200.0);
-                mockMarginsAccount.setMarginsTransactions(new ArrayList<>());
-                mockMarginsAccount.addTransaction(transaction);
+        MarginsAccount mockMarginsAccount = new MarginsAccount();
+        mockMarginsAccount.setId(1L);
+        mockMarginsAccount.setBalance(1000.0);
+        mockMarginsAccount.setLoanValue(1000.0);
+        mockMarginsAccount.setMaintenanceMargin(200.0);
+        mockMarginsAccount.setMarginsTransactions(new ArrayList<>());
+        mockMarginsAccount.addTransaction(transaction);
 
-                when(marginsAccountRepository.findById(anyLong())).thenReturn(Optional.of(mockMarginsAccount));
-                when(marginsAccountRepository.save(any(MarginsAccount.class))).thenReturn(mockMarginsAccount);
-                MarginsAccount result = marginsTransactionService.updateMarginsAccount(1L, transaction);
-                assertEquals(900.0, result.getBalance()); // 1000 - 100 (investment amount)
-                assertEquals(1500.0, result.getLoanValue()); // 1000 + 500 (loan value)
-                assertEquals(250.0, result.getMaintenanceMargin()); // 200 + 50 (maintenance margin)
+        when(marginsAccountRepository.findById(anyLong())).thenReturn(Optional.of(mockMarginsAccount));
+        when(marginsAccountRepository.save(any(MarginsAccount.class))).thenReturn(mockMarginsAccount);
+        MarginsAccount result = marginsTransactionService.updateMarginsAccount(1L, transaction);
+        assertEquals(900.0, result.getBalance()); // 1000 - 100 (investment amount)
+        assertEquals(1500.0, result.getLoanValue()); // 1000 + 500 (loan value)
+        assertEquals(250.0, result.getMaintenanceMargin()); // 200 + 50 (maintenance margin)
 
-                verify(marginsAccountRepository, times(1)).findById(1L);
-                verify(marginsAccountRepository, times(1)).save(any(MarginsAccount.class));
-        }
+        verify(marginsAccountRepository, times(1)).findById(1L);
+        verify(marginsAccountRepository, times(1)).save(any(MarginsAccount.class));
+    }
 }

@@ -11,7 +11,6 @@ import rs.edu.raf.BankService.data.entities.Order;
 import rs.edu.raf.BankService.service.StockService;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -22,10 +21,9 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class StockServiceImpl implements StockService {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Value("${stock.service.url:http://stock-service:8001/api}")
     private String STOCK_SERVICE_URL;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Override
     public ForexDto getForexBySymbol(String symbol) {
@@ -131,7 +129,7 @@ public class StockServiceImpl implements StockService {
     }
 
     private OptionDto getOptionBySymbol(String listingSymbol) {
-     return OptionDto.fromString(listingSymbol);
+        return OptionDto.fromString(listingSymbol);
     }
 
     @Override

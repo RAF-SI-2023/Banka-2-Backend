@@ -55,14 +55,13 @@ public class CashAccount {
     private List<SavedAccount> savedAccounts;
 
 
-
     public CashAccount(
             String accountNumber,
             String email,
             AccountType accountType,
             String currencyCode,
             Double maintenanceFee
-    ){
+    ) {
         this.accountNumber = accountNumber;
         this.linkState = UserAccountUserProfileLinkState.NOT_ASSOCIATED;
         this.email = email;

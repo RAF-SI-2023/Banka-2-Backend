@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import rs.edu.raf.BankService.data.entities.transactions.OrderTransaction;
 import rs.edu.raf.BankService.repository.OrderTransactionRepository;
 import rs.edu.raf.BankService.service.OrderTransactionService;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FindOrderTransactionByIdIntegrationTest extends OrderTransactionIntegrationTestConfig{
+public class FindOrderTransactionByIdIntegrationTest extends OrderTransactionIntegrationTestConfig {
     @Autowired
     private OrderTransactionRepository orderTransactionRepository;
 
@@ -34,18 +35,18 @@ public class FindOrderTransactionByIdIntegrationTest extends OrderTransactionInt
 
     @Given("there is an order transaction with a specific id")
     public void thereIsAnOrderTransactionWithId() {
-        testOrderTransaction=new OrderTransaction();
+        testOrderTransaction = new OrderTransaction();
         orderTransactionRepository.save(testOrderTransaction);
-        testOrderTransactionId=testOrderTransaction.getId();
+        testOrderTransactionId = testOrderTransaction.getId();
     }
 
     @When("I request order transaction with that id")
     public void iRequestOrderTransactionForId() {
-        foundOrderTransaction=orderTransactionService.findById(testOrderTransactionId);
+        foundOrderTransaction = orderTransactionService.findById(testOrderTransactionId);
     }
 
     @Then("I should receive the order transaction with that id")
     public void iShouldReceiveTheResponseContainingOrderTransactionWithId() {
-        assertEquals(testOrderTransaction,foundOrderTransaction);
+        assertEquals(testOrderTransaction, foundOrderTransaction);
     }
 }

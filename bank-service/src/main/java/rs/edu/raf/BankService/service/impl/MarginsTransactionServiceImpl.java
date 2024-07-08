@@ -33,15 +33,14 @@ import java.util.stream.Collectors;
 @Service
 public class MarginsTransactionServiceImpl implements MarginsTransactionService {
 
+    private final static String STOCK_SERVICE_URL = "http://stock-service:8001/api";
+    private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
     private final MarginsAccountRepository marginsAccountRepository;
     private final MarginsTransactionRepository marginsTransactionRepository;
     private final MarginsTransactionMapper transactionMapper;
     private final RestTemplate restTemplate;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
-
-    private final static String STOCK_SERVICE_URL = "http://stock-service:8001/api";
-    private final static String PRICE_ENDPOINT = "/bank-stock/listing-price";
 
     @Override
     public List<MarginsTransactionResponseDto> getFilteredTransactions(String currencyCode, Long startDate, Long endDate) {
@@ -81,7 +80,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
 
         Double listPricePerUnit = getListingPrice(order.getListingSymbol(), order.getListingType());
         Double orderPrice = order.getQuantity() * listPricePerUnit;
-        Double initialMargin =  marginsTransactionRequestDto.getInitialMargin();
+        Double initialMargin = marginsTransactionRequestDto.getInitialMargin();
         Double maintenanceMargin = marginsTransactionRequestDto.getMaintenanceMargin();
         Double loanValue = orderPrice - initialMargin;
         Double interest = loanValue * 0.05;
@@ -100,10 +99,10 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
         transaction.setMarginsAccount(updatedMarginsAccount);
 
         MarginsTransaction savedTransaction = marginsTransactionRepository.save(transaction);
-   //     order.setOrderStatus(OrderStatus.APPROVED);
+        //     order.setOrderStatus(OrderStatus.APPROVED);
         order.setMargin(true);
         orderRepository.save(order);
-        orderService.updateOrderStatus(order.getId(),OrderStatus.APPROVED);
+        orderService.updateOrderStatus(order.getId(), OrderStatus.APPROVED);
 
         return transactionMapper.toDto(savedTransaction);
     }
@@ -128,8 +127,7 @@ public class MarginsTransactionServiceImpl implements MarginsTransactionService 
             marginsAccount.setLoanValue(marginsAccount.getLoanValue() + transaction.getLoanValue());
             marginsAccount.setMaintenanceMargin(
                     marginsAccount.getMaintenanceMargin() + transaction.getMaintenanceMargin());
-        }
-        else {
+        } else {
             marginsAccount.setBalance(marginsAccount.getBalance() + transaction.getInvestmentAmount());
             marginsAccount.setMaintenanceMargin(
                     marginsAccount.getMaintenanceMargin() - transaction.getMaintenanceMargin());

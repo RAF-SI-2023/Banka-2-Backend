@@ -23,10 +23,8 @@ import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.ActionAgentProfitService;
 import rs.edu.raf.BankService.service.CurrencyExchangeService;
 import rs.edu.raf.BankService.service.TransactionService;
-import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -196,14 +194,12 @@ public class TransactionServiceImpl implements TransactionService {
             throw new AccountNotFoundException(internalTransferTransactionDto.getSenderAccountNumber());
         }
 
-        if(internalTransferTransactionDto.getAmount() >= 0) {
+        if (internalTransferTransactionDto.getAmount() >= 0) {
             cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() + internalTransferTransactionDto.getAmount());
-        }
-        else {
-            if(cashAccount.getAvailableBalance() > Math.abs(internalTransferTransactionDto.getAmount())) {
+        } else {
+            if (cashAccount.getAvailableBalance() > Math.abs(internalTransferTransactionDto.getAmount())) {
                 cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() - Math.abs(internalTransferTransactionDto.getAmount()));
-            }
-            else {
+            } else {
                 throw new RuntimeException("amount is more then balance on account");
             }
         }
@@ -255,15 +251,15 @@ public class TransactionServiceImpl implements TransactionService {
         double availableBalance = cashAccount.getAvailableBalance();
         double reservedFunds = cashAccount.getReservedFunds();
 
-        if (reservedFunds - amount< -0.01) {
+        if (reservedFunds - amount < -0.01) {
             // this should not happen
             // possible if using random or something, throws exception once in a blue moon, totally unpredictable
-            System.out.println("amount = " +  amount +" reserved = "+reservedFunds);
+            System.out.println("amount = " + amount + " reserved = " + reservedFunds);
             throw new RuntimeException("Insufficient reserved funds (THIS SOULD NOT HAPPEN)");
         }
 
         cashAccount.setAvailableBalance(availableBalance - amount);
-        cashAccount.setReservedFunds(Math.abs(reservedFunds - amount)<0.01?0:reservedFunds-amount);
+        cashAccount.setReservedFunds(Math.abs(reservedFunds - amount) < 0.01 ? 0 : reservedFunds - amount);
         cashAccountRepository.save(cashAccount);
         return true;
     }
@@ -347,16 +343,16 @@ public class TransactionServiceImpl implements TransactionService {
 
         Integer quantityToProcess = securitiesTransactionDto.getQuantityToTransfer();
         double totalPrice = securitiesTransactionDto.getAmount();
-        reserveFunds(buyer.getAccountNumber(),totalPrice);
+        reserveFunds(buyer.getAccountNumber(), totalPrice);
         transferFunds(buyer.getAccountNumber(), seller.getAccountNumber(), totalPrice);
         //..
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         SecuritiesOwnership sellerSo = sellSecurities.get(0);
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity() * buyerSo.getAverageBuyingPrice()) + totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         sellerSo.setQuantity(sellerSo.getQuantity() - quantityToProcess);
-        if(sellerSo.getQuantityOfPubliclyAvailable()-quantityToProcess>0)
-            sellerSo.setQuantityOfPubliclyAvailable(sellerSo.getQuantityOfPubliclyAvailable()-quantityToProcess);
+        if (sellerSo.getQuantityOfPubliclyAvailable() - quantityToProcess > 0)
+            sellerSo.setQuantityOfPubliclyAvailable(sellerSo.getQuantityOfPubliclyAvailable() - quantityToProcess);
         else sellerSo.setQuantityOfPubliclyAvailable(0);
         securitiesOwnershipRepository.saveAll(List.of(buyerSo, sellerSo));
 
@@ -365,7 +361,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setStatus(TransactionStatus.CONFIRMED);
         cashTransactionRepository.save(transaction);
 
-        if(sellerSo.isOwnedByBank()) {
+        if (sellerSo.isOwnedByBank()) {
             actionAgentProfitService.createAgentProfit(transaction, sellerSo, quantityToProcess);
         }
 

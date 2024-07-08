@@ -52,11 +52,11 @@ public class BankServiceImpl implements BankService {
         Boolean isSent = false;
         try {
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            if(response.statusCode()==200) {
+            if (response.statusCode() == 200) {
                 GenericTransactionDto res = objectMapper.readValue(response.body(), GenericTransactionDto.class);
                 if (res.getStatus() == TransactionStatus.CONFIRMED)
                     isSent = true;
-            }else throw new RuntimeException(response.body());
+            } else throw new RuntimeException(response.body());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

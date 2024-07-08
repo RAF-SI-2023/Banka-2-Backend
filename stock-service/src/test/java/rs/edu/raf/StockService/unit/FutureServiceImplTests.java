@@ -1,13 +1,11 @@
 package rs.edu.raf.StockService.unit;
 
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
-import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.mapper.FuturesContractMapper;
 import rs.edu.raf.StockService.repositories.FuturesContractRepository;
@@ -31,6 +29,7 @@ public class FutureServiceImplTests {
     FuturesContractRepository futuresContractRepository;
     @Mock
     FuturesContractMapper mapper;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -41,10 +40,10 @@ public class FutureServiceImplTests {
     public void testFindAll() {
         // Mock behavior
         List<FuturesContract> contracts = new ArrayList<>();
-        FuturesContract contract=new FuturesContract(/* initialize contract here */);
+        FuturesContract contract = new FuturesContract(/* initialize contract here */);
         contracts.add(contract);
         List<FuturesContractDto> contractsDto = new ArrayList<>();
-        FuturesContractDto contractDto=new FuturesContractDto(/* initialize contract here */);
+        FuturesContractDto contractDto = new FuturesContractDto(/* initialize contract here */);
         contractsDto.add(contractDto);
 
         when(futuresContractRepository.findAll()).thenReturn(contracts);
@@ -75,7 +74,7 @@ public class FutureServiceImplTests {
         // Mock behavior
         Long id = 1L;
         FuturesContract contract = new FuturesContract(/* initialize contract here */);
-        FuturesContractDto dto=new FuturesContractDto();
+        FuturesContractDto dto = new FuturesContractDto();
         when(futuresContractRepository.findById(eq(id))).thenReturn(Optional.of(contract));
         when(mapper.futuresContractToFuturesContractDto(contract)).thenReturn(dto);
         // Test

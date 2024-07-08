@@ -28,13 +28,12 @@ public class DomesticCurrencyCashAccount extends CashAccount {
             String currencyCode,
             Double maintenanceFee,
             DomesticCurrencyAccountType domesticCurrencyAccountType
-    ){
+    ) {
         super(accountNumber, email, accountType, currencyCode, maintenanceFee);
         this.domesticCurrencyAccountType = domesticCurrencyAccountType;
-        if(domesticCurrencyAccountType == DomesticCurrencyAccountType.RETIREMENT) this.interestRate = 2.5;
-        if(domesticCurrencyAccountType == DomesticCurrencyAccountType.STUDENT) this.interestRate = 4.0;
+        if (domesticCurrencyAccountType == DomesticCurrencyAccountType.RETIREMENT) this.interestRate = 2.5;
+        if (domesticCurrencyAccountType == DomesticCurrencyAccountType.STUDENT) this.interestRate = 4.0;
     }
-
 
 
 }

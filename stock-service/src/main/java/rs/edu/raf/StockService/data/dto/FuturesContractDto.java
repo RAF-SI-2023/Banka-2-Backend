@@ -1,6 +1,5 @@
 package rs.edu.raf.StockService.data.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

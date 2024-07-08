@@ -64,9 +64,9 @@ public class OrderTransactionControllerTestSteps extends OrderTransactionControl
 
     @And("one order transaction exists with a specific id")
     public void oneOrderTransactionExists() {
-        testOrderTransaction=new OrderTransaction();
+        testOrderTransaction = new OrderTransaction();
         orderTransactionRepository.save(testOrderTransaction);
-        testOrderTransactionId=testOrderTransaction.getId();
+        testOrderTransactionId = testOrderTransaction.getId();
     }
 
     @When("I visit the order transactions page")
@@ -101,7 +101,7 @@ public class OrderTransactionControllerTestSteps extends OrderTransactionControl
         } catch (UnsupportedEncodingException e) {
             fail(e.getMessage());
         }
-        assertEquals(testOrderTransaction,responseList.get(0));
+        assertEquals(testOrderTransaction, responseList.get(0));
         assertEquals(1, responseList.size());
     }
 
@@ -168,18 +168,18 @@ public class OrderTransactionControllerTestSteps extends OrderTransactionControl
 
     @And("one order transaction exists with orderId {long}")
     public void oneOrderTransactionExistsWithOrderId(long orderId) {
-        testOrderTransaction=new OrderTransaction();
+        testOrderTransaction = new OrderTransaction();
         testOrderTransaction.setOrderId(orderId);
         orderTransactionRepository.save(testOrderTransaction);
-        testOrderTransactionId=testOrderTransaction.getId();
+        testOrderTransactionId = testOrderTransaction.getId();
     }
 
     @And("one order transaction exists that belongs to an account with account number {string}")
     public void oneOrderTransactionExistsThatBelongsToAnAccountWithAccountNumber(String accountNumber) {
-        testOrderTransaction=new OrderTransaction();
+        testOrderTransaction = new OrderTransaction();
         testOrderTransaction.setAccountNumber(accountNumber);
         orderTransactionRepository.save(testOrderTransaction);
-        testOrderTransactionId=testOrderTransaction.getId();
+        testOrderTransactionId = testOrderTransaction.getId();
     }
 
     @When("I visit the order transaction page with account number {string}")
@@ -209,7 +209,7 @@ public class OrderTransactionControllerTestSteps extends OrderTransactionControl
         } catch (UnsupportedEncodingException e) {
             fail(e.getMessage());
         }
-        assertEquals(accountNumber,responseList.get(0).getAccountNumber());
+        assertEquals(accountNumber, responseList.get(0).getAccountNumber());
         assertEquals(1, responseList.size());
     }
 }

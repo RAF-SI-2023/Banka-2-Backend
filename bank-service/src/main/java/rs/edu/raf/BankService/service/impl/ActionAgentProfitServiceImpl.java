@@ -10,30 +10,27 @@ import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.entities.profit.ActionAgentProfit;
 import rs.edu.raf.BankService.data.entities.transactions.OrderTransaction;
 import rs.edu.raf.BankService.data.entities.transactions.SecuritiesTransaction;
-import rs.edu.raf.BankService.data.entities.transactions.TransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionProfitType;
-import rs.edu.raf.BankService.data.enums.TransactionType;
 import rs.edu.raf.BankService.mapper.ActionAgentProfitMapper;
 import rs.edu.raf.BankService.mapper.TransactionMapper;
 import rs.edu.raf.BankService.repository.ActionAgentProfitRepository;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.service.ActionAgentProfitService;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ActionAgentProfitServiceImpl implements ActionAgentProfitService {
 
-    private final  ActionAgentProfitRepository actionAgentProfitRepository;
-    private final  ActionAgentProfitMapper actionAgentProfitMapper;
+    private final ActionAgentProfitRepository actionAgentProfitRepository;
+    private final ActionAgentProfitMapper actionAgentProfitMapper;
     private final CashAccountRepository cashAccountRepository;
     private final TransactionMapper transactionMapper;
-
 
 
     @Override
@@ -43,22 +40,22 @@ public class ActionAgentProfitServiceImpl implements ActionAgentProfitService {
             SecuritiesTransaction securitiesTransaction = (SecuritiesTransaction) transaction;
             GenericTransactionDto genericTransactionDto = transactionMapper.toGenericTransactionDto(securitiesTransaction);
 
-                ActionAgentProfit actionAgentProfit = new ActionAgentProfit();
-                CashAccount cashAccount = securitiesTransaction.getSenderCashAccount();
-                String email = cashAccount.getEmail();
-                actionAgentProfit.setUserEmail(email);
-                long id= Integer.parseInt(genericTransactionDto.getId());
-                actionAgentProfit.setTransactionId(id);
-                actionAgentProfit.setTransactionType(TransactionProfitType.SECURITIES);
-                LocalDateTime createdAt = securitiesTransaction.getCreatedAt();
-                long createdAtMillis = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
-                actionAgentProfit.setCreatedAt(createdAtMillis);
+            ActionAgentProfit actionAgentProfit = new ActionAgentProfit();
+            CashAccount cashAccount = securitiesTransaction.getSenderCashAccount();
+            String email = cashAccount.getEmail();
+            actionAgentProfit.setUserEmail(email);
+            long id = Integer.parseInt(genericTransactionDto.getId());
+            actionAgentProfit.setTransactionId(id);
+            actionAgentProfit.setTransactionType(TransactionProfitType.SECURITIES);
+            LocalDateTime createdAt = securitiesTransaction.getCreatedAt();
+            long createdAtMillis = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
+            actionAgentProfit.setCreatedAt(createdAtMillis);
 
-                double avgPrice = securitiesOwnership.getAverageBuyingPrice() * quantity;
+            double avgPrice = securitiesOwnership.getAverageBuyingPrice() * quantity;
 
-                actionAgentProfit.setProfit(securitiesTransaction.getAmount() - avgPrice);
-                actionAgentProfitRepository.save(actionAgentProfit);
-                return actionAgentProfitMapper.actionAgentProfitToActionAgentProfitDto(actionAgentProfit);
+            actionAgentProfit.setProfit(securitiesTransaction.getAmount() - avgPrice);
+            actionAgentProfitRepository.save(actionAgentProfit);
+            return actionAgentProfitMapper.actionAgentProfitToActionAgentProfitDto(actionAgentProfit);
 
 
         } else if (transaction instanceof OrderTransaction) {
@@ -77,8 +74,7 @@ public class ActionAgentProfitServiceImpl implements ActionAgentProfitService {
             actionAgentProfitRepository.save(actionAgentProfit);
             return actionAgentProfitMapper.actionAgentProfitToActionAgentProfitDto(actionAgentProfit);
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Unsupported transaction type");
         }
 

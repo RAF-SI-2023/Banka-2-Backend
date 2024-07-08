@@ -1,16 +1,12 @@
 package rs.edu.raf.StockService.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
-import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.services.FuturesContractService;
 
 import java.util.List;
-
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
 @RestController
 @RequestMapping("/api/futures")
@@ -36,12 +32,13 @@ public class FuturesContractController {
         }
 
     }
+
     @GetMapping("/name/{name}")
-    public ResponseEntity<?> findFutureContractByName(@PathVariable String name){
-        try{
-            FuturesContractDto futuresContractDto=futuresContractService.findByName(name);
+    public ResponseEntity<?> findFutureContractByName(@PathVariable String name) {
+        try {
+            FuturesContractDto futuresContractDto = futuresContractService.findByName(name);
             return ResponseEntity.ok(futuresContractDto);
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.status(404).build();
         }
 

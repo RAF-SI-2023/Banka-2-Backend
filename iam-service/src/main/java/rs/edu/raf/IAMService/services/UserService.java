@@ -1,6 +1,5 @@
 package rs.edu.raf.IAMService.services;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import rs.edu.raf.IAMService.data.dto.*;

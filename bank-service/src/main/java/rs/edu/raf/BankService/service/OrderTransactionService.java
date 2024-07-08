@@ -8,8 +8,11 @@ import java.util.List;
 @Service
 public interface OrderTransactionService {
     OrderTransaction findById(long id);
+
     OrderTransaction findByOrderId(long orderId);
+
     List<OrderTransaction> findAll();
+
     List<OrderTransaction> findAllByAccountNumber(String accountNumber);
 
     List<OrderTransaction> findAllByEmail(String email);

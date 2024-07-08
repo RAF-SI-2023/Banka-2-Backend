@@ -28,26 +28,19 @@ public class CardControllerSteps extends CardControllerTestsConfig {
 
     // private final RestTemplate restTemplate = new RestTemplateBuilder().build();
     private final String BASE_URL = "http://localhost:8003/api/cards";
-
+    CardService cardService;
+    CreateCardDto deleteCardDto;
     @Autowired
     private MockMvc mockMvc;
-
     private CardMapper cardMapper;
-
-
     @Autowired
     private CardControllerJwtConst userControllerTestsState;
     private String authToken;
     private MockHttpServletResponse responseEntity;
-
     private MockHttpServletResponse responseEntityFail;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    CardService cardService;
-
-    CreateCardDto deleteCardDto;
+    private MockHttpServletResponse responseCardNumber;
 
     CardControllerSteps(CardService cardService, CardMapper cardMapper) {
         this.cardService = cardService;
@@ -124,28 +117,29 @@ public class CardControllerSteps extends CardControllerTestsConfig {
             fail(e.getMessage());
         }
     }
+
     @Then("it should return a not found status with an error message")
     public void itShouldReturnAForbiddenStatusWithAnErrorMessage() {
         assertEquals(MockHttpServletResponse.SC_FORBIDDEN, responseEntityFail.getStatus());
     }
 
-    private MockHttpServletResponse responseCardNumber;
     @When("users endpoint is called")
     public void usersEndpointIsCalled() {
         long identificationCardNumber = 1000000000000000L;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("http://localhost:8003/api/cards/id/"+identificationCardNumber)
+                    get("http://localhost:8003/api/cards/id/" + identificationCardNumber)
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + userControllerTestsState.jwt)
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
-            responseCardNumber =mvcResult.getResponse();
+            responseCardNumber = mvcResult.getResponse();
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
+
     @Then("it should return a success response with the card details")
     public void itShouldReturnASuccessResponseWithTheCardDetails() {
         assertEquals(MockHttpServletResponse.SC_OK, responseCardNumber.getStatus());
@@ -165,7 +159,7 @@ public class CardControllerSteps extends CardControllerTestsConfig {
                             .content(objectMapper.writeValueAsString(cardDto))
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
-            responseCardNumber =mvcResult.getResponse();
+            responseCardNumber = mvcResult.getResponse();
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -181,7 +175,7 @@ public class CardControllerSteps extends CardControllerTestsConfig {
                             .header("Authorization", "Bearer " + userControllerTestsState.jwt)
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
-            responseCardNumber =mvcResult.getResponse();
+            responseCardNumber = mvcResult.getResponse();
 
         } catch (Exception e) {
             fail(e.getMessage());
@@ -203,7 +197,7 @@ public class CardControllerSteps extends CardControllerTestsConfig {
                             .content(objectMapper.writeValueAsString(cardDto))
             ).andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
-            responseCardNumber =mvcResult.getResponse();
+            responseCardNumber = mvcResult.getResponse();
         } catch (Exception e) {
             fail(e.getMessage());
         }

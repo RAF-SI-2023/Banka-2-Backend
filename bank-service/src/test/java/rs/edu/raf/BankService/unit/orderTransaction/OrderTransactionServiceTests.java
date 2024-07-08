@@ -26,11 +26,11 @@ public class OrderTransactionServiceTests {
 
     @Test
     public void testFindById_Found() {
-        long id=1;
+        long id = 1;
 
-        OrderTransaction ot=new OrderTransaction();
+        OrderTransaction ot = new OrderTransaction();
         ot.setId(id);
-        Optional<OrderTransaction> otOptional=Optional.of(ot);
+        Optional<OrderTransaction> otOptional = Optional.of(ot);
 
         when(orderTransactionRepository.findById(id)).thenReturn(otOptional);
 
@@ -39,7 +39,7 @@ public class OrderTransactionServiceTests {
 
     @Test
     public void testFindById_NotFound() {
-        long id=-1;
+        long id = -1;
 
         when(orderTransactionRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -48,20 +48,20 @@ public class OrderTransactionServiceTests {
 
     @Test
     public void testFindByOrderId_OrderFound() {
-        long orderId=1;
+        long orderId = 1;
 
-        OrderTransaction ot=new OrderTransaction();
+        OrderTransaction ot = new OrderTransaction();
         ot.setId(orderId);
-        Optional<OrderTransaction> otOptional=Optional.of(ot);
+        Optional<OrderTransaction> otOptional = Optional.of(ot);
 
         when(orderTransactionRepository.findOrderTransactionByOrderId(orderId)).thenReturn(otOptional);
 
-        assert(orderTransactionService.findByOrderId(orderId).equals(otOptional.get()));
+        assert (orderTransactionService.findByOrderId(orderId).equals(otOptional.get()));
     }
 
     @Test
     public void testFindByOrderId_OrderNotFound() {
-        long orderId=-1;
+        long orderId = -1;
 
         when(orderTransactionRepository.findOrderTransactionByOrderId(orderId)).thenReturn(Optional.empty());
 
@@ -70,25 +70,25 @@ public class OrderTransactionServiceTests {
 
     @Test
     public void testFindAll() {
-        ArrayList<OrderTransaction> orderTransactions=new ArrayList<>();
+        ArrayList<OrderTransaction> orderTransactions = new ArrayList<>();
         orderTransactions.add(new OrderTransaction());
         orderTransactions.add(new OrderTransaction());
 
         when(orderTransactionRepository.findAll()).thenReturn(orderTransactions);
 
-        assert(orderTransactionService.findAll().equals(orderTransactions));
+        assert (orderTransactionService.findAll().equals(orderTransactions));
     }
 
     @Test
     public void testFindAllByAccountNumber() {
-        String accountNumber="123";
+        String accountNumber = "123";
 
-        ArrayList<OrderTransaction> orderTransactions=new ArrayList<>();
+        ArrayList<OrderTransaction> orderTransactions = new ArrayList<>();
         orderTransactions.add(new OrderTransaction());
         orderTransactions.add(new OrderTransaction());
 
         when(orderTransactionRepository.findAllByAccountNumber(accountNumber)).thenReturn(orderTransactions);
 
-        assert(orderTransactionService.findAllByAccountNumber(accountNumber).equals(orderTransactions));
+        assert (orderTransactionService.findAllByAccountNumber(accountNumber).equals(orderTransactions));
     }
 }

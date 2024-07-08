@@ -17,16 +17,7 @@ public class OptionDto {
     private Long settlementDate;
     private String currency;
 
-    @Override
-    public String toString() {
-        return
-                  stockListing + '|' +
-                 optionType + '|' +
-                 strikePrice + '|'+
-                 settlementDate +"|"+
-                 currency;
-    }
-    public static OptionDto fromString(String s){
+    public static OptionDto fromString(String s) {
         if (s == null) {
             throw new IllegalArgumentException("Input string  for OptionDto cannot be null");
         }
@@ -47,5 +38,15 @@ public class OptionDto {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Error parsing OptionDto string to numeric values", e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return
+                stockListing + '|' +
+                        optionType + '|' +
+                        strikePrice + '|' +
+                        settlementDate + "|" +
+                        currency;
     }
 }

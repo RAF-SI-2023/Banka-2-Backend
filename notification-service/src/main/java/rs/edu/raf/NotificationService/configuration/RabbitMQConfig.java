@@ -34,8 +34,11 @@ public class RabbitMQConfig {
     public Queue transactionVerification() {
         return new Queue("transaction-verification", false);
     }
+
     @Bean
-    public Queue marginCallViolation(){return new Queue("margin-call-violation",false);}
+    public Queue marginCallViolation() {
+        return new Queue("margin-call-violation", false);
+    }
 
     @Bean
     public MessageConverter jsonMessageConverter() {

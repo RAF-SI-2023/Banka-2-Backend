@@ -16,5 +16,5 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @ScenarioScope
 public class UserControllerE2ETestsState {
-   String jwtToken;
+    String jwtToken;
 }

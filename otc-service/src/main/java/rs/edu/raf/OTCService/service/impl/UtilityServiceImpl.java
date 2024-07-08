@@ -1,15 +1,14 @@
 package rs.edu.raf.OTCService.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import rs.edu.raf.OTCService.data.entity.listing.BankOTCStock;
+import rs.edu.raf.OTCService.data.entity.offer.Offer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
-import rs.edu.raf.OTCService.data.entity.listing.BankOTCStock;
-import rs.edu.raf.OTCService.data.entity.offer.Offer;
 
 @Service
 @RequiredArgsConstructor

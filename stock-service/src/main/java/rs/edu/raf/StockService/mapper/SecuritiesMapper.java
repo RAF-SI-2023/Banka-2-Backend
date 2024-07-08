@@ -3,7 +3,6 @@ package rs.edu.raf.StockService.mapper;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.dto.SecuritiesDto;
-import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.data.entities.Option;
 
 @Component

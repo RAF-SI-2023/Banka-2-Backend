@@ -18,26 +18,27 @@ public class EmailService {
     public final JavaMailSender emailSender;
 
     @Autowired
-    public EmailService(JavaMailSender emailSender){
+    public EmailService(JavaMailSender emailSender) {
         this.emailSender = emailSender;
     }
 
-    public void sendSimpleMailMessage(String to, String subject, String text) throws MailException{
+    public void sendSimpleMailMessage(String to, String subject, String text) throws MailException {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
         emailSender.send(message);
     }
-    public void sendMimeMessageWithAttachments(String to, String subject, String text, String[] attachmentFilePaths) throws MessagingException, IOException{
+
+    public void sendMimeMessageWithAttachments(String to, String subject, String text, String[] attachmentFilePaths) throws MessagingException, IOException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(text);
-        
+
         //Add attachments
-        for (var attachmentFilePath : attachmentFilePaths){
+        for (var attachmentFilePath : attachmentFilePaths) {
             var fileSystemResource = new FileSystemResource(new File(attachmentFilePath));
             helper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
         }

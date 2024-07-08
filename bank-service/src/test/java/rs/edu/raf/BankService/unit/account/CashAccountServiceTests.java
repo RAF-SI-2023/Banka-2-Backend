@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 public class CashAccountServiceTests {
 
     @InjectMocks
-    private CashAccountServiceImpl accountService ;
+    private CashAccountServiceImpl accountService;
 
     @Mock
     private UserAccountUserProfileActivationCodeRepository userAccountUserProfileActivationCodeRepository;
@@ -66,7 +66,7 @@ public class CashAccountServiceTests {
 
         // Act & Assert
         assertThrows(AccountNotFoundException.class, () ->
-            accountService.userAccountUserProfileConnectionAttempt(accountNumberDto)
+                accountService.userAccountUserProfileConnectionAttempt(accountNumberDto)
         );
     }
 
@@ -101,7 +101,7 @@ public class CashAccountServiceTests {
 
         // Act & Assert
         assertThrows(UserAccountInProcessOfBindingWithUserProfileException.class, () ->
-            accountService.userAccountUserProfileConnectionAttempt(accountNumberDto)
+                accountService.userAccountUserProfileConnectionAttempt(accountNumberDto)
         );
 
         // Verifikacija da nema interakcija sa repozitorijumom koja bi dovela do promene u stanju
@@ -122,7 +122,7 @@ public class CashAccountServiceTests {
 
         // Act & Assert
         assertThrows(UserAccountAlreadyAssociatedWithUserProfileException.class, () ->
-            accountService.userAccountUserProfileConnectionAttempt(accountNumberDto)
+                accountService.userAccountUserProfileConnectionAttempt(accountNumberDto)
         );
     }
 
@@ -485,11 +485,11 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void findBankAccounts_Success(){
+    public void findBankAccounts_Success() {
         AccountValuesDto accountValuesDto = new AccountValuesDto();
         CashAccount cashAcc = new CashAccount();
         cashAcc.setOwnedByBank(true);
-        List< CashAccount> cashAccount = Arrays.asList(cashAcc);
+        List<CashAccount> cashAccount = Arrays.asList(cashAcc);
 
         when(cashAccountRepository.findAll()).thenReturn(cashAccount);
 
@@ -502,7 +502,7 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void findBankAccounts_AccountNotFound(){
+    public void findBankAccounts_AccountNotFound() {
         when(cashAccountRepository.findAll()).thenReturn(null);
 
         assertThrows(AccountNotFoundException.class, () -> accountService.findBankAccounts());
@@ -510,7 +510,7 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void depositWithdrawalAddition_Success(){
+    public void depositWithdrawalAddition_Success() {
         String accountNumber = "0932345111111111";
         Long amount = 100L;
         CashAccount cashAccount = new CashAccount();
@@ -524,7 +524,7 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void depositWithdrawalAddition_NotFound(){
+    public void depositWithdrawalAddition_NotFound() {
         String accountNumber = "0932345111111111";
         Long amount = 100L;
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
@@ -536,7 +536,7 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void depositWithdrawalSubtraction_Success(){
+    public void depositWithdrawalSubtraction_Success() {
         String accountNumber = "0932345111111111";
         Long amount = -10L;
         CashAccount cashAccount = new CashAccount();
@@ -551,7 +551,7 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void depositWithdrawalSubtraction_AccountNotFound(){
+    public void depositWithdrawalSubtraction_AccountNotFound() {
         String accountNumber = "0932345111111111";
         Long amount = 100L;
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);
@@ -563,7 +563,7 @@ public class CashAccountServiceTests {
     }
 
     @Test
-    public void depositWithdrawalSubtraction_ToBigAmount(){
+    public void depositWithdrawalSubtraction_ToBigAmount() {
         String accountNumber = "0932345111111111";
         Long amount = 1000000000000000000L;
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto(accountNumber, amount);

@@ -256,11 +256,10 @@ public class UserController {
     public ResponseEntity<Boolean> reduceTheAgentLimit(@PathParam("agentId") Integer agentId, @PathParam("amount") Double amount) {
         try {
             return ResponseEntity.ok().body(userService.reduceAgentLimit(agentId, amount));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
-
 
 
     //TODO videti da li cemo uopste raditi sa permisijama

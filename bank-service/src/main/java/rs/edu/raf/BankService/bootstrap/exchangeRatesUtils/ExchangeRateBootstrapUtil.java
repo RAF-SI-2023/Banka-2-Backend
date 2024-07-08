@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ExchangeRateBootstrapUtil {
+    public static final String[] allowedCurrencies = {"USD", "EUR", "GBP", "CHF", "JPY", "RSD", "CAD", "AUD"};
     //GET https://v6.exchangerate-api.com/v6/YOUR-API-KEY/latest/USD
     private static final String api_key = "8343bc463f20f2a8eb66b055";
     private static final String API_URL = "https://v6.exchangerate-api.com/v6/" + api_key + "/latest/";
-    public static final String[] allowedCurrencies = {"USD", "EUR", "GBP", "CHF", "JPY", "RSD", "CAD", "AUD"};
     public static Resource resource;
 
     public static String env;

@@ -141,28 +141,26 @@ public class CashAccountServiceImpl implements CashAccountService {
     }
 
     @Override
-    public List<AccountValuesDto> findBankAccounts() throws AccountNotFoundException{
+    public List<AccountValuesDto> findBankAccounts() throws AccountNotFoundException {
         List<CashAccount> cashAccounts = cashAccountRepository.findAll();
         List<AccountValuesDto> accountsDto = new ArrayList<>();
 
-        if(cashAccounts != null){
+        if (cashAccounts != null) {
             for (CashAccount ca : cashAccounts) {
                 AccountValuesDto accountValuesDto = new AccountValuesDto();
-              if(ca.isOwnedByBank()){
-                      accountValuesDto.setCurrency(ca.getCurrencyCode());
-                      accountValuesDto.setAvailableBalance(ca.getAvailableBalance());
-                      accountValuesDto.setReservedFunds(ca.getReservedFunds());
-                      accountValuesDto.setTotal(ca.getAvailableBalance() + ca.getReservedFunds());
-                      accountsDto.add(accountValuesDto);
-              }
+                if (ca.isOwnedByBank()) {
+                    accountValuesDto.setCurrency(ca.getCurrencyCode());
+                    accountValuesDto.setAvailableBalance(ca.getAvailableBalance());
+                    accountValuesDto.setReservedFunds(ca.getReservedFunds());
+                    accountValuesDto.setTotal(ca.getAvailableBalance() + ca.getReservedFunds());
+                    accountsDto.add(accountValuesDto);
+                }
             }
-        }
-        else{
+        } else {
             throw new AccountNotFoundException("");
         }
         return accountsDto;
     }
-
 
 
     @Transactional(dontRollbackOn = Exception.class)
@@ -218,7 +216,7 @@ public class CashAccountServiceImpl implements CashAccountService {
     public void becomePrimaryAccount(CashAccount cashAccount) {
         List<CashAccount> cashAccounts = cashAccountRepository.findAllByEmail(cashAccount.getEmail());
 
-        System.out.println(cashAccounts.size()+" VELICINA");
+        System.out.println(cashAccounts.size() + " VELICINA");
         if (cashAccounts.size() == 1) {
             cashAccount.setPrimaryTradingAccount(true);
             cashAccountRepository.save(cashAccount);
@@ -274,11 +272,11 @@ public class CashAccountServiceImpl implements CashAccountService {
     public boolean depositWithdrawalAddition(DepositWithdrawalDto depositWithdrawalDto) {
 
         CashAccount cashAccount = cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber());
-        if(cashAccount == null){
+        if (cashAccount == null) {
             throw new AccountNotFoundException(depositWithdrawalDto.getAccountNumber());
         }
 
-        cashAccount.setAvailableBalance(cashAccount.getAvailableBalance()+depositWithdrawalDto.getAmount());
+        cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() + depositWithdrawalDto.getAmount());
         cashAccountRepository.save(cashAccount);
 
         AdditionTransferTransaction additionTransferTransaction = new AdditionTransferTransaction();
@@ -296,18 +294,17 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     public boolean depositWithdrawalSubtraction(DepositWithdrawalDto depositWithdrawalDto) {
 
-       CashAccount cashAccount = cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber());
+        CashAccount cashAccount = cashAccountRepository.findByAccountNumber(depositWithdrawalDto.getAccountNumber());
 
-        if(cashAccount == null){
+        if (cashAccount == null) {
             throw new AccountNotFoundException(depositWithdrawalDto.getAccountNumber());
         }
 
-        if(Math.abs(depositWithdrawalDto.getAmount()) < cashAccount.getAvailableBalance()) {
+        if (Math.abs(depositWithdrawalDto.getAmount()) < cashAccount.getAvailableBalance()) {
             cashAccount.setAvailableBalance(cashAccount.getAvailableBalance() - Math.abs(depositWithdrawalDto.getAmount()));
             cashAccountRepository.save(cashAccount);
 
-        }
-        else{
+        } else {
             throw new RuntimeException("Not enough money in balance to pay");
         }
 
@@ -324,7 +321,6 @@ public class CashAccountServiceImpl implements CashAccountService {
 
         return true;
     }
-
 
 
 }

@@ -283,7 +283,7 @@ public class AccountControllerTests {
     }
 
     @Test
-    public void findBankAccounts_Success(){
+    public void findBankAccounts_Success() {
         List<AccountValuesDto> accountsDto = new ArrayList<>();
 
         when(accountService.findBankAccounts()).thenReturn(accountsDto);
@@ -296,7 +296,7 @@ public class AccountControllerTests {
 
 
     @Test
-    public void findAccountByMoneyStatus_AccountNotFound(){
+    public void findAccountByMoneyStatus_AccountNotFound() {
         when(accountService.findBankAccounts()).thenThrow(new AccountNotFoundException(""));
 
         ResponseEntity<?> response = accountController.findBankAccounts();
@@ -307,7 +307,7 @@ public class AccountControllerTests {
     }
 
     @Test
-    public void depositWithdrawalAddition_Success(){
+    public void depositWithdrawalAddition_Success() {
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
 
         when(accountService.depositWithdrawalAddition(depositWithdrawalDto)).thenReturn(true);
@@ -320,7 +320,7 @@ public class AccountControllerTests {
     }
 
     @Test
-    public void depositWithdrawalAddition_NotFound(){
+    public void depositWithdrawalAddition_NotFound() {
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
 
         when(accountService.depositWithdrawalAddition(depositWithdrawalDto)).thenThrow(new AccountNotFoundException(""));
@@ -333,7 +333,7 @@ public class AccountControllerTests {
 
 
     @Test
-    public void depositWithdrawalSubtraction_Success(){
+    public void depositWithdrawalSubtraction_Success() {
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
 
         when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenReturn(true);
@@ -347,7 +347,7 @@ public class AccountControllerTests {
 
 
     @Test
-    public void depositWithdrawalSubtraction_NotFound(){
+    public void depositWithdrawalSubtraction_NotFound() {
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
 
         when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenThrow(new AccountNotFoundException(""));
@@ -360,7 +360,7 @@ public class AccountControllerTests {
     }
 
     @Test
-    public void depositWithdrawalSubtraction_BigAmount(){
+    public void depositWithdrawalSubtraction_BigAmount() {
         DepositWithdrawalDto depositWithdrawalDto = new DepositWithdrawalDto();
 
         when(accountService.depositWithdrawalSubtraction(depositWithdrawalDto)).thenThrow(new RuntimeException("Not enough money in balance to pay"));

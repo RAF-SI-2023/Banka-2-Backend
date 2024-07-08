@@ -3,7 +3,6 @@ package rs.edu.raf.StockService.services;
 import rs.edu.raf.StockService.data.entities.Option;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OptionService {
 

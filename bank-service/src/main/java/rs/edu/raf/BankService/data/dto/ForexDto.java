@@ -11,7 +11,7 @@ public class ForexDto extends ListingDto {
     private String baseCurrency;
     private String quoteCurrency;
     private Long contractSize;
-    private Long  maintenanceMargin;
+    private Long maintenanceMargin;
 
     public Integer getContractSize() {
         return 1000;

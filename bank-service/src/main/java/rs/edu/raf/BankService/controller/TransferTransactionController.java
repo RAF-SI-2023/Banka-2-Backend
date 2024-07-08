@@ -54,7 +54,7 @@ public class TransferTransactionController {
     public ResponseEntity<?> createSecuritiesTransaction(@RequestBody ContractDto contractDto) {
         try {
             return ResponseEntity.ok(transactionService.createSecuritiesTransaction(contractDto));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(402).body(e);
         }
     }

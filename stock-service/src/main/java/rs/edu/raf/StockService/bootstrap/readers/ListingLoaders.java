@@ -19,7 +19,10 @@ import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.repositories.ForexRepository;
 import rs.edu.raf.StockService.repositories.StockRepository;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +32,14 @@ public class ListingLoaders implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapExchange.class);
     private final StockRepository stockRepository;
     private final ForexRepository forexRepository;
+    private final Environment environment;
+    ResourceLoader resourceLoader;
     @Value("${iexToken}")
     private String iexToken;
     @Value("${finnhubToken}")
     private String finnhubToken;
     private List<Stock> stockList;
     private List<Forex> forexList;
-
-    private final Environment environment;
-
-    ResourceLoader resourceLoader;
 
     @Autowired
     public ListingLoaders(StockRepository stockRepository, ForexRepository forexRepository, ResourceLoader resourceLoader, Environment environment) {
@@ -189,8 +190,8 @@ public class ListingLoaders implements CommandLineRunner {
 
     private void tryToLoadStockFromFile() throws IOException {
         Resource stockResource = resourceLoader.getResource("classpath:serializedData/stock.exc");
-        if(stockRepository.count() == 0){
-            if(stockResource.exists()){
+        if (stockRepository.count() == 0) {
+            if (stockResource.exists()) {
                 try (ObjectInputStream objectIn = new ObjectInputStream(stockResource.getInputStream())) {
                     List<Stock> obj = (List<Stock>) objectIn.readObject();
                     System.out.println("list of stocks has been deserialized:");
@@ -199,8 +200,7 @@ public class ListingLoaders implements CommandLineRunner {
                     e.printStackTrace();
                 }
                 stockRepository.saveAll(stockList);
-            }
-            else{
+            } else {
                 loadStocksFromApi();
                 // ne znamo kako da sacuvano na putanji resources/serializedData/stock.exc
                 // gde ce da se cuva u docker kontejneru ?
@@ -215,8 +215,8 @@ public class ListingLoaders implements CommandLineRunner {
 
     private void tryToLoadForexFromFile() throws IOException {
         Resource forexResource = resourceLoader.getResource("classpath:serializedData/forex.exc");
-        if(forexRepository.count() == 0){
-            if(forexResource.exists()){
+        if (forexRepository.count() == 0) {
+            if (forexResource.exists()) {
                 try (ObjectInputStream objectIn = new ObjectInputStream(forexResource.getInputStream())) {
                     List<Forex> obj = (List<Forex>) objectIn.readObject();
                     System.out.println("list of forexes has been deserialized:");
@@ -241,12 +241,12 @@ public class ListingLoaders implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        try{
+        try {
             logger.info("StockService: STOCK AND FOREX DATA LOADING IN PROGRESS...");
             tryToLoadStockFromFile();
             tryToLoadForexFromFile();
             logger.info("StockService: STOCK AND FOREX DATA LOADING FINISHED...");
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
