@@ -8,7 +8,7 @@ import rs.edu.raf.BankService.data.entities.card.Card;
 @Component
 public class CardMapper {
 
- public Card cardDtoToCard(CardDto dto){
+    public Card cardDtoToCard(CardDto dto) {
         return new Card(
                 dto.getIdentificationCardNumber(),
                 dto.getCardType(),
@@ -21,7 +21,7 @@ public class CardMapper {
         );
     }
 
-    public CardDto cardToCardDto(Card card){
+    public CardDto cardToCardDto(Card card) {
         return new CardDto(
                 card.getIdentificationCardNumber(),
                 card.getCardType(),
@@ -37,8 +37,7 @@ public class CardMapper {
     }
 
 
-
-public Card createCardDtoToCard(CreateCardDto dto){
+    public Card createCardDtoToCard(CreateCardDto dto) {
         return new Card(
                 dto.getCardType(),
                 dto.getNameOfCard(),

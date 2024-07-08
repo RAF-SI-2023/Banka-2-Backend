@@ -12,5 +12,6 @@ public interface ExchangeService {
     Exchange findByExchangeName(String exchangeName);
 
     Exchange findByMICode(String miCode);
+
     Exchange findByExchangeAcronym(String exchangeAcronym);
 }

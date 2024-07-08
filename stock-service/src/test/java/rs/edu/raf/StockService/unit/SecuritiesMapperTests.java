@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.dto.SecuritiesDto;
@@ -13,10 +12,8 @@ import rs.edu.raf.StockService.mapper.SecuritiesMapper;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class SecuritiesMapperTests {
 

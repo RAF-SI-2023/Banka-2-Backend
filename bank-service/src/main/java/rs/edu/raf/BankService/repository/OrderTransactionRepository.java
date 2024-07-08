@@ -7,10 +7,11 @@ import rs.edu.raf.BankService.data.entities.transactions.OrderTransaction;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderTransactionRepository extends JpaRepository<OrderTransaction,Long> {
-       Optional< OrderTransaction> findOrderTransactionByOrderId(long orderId);
-       List<OrderTransaction> findAllByAccountNumber(String accountNumber);
+public interface OrderTransactionRepository extends JpaRepository<OrderTransaction, Long> {
+    Optional<OrderTransaction> findOrderTransactionByOrderId(long orderId);
 
-       @Query("select o from  OrderTransaction  o join CashAccount c on c.accountNumber = o.accountNumber")
-       List<OrderTransaction> findAllByEmail(String email);
+    List<OrderTransaction> findAllByAccountNumber(String accountNumber);
+
+    @Query("select o from  OrderTransaction  o join CashAccount c on c.accountNumber = o.accountNumber")
+    List<OrderTransaction> findAllByEmail(String email);
 }

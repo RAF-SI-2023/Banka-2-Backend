@@ -17,17 +17,14 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class CreditStepsDefinition {
-    private CreditService creditService;
-
-
-    public CreditStepsDefinition(CreditService creditService) {
-        this.creditService = creditService;
-    }
-
     String accountNumber;
     List<CreditDto> credits = new ArrayList<>();
     CreditRequestDto creditRequestDto;
     Object response;
+    private CreditService creditService;
+    public CreditStepsDefinition(CreditService creditService) {
+        this.creditService = creditService;
+    }
 
     @Given("user has an account with account number {string}")
     public void userHasAnAccount(String string) {

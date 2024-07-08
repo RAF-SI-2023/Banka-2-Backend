@@ -154,6 +154,6 @@ public class ExchangeControllerTests {
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-       
+
     }
 }

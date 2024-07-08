@@ -127,7 +127,7 @@ class ExchangeServiceTests {
         when(exchangeRateRepository.findByFromCurrencyAndToCurrency(anyString(), anyString())).thenReturn(new ExchangeRates());
         when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(new CashAccount(), new CashAccount()));
         when(cashAccountRepository.findAllByEmail(anyString())).thenReturn(List.of(bank1, bank2));
-         // Invoke service method
+        // Invoke service method
 
         assertDoesNotThrow(() -> currencyExchangeService.exchangeCurrency(exchangeRequestDto));
 

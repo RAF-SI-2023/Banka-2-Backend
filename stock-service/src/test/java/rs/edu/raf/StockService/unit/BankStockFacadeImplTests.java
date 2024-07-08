@@ -1,23 +1,22 @@
 package rs.edu.raf.StockService.unit;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.*;
-
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import rs.edu.raf.StockService.data.dto.BankStockDto;
 import rs.edu.raf.StockService.data.dto.StockDto;
 import rs.edu.raf.StockService.data.entities.Forex;
-import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.services.ForexService;
 import rs.edu.raf.StockService.services.FuturesContractService;
 import rs.edu.raf.StockService.services.OptionService;
 import rs.edu.raf.StockService.services.StockService;
 import rs.edu.raf.StockService.services.facade.BankStockFacadeImpl;
+
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class BankStockFacadeImplTest {
 

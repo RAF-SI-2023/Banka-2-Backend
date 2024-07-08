@@ -3,7 +3,6 @@ package rs.edu.raf.BankService.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
@@ -14,7 +13,6 @@ import rs.edu.raf.BankService.mapper.MarginsAccountMapper;
 import rs.edu.raf.BankService.repository.MarginsAccountRepository;
 import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
 import rs.edu.raf.BankService.service.MarginsAccountService;
-import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.util.List;
 

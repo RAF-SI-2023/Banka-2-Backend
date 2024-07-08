@@ -67,7 +67,7 @@ public class TransferServiceTests {
 
 
     @Test
-    void testCreateInternalTransferTransaction_Confirmed(){
+    void testCreateInternalTransferTransaction_Confirmed() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -113,7 +113,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateInternalTransferTransaction_Declined(){
+    void testCreateInternalTransferTransaction_Declined() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -159,7 +159,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateInternalTransferTransaction_AccNotFound(){
+    void testCreateInternalTransferTransaction_AccNotFound() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -175,7 +175,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateInternalTransferTransaction_AccNotFromSameUser(){
+    void testCreateInternalTransferTransaction_AccNotFromSameUser() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -195,7 +195,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateInternalTransferTransaction_SameAccNumber(){
+    void testCreateInternalTransferTransaction_SameAccNumber() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("123");
@@ -218,7 +218,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateInternalTransferTransaction_DiffAccTypes(){
+    void testCreateInternalTransferTransaction_DiffAccTypes() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -243,7 +243,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateInternalTransferTransaction_DiffCurrency(){
+    void testCreateInternalTransferTransaction_DiffCurrency() {
         InternalTransferTransactionDto internalTransferTransactionDto = new InternalTransferTransactionDto();
         internalTransferTransactionDto.setSenderAccountNumber("123");
         internalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -270,7 +270,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testCreateExternalTransferTransaction_Pending(){
+    void testCreateExternalTransferTransaction_Pending() {
         ExternalTransferTransactionDto externalTransferTransactionDto = new ExternalTransferTransactionDto();
         externalTransferTransactionDto.setSenderAccountNumber("123");
         externalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -305,11 +305,11 @@ public class TransferServiceTests {
         ExternalTransferTransactionDto result = transactionService.createExternalTransferTransaction(externalTransferTransactionDto);
 
         assertEquals(TransactionStatus.PENDING, result.getStatus());
-        verify(rabbitTemplate,times(1)).convertAndSend(any(String.class),any(TransferTransactionVerificationDto.class));
+        verify(rabbitTemplate, times(1)).convertAndSend(any(String.class), any(TransferTransactionVerificationDto.class));
     }
 
     @Test
-    void testCreateExternalTransferTransaction_Declined(){
+    void testCreateExternalTransferTransaction_Declined() {
         ExternalTransferTransactionDto externalTransferTransactionDto = new ExternalTransferTransactionDto();
         externalTransferTransactionDto.setSenderAccountNumber("123");
         externalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -344,11 +344,11 @@ public class TransferServiceTests {
         ExternalTransferTransactionDto result = transactionService.createExternalTransferTransaction(externalTransferTransactionDto);
 
         assertEquals(TransactionStatus.DECLINED, result.getStatus());
-        verify(rabbitTemplate,never()).convertAndSend(any(String.class),any(TransferTransactionVerificationDto.class));
+        verify(rabbitTemplate, never()).convertAndSend(any(String.class), any(TransferTransactionVerificationDto.class));
     }
 
     @Test
-    void testCreateExternalTransferTransaction_AccNotFound(){
+    void testCreateExternalTransferTransaction_AccNotFound() {
         ExternalTransferTransactionDto externalTransferTransactionDto = new ExternalTransferTransactionDto();
         externalTransferTransactionDto.setSenderAccountNumber("123");
         externalTransferTransactionDto.setReceiverAccountNumber("456");
@@ -601,7 +601,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testReleaseFundsAccNumber_AccNotFound(){
+    void testReleaseFundsAccNumber_AccNotFound() {
         String accountNumber = "123";
         double amount = 50.0;
 
@@ -613,7 +613,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testReleaseFundsCashAcc(){
+    void testReleaseFundsCashAcc() {
         double amount = 50.0;
 
         CashAccount cashAccount = new CashAccount();
@@ -628,7 +628,7 @@ public class TransferServiceTests {
     }
 
     @Test
-    void testReleaseFundsCashAcc_InsufficientFunds(){
+    void testReleaseFundsCashAcc_InsufficientFunds() {
         double amount = 150.0;
 
         CashAccount cashAccount = new CashAccount();

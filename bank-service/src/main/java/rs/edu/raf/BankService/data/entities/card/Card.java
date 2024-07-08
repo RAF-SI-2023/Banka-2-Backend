@@ -33,8 +33,6 @@ public class Card {
     private Boolean block;
 
 
-
-
     public Card(Long identificationCardNumber, CardType cardType, String nameOfCard, String accountNumber, String cvvCode, Long limitCard, Boolean status, Boolean block) {
         this.identificationCardNumber = identificationCardNumber;
         this.cardType = cardType;

@@ -158,30 +158,30 @@ class CompanyControllerTest {
     }
 
     @Test
-    void updateCompany_CompanyExists() throws Exception{
+    void updateCompany_CompanyExists() throws Exception {
         CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
 
         //doReturn(companyDto).when(companyService).updateCompany(companyDto);
         when(companyService.updateCompany(companyDto)).thenReturn(companyDto);
 
         mockMvc.perform(put("/api/companies/update")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(companyDto)))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(companyDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
-  
+
     @Test
-    void updateCompany_CompanyDoesNotExist_throwsException() throws Exception{
+    void updateCompany_CompanyDoesNotExist_throwsException() throws Exception {
         CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
 
         when(companyService.updateCompany(companyDto)).thenThrow(CompanyNotFoundException.class);
 
         mockMvc.perform(put("/api/companies/update")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(companyDto)))
-        .andExpect(status().isNotFound());
-    } 
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(companyDto)))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     void findCompanyById_Success() throws Exception {
@@ -227,7 +227,7 @@ class CompanyControllerTest {
     public void testDeleteCompanyById() throws Exception {
         Long id = Long.valueOf(1);
 
-       doNothing().when(companyService).deleteCompanyById(id);
+        doNothing().when(companyService).deleteCompanyById(id);
 
         ResponseEntity<?> responseEntity = companyController.deleteCompanyById(id);
 
@@ -254,6 +254,7 @@ class CompanyControllerTest {
         assert responseEntity != null;
         assert responseEntity.getStatusCode() == HttpStatus.OK;
     }
+
     @Test
     public void testFindCompanyByIdentificationNumber_Success() {
         Integer identificationNumber = 123456;

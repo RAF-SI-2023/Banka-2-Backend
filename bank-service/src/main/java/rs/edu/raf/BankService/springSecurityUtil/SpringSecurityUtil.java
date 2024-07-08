@@ -12,7 +12,7 @@ public class SpringSecurityUtil {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
     }
 
-    static public String getPrincipalEmail(){
+    static public String getPrincipalEmail() {
         return ((CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
     }
 
@@ -24,7 +24,9 @@ public class SpringSecurityUtil {
         return hasRole("ROLE_AGENT");
     }
 
-    public static boolean isUser() { return hasRole("ROLE_USER"); }
+    public static boolean isUser() {
+        return hasRole("ROLE_USER");
+    }
 
     public static boolean isSupervisor() {
         return hasRole("ROLE_SUPERVISOR");
@@ -34,7 +36,7 @@ public class SpringSecurityUtil {
         return hasRole("ROLE_ADMIN");
     }
 
-    static public boolean hasPermission(String permission){
+    static public boolean hasPermission(String permission) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(permission));
     }
 
@@ -53,19 +55,17 @@ public class SpringSecurityUtil {
     }
 
     public static String getUserRole() {
-        if(isAdmin()){
+        if (isAdmin()) {
             return "ROLE_ADMIN";
         }
-        if(isAgent()){
+        if (isAgent()) {
             return "ROLE_AGENT";
         }
-        if(isSupervisor()){
+        if (isSupervisor()) {
             return "ROLE_SUPERVISOR";
         }
         return "ROLE_USER";
     }
-
-
 
 
 }

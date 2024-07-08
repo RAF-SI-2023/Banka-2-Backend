@@ -20,7 +20,7 @@ presubmits:
               docker compose up -d bank-service
               docker compose up -d rabbitmq
               docker compose up -d postgres-db
-               
+              
               cd "$SERVICE_NAME"
               
               sleep 120

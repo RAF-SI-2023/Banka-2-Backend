@@ -14,6 +14,7 @@ public class PasswordChangeTokenMapper {
                 passwordChangeToken.getEmail(),
                 passwordChangeToken.getUrlLink());
     }
+
     public PasswordChangeToken passwordChangeTokenDtoToPasswordChangeToken(PasswordChangeTokenDto passwordChangeTokenDto) {
         return new PasswordChangeToken(
                 passwordChangeTokenDto.getToken(),

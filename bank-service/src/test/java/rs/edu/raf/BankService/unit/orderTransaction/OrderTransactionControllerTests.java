@@ -27,8 +27,8 @@ public class OrderTransactionControllerTests {
 
     @Test
     public void testFindAll() {
-        OrderTransaction ot1=new OrderTransaction();
-        OrderTransaction ot2=new OrderTransaction();
+        OrderTransaction ot1 = new OrderTransaction();
+        OrderTransaction ot2 = new OrderTransaction();
         List<OrderTransaction> expectedResponse = Arrays.asList(ot1, ot2);
 
         when(orderTransactionService.findAll()).thenReturn(expectedResponse);
@@ -41,8 +41,8 @@ public class OrderTransactionControllerTests {
 
     @Test
     public void testFindById() {
-        long id=1;
-        OrderTransaction ot1=new OrderTransaction();
+        long id = 1;
+        OrderTransaction ot1 = new OrderTransaction();
 
         when(orderTransactionService.findById(id)).thenReturn(ot1);
 
@@ -54,8 +54,8 @@ public class OrderTransactionControllerTests {
 
     @Test
     public void testFindByOrderId() {
-        long orderId=1;
-        OrderTransaction ot1=new OrderTransaction();
+        long orderId = 1;
+        OrderTransaction ot1 = new OrderTransaction();
 
         when(orderTransactionService.findByOrderId(orderId)).thenReturn(ot1);
 
@@ -67,9 +67,9 @@ public class OrderTransactionControllerTests {
 
     @Test
     public void testFindAllByAccountNumber() {
-        String accountNumber="123";
-        OrderTransaction ot1=new OrderTransaction();
-        OrderTransaction ot2=new OrderTransaction();
+        String accountNumber = "123";
+        OrderTransaction ot1 = new OrderTransaction();
+        OrderTransaction ot2 = new OrderTransaction();
         List<OrderTransaction> expectedResponse = Arrays.asList(ot1, ot2);
 
         when(orderTransactionService.findAllByAccountNumber(accountNumber)).thenReturn(expectedResponse);
