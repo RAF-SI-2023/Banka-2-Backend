@@ -260,7 +260,7 @@ public class OrderServiceTests {
         when(stockService.getSecuritiesByOrder(order)).thenReturn(listingDto);
         when(stockService.getExchangeExchangeAcronym(listingDto.getExchange())).thenReturn(exchangeDto);
 //        when(currencyExchangeService.calculateAmountInDefaultCurrency(currency, totalPrice)).thenReturn(100.0);
- //       when(currencyExchangeService.calculateAmountBetweenCurrencies(currency, cashAccount.getCurrencyCode(), totalPrice)).thenReturn(100.0);
+        //       when(currencyExchangeService.calculateAmountBetweenCurrencies(currency, cashAccount.getCurrencyCode(), totalPrice)).thenReturn(100.0);
         when(orderRepository.save(order)).thenReturn(order);
 //        when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
 
@@ -312,8 +312,8 @@ public class OrderServiceTests {
 //        when(currencyExchangeService.calculateAmountInDefaultCurrency(currency, totalPrice)).thenReturn(100.0);
         when(currencyExchangeService.calculateAmountBetweenCurrencies(currency, cashAccount.getCurrencyCode(), totalPrice)).thenReturn(100.0);
         when(orderRepository.save(order)).thenReturn(order);
- //       when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
-   //     when(iamServiceImpl.isApprovalNeeded(anyLong())).thenReturn(true);
+        //       when(iamServiceImpl.reduceAgentLimit(anyLong(), anyDouble())).thenReturn(true);
+        //     when(iamServiceImpl.isApprovalNeeded(anyLong())).thenReturn(true);
 
         boolean result = orderService.createOrder(orderDto);
 
@@ -627,6 +627,7 @@ public class OrderServiceTests {
         verify(orderRepository, times(1)).findById(orderId);
         verify(orderRepository, never()).save(any());
     }
+
     @Test
     public void testUpdateOrderStatus_Contains_Order_Success() {
         // Given
@@ -718,12 +719,13 @@ public class OrderServiceTests {
     }
 
     @Test
-    public void testFindAllByUserId(){
+    public void testFindAllByUserId() {
         Long orderId = 1L;
-        List<Order> o =  orderService.findAllByUserId(orderId);
+        List<Order> o = orderService.findAllByUserId(orderId);
 
         assertNull(o);
     }
+
     @Test
     void testConstructor_withActiveTradingJobs_success() {
         // Given

@@ -55,7 +55,7 @@ public class BankTransferTransactionDetailsControllerTests {
         BankTransferTransactionDetailsDto dto2 = new BankTransferTransactionDetailsDto();
         dto2.setTotalProfit(3.0);
 
-        BankTransferTransactionDetailsDto[] expected = { dto1, dto2 };
+        BankTransferTransactionDetailsDto[] expected = {dto1, dto2};
 
         when(bankTransferTransactionDetailsService.getTotalProfit())
                 .thenReturn(

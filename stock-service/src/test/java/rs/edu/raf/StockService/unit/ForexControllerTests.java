@@ -1,6 +1,5 @@
 package rs.edu.raf.StockService.unit;
 
-import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

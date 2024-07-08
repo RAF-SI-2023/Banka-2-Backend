@@ -24,10 +24,9 @@ import java.net.http.HttpResponse;
 @RequiredArgsConstructor
 public class IAMServiceImpl implements IAMService {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Value("${iam.service.url:http://iam-service:8000/api}")
     private String IAM_SERVICE_URL;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Override
     @Retryable(
@@ -62,9 +61,9 @@ public class IAMServiceImpl implements IAMService {
     )
     public boolean reduceAgentLimit(Long agentId, Double amount) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(IAM_SERVICE_URL + "/users/reduce-daily-limit?agentId="+agentId+"&amount="+amount))
+                .uri(URI.create(IAM_SERVICE_URL + "/users/reduce-daily-limit?agentId=" + agentId + "&amount=" + amount))
                 .method("PUT", HttpRequest.BodyPublishers.noBody())
-                .header("Authorization",SpringSecurityUtil.getAuthorizationHeader())
+                .header("Authorization", SpringSecurityUtil.getAuthorizationHeader())
                 .build();
 
         HttpResponse<String> response;
@@ -107,11 +106,11 @@ public class IAMServiceImpl implements IAMService {
             throw new RuntimeException(e);
         }
 
-        if(response.statusCode() == HttpStatus.NOT_FOUND.value()) {
+        if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
             throw new NotFoundException("Agent not found");
         }
 
-        if(agent == null) {
+        if (agent == null) {
             throw new NullPointerException("Agent is null");
         }
 

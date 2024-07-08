@@ -34,7 +34,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
     private final ForeignCurrencyHolderRepository foreignCurrencyHolderRepository;
     private final BankTransferTransactionDetailsRepository bankTransferTransactionDetailsRepository;
     private final BankTransferTransactionDetailsServiceImpl bankTransferTransactionDetailsServiceImpl;
-    
+
     @Value("${bank.default.currency:RSD}")
     private String defaultCurrency;
 
@@ -178,7 +178,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
     @Override
     public double calculateAmountBetweenCurrencies(String fromCurrency, String toCurrency, double amount) {
-        if(fromCurrency.equals(toCurrency)) {
+        if (fromCurrency.equals(toCurrency)) {
             return amount;
         }
 
@@ -189,7 +189,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
         double exchangeRateValue = exchangeRate.getExchangeRate();
         Double amountInNewCurrency = amount * exchangeRateValue;
-        if(amountInNewCurrency == null) {
+        if (amountInNewCurrency == null) {
             throw new RuntimeException("Null pointer exception when tried to calculate amountInNewCurrency");
         }
 
@@ -198,10 +198,9 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
     @Override
     public double convert(String fromCurrency, String toCurrency, double amount) {
-        if(fromCurrency.equals(toCurrency)) {
+        if (fromCurrency.equals(toCurrency)) {
             return amount;
         }
-
 
 
         return 0;

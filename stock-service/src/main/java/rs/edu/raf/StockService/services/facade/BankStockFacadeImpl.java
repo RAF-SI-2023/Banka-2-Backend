@@ -6,9 +6,6 @@ import rs.edu.raf.StockService.data.dto.BankStockDto;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.dto.StockDto;
 import rs.edu.raf.StockService.data.entities.Forex;
-import rs.edu.raf.StockService.data.entities.FuturesContract;
-import rs.edu.raf.StockService.data.entities.Option;
-import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.services.ForexService;
 import rs.edu.raf.StockService.services.FuturesContractService;
 import rs.edu.raf.StockService.services.OptionService;
@@ -44,8 +41,7 @@ public class BankStockFacadeImpl {
                 try {
                     FuturesContractDto future = futuresContractService.findByName(name);
                     price = future.getFuturesContractPrice();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     price = 100.0;
                 }
                 break;

@@ -25,6 +25,7 @@ public class MarginsAccountMapper {
 
         return dto;
     }
+
     public MarginsAccount toEntity(MarginsAccountRequestDto marginsAccountRequestDto) {
         MarginsAccount entity = new MarginsAccount();
         entity.setUserId(marginsAccountRequestDto.getUserId());

@@ -1,17 +1,14 @@
 package rs.edu.raf.OTCService.unit.mappers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.rabbitmq.client.AMQP.PROTOCOL;
-
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.entity.Contract;
 import rs.edu.raf.OTCService.data.enums.ContractStatus;
 import rs.edu.raf.OTCService.data.enums.ContractType;
 import rs.edu.raf.OTCService.mappers.ContractMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContractMapperTest {
     private ContractMapper mapper;

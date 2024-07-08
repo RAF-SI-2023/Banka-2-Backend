@@ -38,15 +38,13 @@ class AuthControllerTest {
 
     @InjectMocks
     private AuthController authController;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
 
     // # write unit test for successful login
     @Test

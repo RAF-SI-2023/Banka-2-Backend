@@ -7,7 +7,7 @@ import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.data.enums.FuturesContractType;
 import rs.edu.raf.StockService.mapper.FuturesContractMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FuturesContractMapperTest {
 

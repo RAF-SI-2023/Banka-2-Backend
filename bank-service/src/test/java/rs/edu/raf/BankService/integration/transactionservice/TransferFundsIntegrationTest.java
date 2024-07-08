@@ -16,7 +16,7 @@ import rs.edu.raf.BankService.service.TransactionService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.Assert.*;
 
-public class TransferFundsIntegrationTest extends TransactionServiceIntegrationTestConfig{
+public class TransferFundsIntegrationTest extends TransactionServiceIntegrationTestConfig {
 
     @Autowired
     private TransactionService transactionService;
@@ -27,7 +27,7 @@ public class TransferFundsIntegrationTest extends TransactionServiceIntegrationT
     private CashAccount testSenderCashAccount;
     private CashAccount testReceiverCashAccount;
 
-    private Boolean transferCompleted=false;
+    private Boolean transferCompleted = false;
 
     @Transactional
     @After
@@ -53,31 +53,31 @@ public class TransferFundsIntegrationTest extends TransactionServiceIntegrationT
     @Given("a sender account with number {string} with a balance of {long} {string}, {long} of that reserved for transfer")
     public void aSenderAccountWithNumberWithABalanceOfOfThatReservedForTransfer(String senderAccountNumber, long senderBalance,
                                                                                 String currency, long reservedAmount) {
-        testSenderCashAccount = createTestAccount(senderAccountNumber, "sender@example.com",currency,senderBalance);
+        testSenderCashAccount = createTestAccount(senderAccountNumber, "sender@example.com", currency, senderBalance);
         testSenderCashAccount.setReservedFunds(reservedAmount);
         cashAccountRepository.save(testSenderCashAccount);
     }
 
     @And("a receiver account with number {string} with a balance of {long} {string}")
     public void aReceiverAccountWithNumberWithABalanceOf(String receiverAccountNumber, long receiverBalance, String currency) {
-        testReceiverCashAccount = createTestAccount(receiverAccountNumber, "receiver@example.com",currency,receiverBalance);
+        testReceiverCashAccount = createTestAccount(receiverAccountNumber, "receiver@example.com", currency, receiverBalance);
         cashAccountRepository.save(testReceiverCashAccount);
     }
 
     @When("I request a transfer of {long} from {string} to {string}")
     public void iRequestATransferOfFromTo(long transferAmount, String senderAccountNumber, String receiverAccountNumber) {
-        transferCompleted= transactionService.transferFunds(senderAccountNumber, receiverAccountNumber, transferAmount);
+        transferCompleted = transactionService.transferFunds(senderAccountNumber, receiverAccountNumber, transferAmount);
     }
 
     @Then("the transfer should be successful")
     public void theTransferShouldBeSuccessful() {
-        assert(transferCompleted);
+        assert (transferCompleted);
     }
 
     @And("the sender's new balance should be {long} after transfer")
     public void theSenderSNewBalanceShouldBeAfterTransfer(long expectedSenderBalance) {
         CashAccount senderCashAccount = cashAccountRepository.findByAccountNumber(testSenderCashAccount.getAccountNumber());
-        if(senderCashAccount==null){
+        if (senderCashAccount == null) {
             fail("Sender account not found");
         }
         assertEquals(expectedSenderBalance, senderCashAccount.getAvailableBalance());
@@ -86,7 +86,7 @@ public class TransferFundsIntegrationTest extends TransactionServiceIntegrationT
     @And("the receiver's new balance should be {long} after transfer")
     public void theReceiverSNewBalanceShouldBeAfterTransfer(long expectedReceiverBalance) {
         CashAccount receiverCashAccount = cashAccountRepository.findByAccountNumber(testReceiverCashAccount.getAccountNumber());
-        if(receiverCashAccount==null){
+        if (receiverCashAccount == null) {
             fail("Receiver account not found");
         }
         assertEquals(expectedReceiverBalance, receiverCashAccount.getAvailableBalance());

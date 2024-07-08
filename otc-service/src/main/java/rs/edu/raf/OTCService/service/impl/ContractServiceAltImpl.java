@@ -25,8 +25,8 @@ public class ContractServiceAltImpl {
         String email = SpringSecurityUtil.getPrincipalEmail();
         if (SpringSecurityUtil.isUser())
             return contractRepository.getAllWaitingContracts().stream().filter(
-                    val -> val.getBuyersEmail().equals(email)
-                            || val.getSellersEmail().equals(email))
+                            val -> val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email))
                     .map(mapper::contractToDto).toList();
         else
             return contractRepository.getAllWaitingContracts().stream().map(mapper::contractToDto).toList();
@@ -36,8 +36,8 @@ public class ContractServiceAltImpl {
         String email = SpringSecurityUtil.getPrincipalEmail();
         if (SpringSecurityUtil.isUser())
             return contractRepository.getAllApprovedContracts().stream().filter(
-                    val -> val.getBuyersEmail().equals(email)
-                            || val.getSellersEmail().equals(email))
+                            val -> val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email))
                     .map(mapper::contractToDto).toList();
         else
             return contractRepository.getAllApprovedContracts().stream().map(mapper::contractToDto).toList();
@@ -47,8 +47,8 @@ public class ContractServiceAltImpl {
         String email = SpringSecurityUtil.getPrincipalEmail();
         if (SpringSecurityUtil.isUser())
             return contractRepository.getAllRejectedContracts().stream().filter(
-                    val -> val.getBuyersEmail().equals(email)
-                            || val.getSellersEmail().equals(email))
+                            val -> val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email))
                     .map(mapper::contractToDto).toList();
         else
             return contractRepository.getAllRejectedContracts().stream().map(mapper::contractToDto).toList();
@@ -58,8 +58,8 @@ public class ContractServiceAltImpl {
         String email = SpringSecurityUtil.getPrincipalEmail();
         if (SpringSecurityUtil.isUser())
             return contractRepository.findAll().stream().filter(
-                    val -> val.getBuyersEmail().equals(email)
-                            || val.getSellersEmail().equals(email))
+                            val -> val.getBuyersEmail().equals(email)
+                                    || val.getSellersEmail().equals(email))
                     .map(mapper::contractToDto).toList();
         else
             return contractRepository.findAll().stream().map(mapper::contractToDto).toList();

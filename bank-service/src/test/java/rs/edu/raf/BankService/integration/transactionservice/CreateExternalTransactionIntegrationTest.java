@@ -53,7 +53,7 @@ public class CreateExternalTransactionIntegrationTest extends TransactionService
                 "sender@example.com",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 "USD",
-                0.0 ,
+                0.0,
                 balance);
 
         cashAccountRepository.save(testSenderCashAccount);
@@ -65,7 +65,7 @@ public class CreateExternalTransactionIntegrationTest extends TransactionService
                 "sender@example.com",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 "USD",
-                0.0 ,
+                0.0,
                 balance);
 
         cashAccountRepository.save(testReceiverCashAccount);

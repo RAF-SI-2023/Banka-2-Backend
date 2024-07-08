@@ -22,12 +22,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleDto> getAllRoles() {
-        try{
-            List<Role> roles=roleRepository.findAll();
-            if(roles.isEmpty()) throw new RuntimeException("Role repository is empty.");
+        try {
+            List<Role> roles = roleRepository.findAll();
+            if (roles.isEmpty()) throw new RuntimeException("Role repository is empty.");
 
             return roles.stream().map(this.roleMapper::roleToRoleDto).collect(Collectors.toList());
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Roles not retrieved.", e);
         }
     }
