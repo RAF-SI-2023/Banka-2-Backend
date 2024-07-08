@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FindAllOrderTransactionsByAccountNumberIntegrationTest extends OrderTransactionIntegrationTestConfig{
+public class FindAllOrderTransactionsByAccountNumberIntegrationTest extends OrderTransactionIntegrationTestConfig {
     @Autowired
     private OrderTransactionRepository orderTransactionRepository;
 
@@ -35,14 +35,14 @@ public class FindAllOrderTransactionsByAccountNumberIntegrationTest extends Orde
 
     @Given("the account with number {string} has one order transaction")
     public void thereIsOrderTransactions(String accountNumber) {
-        testOrderTransaction=new OrderTransaction();
+        testOrderTransaction = new OrderTransaction();
         testOrderTransaction.setAccountNumber(accountNumber);
         orderTransactionRepository.save(testOrderTransaction);
     }
 
     @When("the user requests to list all order transactions by account number {string}")
     public void iRequestAllOrderTransactions(String accountNumber) {
-        foundOrderTransactions=orderTransactionService.findAllByAccountNumber(accountNumber);
+        foundOrderTransactions = orderTransactionService.findAllByAccountNumber(accountNumber);
     }
 
     @Then("the response should contain one order transaction")

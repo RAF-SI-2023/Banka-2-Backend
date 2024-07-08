@@ -14,6 +14,7 @@ import java.util.List;
 public interface OfferRepository extends JpaRepository<Offer, Long> {
 
     Offer findByIdBank(Long id);
+
     List<Offer> findAllByOfferStatus(OfferStatus offerStatus);
 
 }

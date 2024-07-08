@@ -11,7 +11,6 @@ import java.util.List;
 public interface OrderService {
 
 
-
     boolean createOrder(OrderDto orderDto);
 
     List<OrderDto> getAll();
@@ -19,6 +18,7 @@ public interface OrderService {
     boolean updateOrderStatus(Long orderId, OrderStatus status);
 
     List<Order> findAllByUserId(Long id);
+
     OrderDto findDtoById(Long orderId);
 
     Order findById(Long orderId);

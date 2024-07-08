@@ -30,7 +30,7 @@ public class CardController {
 
     }
 
-    @GetMapping(value = "/id/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/id/{identificationCardNumber}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER')")
     public ResponseEntity<?> getCardByIdentificationCardNumber(@PathVariable Long identificationCardNumber) {
         try {
@@ -40,7 +40,7 @@ public class CardController {
         }
     }
 
-    @PutMapping(value = "/change-status/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
+    @PutMapping(value = "/change-status/{identificationCardNumber}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     public ResponseEntity<?> changeCardStatus(@PathVariable Long identificationCardNumber) {
         try {
@@ -53,8 +53,7 @@ public class CardController {
     }
 
 
-
-    @PutMapping(value = "/changeBlock/{identificationCardNumber}",consumes = MediaType.ALL_VALUE)
+    @PutMapping(value = "/changeBlock/{identificationCardNumber}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER','ROLE_AGENT','ROLE_SUPERVISOR')")
     public ResponseEntity<?> changeBlockCard(@PathVariable Long identificationCardNumber) {
         try {
@@ -65,7 +64,7 @@ public class CardController {
     }
 
 
-    @GetMapping(value = "/account-number/{accountNumber}",consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/account-number/{accountNumber}", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE','ROLE_USER','ROLE_AGENT','ROLE_SUPERVISOR')")
     public ResponseEntity<?> getCardsByAccountNumber(@PathVariable String accountNumber) {
         try {
@@ -75,14 +74,14 @@ public class CardController {
         }
     }
 
-    @PutMapping(value = "/change-card-limit",consumes = MediaType.ALL_VALUE)
+    @PutMapping(value = "/change-card-limit", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     public ResponseEntity<?> changeCardLimit(@RequestBody CardDto cardDto) {
         CardDto cardDto1 = cardService.changeCardLimit(cardDto);
-        if(cardDto1 == null){
+        if (cardDto1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Card with identification card number " + cardDto.getIdentificationCardNumber() + " not found");
         }
-            return ResponseEntity.ok(cardDto1);
+        return ResponseEntity.ok(cardDto1);
 
     }
 

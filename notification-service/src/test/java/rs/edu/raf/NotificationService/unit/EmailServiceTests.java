@@ -20,13 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EmailServiceTests {
-    
+
     private GreenMail testSmtp;
     private JavaMailSenderImpl mailSender;
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         testSmtp = new GreenMail(ServerSetupTest.SMTP)
-        .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"));
+                .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"));
         testSmtp.start();
 
         mailSender = new JavaMailSenderImpl();
@@ -36,24 +37,25 @@ public class EmailServiceTests {
         mailSender.setPassword("admin");
 
         Properties mailProps = new Properties();
-        mailProps.setProperty("mail.transport.protocol","smtp");
-        mailProps.setProperty("mail.smtp.auth","true");
-        mailProps.setProperty("mail.smtp.starttls.enable","true");
-        mailProps.setProperty("mail.debug","false");
-        
+        mailProps.setProperty("mail.transport.protocol", "smtp");
+        mailProps.setProperty("mail.smtp.auth", "true");
+        mailProps.setProperty("mail.smtp.starttls.enable", "true");
+        mailProps.setProperty("mail.debug", "false");
+
         mailSender.setJavaMailProperties(mailProps);
 
     }
+
     @AfterEach
-    void cleanUp(){
+    void cleanUp() {
         testSmtp.stop();
     }
-    
+
     @Test
-    void testSendSimpleEmail() throws MessagingException{
+    void testSendSimpleEmail() throws MessagingException {
         EmailService emailService = new EmailService(mailSender);
         emailService.sendSimpleMailMessage("test@receiver.com",
-         "test subject", "test text");
+                "test subject", "test text");
 
         var recivedMessages = testSmtp.getReceivedMessages();
         assertEquals(recivedMessages.length, 1);
@@ -65,21 +67,21 @@ public class EmailServiceTests {
 
     // Debug Console shows exceptions on green mail server which should be ok
     @Test
-    void testSendEmailThrowsExceptions(){
+    void testSendEmailThrowsExceptions() {
         EmailService emailService = new EmailService(mailSender);
         assertThrows(
-            MailParseException.class,
-            () -> emailService.sendSimpleMailMessage(
-            "", "", ""
-           )
+                MailParseException.class,
+                () -> emailService.sendSimpleMailMessage(
+                        "", "", ""
+                )
         );
         String arr[] = {"fileName"};
         assertThrows(
-            MailSendException.class,
-            () -> emailService.sendMimeMessageWithAttachments(
-            "test@receiver.com", "test subject", "test text",
-            arr
-           )
+                MailSendException.class,
+                () -> emailService.sendMimeMessageWithAttachments(
+                        "test@receiver.com", "test subject", "test text",
+                        arr
+                )
         );
     }
 }

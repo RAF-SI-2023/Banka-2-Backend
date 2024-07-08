@@ -5,7 +5,6 @@ import rs.edu.raf.BankService.data.dto.ExternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.dto.GenericTransactionDto;
 import rs.edu.raf.BankService.data.dto.InternalTransferTransactionDto;
 import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
-import rs.edu.raf.BankService.data.entities.transactions.InternalTransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionStatus;
 
 import java.util.List;

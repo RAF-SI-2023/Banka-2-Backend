@@ -95,9 +95,9 @@ public class OptionServiceImplSteps extends OptionServiceImplTestsConfig {
     public void whenTheClientRequestsOptionsByListing(String stock) throws Exception {
 
         ArrayList<Option> options = new ArrayList<>();
-        options= (ArrayList<Option>) optionService.findAllByStockListing(stock);
+        options = (ArrayList<Option>) optionService.findAllByStockListing(stock);
 
-            responseOptionByStockListing = new ResponseEntity<>(options, HttpStatus.OK);
+        responseOptionByStockListing = new ResponseEntity<>(options, HttpStatus.OK);
 
         //     optionController = new OptionController(optionService);
         //     System.out.println(optionController.findAllOptionsByStockListing(stockListing));

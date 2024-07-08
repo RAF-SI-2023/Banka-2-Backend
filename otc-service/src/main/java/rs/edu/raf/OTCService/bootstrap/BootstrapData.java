@@ -19,24 +19,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
 
-    /*
-     * 
-     * Sa kojim email adresava seedovati bazu?
-     * Trenutno koriste iste email kao i u BankServisu
-     * 
-     */
-    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
-    private String myEmail1;
-
-    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
-    private String myEmail2;
-
-    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
-    private String myEmail3;
-
     private static final Logger logger = LoggerFactory.getLogger(BootstrapData.class);
     private final ContractRepository contractRepository;
     private final MyStockRepository myStockRepository;
+    /*
+     *
+     * Sa kojim email adresava seedovati bazu?
+     * Trenutno koriste iste email kao i u BankServisu
+     *
+     */
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
+    private String myEmail1;
+    @Value("${MY_EMAIL_2:lpavlovic11521rn@raf.rs}")
+    private String myEmail2;
+    @Value("${MY_EMAIL_3:lukapa369@gmail.com}")
+    private String myEmail3;
 
     @Override
     public void run(String... args) {
@@ -90,9 +87,9 @@ public class BootstrapData implements CommandLineRunner {
 
         if (contractRepository.count() == 0) {
 
-            String[] symbols1 = { "AAPL", "GOOGL", "Z", "NEXOY" };
-            String[] symbols2 = { "NTFL", "TSLA", "MSFT", "FB" };
-            String[] symbols3 = { "K", "TT", "CC", "I" };
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
+            String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
+            String[] symbols3 = {"K", "TT", "CC", "I"};
 
             for (int i = 0; i < 4; i++) {
                 Contract contract1 = new Contract();

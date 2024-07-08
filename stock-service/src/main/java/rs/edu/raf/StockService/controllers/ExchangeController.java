@@ -4,13 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
-import org.yaml.snakeyaml.util.UriEncoder;
 import rs.edu.raf.StockService.data.entities.Exchange;
 import rs.edu.raf.StockService.services.ExchangeService;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController

@@ -1,16 +1,15 @@
 package rs.edu.raf.StockService.unit.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.dto.SecuritiesDto;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.FuturesContractType;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.mapper.SecuritiesMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SecuritiesMapperTest {
 

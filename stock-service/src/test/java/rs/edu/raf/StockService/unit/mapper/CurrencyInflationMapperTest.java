@@ -1,13 +1,12 @@
 package rs.edu.raf.StockService.unit.mapper;
 
-import static org.junit.Assert.assertEquals;
-
-
-import org.junit.jupiter.api.*;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import rs.edu.raf.StockService.data.dto.CurrencyInflationDto;
 import rs.edu.raf.StockService.data.entities.CurrencyInflation;
 import rs.edu.raf.StockService.mapper.CurrencyInflationMapper;
+
+import static org.junit.Assert.assertEquals;
 
 public class CurrencyInflationMapperTest {
 

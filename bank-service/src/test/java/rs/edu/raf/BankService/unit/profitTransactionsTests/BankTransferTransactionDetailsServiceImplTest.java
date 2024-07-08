@@ -35,7 +35,6 @@ public class BankTransferTransactionDetailsServiceImplTest {
     private BankTransferTransactionDetailsServiceImpl bankTransferTransactionDetailsService;
 
 
-
     @Test
     void getAllBankExchangeRates_shouldReturnListOfDtos() {
         // Arrange

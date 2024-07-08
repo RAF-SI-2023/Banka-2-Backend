@@ -25,7 +25,7 @@ public class BusinessCashAccount extends CashAccount {
             Double maintenanceFee,
             String PIB,
             String identificationNumber
-    ){
+    ) {
         super(accountNumber, email, accountType, currencyCode, maintenanceFee);
         this.PIB = PIB;
         this.identificationNumber = identificationNumber;

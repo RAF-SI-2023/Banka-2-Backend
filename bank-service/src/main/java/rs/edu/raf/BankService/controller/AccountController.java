@@ -93,7 +93,7 @@ public class AccountController {
 
 
     @PostMapping(path = "/deposit-withdrawal/payment-addition")
-    public  ResponseEntity<?> depositWithdrawalAddition(@RequestBody DepositWithdrawalDto depositWithdrawalDtod){
+    public ResponseEntity<?> depositWithdrawalAddition(@RequestBody DepositWithdrawalDto depositWithdrawalDtod) {
         try {
             return ResponseEntity.ok(cashAccountService.depositWithdrawalAddition(depositWithdrawalDtod));
         } catch (Exception e) {
@@ -102,7 +102,7 @@ public class AccountController {
     }
 
     @PostMapping(path = "/deposit-withdrawal/payment-subtraction")
-    public  ResponseEntity<?> depositWithdrawalSubtraction(@RequestBody DepositWithdrawalDto depositWithdrawalDto){
+    public ResponseEntity<?> depositWithdrawalSubtraction(@RequestBody DepositWithdrawalDto depositWithdrawalDto) {
         try {
             return ResponseEntity.ok(cashAccountService.depositWithdrawalSubtraction(depositWithdrawalDto));
         } catch (Exception e) {

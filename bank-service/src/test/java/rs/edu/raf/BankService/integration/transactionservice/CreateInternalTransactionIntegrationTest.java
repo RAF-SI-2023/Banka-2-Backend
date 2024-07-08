@@ -22,6 +22,7 @@ import rs.edu.raf.BankService.e2e.account.AccountControllerJwtConst;
 import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.CashTransactionRepository;
 import rs.edu.raf.BankService.service.TransactionService;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,13 +65,14 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
             cashAccountRepository.delete(testReceiverCashAccount);
         }
     }
+
     @Given("a sender account with number {string} with a balance of {long} for internal transaction - happyFlow")
     public void an_account_with_number_with_a_balance_of(String accountNumber, Long balance) {
         testSenderCashAccount = createTestAccount(accountNumber,
                 "sender@example.com",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 "USD",
-                0.0 ,
+                0.0,
                 balance);
 
         cashAccountRepository.save(testSenderCashAccount);
@@ -82,7 +84,7 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
                 "sender@example.com",
                 AccountType.DOMESTIC_CURRENCY_ACCOUNT,
                 "USD",
-                0.0 ,
+                0.0,
                 balance);
 
         cashAccountRepository.save(testReceiverCashAccount);
@@ -174,7 +176,6 @@ public class CreateInternalTransactionIntegrationTest extends TransactionService
         cashAccount.setEmployeeId(1L);
         return cashAccount;
     }
-
 
 
 }

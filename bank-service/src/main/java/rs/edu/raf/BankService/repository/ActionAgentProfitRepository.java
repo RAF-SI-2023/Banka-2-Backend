@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import rs.edu.raf.BankService.data.entities.profit.ActionAgentProfit;
 
 @Repository
-public interface ActionAgentProfitRepository  extends JpaRepository<ActionAgentProfit, Long> {
+public interface ActionAgentProfitRepository extends JpaRepository<ActionAgentProfit, Long> {
 }

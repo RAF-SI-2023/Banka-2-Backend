@@ -1,20 +1,11 @@
 package rs.edu.raf.StockService.unit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.mapper.OptionMapper;
@@ -28,14 +19,11 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class OptionServiceImplTests {
@@ -47,12 +35,17 @@ public class OptionServiceImplTests {
     private OptionMapper optionMapper;
     @InjectMocks
     private OptionServiceImpl optionService;
+    @Mock
+    private HttpClient httpClientMock;
+    @Mock
+    private HttpResponse<String> httpResponse;
+    @Mock
+    private HttpClient httpClient;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
-
 
     @Test
     public void testFindAllByStockListing() {
@@ -71,9 +64,6 @@ public class OptionServiceImplTests {
 
     }
 
-    @Mock
-    private HttpClient httpClientMock;
-
     @Test
     public void testFindAll() {
         // Arrange
@@ -89,13 +79,6 @@ public class OptionServiceImplTests {
         Assertions.assertEquals(expectedOptions, actualOptions);
     }
 
-
-
-    @Mock
-private HttpResponse<String> httpResponse;
-
-    @Mock
-    private HttpClient httpClient;
     @Test
     public void testLoadOptions() throws IOException, InterruptedException {
         // Initialize mocks
