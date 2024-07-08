@@ -48,18 +48,15 @@ public class BootstrapDevData implements CommandLineRunner {
     private String myEmail5;
 
 
-
-
-    public void run(String... args)  {
-        try{
+    public void run(String... args) {
+        try {
             logger.info("IAMService: DEV DATA LOADING IN PROGRESS...");
 
             loadCompanies();
             loadUsers();
 
             logger.info("IAMService: DEV DATA LOADING FINISHED...");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -117,7 +114,6 @@ public class BootstrapDevData implements CommandLineRunner {
             logger.info("NEMA USER ROLE");
             throw new NoSuchElementException();
         }
-
 
 
         Permission per1;
@@ -277,14 +273,14 @@ public class BootstrapDevData implements CommandLineRunner {
 
 
         Long[] pib = {123456789L, 987654321L, 456789123L, 789123456L, 654321987L};
-        String[] emails = {"myEmail1@gmail.com", "myEmail2@gmail.com", "myEmail3@gmail.com", myEmail4, myEmail5};
-        String[] usernames = {"companyEmployee1", "companyEmployee2", "companyEmployee3", "companyEmployee4", "companyEmployee5"};
+        String[] emails = {"company_employee_1@company.com", "company_employee_2@company.com", "company_employee_3@company.com", myEmail4, myEmail5};
+        String[] usernames = {"company_employee_1@company.com", "company_employee_2@company.com", "company_employee_3@company.com", myEmail4, myEmail5};
         String[] phoneNumbers = {"+38111236456", "+38111236457", "+38111236458", "+38111236459", "+38111236460"};
         String[] addresses = {"Pariske komune 5, Beograd, Srbija", "Bulevar Kralja Aleksandra 5, Beograd, Srbija", "Nemanjina 5, Beograd, Srbija", "Jurija Gargarina 3, Beograd, Srbija", "Dr Huga Klana 1, Beograd, Srbija"};
         Long[] dateOfBirth = {511739146L, 606433546L, 473765600L, 204155146L, 216596746L};
 
-        for ( int i = 0; i < 5; i++ ) {
-            CompanyEmployee     companyEmployee = new CompanyEmployee();
+        for (int i = 0; i < 5; i++) {
+            CompanyEmployee companyEmployee = new CompanyEmployee();
             companyEmployee.setEmail(emails[i]);
             companyEmployee.setUsername(usernames[i]);
             companyEmployee.setPassword(passwordEncoder.encode("companyemployee"));
@@ -324,7 +320,7 @@ public class BootstrapDevData implements CommandLineRunner {
             Integer[] registryNumber = {123456789, 987654321, 456789123, 789123456, 654321987};
             Integer[] identificationNumber = {123456, 987654, 456789, 789123, 654321};
             Integer[] activityCode = {12345, 54321, 67890, 98765, 45678};
-            for ( int i = 0; i < 5; i++ ) {
+            for (int i = 0; i < 5; i++) {
                 Company company = new Company();
                 company.setCompanyName(companyNames[i]);
                 company.setFaxNumber(faxNumber[i]);

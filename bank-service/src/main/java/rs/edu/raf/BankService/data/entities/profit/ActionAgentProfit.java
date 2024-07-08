@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import rs.edu.raf.BankService.data.entities.transactions.ExternalTransferTransaction;
 import rs.edu.raf.BankService.data.enums.TransactionProfitType;
 
 @Entity

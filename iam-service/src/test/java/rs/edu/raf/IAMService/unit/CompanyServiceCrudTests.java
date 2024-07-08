@@ -19,22 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 class CompanyServiceCrudTests {
+    @InjectMocks
+    CompanyServiceImpl companyService;
     @Mock
     private CompanyRepository companyRepository;
-
     @Mock
     private CompanyMapper companyMapper;
 
-    @InjectMocks
-    CompanyServiceImpl companyService;
-
     @BeforeEach
-    public void setup(){
+    public void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testFindByPib_CompanyFound_ReturnsCompanyDto(){
+    public void testFindByPib_CompanyFound_ReturnsCompanyDto() {
         Long companyPib = 123456789L;
         Company company = new Company();
         company.setPib(companyPib);
@@ -52,7 +50,7 @@ class CompanyServiceCrudTests {
     }
 
     @Test
-    public void testFindByPib_CompanyNotFound_ThrowsCompanyNotFoundException(){
+    public void testFindByPib_CompanyNotFound_ThrowsCompanyNotFoundException() {
         Long companyPib = 123456789L;
         when(companyRepository.findByPib(companyPib)).thenReturn(Optional.empty());
 
@@ -60,8 +58,7 @@ class CompanyServiceCrudTests {
     }
 
     @Test
-    public void test_findByIdNumber_companyFound_returnsCompanyDto()
-    {
+    public void test_findByIdNumber_companyFound_returnsCompanyDto() {
         Integer companyIdNumber = 12345678;
         Company company = new Company();
         company.setIdentificationNumber(companyIdNumber);
@@ -80,7 +77,7 @@ class CompanyServiceCrudTests {
     }
 
     @Test
-    public void test_findByIdNumber_companyNotFound_throwsCompanyNotFoundException(){
+    public void test_findByIdNumber_companyNotFound_throwsCompanyNotFoundException() {
         Integer companyIdNumber = 1234567;
         when(companyRepository.findByIdentificationNumber(companyIdNumber)).thenReturn(Optional.empty());
 

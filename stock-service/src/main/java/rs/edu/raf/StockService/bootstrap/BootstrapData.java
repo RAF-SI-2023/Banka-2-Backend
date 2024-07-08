@@ -8,14 +8,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.bootstrap.readers.CurrencyCsvReader;
 import rs.edu.raf.StockService.bootstrap.readers.FuturesContractCsvReader;
-import rs.edu.raf.StockService.data.entities.*;
-import rs.edu.raf.StockService.data.enums.OptionType;
+import rs.edu.raf.StockService.data.entities.Currency;
+import rs.edu.raf.StockService.data.entities.CurrencyInflation;
+import rs.edu.raf.StockService.data.entities.FuturesContract;
 import rs.edu.raf.StockService.repositories.*;
 import rs.edu.raf.StockService.services.impl.OptionServiceImpl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 @Component
@@ -71,7 +69,7 @@ public class BootstrapData implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        try{
+        try {
             logger.info("StockService: SOME DATA LOADING IN PROGRESS...");
             CurrencyCsvReader currencyCsvReader = new CurrencyCsvReader(resourceLoader);
             List<Currency> currencyList;
@@ -101,7 +99,7 @@ public class BootstrapData implements CommandLineRunner {
             }
 
             logger.info("StockService: SOME DATA LOADING FINISHED...");
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

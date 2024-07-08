@@ -76,20 +76,18 @@ public class CardServiceTests {
     }
 
 
-
-
     @Test
     public void testCreateCard_MaximumNumberOfCardsReached() {
         // Prepare test data
         CreateCardDto cardDto = new CreateCardDto();
         ; // Set a valid CVV code
         cardDto.setAccountNumber("1234567890123456"); // Set a valid account number
-         // Set a valid identification card number
+        // Set a valid identification card number
         // Set a valid status
 
         // Mock the behavior of the card repository to return three active cards
         List<Card> activeCards = Arrays.asList(new Card(), new Card(), new Card(), new Card());
-   //     when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(activeCards);
+        //     when(cardRepository.findActiveCardsAccountNumber(anyString(), anyBoolean())).thenReturn(activeCards);
 
         // Call the method under test and assert that it throws a RuntimeException
         assertThrows(RuntimeException.class, () -> cardService.createCard(cardDto));
@@ -148,8 +146,8 @@ public class CardServiceTests {
         cardDto.setIdentificationCardNumber(cardNumber); // 16-digit card number
         cardDto.setCardType(CardType.CREDIT); // or any other card type
         cardDto.setNameOfCard("Test Card");
-       // current timestamp in milliseconds
-      ; // expiration date 3 years from now
+        // current timestamp in milliseconds
+        ; // expiration date 3 years from now
         cardDto.setAccountNumber("1234567890123456"); // 16-digit account number
         cardDto.setCvvCode("123"); // 3-digit CVV code
         cardDto.setLimitCard(1000L); // example limit

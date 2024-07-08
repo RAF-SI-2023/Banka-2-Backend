@@ -14,31 +14,30 @@ public class OrderTransactionController {
     private final OrderTransactionService orderTransactionService;
 
 
-
-
     @GetMapping
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll() {
         return ResponseEntity.ok().body(orderTransactionService.findAll());
     }
+
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> findById(@PathVariable long id){
+    public ResponseEntity<?> findById(@PathVariable long id) {
         return ResponseEntity.ok().body(orderTransactionService.findById(id));
     }
 
     @GetMapping("/order-id/{orderId}")
-    public ResponseEntity<?> findByOrderId(@PathVariable long orderId){
+    public ResponseEntity<?> findByOrderId(@PathVariable long orderId) {
         return ResponseEntity.ok().body(orderTransactionService.findByOrderId(orderId));
     }
+
     @GetMapping("/account-number/{accountNumber}")
-    public ResponseEntity<?> findAllByAccountNumber(@PathVariable String accountNumber){
+    public ResponseEntity<?> findAllByAccountNumber(@PathVariable String accountNumber) {
         return ResponseEntity.ok().body(orderTransactionService.findAllByAccountNumber(accountNumber));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<?> findAllByEmail(@PathVariable String email){
+    public ResponseEntity<?> findAllByEmail(@PathVariable String email) {
         return ResponseEntity.ok().body(orderTransactionService.findAllByEmail(email));
     }
-
 
 
 }

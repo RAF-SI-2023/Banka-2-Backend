@@ -34,6 +34,7 @@ public interface CashAccountService {
     List<AccountValuesDto> findBankAccounts() throws AccountNotFoundException;
 
     boolean depositWithdrawalAddition(DepositWithdrawalDto depositWithdrawalDto) throws AccountNotFoundException;
+
     boolean depositWithdrawalSubtraction(DepositWithdrawalDto depositWithdrawalDto) throws AccountNotFoundException;
 
 
@@ -44,5 +45,6 @@ public interface CashAccountService {
     void deleteSavedAccount(Long accountId, String savedAccountNumber);
 
     boolean setIsAccountPrimaryForTrading(String accountNumber, boolean usedForSecurities);
+
     boolean setIsAccountPrimaryForTrading(String accountNumber);
 }

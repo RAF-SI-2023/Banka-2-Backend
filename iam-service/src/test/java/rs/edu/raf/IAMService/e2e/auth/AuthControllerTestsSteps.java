@@ -31,7 +31,6 @@ public class AuthControllerTestsSteps extends AuthControllerTests {
     }
 
 
-
     @When("the user logs in")
     public void theUserLogsIn() {
         String url = "http://localhost:8000/api/auth/login";

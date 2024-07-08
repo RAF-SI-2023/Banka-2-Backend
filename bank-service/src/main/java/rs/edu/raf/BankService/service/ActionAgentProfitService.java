@@ -15,15 +15,14 @@ import java.util.List;
 public interface ActionAgentProfitService {
 
 
+    ActionAgentProfitDto createAgentProfit(Object securitiesTransaction, SecuritiesOwnership securitiesOwnership, int quantity);
 
-     ActionAgentProfitDto createAgentProfit(Object securitiesTransaction, SecuritiesOwnership securitiesOwnership,int quantity);
+    //    List<ActionAgentProfitDto> createAgentProfit(OrderTransaction orderTransaction);
 
- //    List<ActionAgentProfitDto> createAgentProfit(OrderTransaction orderTransaction);
+    List<ActionAgentProfitDto> getAllProfits();
 
-     List<ActionAgentProfitDto> getAllProfits();
+    List<TotalActionAgentProfitDto> getTotalProfitsByUsers();
 
-     List<TotalActionAgentProfitDto> getTotalProfitsByUsers();
-
-     Double getAgentsTotalProfits();
+    Double getAgentsTotalProfits();
 
 }

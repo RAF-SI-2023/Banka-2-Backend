@@ -1,7 +1,6 @@
 package rs.edu.raf.StockService.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.dto.SecuritiesPriceDto;

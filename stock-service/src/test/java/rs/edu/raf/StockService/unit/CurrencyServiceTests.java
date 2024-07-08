@@ -12,11 +12,8 @@ import rs.edu.raf.StockService.services.impl.CurrencyServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class CurrencyServiceTests {
