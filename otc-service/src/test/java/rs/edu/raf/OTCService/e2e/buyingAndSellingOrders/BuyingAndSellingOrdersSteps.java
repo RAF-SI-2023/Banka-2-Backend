@@ -2,13 +2,9 @@ package rs.edu.raf.OTCService.e2e.buyingAndSellingOrders;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.cucumber.core.logging.Logger;
-import io.cucumber.core.logging.LoggerFactory;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -22,7 +18,6 @@ import rs.edu.raf.OTCService.data.enums.ContractType;
 import rs.edu.raf.OTCService.generator.JwtTokenGenerator;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -86,11 +81,11 @@ public class BuyingAndSellingOrdersSteps extends BuyingAndSellingOrdersTestsConf
 
         try {
             ResultActions resultActions = mockMvc.perform(
-                    post(OTC_SERVICE_URL + "/contracts/create")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken)
-                            .content(objectMapper.writeValueAsString(contractDto)))
+                            post(OTC_SERVICE_URL + "/contracts/create")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken)
+                                    .content(objectMapper.writeValueAsString(contractDto)))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntityCreateContract = mvcResult.getResponse();
@@ -112,10 +107,10 @@ public class BuyingAndSellingOrdersSteps extends BuyingAndSellingOrdersTestsConf
         List<ContractDto> responseList = null;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(OTC_SERVICE_URL + "/contracts/all-waiting")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + buyingAndSellingOrdersJwtConst.jwt2))
+                            get(OTC_SERVICE_URL + "/contracts/all-waiting")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + buyingAndSellingOrdersJwtConst.jwt2))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -130,11 +125,11 @@ public class BuyingAndSellingOrdersSteps extends BuyingAndSellingOrdersTestsConf
 
         try {
             ResultActions resultActions = mockMvc.perform(
-                    put(OTC_SERVICE_URL + "/contracts/approve-bank/"
-                            + responseList.get(responseList.size() - 1).getId())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            put(OTC_SERVICE_URL + "/contracts/approve-bank/"
+                                    + responseList.get(responseList.size() - 1).getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -149,10 +144,10 @@ public class BuyingAndSellingOrdersSteps extends BuyingAndSellingOrdersTestsConf
         List<ContractDto> responseList = null;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(OTC_SERVICE_URL + "/contracts/all-waiting")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(OTC_SERVICE_URL + "/contracts/all-waiting")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
@@ -172,7 +167,7 @@ public class BuyingAndSellingOrdersSteps extends BuyingAndSellingOrdersTestsConf
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + jwtToken));
-          
+
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();
             assertEquals("damn", responseEntity.getContentAsString());
@@ -188,10 +183,10 @@ public class BuyingAndSellingOrdersSteps extends BuyingAndSellingOrdersTestsConf
         List<ContractDto> responseList = null;
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get(OTC_SERVICE_URL + "/contracts/all")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + jwtToken))
+                            get(OTC_SERVICE_URL + "/contracts/all")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + jwtToken))
                     .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             responseEntity = mvcResult.getResponse();

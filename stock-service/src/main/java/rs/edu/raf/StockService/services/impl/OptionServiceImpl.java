@@ -3,16 +3,14 @@ package rs.edu.raf.StockService.services.impl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 import rs.edu.raf.StockService.data.dto.OptionDto;
 import rs.edu.raf.StockService.data.entities.Option;
 import rs.edu.raf.StockService.data.enums.OptionType;
 import rs.edu.raf.StockService.mapper.OptionMapper;
 import rs.edu.raf.StockService.repositories.OptionRepository;
 import rs.edu.raf.StockService.services.OptionService;
-import org.springframework.cache.annotation.Cacheable;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,7 +20,6 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OptionServiceImpl implements OptionService {
@@ -36,19 +33,19 @@ public class OptionServiceImpl implements OptionService {
         this.optionMapper = optionMapper;
     }
 
-//    dobija se ovaj error "java.lang.IllegalArgumentException: Null key returned for cache operation" kada se porenu testovi pre CI-ja
+    //    dobija se ovaj error "java.lang.IllegalArgumentException: Null key returned for cache operation" kada se porenu testovi pre CI-ja
 //    @Cacheable(value = "stockListing", key = "#stockListing")
     @Override
     public List<Option> findAllByStockListing(String stockListing) {
 
-       List<Option> requestedOptions =  loadOptions(stockListing);
+        List<Option> requestedOptions = loadOptions(stockListing);
 
         return requestedOptions;
     }
 
 
- //   @Scheduled(cron = "0 */15 * * * *") //every 15 minute
-    public  List<Option> loadOptions(String stockListing) {
+    //   @Scheduled(cron = "0 */15 * * * *") //every 15 minute
+    public List<Option> loadOptions(String stockListing) {
 
 
         String url = "https://query1.finance.yahoo.com/v6/finance/options/" + stockListing;
@@ -115,7 +112,7 @@ public class OptionServiceImpl implements OptionService {
                     }
                     optionDtoCall.setOptionType(OptionType.CALL);
                     Option optionCall = optionMapper.optionDtoToOption(optionDtoCall);
-            //        checkIfOptionExistsAndUpdate(optionCall);
+                    //        checkIfOptionExistsAndUpdate(optionCall);
                     optionList.add(optionCall);
                 }
                 for (int j = 0; j < puts.length(); j++) {
@@ -137,7 +134,7 @@ public class OptionServiceImpl implements OptionService {
 
 
                     Option optionPut = optionMapper.optionDtoToOption(optionDtoPut);
-              //      checkIfOptionExistsAndUpdate(optionPut);
+                    //      checkIfOptionExistsAndUpdate(optionPut);
                     optionList.add(optionPut);
 
                 }
@@ -149,9 +146,9 @@ public class OptionServiceImpl implements OptionService {
             e.printStackTrace();
 
             return new ArrayList<>();
-           // return new ArrayList<>();
+            // return new ArrayList<>();
         }
-   //     return optionList;
+        //     return optionList;
     }
 
     @Override

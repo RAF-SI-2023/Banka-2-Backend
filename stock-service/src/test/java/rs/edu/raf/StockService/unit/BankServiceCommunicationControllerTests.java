@@ -1,17 +1,16 @@
 package rs.edu.raf.StockService.unit;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import rs.edu.raf.StockService.data.dto.BankStockDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.data.entities.Stock;
 import rs.edu.raf.StockService.services.facade.BankStockFacadeImpl;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class BankServiceCommunicationControllerTests {
     @Mock

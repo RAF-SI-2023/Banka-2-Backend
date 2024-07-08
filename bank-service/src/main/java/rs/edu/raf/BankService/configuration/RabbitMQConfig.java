@@ -18,7 +18,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue userProfileUserAccountBindingConfirmation() { return new Queue("account-link-confirmation", false); }
+    public Queue userProfileUserAccountBindingConfirmation() {
+        return new Queue("account-link-confirmation", false);
+    }
 
     @Bean
     public Queue transactionVerificationtQueue() {

@@ -15,14 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
 
+    public List<SecuritiesOwnershipDto> responseListSecurity;
+    public SecuritiesOwnershipDto updatedDto;
+    ResponseEntity<?> responseEntity;
+    String accountNumber;
     // @Autowired
     private SecuritiesOwnershipRepository repository;
-
     private List<SecuritiesOwnershipDto> response;
-    ResponseEntity<?> responseEntity;
     private SecuritiesOwnershipService securitiesOwnershipService;
     private SecuritiesOwnershipRepository securitiesOwnershipRepository;
-    String accountNumber;
+    private HttpClientErrorException exception;
 
     SecurityOwnershipsImplSteps(SecuritiesOwnershipService securitiesOwnershipService, SecuritiesOwnershipRepository securitiesOwnershipRepository) {
         this.securitiesOwnershipService = securitiesOwnershipService;
@@ -51,12 +53,17 @@ public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
         assertNotNull(response);
     }
 
-
     @When("the user requests public securities ownerships")
     public void userRequestsPublicSecuritiesOwnerships() {
         responseEntity = new ResponseEntity<>(securitiesOwnershipService.getAllPubliclyAvailableSecurityOwnerships(), null, 200);
         response = securitiesOwnershipService.getSecurityOwnershipsForAccountNumber(accountNumber);
     }
+
+//    Scenario: User looks up all public securities ownerships from privates
+//    Given user has securities ownerships with account number "3334444999999999"
+//    When the user requests public securities ownerships from privates
+//    Then the user should receive a response with status code 200
+//    And the response should contain the public securities ownerships from privates
 
     @Then("the response should contain the public securities ownerships")
     public void responseContainsPublicSecuritiesOwnerships() {
@@ -69,16 +76,16 @@ public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
         response = securitiesOwnershipService.getSecurityOwnershipsForAccountNumber(accountNumber);
     }
 
+//    Scenario: User updates the publicly available quantity with a valid input
+//    Given a securities ownership exists with id 1, quantity 100, and publicly available quantity 50
+//    When the user updates the publicly available quantity to 60 for the securities ownership with id 1
+//    Then the user should receive a response with status code 200
+//    And the response should contain the updated publicly available quantity 60
+
     @Then("the response should contain the public securities ownerships from companies")
     public void responseContainsPublicSecuritiesOwnershipsFromCompanies() {
         assertNotNull(response);
     }
-
-//    Scenario: User looks up all public securities ownerships from privates
-//    Given user has securities ownerships with account number "3334444999999999"
-//    When the user requests public securities ownerships from privates
-//    Then the user should receive a response with status code 200
-//    And the response should contain the public securities ownerships from privates
 
     @When("the user requests public securities ownerships from privates")
     public void userRequestsPublicSecuritiesOwnershipsFromPrivates() {
@@ -91,12 +98,6 @@ public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
         assertNotNull(response);
     }
 
-//    Scenario: User updates the publicly available quantity with a valid input
-//    Given a securities ownership exists with id 1, quantity 100, and publicly available quantity 50
-//    When the user updates the publicly available quantity to 60 for the securities ownership with id 1
-//    Then the user should receive a response with status code 200
-//    And the response should contain the updated publicly available quantity 60
-
     @Given("a securities ownership exists with id {long}, quantity {int}, and publicly available quantity {int}")
     public void securitiesOwnershipExists(Long id, int quantity, int publiclyAvailableQuantity) {
         SecuritiesOwnershipDto securitiesOwnershipDto = new SecuritiesOwnershipDto();
@@ -105,10 +106,6 @@ public class SecurityOwnershipsImplSteps extends SecurityOwnershipsTestConfig {
         securitiesOwnershipDto.setQuantityOfPubliclyAvailable(publiclyAvailableQuantity);
         securitiesOwnershipService.updatePubliclyAvailableQuantity(securitiesOwnershipDto);
     }
-
-    public List<SecuritiesOwnershipDto> responseListSecurity;
-    public SecuritiesOwnershipDto updatedDto;
-    private HttpClientErrorException exception;
 
     @When("the user updates the publicly available quantity to {int} for the securities ownership with id {long}")
     public void userUpdatesPubliclyAvailableQuantity(int publiclyAvailableQuantity, Long id) {

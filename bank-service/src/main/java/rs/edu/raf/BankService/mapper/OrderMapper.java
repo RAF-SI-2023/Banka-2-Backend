@@ -8,7 +8,7 @@ import rs.edu.raf.BankService.data.entities.Order;
 public class OrderMapper {
 
 
-    public Order orderDtoToOrder(OrderDto orderDto){
+    public Order orderDtoToOrder(OrderDto orderDto) {
         Order order = new Order();
         order.setId(orderDto.getId());
         order.setOrderActionType(orderDto.getOrderActionType());
@@ -23,7 +23,7 @@ public class OrderMapper {
         return order;
     }
 
-    public OrderDto orderToOrderDto(Order order){
+    public OrderDto orderToOrderDto(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
         orderDto.setOrderStatus(order.getOrderStatus());

@@ -18,7 +18,7 @@ import rs.edu.raf.BankService.service.TransactionService;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DepositWithdrawalTransactionIntegrationTest extends TransactionServiceIntegrationTestConfig{
+public class DepositWithdrawalTransactionIntegrationTest extends TransactionServiceIntegrationTestConfig {
 
     @Autowired
     private TransactionService transactionService;
@@ -46,7 +46,7 @@ public class DepositWithdrawalTransactionIntegrationTest extends TransactionServ
 
     @Given("an account with number {string} with a balance of {long} {string}")
     public void anAccountWithNumberWithABalanceOf(String accountNumber, long accountBalance, String currency) {
-        testCashAccount=createTestAccount(accountNumber,"test@example.com",currency,accountBalance);
+        testCashAccount = createTestAccount(accountNumber, "test@example.com", currency, accountBalance);
         cashAccountRepository.save(testCashAccount);
     }
 
@@ -61,7 +61,7 @@ public class DepositWithdrawalTransactionIntegrationTest extends TransactionServ
     @Then("the account's new balance should be {long} after transfer")
     public void theAccountSNewBalanceShouldBeAfterTransfer(long newBalance) {
         CashAccount cashAccount = cashAccountRepository.findByAccountNumber(testCashAccount.getAccountNumber());
-        if(cashAccount==null){
+        if (cashAccount == null) {
             fail("Receiver account not found");
         }
         assertEquals(newBalance, cashAccount.getAvailableBalance());

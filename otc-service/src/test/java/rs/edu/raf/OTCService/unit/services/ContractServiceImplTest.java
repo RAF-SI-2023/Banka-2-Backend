@@ -1,19 +1,5 @@
 package rs.edu.raf.OTCService.unit.services;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +10,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-
 import rs.edu.raf.OTCService.data.dto.ContractDto;
 import rs.edu.raf.OTCService.data.entity.Contract;
 import rs.edu.raf.OTCService.data.enums.ContractStatus;
@@ -35,6 +20,14 @@ import rs.edu.raf.OTCService.repositories.ContractRepository;
 import rs.edu.raf.OTCService.service.BankService;
 import rs.edu.raf.OTCService.service.impl.ContractServiceImpl;
 import rs.edu.raf.OTCService.util.SpringSecurityUtil;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ContractServiceImplTest {

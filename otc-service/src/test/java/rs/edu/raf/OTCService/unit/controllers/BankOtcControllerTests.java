@@ -1,11 +1,5 @@
 package rs.edu.raf.OTCService.unit.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,10 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import com.rabbitmq.client.RpcClient.Response;
-
-import io.cucumber.java.en.When;
 import rs.edu.raf.OTCService.controllers.BankOtcController;
 import rs.edu.raf.OTCService.data.dto.testing.FrontendOfferDto;
 import rs.edu.raf.OTCService.data.dto.testing.MyStockDto;
@@ -25,6 +15,12 @@ import rs.edu.raf.OTCService.data.entity.listing.BankOTCStock;
 import rs.edu.raf.OTCService.data.entity.offer.MyOffer;
 import rs.edu.raf.OTCService.data.entity.offer.Offer;
 import rs.edu.raf.OTCService.service.test.BankOtcService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class BankOtcControllerTests {
 

@@ -14,6 +14,7 @@ import rs.edu.raf.BankService.data.dto.BankProfitDto;
 import rs.edu.raf.BankService.data.entities.exchangeCurrency.BankTransferTransactionDetails;
 import rs.edu.raf.BankService.data.entities.profit.ActionAgentProfit;
 import rs.edu.raf.BankService.data.entities.profit.BankProfit;
+
 import java.util.Collections;
 import java.util.Optional;
 
@@ -25,13 +26,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class BankProfitServiceImplUnitTests {
     @Mock
-    private  ActionAgentProfitRepository actionAgentProfitRepository;
+    private ActionAgentProfitRepository actionAgentProfitRepository;
     @Mock
-    private  BankTransferTransactionDetailsRepository bankTransferTransactionDetailsRepository;
+    private BankTransferTransactionDetailsRepository bankTransferTransactionDetailsRepository;
     @Mock
-    private  BankProfitRepository bankProfitRepository;
+    private BankProfitRepository bankProfitRepository;
     @Mock
-    private  BankProfitMapper bankProfitMapper;
+    private BankProfitMapper bankProfitMapper;
 
     @InjectMocks
     private BankProfitServiceImpl bankProfitService;

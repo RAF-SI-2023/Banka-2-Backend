@@ -23,9 +23,9 @@ import static org.mockito.Mockito.*;
 public class CrudUserControllerTests {
 
     @Mock
-    private UserService userService;
-    @Mock
     HttpServletRequest request;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private UserController controller;
 

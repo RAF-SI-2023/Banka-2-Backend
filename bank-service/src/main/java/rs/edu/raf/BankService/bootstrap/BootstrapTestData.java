@@ -493,12 +493,12 @@ public class BootstrapTestData implements CommandLineRunner {
 
     private void loadCreditRequests() {
         if (creditRequestRepository.count() == 0) {
-            String[] purposes = { "STAMBENI", "AUTO", "POTROŠAČKI", "REFINANSIRANJE", "EDUKACIJA" };
-            String[] notes = { "pls daj kredit", "kupujem auto", "kupujem televizor", "refinansiram dugove",
-                    "studiram" };
-            String[] accNumbs = { "3334444999999999", "3334444111111111", "3334444888888888" };
-            String[] educations = { "OSNOVNA", "SREDNJA", "VIŠA", "TRECI", "MASTER", "DOKTOR" };
-            String[] maritalStatuses = { "NEOZENJEN", "OŽENJEN", "RAZVEDEN", "UDOVAC" };
+            String[] purposes = {"STAMBENI", "AUTO", "POTROŠAČKI", "REFINANSIRANJE", "EDUKACIJA"};
+            String[] notes = {"pls daj kredit", "kupujem auto", "kupujem televizor", "refinansiram dugove",
+                    "studiram"};
+            String[] accNumbs = {"3334444999999999", "3334444111111111", "3334444888888888"};
+            String[] educations = {"OSNOVNA", "SREDNJA", "VIŠA", "TRECI", "MASTER", "DOKTOR"};
+            String[] maritalStatuses = {"NEOZENJEN", "OŽENJEN", "RAZVEDEN", "UDOVAC"};
             for (int i = 0; i < 10; i++) {
                 CreditRequest crd = new CreditRequest();
                 crd.setAccountNumber(accNumbs[new Random().nextInt(3)]);
@@ -564,9 +564,9 @@ public class BootstrapTestData implements CommandLineRunner {
     private void loadSecurityOwnerships() {
         if (securitiesOwnershipRepository.count() == 0) {
 
-            String[] symbols1 = { "AAPL", "GOOGL", "Z", "NEXOY" };
-            String[] symbols2 = { "NTFL", "TSLA", "MSFT", "FB" };
-            String[] symbols3 = { "K", "TT", "CC", "I" };
+            String[] symbols1 = {"AAPL", "GOOGL", "Z", "NEXOY"};
+            String[] symbols2 = {"NTFL", "TSLA", "MSFT", "FB"};
+            String[] symbols3 = {"K", "TT", "CC", "I"};
 
             for (int i = 0; i < 4; i++) {
                 SecuritiesOwnership so1 = new SecuritiesOwnership();
@@ -580,7 +580,7 @@ public class BootstrapTestData implements CommandLineRunner {
                 so1.setQuantityOfPubliclyAvailable(quantity);
                 so1.setReservedQuantity(0);
                 so1.setAverageBuyingPrice(so1.getQuantity() * new Random().nextDouble(100, 1600));// ne postoji bolji
-                                                                                                  // nacin???
+                // nacin???
                 securitiesOwnershipRepository.save(so1);
 
                 SecuritiesOwnership so2 = new SecuritiesOwnership();
@@ -594,7 +594,7 @@ public class BootstrapTestData implements CommandLineRunner {
                 so2.setQuantityOfPubliclyAvailable(quantity1);
                 so2.setReservedQuantity(25);
                 so2.setAverageBuyingPrice(so2.getQuantity() * new Random().nextDouble(100, 1600));// ne postoji bolji
-                                                                                                  // nacin???
+                // nacin???
                 securitiesOwnershipRepository.save(so2);
 
                 SecuritiesOwnership so3 = new SecuritiesOwnership();
@@ -608,7 +608,7 @@ public class BootstrapTestData implements CommandLineRunner {
                 so3.setQuantityOfPubliclyAvailable(quantity2);
                 so3.setReservedQuantity(5);
                 so3.setAverageBuyingPrice(so3.getQuantity() * new Random().nextDouble(100, 1600));// ne postoji bolji
-                                                                                                  // nacin???
+                // nacin???
                 securitiesOwnershipRepository.save(so3);
 
                 SecuritiesOwnership so4 = new SecuritiesOwnership();
@@ -620,7 +620,7 @@ public class BootstrapTestData implements CommandLineRunner {
                 so4.setQuantity(quantity2 + 100);
                 so4.setQuantityOfPubliclyAvailable(50);
                 so4.setAverageBuyingPrice(so4.getQuantity() * new Random().nextDouble(100, 1600));// ne postoji bolji
-                                                                                                  // nacin???
+                // nacin???
                 securitiesOwnershipRepository.save(so4);
             }
 

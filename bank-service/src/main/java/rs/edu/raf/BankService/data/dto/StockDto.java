@@ -22,8 +22,9 @@ public class StockDto extends ListingDto {
     public Double getMaintenanceMargin() {
         return getPrice() * 0.5;
     }
+
     @Override
-    public String toString(){
-        return super.toString()+"shares="+shares+", yield=yield";
+    public String toString() {
+        return super.toString() + "shares=" + shares + ", yield=yield";
     }
 }

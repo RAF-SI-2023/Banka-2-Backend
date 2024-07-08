@@ -43,9 +43,9 @@ public class OrderServiceImpl implements OrderService {
     private final ActiveTradingJobRepository activeTradingJobRepository;
     private final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     private final OrderTransactionRepository orderTransactionRepository;
-    private TradingSimulation tradingSimulation;
     private final BlockingDeque<TradingJob> orders = new LinkedBlockingDeque<>();
     private final ActionAgentProfitService actionAgentProfitService;
+    private TradingSimulation tradingSimulation;
 
     @Autowired
     public OrderServiceImpl(TransactionService transactionService, IAMServiceImpl iamService, StockService stockService, CurrencyExchangeService currencyExchangeService, OrderMapper orderMapper, OrderRepository orderRepository, CashAccountRepository cashAccountRepository, SecuritiesOwnershipRepository securitiesOwnershipRepository, ActiveTradingJobRepository activeTradingJobRepository, OrderTransactionRepository orderTransactionRepository, ActionAgentProfitService actionAgentProfitService) {
@@ -58,8 +58,8 @@ public class OrderServiceImpl implements OrderService {
         this.cashAccountRepository = cashAccountRepository;
         this.securitiesOwnershipRepository = securitiesOwnershipRepository;
         this.activeTradingJobRepository = activeTradingJobRepository;
-        this.orderTransactionRepository=orderTransactionRepository;
-        this.actionAgentProfitService=actionAgentProfitService;
+        this.orderTransactionRepository = orderTransactionRepository;
+        this.actionAgentProfitService = actionAgentProfitService;
 
 
         //load active trading jobs
@@ -77,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException(e);
             }
         });
-        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository,orderTransactionRepository,actionAgentProfitService);
+        this.tradingSimulation = new TradingSimulation(transactionService, iamService, stockService, currencyExchangeService, orderRepository, cashAccountRepository, securitiesOwnershipRepository, activeTradingJobRepository, orderTransactionRepository, actionAgentProfitService);
         this.tradingSimulation.setTradingJobs(orders);
         Thread thread = new Thread(this.tradingSimulation);
         thread.start();
@@ -103,13 +103,12 @@ public class OrderServiceImpl implements OrderService {
         String currency = null;
         switch (order.getOrderActionType()) {
             case BUY -> {
-                switch (orderDto.getListingType()){
-                    case STOCK,FOREX -> {
-                        if(((ListingDto) listingDto).getCurrency()==null){
+                switch (orderDto.getListingType()) {
+                    case STOCK, FOREX -> {
+                        if (((ListingDto) listingDto).getCurrency() == null) {
                             exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto) listingDto).getExchange());
                             currency = exchangeDto.getCurrency();
-                        }
-                        else currency= ((ListingDto) listingDto).getCurrency();
+                        } else currency = ((ListingDto) listingDto).getCurrency();
                         totalPrice = calculateOrderPrice(order.getQuantity(), ((ListingDto) listingDto).getPrice());
                     }
                     case OPTION -> {
@@ -118,21 +117,21 @@ public class OrderServiceImpl implements OrderService {
                         order.setSettlementDate(((OptionDto) listingDto).getSettlementDate());
                     }
                     case FUTURE -> {
-                        currency= "RSD";
-                        totalPrice=(calculateOrderPrice(order.getQuantity(),((FuturesContractDto)listingDto).getFuturesContractPrice()));
+                        currency = "RSD";
+                        totalPrice = (calculateOrderPrice(order.getQuantity(), ((FuturesContractDto) listingDto).getFuturesContractPrice()));
                         order.setSettlementDate(((FuturesContractDto) listingDto).getSettlementDate());
                     }
-                    }
                 }
+            }
 
             case SELL -> {
-                switch (orderDto.getListingType()){
-                    case STOCK,FOREX -> {
+                switch (orderDto.getListingType()) {
+                    case STOCK, FOREX -> {
                         if (((ListingDto) listingDto).getExchange() != null) {
                             exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto) listingDto).getExchange());
                             currency = exchangeDto.getCurrency();   //ako bira kom exchangeu ce da proda
-                        }
-                        else currency = tradingCashAccount.getCurrencyCode(); //ako ne bira, videti u nekom trenutku //todo
+                        } else
+                            currency = tradingCashAccount.getCurrencyCode(); //ako ne bira, videti u nekom trenutku //todo
                         totalPrice = calculateOrderPrice(order.getQuantity(), ((ListingDto) listingDto).getPrice());
                     }
                     case OPTION -> {
@@ -148,16 +147,16 @@ public class OrderServiceImpl implements OrderService {
 
 
         double totalPriceInTradingCashAccountCurrency = currencyExchangeService.calculateAmountBetweenCurrencies(currency, tradingCashAccount.getCurrencyCode(), totalPrice);
-       try {
-           if (order.getOrderStatus() == OrderStatus.APPROVED) {
-               transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
-           }
-       }catch (RuntimeException e){
-           throw new RuntimeException("Insufficient funds for reservation");
-       }
+        try {
+            if (order.getOrderStatus() == OrderStatus.APPROVED) {
+                transactionService.reserveFunds(tradingCashAccount, totalPriceInTradingCashAccountCurrency);
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Insufficient funds for reservation");
+        }
 
         order = orderRepository.save(order);
-        System.out.println("ZAPOCET ORDER "+ order);
+        System.out.println("ZAPOCET ORDER " + order);
         try {
             orders.put(new TradingJob(order, exchangeDto, tradingCashAccount.getAccountNumber(), SpringSecurityUtil.getUserRole(), totalPriceInTradingCashAccountCurrency));
         } catch (InterruptedException e) {

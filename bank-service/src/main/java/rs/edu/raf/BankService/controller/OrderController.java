@@ -25,13 +25,13 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('ROLE_AGENT','ROLE_SUPERVISOR','ROLE_USER','ROLE_ADMIN','ROLE_EMPLOYEE')")
     @PostMapping()
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-        try{
+        try {
             return ResponseEntity.ok().body(orderService.createOrder(orderDto)); //TODO?
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
 
-         }
+    }
 
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_AGENT','ROLE_SUPERVISOR','ROLE_EMPLOYEE')")

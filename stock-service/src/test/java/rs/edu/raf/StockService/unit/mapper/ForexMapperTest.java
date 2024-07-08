@@ -1,13 +1,12 @@
 package rs.edu.raf.StockService.unit.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import rs.edu.raf.StockService.data.dto.ForexDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.mapper.ForexMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ForexMapperTest {
 

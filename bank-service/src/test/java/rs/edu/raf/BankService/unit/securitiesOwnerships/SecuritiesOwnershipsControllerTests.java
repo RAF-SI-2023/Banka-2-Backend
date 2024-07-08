@@ -26,10 +26,10 @@ import static org.mockito.Mockito.when;
 public class SecuritiesOwnershipsControllerTests {
 
     @Mock
-    private  SecuritiesOwnershipService securitiesOwnershipService;
+    private SecuritiesOwnershipService securitiesOwnershipService;
 
     @InjectMocks
-    private  SecuritiesOwnershipsController securitiesOwnershipsController;
+    private SecuritiesOwnershipsController securitiesOwnershipsController;
 
     @Test
     public void testGetAllPubliclyAvailableSecurityOwnershipsFromPrivate() {
@@ -63,6 +63,7 @@ public class SecuritiesOwnershipsControllerTests {
         assertEquals(expectedDtos, responseEntity.getBody());
         assertEquals(200, responseEntity.getStatusCodeValue());
     }
+
     @Test
     public void testUpdatePubliclyAvailableQuantity_Success() {
         // Arrange

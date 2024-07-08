@@ -23,9 +23,9 @@ import static org.mockito.Mockito.*;
 public class SecuritiesOwnershipsServiceTests {
 
     @Mock
-    public  SecuritiesOwnershipRepository securitiesOwnershipRepository;
+    public SecuritiesOwnershipRepository securitiesOwnershipRepository;
     @Mock
-    public  SecuritiesOwnershipMapper mapper;
+    public SecuritiesOwnershipMapper mapper;
     @InjectMocks
     private SecuritiesOwnershipServiceImpl securitiesOwnershipService;
 
