@@ -1,18 +1,18 @@
 package rs.edu.raf.BankService.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rs.edu.raf.BankService.data.dto.BankTransferTransactionDetailsDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountRequestDto;
 import rs.edu.raf.BankService.data.dto.MarginsAccountResponseDto;
 import rs.edu.raf.BankService.data.entities.MarginsAccount;
 import rs.edu.raf.BankService.data.entities.MarginsTransaction;
+import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.data.enums.TransactionDirection;
 import rs.edu.raf.BankService.mapper.MarginsAccountMapper;
 import rs.edu.raf.BankService.repository.MarginsAccountRepository;
 import rs.edu.raf.BankService.repository.MarginsTransactionRepository;
 import rs.edu.raf.BankService.service.MarginsAccountService;
-import rs.edu.raf.BankService.springSecurityUtil.SpringSecurityUtil;
 
 import java.util.List;
 
@@ -24,13 +24,16 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
     private final MarginsAccountMapper marginsAccountMapper;
     private final MarginsTransactionRepository marginsTransactionRepository;
 
+    @Transactional
     @Override
     public MarginsAccountResponseDto createMarginsAccount(MarginsAccountRequestDto marginsAccountRequestDto) {
-        MarginsAccount marginsAccount = marginsAccountMapper.toEntity(marginsAccountRequestDto);
+        for (ListingType type : ListingType.values()) {
+            MarginsAccount marginsAccount = marginsAccountMapper.toEntity(marginsAccountRequestDto);
+            marginsAccount.setListingType(type);
+            marginsAccountRepository.save(marginsAccount);
+        }
 
-        MarginsAccount savedMarginsAccount = marginsAccountRepository.save(marginsAccount);
-
-        return marginsAccountMapper.toDto(savedMarginsAccount);
+        return new MarginsAccountResponseDto();
     }
 
     @Override
@@ -38,8 +41,8 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
         boolean isPresent = marginsAccountRepository.existsById(id);
 
         if (isPresent) {
-            MarginsAccount updatedMarginsAccount =
-                    marginsAccountRepository.save(marginsAccountMapper.toEntity(marginsAccountRequestDto));
+            MarginsAccount updatedMarginsAccount = marginsAccountRepository
+                    .save(marginsAccountMapper.toEntity(marginsAccountRequestDto));
             return marginsAccountMapper.toDto(updatedMarginsAccount);
         } else {
             throw new RuntimeException("Margins account with id " + id + " doesn't exist");
@@ -71,12 +74,13 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
     public List<MarginsAccountResponseDto> findByUserId(Long userId) {
         List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByUserId(userId);
 
-            return marginsAccounts.stream()
-                    .map(marginsAccountMapper::toDto)
-                    .toList();
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
     }
 
-    // ovde na frontu ako margin call nije promenjen, onda moze da ispise da je neuspela akcija
+    // ovde na frontu ako margin call nije promenjen, onda moze da ispise da je
+    // neuspela akcija
     @Override
     public MarginsAccountResponseDto settleMarginCall(Long id, Double deposit) {
         MarginsAccount marginsAccount = marginsAccountRepository.findById(id)
@@ -92,7 +96,9 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
             Double extraAmount = deposit - currentMinus;
             marginsAccount.setBalance(marginsAccount.getBalance() + extraAmount);
             marginsAccount.setMarginCall(false);
-            marginsTransactionRepository.save(createTransactionForMarginCallSettlement(deposit));
+
+            Long userId = marginsAccount.getUserId();
+            marginsTransactionRepository.save(createTransactionForMarginCallSettlement(deposit, userId));
             MarginsAccount updatedAccount = marginsAccountRepository.save(marginsAccount);
 
             return marginsAccountMapper.toDto(updatedAccount);
@@ -105,26 +111,25 @@ public class MarginsAccountServiceImpl implements MarginsAccountService {
     public List<MarginsAccountResponseDto> findByEmail(String email) {
         List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByEmail(email);
 
-            return marginsAccounts.stream()
-                    .map(marginsAccountMapper::toDto)
-                    .toList();
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
     }
-
 
     @Override
     public List<MarginsAccountResponseDto> findByAccountNumber(String accountNumber) {
         List<MarginsAccount> marginsAccounts = marginsAccountRepository.findAllByAccountNumber(accountNumber);
 
-                return marginsAccounts.stream()
-                        .map(marginsAccountMapper::toDto)
-                        .toList();
+        return marginsAccounts.stream()
+                .map(marginsAccountMapper::toDto)
+                .toList();
     }
 
-    private MarginsTransaction createTransactionForMarginCallSettlement(Double deposit) {
+    public MarginsTransaction createTransactionForMarginCallSettlement(Double deposit, Long userId) {
         MarginsTransaction marginsTransaction = new MarginsTransaction();
         marginsTransaction.setInvestmentAmount(deposit);
         marginsTransaction.setCreatedAt(System.currentTimeMillis());
-        marginsTransaction.setUserId(SpringSecurityUtil.getPrincipalId());
+        marginsTransaction.setUserId(userId);
         marginsTransaction.setType(TransactionDirection.DEPOSIT);
         marginsTransaction.setDescription("MARGIN CALL DEPOSIT " + deposit);
 

@@ -21,11 +21,11 @@ public class PasswordChangeToken {
     private String email;
     private String urlLink;
 
-  public PasswordChangeToken(String token, long expireTime, String email, String urlLink){
-        this.token=token;
-        this.expireTime=expireTime;
-        this.email=email;
-        this.urlLink=urlLink;
+    public PasswordChangeToken(String token, long expireTime, String email, String urlLink) {
+        this.token = token;
+        this.expireTime = expireTime;
+        this.email = email;
+        this.urlLink = urlLink;
     }
 
 }

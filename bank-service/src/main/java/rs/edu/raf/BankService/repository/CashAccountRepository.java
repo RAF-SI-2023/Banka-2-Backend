@@ -15,11 +15,11 @@ public interface CashAccountRepository extends JpaRepository<CashAccount, Long> 
     List<CashAccount> findAllByEmail(String email);
 
     @Query("SELECT " +
-           "account " +
-           "FROM " +
-           "CashAccount account " +
-           "WHERE " +
-           "((:email IS NULL AND account.ownedByBank=true) OR (account.email=:email)) AND account.isPrimaryTradingAccount=true"
+            "account " +
+            "FROM " +
+            "CashAccount account " +
+            "WHERE " +
+            "((:email IS NULL AND account.ownedByBank=true) OR (account.email=:email)) AND account.isPrimaryTradingAccount=true"
     )
     CashAccount findPrimaryTradingAccount(String email);
 

@@ -25,86 +25,78 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserControllerTestSteps extends UserControllerTestConfig{
+public class UserControllerTestSteps extends UserControllerTestConfig {
 
-   @Autowired
-   MockMvc mockMvc;
-   @Autowired
-   private ObjectMapper objectMapper;
-   @Autowired
-   private UserControllerStateTests tests;
-   @Autowired
-   private RabbitTemplate rabbitTemplate;
-   @Autowired
-   private UserMapper userMapper;
-   @Autowired
-   private UserService userService;
+    @Autowired
+    MockMvc mockMvc;
+    String email;
+    EmployeeDto employeeDto = new EmployeeDto();
+    Long id;
+    ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+    ResponseEntity<ChangePasswordDto> entity;
+    AgentDto agentDto = new AgentDto();
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private UserControllerStateTests tests;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    private MvcResult mvcResult;
 
+    //get user email
+    @Given("user gives paramethers email {string}")
+    public void user_paramethers_email(String email) {
+        this.email = email;
+        tests.jwt = JwtTokenGenerator.generateToken(1L, email, "USER", "");
+    }
 
-   private MvcResult mvcResult;
+    @SneakyThrows
+    @When("user send request for geting user")
+    public void user_send() {
+        ResultActions resultActions = mockMvc.perform(get("/api/users/email/{email}", email)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tests.jwt)
+        ).andExpect(status().isOk());
+        mvcResult = resultActions.andReturn();
+    }
 
-   String email;
+    @Then("response status ok and body user")
+    public void response_status_ok() {
+        assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
+    }
 
-   EmployeeDto employeeDto = new EmployeeDto();
+    //change password
+    @Given("user gives paramethers email {string} and password {string}")
+    public void user_set_parameters(String email, String password) {
+        changePasswordDto.setEmail(email);
+        changePasswordDto.setPassword(password);
+        tests.jwt = JwtTokenGenerator.generateToken(1L, "dummyAdminUser@gmail.com", "ADMIN", "");
+    }
 
-   Long id;
+    @SneakyThrows
+    @When("user send request for changing password")
+    public void user_send_req() {
+        ResultActions resultActions = mockMvc.perform(post("/api/users/password-change")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tests.jwt)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changePasswordDto))
+        ).andExpect(status().isOk());
+        mvcResult = resultActions.andReturn();
 
-   ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+    }
 
-   ResponseEntity<ChangePasswordDto> entity;
-
-   AgentDto agentDto = new AgentDto();
-
-   //get user email
-   @Given("user gives paramethers email {string}")
-   public void user_paramethers_email(String email){
-       this.email = email;
-       tests.jwt = JwtTokenGenerator.generateToken(1L, email, "USER", "");
-   }
-
-   @SneakyThrows
-   @When("user send request for geting user")
-   public void user_send(){
-       ResultActions resultActions =  mockMvc.perform(get("/api/users/email/{email}", email)
-               .contentType(MediaType.APPLICATION_JSON_VALUE)
-               .header("Authorization", "Bearer " + tests.jwt)
-               ).andExpect(status().isOk());
-       mvcResult = resultActions.andReturn();
-   }
-
-   @Then("response status ok and body user")
-   public void response_status_ok(){
-       assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
-   }
-
-   //change password
-   @Given("user gives paramethers email {string} and password {string}")
-   public void user_set_parameters(String email, String password){
-       changePasswordDto.setEmail(email);
-       changePasswordDto.setPassword(password);
-       tests.jwt = JwtTokenGenerator.generateToken(1L, "dummyAdminUser@gmail.com", "ADMIN", "");
-   }
-
-   @SneakyThrows
-   @When("user send request for changing password")
-   public void user_send_req(){
-       ResultActions resultActions =  mockMvc.perform(post("/api/users/password-change")
-               .contentType(MediaType.APPLICATION_JSON_VALUE)
-               .header("Authorization", "Bearer " + tests.jwt)
-               .accept(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(changePasswordDto))
-       ).andExpect(status().isOk());
-       mvcResult = resultActions.andReturn();
-
-   }
-
-   @Then("response status ok and body true")
-   public void response_status(){
-       assert mvcResult.getResponse() != null;
-       assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
-   }
+    @Then("response status ok and body true")
+    public void response_status() {
+        assert mvcResult.getResponse() != null;
+        assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
+    }
 
 //    //create employee
 //    @Given("user gives valid paramethers for employee email {string}")
@@ -157,26 +149,26 @@ public class UserControllerTestSteps extends UserControllerTestConfig{
 //    }
 
 
-   @Given("user get id by email {string}")
-   public void userGivesParamethersId(String email) {
-       id = userRepository.findByEmail(email).get().getId();
-       tests.jwt = JwtTokenGenerator.generateToken(1L, email, "USER", "");
-   }
+    @Given("user get id by email {string}")
+    public void userGivesParamethersId(String email) {
+        id = userRepository.findByEmail(email).get().getId();
+        tests.jwt = JwtTokenGenerator.generateToken(1L, email, "USER", "");
+    }
 
-   @SneakyThrows
-   @When("user send request to get user")
-   public void userSendRequestToGetUser() {
-       ResultActions resultActions =  mockMvc.perform(get("/api/users/{id}", id)
-               .contentType(MediaType.APPLICATION_JSON_VALUE)
-               .header("Authorization", "Bearer " + tests.jwt)
-               .accept(MediaType.APPLICATION_JSON)
-       ).andExpect(status().isOk());
-       mvcResult = resultActions.andReturn();
-   }
+    @SneakyThrows
+    @When("user send request to get user")
+    public void userSendRequestToGetUser() {
+        ResultActions resultActions = mockMvc.perform(get("/api/users/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tests.jwt)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+        mvcResult = resultActions.andReturn();
+    }
 
-   @Then("response status ok and body user for user getting id")
-   public void responseStatusOkAndBodyUserForUserGetingId() {
+    @Then("response status ok and body user for user getting id")
+    public void responseStatusOkAndBodyUserForUserGetingId() {
         assert mvcResult.getResponse() != null;
         assert HttpStatus.OK.value() == mvcResult.getResponse().getStatus();
-   }
+    }
 }

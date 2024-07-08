@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import rs.edu.raf.StockService.data.dto.SecuritiesPriceDto;
 import rs.edu.raf.StockService.data.entities.Forex;
 import rs.edu.raf.StockService.repositories.ForexRepository;
 import rs.edu.raf.StockService.services.impl.ForexServiceImpl;
@@ -38,8 +39,7 @@ public class ForexServiceTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        ));
+                "Forex1 quoteCurrency"));
         forexes.add(new Forex(
                 "Forex2 Symbol",
                 "Forex2 Description",
@@ -51,8 +51,7 @@ public class ForexServiceTests {
                 2.0,
                 2,
                 "Forex2 baseCurrency",
-                "Forex2 quoteCurrency"
-        ));
+                "Forex2 quoteCurrency"));
     }
 
     @Test
@@ -69,8 +68,7 @@ public class ForexServiceTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        ));
+                "Forex1 quoteCurrency"));
         forexes.add(new Forex(
                 "Forex2 Symbol",
                 "Forex2 Description",
@@ -82,12 +80,9 @@ public class ForexServiceTests {
                 2.0,
                 2,
                 "Forex2 baseCurrency",
-                "Forex2 quoteCurrency"
-        ));
-
+                "Forex2 quoteCurrency"));
 
         when(forexRepository.findAll()).thenReturn(forexes);
-
 
         List<Forex> result = forexService.findAll();
 
@@ -109,8 +104,7 @@ public class ForexServiceTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        );
+                "Forex1 quoteCurrency");
 
         when(forexRepository.findById(1L)).thenReturn(java.util.Optional.of(forex));
 
@@ -131,12 +125,10 @@ public class ForexServiceTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        );
+                "Forex1 quoteCurrency");
         List<Forex> forexes = new ArrayList<>();
         forexes.add(forex);
         when(forexRepository.findForexesByBaseCurrency("Forex1 baseCurrency")).thenReturn(forexes);
-
 
         List<Forex> result = forexService.findByBaseCurrency("Forex1 baseCurrency");
         assertEquals(forex, result.get(0));
@@ -155,14 +147,59 @@ public class ForexServiceTests {
                 1.0,
                 1,
                 "Forex1 baseCurrency",
-                "Forex1 quoteCurrency"
-        );
+                "Forex1 quoteCurrency");
         List<Forex> forexes = new ArrayList<>();
         forexes.add(forex);
         when(forexRepository.findForexesByQuoteCurrency("Forex1 quoteCurrency")).thenReturn(forexes);
 
-
         List<Forex> result = forexService.findByQuoteCurrency("Forex1 quoteCurrency");
         assertEquals(forex, result.get(0));
     }
+
+    @Test
+    public void testFindBySymbol() {
+        Forex forex = new Forex(
+                "Forex1 Symbol",
+                "Forex1 Description",
+                "Forex1 Exchange",
+                1L,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1,
+                "Forex1 baseCurrency",
+                "Forex1 quoteCurrency");
+
+        when(forexRepository.findForexBySymbol("Forex1 Symbol")).thenReturn(forex);
+
+        Forex resultForex = forexService.findBySymbol("Forex1 Symbol");
+
+        assertEquals(forex, resultForex);
+    }
+
+    @Test
+    public void testFindCurrentPriceBySymbol() {
+        Forex forex = new Forex(
+                "Forex1 Symbol",
+                "Forex1 Description",
+                "Forex1 Exchange",
+                1L,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1,
+                "Forex1 baseCurrency",
+                "Forex1 quoteCurrency");
+
+        SecuritiesPriceDto expected = new SecuritiesPriceDto(forex.getPrice(), forex.getHigh(), forex.getLow());
+        when(forexRepository.findForexBySymbol("Forex1 Symbol")).thenReturn(forex);
+
+        SecuritiesPriceDto actual = forexService.findCurrentPriceBySymbol("Forex1 Symbol");
+
+        assertEquals(expected, actual);
+
+    }
+
 }

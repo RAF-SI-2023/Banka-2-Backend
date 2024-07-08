@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class BankStockDto {
-    private Long listingId;
+    private String listingName;
     private String listingType;
 }

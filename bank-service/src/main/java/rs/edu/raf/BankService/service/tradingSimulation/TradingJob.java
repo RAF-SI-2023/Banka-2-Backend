@@ -1,6 +1,8 @@
 package rs.edu.raf.BankService.service.tradingSimulation;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import rs.edu.raf.BankService.data.dto.ExchangeDto;
 import rs.edu.raf.BankService.data.entities.Order;
 

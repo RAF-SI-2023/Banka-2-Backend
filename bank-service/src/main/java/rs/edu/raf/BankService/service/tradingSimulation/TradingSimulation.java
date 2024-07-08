@@ -32,6 +32,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Setter
 public class TradingSimulation implements Runnable {
 
+    private static final Object lock = new Object();
+    private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
     private final TransactionService transactionService;
     private final IAMService iamService;
     private final StockService stockService;
@@ -43,9 +45,6 @@ public class TradingSimulation implements Runnable {
     private final OrderTransactionRepository orderTransactionRepository;
     private final ActionAgentProfitService actionAgentProfitService;
     private Random random = new Random();
-    private static BlockingQueue<TradingJob> tradingJobs = new LinkedBlockingQueue<>();
-    private static final Object lock = new Object();
-
 
     @Override
     public void run() {
@@ -67,19 +66,20 @@ public class TradingSimulation implements Runnable {
             synchronized (TradingSimulation.lock) {
                 if (tradingJob.getOrder().getOrderStatus() != OrderStatus.APPROVED) {
                     tradingJobs.put(tradingJob);
-                    if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent()){
-                           String exchangeAcronym=null;
-                            if(tradingJob.getExchangeDto()!=null)
-                                exchangeAcronym=  tradingJob.getExchangeDto().getExchangeAcronym();
-                            else exchangeAcronym="";
-                        activeTradingJobRepository.save(new ActiveTradingJob(0, tradingJob.getOrder().getId(),exchangeAcronym , tradingJob.getTradingAccountNumber(), tradingJob.getUserRole(), tradingJob.getTotalPriceCalculated(), true));
+                    if (!activeTradingJobRepository.findActiveTradingJobByOrderId(tradingJob.getOrder().getId()).isPresent()) {
+                        String exchangeAcronym = null;
+                        if (tradingJob.getExchangeDto() != null)
+                            exchangeAcronym = tradingJob.getExchangeDto().getExchangeAcronym();
+                        else exchangeAcronym = "";
+                        activeTradingJobRepository.save(new ActiveTradingJob(0, tradingJob.getOrder().getId(), exchangeAcronym, tradingJob.getTradingAccountNumber(), tradingJob.getUserRole(), tradingJob.getTotalPriceCalculated(), true));
                     }
                     continue;
                 }
                 switch (tradingJob.getOrder().getOrderActionType()) {
                     case BUY -> {
-                        System.out.println("Usao u buy "+ tradingJob);
-                        processBuyOrder(tradingJob);}
+                        System.out.println("Usao u buy " + tradingJob);
+                        processBuyOrder(tradingJob);
+                    }
                     case SELL -> processSellToStockMarketOrder(tradingJob);
                 }
             }
@@ -91,33 +91,32 @@ public class TradingSimulation implements Runnable {
     private void processBuyOrder(TradingJob tradingJob) {
         if (tradingJob.getOrder().getOrderActionType() == OrderActionType.BUY &&
                 ((System.currentTimeMillis() - tradingJob.getOrder().getTimeOfLastModification() > 1))) {
-            System.out.println("processBuyOrder"+tradingJob);
+            System.out.println("processBuyOrder" + tradingJob);
             switch (tradingJob.getOrder().getListingType()) {
                 case STOCK -> {
-                    processStockBuyOrder(tradingJob,(ListingDto) fetchSecuritiesByOrder(tradingJob.getOrder()));
+                    processStockBuyOrder(tradingJob, (ListingDto) fetchSecuritiesByOrder(tradingJob.getOrder()));
                 }
                 case FOREX -> {
-                    processForexBuyOrder(tradingJob,(ListingDto)fetchSecuritiesByOrder(tradingJob.getOrder()));
+                    processForexBuyOrder(tradingJob, (ListingDto) fetchSecuritiesByOrder(tradingJob.getOrder()));
                 }
                 case OPTION -> {
-                    processOptionBuyOrder(tradingJob,(OptionDto)fetchSecuritiesByOrder(tradingJob.getOrder()));
+                    processOptionBuyOrder(tradingJob, (OptionDto) fetchSecuritiesByOrder(tradingJob.getOrder()));
                 }
                 case FUTURE -> {
-                    processFutureBuyOrder(tradingJob,(FuturesContractDto)fetchSecuritiesByOrder(tradingJob.getOrder()));
+                    processFutureBuyOrder(tradingJob, (FuturesContractDto) fetchSecuritiesByOrder(tradingJob.getOrder()));
 
-                }            }
+                }
+            }
         }
     }
 
 
-
     // TODO
-    private void processStockBuyOrder(TradingJob buyTradingJob,ListingDto listingDto) {
+    private void processStockBuyOrder(TradingJob buyTradingJob, ListingDto listingDto) {
         System.out.println("Trading started with trading job for order" + buyTradingJob.getOrder().getId());
         // KUPUJEMO DIREKTNO SA BERZE
         // SVAKA BERZA IMA VALUTU U KOJOJ POSLUJE
         Order order = buyTradingJob.getOrder();
-
 
 
         if (listingDto.getVolume() == null) {
@@ -143,9 +142,9 @@ public class TradingSimulation implements Runnable {
         listingDto.setPrice(listingDto.getPrice());
         listingDto.setVolume(mockQuantity(listingDto.getVolume()));
 
-        if(listingDto.getHigh()==null)
+        if (listingDto.getHigh() == null)
             listingDto.setHigh(-1.0);
-        if(listingDto.getLow()==null)
+        if (listingDto.getLow() == null)
             listingDto.setLow(-1.0);
         if (listingDto.getVolume() == -1) {
             try {
@@ -177,7 +176,7 @@ public class TradingSimulation implements Runnable {
 
         //mora i ovo da se updateuje zar ne?
         //trebalo bi da bude unique acc# + securityName as a key
-        System.out.println("still in processStockBuyOrder"+ buyTradingJob);
+        System.out.println("still in processStockBuyOrder" + buyTradingJob);
         List<SecuritiesOwnership> buySecurities = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(buyTradingJob.getTradingAccountNumber(), listingDto.getSymbol());
         if (buySecurities.isEmpty()) {
             //kreiraj
@@ -201,13 +200,15 @@ public class TradingSimulation implements Runnable {
         double totalPrice = quantityToProcess * listingDto.getPrice();
 
         //menjanje valute //TODo Mozda ovde treba da se zamene parametri, proveriti u nekom trenutku
-        totalPrice = currencyExchangeService.calculateAmountBetweenCurrencies(exchangeDto.getCurrency(), account.getCurrencyCode(), totalPrice);
-        //KOME DATI KES? trenutno samo releasuje funds u abyss, tako po specifikaciji
-        transactionService.releaseFunds(account, totalPrice);
+        if (!order.isMargin()) {
+            totalPrice = currencyExchangeService.calculateAmountBetweenCurrencies(exchangeDto.getCurrency(), account.getCurrencyCode(), totalPrice);
+            //KOME DATI KES? trenutno samo releasuje funds u abyss, tako po specifikaciji
+            transactionService.releaseFunds(account, totalPrice);
+        }
         // ...
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         buyerSo.setListingType(order.getListingType());
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity() * buyerSo.getAverageBuyingPrice()) + totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
         System.out.println("\n " + "totalPrice=" + totalPrice + "  averageBuying=" + buyerSo.getAverageBuyingPrice() + ", quantityToProcess=" + quantityToProcess + "  " + "\n");
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
@@ -223,8 +224,8 @@ public class TradingSimulation implements Runnable {
         activeTradingJobRepository.save(atj);
 
 
-        Optional<OrderTransaction> oot= orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
-        OrderTransaction ot=null;
+        Optional<OrderTransaction> oot = orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
+        OrderTransaction ot = null;
         System.out.println("still in processStockBuyOrder creating orderTransaction");
         ot = oot.orElseGet(OrderTransaction::new);
         ot.setOrderId(order.getId());
@@ -233,11 +234,9 @@ public class TradingSimulation implements Runnable {
         ot.setAccountNumber(account.getAccountNumber());
         ot.setPayAmount(buyTradingJob.getTotalPriceCalculated());
         ot.setReservedFunds(account.getReservedFunds());
-        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
+        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated() - account.getReservedFunds());
         ot.setPayoffAmount(0.0);
         orderTransactionRepository.save(ot);
-
-
 
 
         try {
@@ -253,7 +252,7 @@ public class TradingSimulation implements Runnable {
 
     // TODO pp da je logika za stock=forex, a zabranjeno u endpointu
     private void processForexBuyOrder(TradingJob tradingJob, ListingDto listingDto) {
-        processStockBuyOrder(tradingJob,listingDto);
+        processStockBuyOrder(tradingJob, listingDto);
     }
 
 
@@ -264,39 +263,56 @@ public class TradingSimulation implements Runnable {
         System.out.println("Ulazi u prodjau stocka na stock marketu " + tradingJob.getOrder());
         Order order = tradingJob.getOrder();
         Object listingDto = fetchSecuritiesByOrder(order);
-        ExchangeDto exchangeDto=null;
+        ExchangeDto exchangeDto = null;
         System.out.println("fetched listing dto" + listingDto);
-        double price=0;
-        String symbol=null;
-        if(order.getListingType()==(ListingType.STOCK) || order.getListingType()==ListingType.FOREX){
-            price=((ListingDto)listingDto).getPrice();
-            symbol=((ListingDto) listingDto).getSymbol();
-          exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto)listingDto).getExchange());
+        double price = 0;
+        String symbol = null;
+        if (order.getListingType() == (ListingType.STOCK) || order.getListingType() == ListingType.FOREX) {
+            price = ((ListingDto) listingDto).getPrice();
+            symbol = ((ListingDto) listingDto).getSymbol();
+            exchangeDto = fetchExchangeByExchangeAcronym(((ListingDto) listingDto).getExchange());
         }
         //sanity check da moze da se prodaje samo stock i forex
         if (price == 0 || symbol == null) {
             System.out.println("sanity check failed " + price + symbol);
             return;
         }
+        boolean doNotProcessOrder =
+                (order.isAllOrNone() && ((ListingDto) listingDto).getVolume() < (order.getQuantity() - order.getRealizedQuantity())) ||
+                        (order.isAllOrNone() && (order.getQuantity() > ((ListingDto) listingDto).getVolume())) ||
+                        !checkLimitPrice(order, ((ListingDto) listingDto).getLow(), ((ListingDto) listingDto).getHigh()) ||
+                        !checkStopPrice(order, ((ListingDto) listingDto).getLow(), ((ListingDto) listingDto).getHigh());
+
+        if (doNotProcessOrder) {
+            try {
+                order.setTimeOfLastModification(System.currentTimeMillis());
+                orderRepository.save(order);
+                tradingJobs.put(tradingJob);
+                System.out.println("Its do not process order");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
 
         if (!order.isDone() && order.getQuantity() - order.getRealizedQuantity() > 0) {
             double amountToReceive = (order.getQuantity() - order.getRealizedQuantity()) * price;
-           CashAccount ca= cashAccountRepository.findByAccountNumber(tradingJob.getTradingAccountNumber());
+            CashAccount ca = cashAccountRepository.findByAccountNumber(tradingJob.getTradingAccountNumber());
             amountToReceive = currencyExchangeService.calculateAmountBetweenCurrencies(exchangeDto.getCurrency(), ca.getCurrencyCode(), amountToReceive);
 
-            transactionService.addFunds(ca, amountToReceive*0.85); //sebi ostaje 85% valjda je izracunavanje dobro
+            transactionService.addFunds(ca, amountToReceive * 0.85); //sebi ostaje 85% valjda je izracunavanje dobro
             List<SecuritiesOwnership> so = securitiesOwnershipRepository.findAllByAccountNumberAndSecuritiesSymbol(tradingJob.getTradingAccountNumber(), symbol);
             if (so.size() == 1) {
                 SecuritiesOwnership securitiesOwnership = so.get(0);
                 securitiesOwnership.setQuantity(securitiesOwnership.getQuantity() - (order.getQuantity() - order.getRealizedQuantity()));
-                if(securitiesOwnership.getQuantityOfPubliclyAvailable()>securitiesOwnership.getQuantity()){
+                if (securitiesOwnership.getQuantityOfPubliclyAvailable() > securitiesOwnership.getQuantity()) {
                     securitiesOwnership.setQuantityOfPubliclyAvailable(0);
                 }
             } else {
                 //ovde je greska?
                 SecuritiesOwnership securitiesOwnership = so.get(0);
                 securitiesOwnership.setQuantity(securitiesOwnership.getQuantity() - (order.getQuantity() - order.getRealizedQuantity()));
-                if(securitiesOwnership.getQuantityOfPubliclyAvailable()>securitiesOwnership.getQuantity()){
+                if (securitiesOwnership.getQuantityOfPubliclyAvailable() > securitiesOwnership.getQuantity()) {
                     securitiesOwnership.setQuantityOfPubliclyAvailable(0);
                 }
                 throw new RuntimeException("Something might've went wrong! during selling of stock");
@@ -307,7 +323,7 @@ public class TradingSimulation implements Runnable {
             ActiveTradingJob atj = activeTradingJobRepository.findActiveTradingJobByOrderId(order.getId()).get();
             atj.setActive(false);
             activeTradingJobRepository.save(atj);
-            OrderTransaction ot=null;
+            OrderTransaction ot = null;
             ot = new OrderTransaction();
             ot.setOrderId(order.getId());
             ot.setDate(System.currentTimeMillis());
@@ -316,11 +332,12 @@ public class TradingSimulation implements Runnable {
             ot.setPayAmount(0.0);
             ot.setReservedFunds(0.0);
             ot.setUsedOfReservedFunds(0.0);
-            ot.setPayoffAmount(amountToReceive*0.85);
+            ot.setPayoffAmount(amountToReceive * 0.85);
             orderTransactionRepository.save(ot);
 
-            //TODO
-            actionAgentProfitService.createAgentProfit(ot,so.get(0),order.getRealizedQuantity());
+            if (order.isOwnedByBank()) {
+                actionAgentProfitService.createAgentProfit(ot, so.get(0), order.getRealizedQuantity());
+            }
         }
 
         //TODO
@@ -334,8 +351,8 @@ public class TradingSimulation implements Runnable {
 
     // TODO U ELSE STAVITI CLOSED KAD SE BUDE POKAZIVAALOL
     private WorkingHoursStatus getWorkingHoursForStock(ExchangeDto exchangeDto) {
-        int hours=LocalDateTime.now().plus(exchangeDto.getTimeZone(), ChronoUnit.HOURS).getHour();
-        if(hours>9 && hours<16)
+        int hours = LocalDateTime.now().plus(exchangeDto.getTimeZone(), ChronoUnit.HOURS).getHour();
+        if (hours > 9 && hours < 16)
             return WorkingHoursStatus.OPENED;
         else return WorkingHoursStatus.OPENED;
 
@@ -356,9 +373,6 @@ public class TradingSimulation implements Runnable {
         }
         return exchangeDto;
     }
-
-
-
 
 
     private Double calculateTotalPrice(ListingDto listingDto, Order order) {
@@ -414,7 +428,8 @@ public class TradingSimulation implements Runnable {
     }
 
     private boolean checkLimitPrice(Order order, double low, double high) {
-        return order.getLimitPrice() == -1 ||
+        return order.getLimitPrice() == -1  //false
+                ||
                 ((order.getOrderActionType() == OrderActionType.SELL) ? low > order.getLimitPrice() : high < order.getLimitPrice());
 
     }
@@ -423,7 +438,6 @@ public class TradingSimulation implements Runnable {
         return order.getStopPrice() == -1 ||
                 ((order.getOrderActionType() == OrderActionType.SELL) ? low < order.getStopPrice() : high > order.getStopPrice());
     }
-
 
 
     private void processOptionBuyOrder(TradingJob buyTradingJob, OptionDto optionDto) {
@@ -441,14 +455,14 @@ public class TradingSimulation implements Runnable {
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
             so.setSecuritiesSymbol(order.getListingSymbol());
-            so.setOwnedByBank( account.isOwnedByBank());
+            so.setOwnedByBank(account.isOwnedByBank());
             so.setQuantityOfPubliclyAvailable(0);
             so.setAverageBuyingPrice(0.0);
             securitiesOwnershipRepository.save(so);
             buySecurities.add(so);
         }
         //uzece najmanje koji buy moze da kupi ili sell moze da proda
-        Integer quantityToProcess = Math.min(new Random().nextInt(5,150), order.getQuantity() - order.getRealizedQuantity());
+        Integer quantityToProcess = Math.min(new Random().nextInt(5, 150), order.getQuantity() - order.getRealizedQuantity());
 
         double totalPrice = quantityToProcess * optionDto.getStrikePrice();
         totalPrice = currencyExchangeService.calculateAmountBetweenCurrencies(optionDto.getCurrency(), account.getCurrencyCode(), totalPrice);
@@ -457,7 +471,7 @@ public class TradingSimulation implements Runnable {
 
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         buyerSo.setListingType(order.getListingType());
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity() * buyerSo.getAverageBuyingPrice()) + totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
@@ -472,8 +486,8 @@ public class TradingSimulation implements Runnable {
         activeTradingJobRepository.save(atj);
 
 
-        Optional<OrderTransaction> oot= orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
-        OrderTransaction ot=null;
+        Optional<OrderTransaction> oot = orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
+        OrderTransaction ot = null;
         ot = oot.orElseGet(OrderTransaction::new);
         ot.setOrderId(order.getId());
         ot.setDate(System.currentTimeMillis());
@@ -481,7 +495,7 @@ public class TradingSimulation implements Runnable {
         ot.setAccountNumber(account.getAccountNumber());
         ot.setPayAmount(buyTradingJob.getTotalPriceCalculated());
         ot.setReservedFunds(account.getReservedFunds());
-        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
+        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated() - account.getReservedFunds());
         ot.setPayoffAmount(0.0);
         orderTransactionRepository.save(ot);
         try {
@@ -506,14 +520,14 @@ public class TradingSimulation implements Runnable {
             so.setEmail(cashAccountRepository.findByAccountNumber(buyTradingJob.getTradingAccountNumber()).getEmail());
             so.setQuantity(0);
             so.setSecuritiesSymbol(order.getListingSymbol());
-            so.setOwnedByBank( account.isOwnedByBank());
+            so.setOwnedByBank(account.isOwnedByBank());
             so.setAverageBuyingPrice(0.0);
             so.setQuantityOfPubliclyAvailable(0);
             securitiesOwnershipRepository.save(so);
             buySecurities.add(so);
         }
         //uzece najmanje koji buy moze da kupi ili sell moze da proda
-        Integer quantityToProcess = Math.min(new Random().nextInt(5,150), order.getQuantity() - order.getRealizedQuantity());
+        Integer quantityToProcess = Math.min(new Random().nextInt(5, 150), order.getQuantity() - order.getRealizedQuantity());
 
         double totalPrice = quantityToProcess * futuresContractDto.getFuturesContractPrice();
         totalPrice = currencyExchangeService.calculateAmountBetweenCurrencies("RSD", account.getCurrencyCode(), totalPrice);
@@ -522,7 +536,7 @@ public class TradingSimulation implements Runnable {
 
         SecuritiesOwnership buyerSo = buySecurities.get(0);
         buyerSo.setListingType(order.getListingType());
-        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity()*buyerSo.getAverageBuyingPrice())+totalPrice) /( buyerSo.getQuantity() + quantityToProcess));
+        buyerSo.setAverageBuyingPrice(((buyerSo.getQuantity() * buyerSo.getAverageBuyingPrice()) + totalPrice) / (buyerSo.getQuantity() + quantityToProcess));
         buyerSo.setQuantity(buyerSo.getQuantity() + quantityToProcess);
         securitiesOwnershipRepository.save(buyerSo);
         //update-ujem ordere tako da se gleda i realizovani quantity za slucaj da se samo deo ordera zavrsi
@@ -537,8 +551,8 @@ public class TradingSimulation implements Runnable {
         activeTradingJobRepository.save(atj);
 
 
-        Optional<OrderTransaction> oot= orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
-        OrderTransaction ot=null;
+        Optional<OrderTransaction> oot = orderTransactionRepository.findOrderTransactionByOrderId(order.getId());
+        OrderTransaction ot = null;
         ot = oot.orElseGet(OrderTransaction::new);
         ot.setOrderId(order.getId());
         ot.setDate(System.currentTimeMillis());
@@ -546,7 +560,7 @@ public class TradingSimulation implements Runnable {
         ot.setAccountNumber(account.getAccountNumber());
         ot.setPayAmount(buyTradingJob.getTotalPriceCalculated());
         ot.setReservedFunds(account.getReservedFunds());
-        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated()- account.getReservedFunds());
+        ot.setUsedOfReservedFunds(buyTradingJob.getTotalPriceCalculated() - account.getReservedFunds());
         ot.setPayoffAmount(0.0);
         orderTransactionRepository.save(ot);
         try {
@@ -556,7 +570,6 @@ public class TradingSimulation implements Runnable {
             throw new RuntimeException(e);
         }
         System.out.println("trading job done");
-
 
 
     }

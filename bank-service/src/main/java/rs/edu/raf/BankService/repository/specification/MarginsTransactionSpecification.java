@@ -21,14 +21,11 @@ public class MarginsTransactionSpecification {
         return (root, query, criteriaBuilder) -> {
             if (startDate != null && endDate != null) {
                 return criteriaBuilder.between(root.get("createdAt"), startDate, endDate);
-            }
-            else if (startDate != null) {
+            } else if (startDate != null) {
                 return criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), startDate);
-            }
-            else if (endDate != null) {
+            } else if (endDate != null) {
                 return criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate);
-            }
-            else {
+            } else {
                 return criteriaBuilder.conjunction();
             }
         };

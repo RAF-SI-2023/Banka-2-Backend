@@ -2,19 +2,19 @@ package rs.edu.raf.BankService.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import rs.edu.raf.BankService.data.dto.SecuritiesOwnershipDto;
 import rs.edu.raf.BankService.data.entities.SecuritiesOwnership;
+import rs.edu.raf.BankService.data.entities.accounts.CashAccount;
 import rs.edu.raf.BankService.data.enums.ListingType;
 import rs.edu.raf.BankService.exception.AccountNotFoundException;
 import rs.edu.raf.BankService.mapper.SecuritiesOwnershipMapper;
+import rs.edu.raf.BankService.repository.CashAccountRepository;
 import rs.edu.raf.BankService.repository.SecuritiesOwnershipRepository;
 import rs.edu.raf.BankService.service.SecuritiesOwnershipService;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +23,7 @@ public class SecuritiesOwnershipServiceImpl implements SecuritiesOwnershipServic
 
     public final SecuritiesOwnershipRepository securitiesOwnershipRepository;
     public final SecuritiesOwnershipMapper mapper;
+    public final CashAccountRepository cashAccountRepository;
 
     public List<SecuritiesOwnershipDto> getSecurityOwnershipsForAccountNumber(String accountNumber) {
         return securitiesOwnershipRepository.findAllByAccountNumber(accountNumber).stream().map(mapper::toDto).toList();
@@ -87,4 +88,17 @@ public class SecuritiesOwnershipServiceImpl implements SecuritiesOwnershipServic
         return valuesMap;
     }
 
+    @Override
+    public List<SecuritiesOwnershipDto> getBanksPubliclyAvailableSecurities() {
+        CashAccount cashAccount = cashAccountRepository.findPrimaryTradingAccount(null);
+        if (cashAccount == null) throw new NotFoundException("Banks account not found.");
+        List<SecuritiesOwnership> securities = securitiesOwnershipRepository.findAllByAccountNumber(cashAccount.getAccountNumber());
+        List<SecuritiesOwnershipDto> publicSecurities = new ArrayList<>();
+        for (SecuritiesOwnership securitiesOwnership : securities) {
+            if (securitiesOwnership.getQuantityOfPubliclyAvailable() > 0) {
+                publicSecurities.add(mapper.toDto(securitiesOwnership));
+            }
+        }
+        return publicSecurities;
+    }
 }

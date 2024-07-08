@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import rs.edu.raf.BankService.data.entities.transactions.OrderTransaction;
 import rs.edu.raf.BankService.repository.OrderTransactionRepository;
 import rs.edu.raf.BankService.service.OrderTransactionService;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-public class FindAllOrderTransactionsIntegrationTest extends OrderTransactionIntegrationTestConfig{
+public class FindAllOrderTransactionsIntegrationTest extends OrderTransactionIntegrationTestConfig {
     @Autowired
     private OrderTransactionRepository orderTransactionRepository;
 
@@ -33,17 +34,17 @@ public class FindAllOrderTransactionsIntegrationTest extends OrderTransactionInt
 
     @Given("there is one order transaction")
     public void thereIsOrderTransactions() {
-        testOrderTransaction=new OrderTransaction();
+        testOrderTransaction = new OrderTransaction();
         orderTransactionRepository.save(testOrderTransaction);
     }
 
     @When("I request all order transactions")
     public void iRequestAllOrderTransactions() {
-        foundOrderTransactions=orderTransactionService.findAll();
+        foundOrderTransactions = orderTransactionService.findAll();
     }
 
     @Then("I should receive one order transaction")
     public void iShouldReceiveOrderTransaction() {
-        assertEquals(1,foundOrderTransactions.size());
+        assertEquals(1, foundOrderTransactions.size());
     }
 }

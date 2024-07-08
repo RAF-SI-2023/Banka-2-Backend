@@ -50,7 +50,6 @@ public class ActionAgentProfitServiceImplTest {
     private ActionAgentProfitServiceImpl actionAgentProfitService;
 
 
-
     @Test
     void createAgentProfit_shouldCreateProfitForSecuritiesTransaction() {
         // Arrange

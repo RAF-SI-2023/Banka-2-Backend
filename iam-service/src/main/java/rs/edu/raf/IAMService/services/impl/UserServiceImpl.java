@@ -294,18 +294,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean reduceAgentLimit(Integer id, Double amount) {
-       Optional<User> u= userRepository.findById(id);
-       Agent agent=null;
-       if(u.isPresent() && u.get() instanceof Agent){
-           agent= (Agent) u.get();
-       }
-       else return false;
+        Optional<User> u = userRepository.findById(id);
+        Agent agent = null;
+        if (u.isPresent() && u.get() instanceof Agent) {
+            agent = (Agent) u.get();
+        } else return false;
 
-       agent.setLeftOfLimit(agent.getLeftOfLimit().subtract(BigDecimal.valueOf(amount)));
-       if(agent.getLeftOfLimit().signum()>=0){
-           userRepository.save(agent);
-           return true;
-       }
+        agent.setLeftOfLimit(agent.getLeftOfLimit().subtract(BigDecimal.valueOf(amount)));
+        if (agent.getLeftOfLimit().signum() >= 0) {
+            userRepository.save(agent);
+            return true;
+        }
 
         return false;
     }

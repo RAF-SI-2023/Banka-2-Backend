@@ -15,15 +15,12 @@ import static org.junit.Assert.assertEquals;
 public class CardServiceImplSteps extends CardServiceImplTestsConfig {
 
 
-    private CardService cardService;
     ResponseEntity<?> responseEntity;
-
     String accountNumber;
     CreateCardDto brandNewCreatedCardDto;
-
-    private CardMapper cardMapper;
-
     Long cardId;
+    private CardService cardService;
+    private CardMapper cardMapper;
 
     public CardServiceImplSteps(CardService cardService, CardMapper cardMapper) {
         this.cardService = cardService;

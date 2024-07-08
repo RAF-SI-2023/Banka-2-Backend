@@ -25,16 +25,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CreditControllerTestSteps extends CreditControllerConfigTests {
+    Object response;
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private CreditControllerStateTests userControllerTestsState;
-
-    Object response;
 
     @Given("user is logged in as employee;")
     public void userIsLoggedInAsEmployee() {
@@ -57,8 +54,7 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + userControllerTestsState.jwt)
-                            .content(objectMapper.writeValueAsString(creditRequestDto))
-            );
+                            .content(objectMapper.writeValueAsString(creditRequestDto)));
             MvcResult mvcResult = resultActions.andReturn();
             response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CreditRequestDto.class);
         } catch (Exception e) {
@@ -70,18 +66,17 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
     public void creditRequestIsCreatedAndWeCanSeeItInTheListOfCreditRequests() {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("http://localhost:8003/api/credit/credit-requests/all-pending")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + userControllerTestsState.jwt)
-            ).andExpect(status().isOk());
+                            get("http://localhost:8003/api/credit/credit-requests/all-pending")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + userControllerTestsState.jwt))
+                    .andExpect(status().isOk());
 
             MvcResult mvcResult = resultActions.andReturn();
 
-            List<CreditRequestDto> response = objectMapper.
-                    readValue(mvcResult.getResponse().getContentAsString(),
-                            new TypeReference<List<CreditRequestDto>>() {
-                            });
+            List<CreditRequestDto> response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                    new TypeReference<List<CreditRequestDto>>() {
+                    });
             assertTrue(response.contains(this.response));
 
         } catch (Exception e) {
@@ -100,12 +95,12 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
         creditRequestDto.setPaymentPeriodMonths(12L);
         try {
             ResultActions resultActions = mockMvc.perform(
-                    post("http://localhost:8003/api/credit/credit-requests/create")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + userControllerTestsState.jwt)
-                            .content(objectMapper.writeValueAsString(creditRequestDto))
-            ).andExpect(status().isOk());
+                            post("http://localhost:8003/api/credit/credit-requests/create")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + userControllerTestsState.jwt)
+                                    .content(objectMapper.writeValueAsString(creditRequestDto)))
+                    .andExpect(status().isOk());
             MvcResult mvcResult = resultActions.andReturn();
             response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CreditRequestDto.class);
         } catch (Exception e) {
@@ -113,12 +108,12 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
         }
     }
 
-
     @When("user approves credit request;")
     public void userApprovesCreditRequest() {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    post("http://localhost:8003/api/credit//credit-requests/approve-and-create/" + ((CreditRequestDto) response).getId())
+                    post("http://localhost:8003/api/credit//credit-requests/approve-and-create/"
+                            + ((CreditRequestDto) response).getId())
 
                             .accept(MediaType.APPLICATION_JSON)
                             .header("Authorization", "Bearer " + userControllerTestsState.jwt)
@@ -135,18 +130,18 @@ public class CreditControllerTestSteps extends CreditControllerConfigTests {
     public void creditRequestIsApprovedAndWeCanSeeCreditInTheListOfApprovedCreditsForTheClient() {
         try {
             ResultActions resultActions = mockMvc.perform(
-                    get("http://localhost:8003/api/credit/all/account-number/" + ((CreditDto) response).getAccountNumber())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header("Authorization", "Bearer " + userControllerTestsState.jwt)
-            ).andExpect(status().isOk());
+                            get("http://localhost:8003/api/credit/all/account-number/"
+                                    + ((CreditDto) response).getAccountNumber())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                                    .header("Authorization", "Bearer " + userControllerTestsState.jwt))
+                    .andExpect(status().isOk());
 
             MvcResult mvcResult = resultActions.andReturn();
 
-            List<CreditDto> response = objectMapper.
-                    readValue(mvcResult.getResponse().getContentAsString(),
-                            new TypeReference<List<CreditDto>>() {
-                            });
+            List<CreditDto> response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                    new TypeReference<List<CreditDto>>() {
+                    });
             assertTrue(response.contains(this.response));
 
         } catch (Exception e) {

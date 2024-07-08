@@ -19,22 +19,22 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- *     Ova klasa ce da se runnuje prilikom pokretanja maven test komande
- *     ----------------------------------------------------------------
- *     PODACI ISPOD SU TESTNI PODACI
- *     PODACI ISPOD SU TESTNI PODACI
- *     PODACI ISPOD SU TESTNI PODACI
- *     PODACI ISPOD SU TESTNI PODACI
- *     ----------------------------------------------------------------
- *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
- *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
- *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
- *     NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
- *     ----------------------------------------------------------------
- *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
- *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
- *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
- *     DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
+ * Ova klasa ce da se runnuje prilikom pokretanja maven test komande
+ * ----------------------------------------------------------------
+ * PODACI ISPOD SU TESTNI PODACI
+ * PODACI ISPOD SU TESTNI PODACI
+ * PODACI ISPOD SU TESTNI PODACI
+ * PODACI ISPOD SU TESTNI PODACI
+ * ----------------------------------------------------------------
+ * NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
+ * NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
+ * NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
+ * NIJE DOZVOLJENO MENJANJE POSTOJEĆIH PODATAKA !!!!!!!!!!!!!!!
+ * ----------------------------------------------------------------
+ * DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
+ * DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
+ * DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
+ * DOZVOLJENO JE DODAVANJE NOVIH PODATAKA !!!!!!!!!!!!!!!
  */
 
 @Component
@@ -42,19 +42,18 @@ import java.util.List;
 @Profile("test")
 public class BootstrapTestData implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapTestData.class);
+    private static final Object lock = new Object();
+    private static Boolean alreadySetup = false;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepository companyRepository;
 
-    private static Boolean alreadySetup = false;
-    private static final Object lock = new Object();
-
     @Override
     public void run(String... args) throws Exception {
 
-        synchronized (lock){
+        synchronized (lock) {
             if (alreadySetup) {
                 return;
             }

@@ -35,7 +35,6 @@ class CompanyServiceImplTest {
     private CompanyServiceImpl companyService;
 
 
-
     @Test
     void createCompany_Success() {
         // Mocking data
@@ -105,7 +104,7 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void deleteCompanyById_Success(){
+    void deleteCompanyById_Success() {
 
         Long id = Long.valueOf(1);
 
@@ -113,7 +112,7 @@ class CompanyServiceImplTest {
 
         Company company = null;
         Optional<Company> optionalCompany = companyRepository.findById(id);
-        if (optionalCompany.isPresent()){
+        if (optionalCompany.isPresent()) {
             company = optionalCompany.get();
         }
 
@@ -123,9 +122,8 @@ class CompanyServiceImplTest {
     }
 
 
-
     @Test
-    void updateCompany_CompanyExists(){
+    void updateCompany_CompanyExists() {
         Company company = new Company(1L, "name", "num", "num", "adr", 1L, 1, 1, 1);
         CompanyDto companyDto = new CompanyDto(1L, "name", "num", "num", 1L, 1, 1, 1, "adr");
 
@@ -141,7 +139,7 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void updateCompany_CompanyDoesNotExist_throwException(){
+    void updateCompany_CompanyDoesNotExist_throwException() {
         Company company = new Company(1L, "a", "a", "a", "a", 1L, 1, 1, 1);
         CompanyDto companyDto = new CompanyDto(1L, "a", "a", "a", 1L, 1, 1, 1, "a");
 
@@ -150,7 +148,7 @@ class CompanyServiceImplTest {
         assertThrows(CompanyNotFoundException.class, () -> companyService.updateCompany(companyDto));
         verify(companyRepository).findById(anyLong());
     }
-  
+
     void getCompanyById_Success() {
         // Mocking data
         Optional<Company> company = Optional.of(new Company());

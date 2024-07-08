@@ -1,10 +1,8 @@
 package rs.edu.raf.BankService.data.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.edu.raf.BankService.data.entities.exchangeCurrency.ExchangeTransferTransactionDetails;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +16,6 @@ public class BankTransferTransactionDetailsDto {
     private double amount; //kolicina novca
     private double totalProfit; //ukupan profit
     private Long TransferTransactionDetailsId;
-
 
 
 }

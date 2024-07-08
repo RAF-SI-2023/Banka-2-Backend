@@ -53,6 +53,8 @@ public class TransferTransactionE2ETests {
     private RabbitTemplate rabbitTemplate;
 
     private Long transactionId;
+    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
+    private String myEmail1;
 
     @Transactional
     @Test
@@ -71,13 +73,13 @@ public class TransferTransactionE2ETests {
                         post("http://localhost:8003/api/transaction/internal")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(requestDto))
-                )
+                                .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
         String responseBody = mvcResult.getResponse().getContentAsString();
-        InternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody, InternalTransferTransactionDto.class);
+        InternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody,
+                InternalTransferTransactionDto.class);
 
         assertEquals(responseDto.getStatus(), TransactionStatus.CONFIRMED);
 
@@ -87,29 +89,25 @@ public class TransferTransactionE2ETests {
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 9000L);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 11000L);
 
-        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository
+                .findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.CONFIRMED);
     }
-    @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
-    private String myEmail1;
+
     @Transactional
     @Test
     public void checkTransactionHistoryByEmail_Success() throws Exception {
-
         String email = myEmail1;
-
         ResultActions resultActions = mockMvc.perform(
                         get("http://localhost:8003/api/transaction/funds-transfer-by-email/" + email)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                )
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
-        MockHttpServletResponse responseCardNumber = mvcResult.getResponse();
-        assertEquals(0, (1-1));
-//        assertEquals(MockHttpServletResponse.SC_OK, responseCardNumber.getStatus());
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(MockHttpServletResponse.SC_OK, response.getStatus());
     }
 
     @Transactional
@@ -129,13 +127,13 @@ public class TransferTransactionE2ETests {
                         post("http://localhost:8003/api/transaction/internal")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(requestDto))
-                )
+                                .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
         String responseBody = mvcResult.getResponse().getContentAsString();
-        InternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody, InternalTransferTransactionDto.class);
+        InternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody,
+                InternalTransferTransactionDto.class);
 
         assertEquals(responseDto.getStatus(), TransactionStatus.DECLINED);
 
@@ -145,7 +143,8 @@ public class TransferTransactionE2ETests {
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository
+                .findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.DECLINED);
     }
@@ -167,13 +166,13 @@ public class TransferTransactionE2ETests {
                         post("http://localhost:8003/api/transaction/external")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(requestDto))
-                )
+                                .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
         String responseBody = mvcResult.getResponse().getContentAsString();
-        ExternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody, ExternalTransferTransactionDto.class);
+        ExternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody,
+                ExternalTransferTransactionDto.class);
 
         assertEquals(responseDto.getStatus(), TransactionStatus.PENDING);
 
@@ -183,7 +182,8 @@ public class TransferTransactionE2ETests {
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 10000);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository
+                .findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.PENDING);
     }
@@ -205,14 +205,14 @@ public class TransferTransactionE2ETests {
                         post("http://localhost:8003/api/transaction/external")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(requestDto))
-                )
+                                .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
         String responseBody = mvcResult.getResponse().getContentAsString();
 
-        InternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody, InternalTransferTransactionDto.class);
+        InternalTransferTransactionDto responseDto = objectMapper.readValue(responseBody,
+                InternalTransferTransactionDto.class);
 
         assertEquals(responseDto.getStatus(), TransactionStatus.DECLINED);
 
@@ -222,7 +222,8 @@ public class TransferTransactionE2ETests {
         assertEquals(updatedSenderCashAccount.getAvailableBalance(), 1000L);
         assertEquals(updatedReceiverCashAccount.getAvailableBalance(), 10000L);
 
-        Optional<TransferTransaction> transaction = cashTransactionRepository.findById(Long.valueOf(responseDto.getId()));
+        Optional<TransferTransaction> transaction = cashTransactionRepository
+                .findById(Long.valueOf(responseDto.getId()));
         assertTrue(transaction.isPresent());
         assertEquals(transaction.get().getStatus(), TransactionStatus.DECLINED);
     }
@@ -234,8 +235,7 @@ public class TransferTransactionE2ETests {
 
         ResultActions resultActions = mockMvc.perform(
                         patch("http://localhost:8003/api/transaction/verify/"
-                                + transactionId + "?verificationToken=11111")
-                )
+                                + transactionId + "?verificationToken=11111"))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
@@ -263,8 +263,7 @@ public class TransferTransactionE2ETests {
 
         ResultActions resultActions = mockMvc.perform(
                         patch("http://localhost:8003/api/transaction/verify/"
-                                + transactionId + "?verificationToken=invalidToken")
-                )
+                                + transactionId + "?verificationToken=invalidToken"))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
@@ -286,9 +285,9 @@ public class TransferTransactionE2ETests {
     }
 
     private void transactionSetup(Long senderBalance,
-                                          Long receiverBalance,
-                                          String senderEmail,
-                                          String receiverEmail) {
+                                  Long receiverBalance,
+                                  String senderEmail,
+                                  String receiverEmail) {
         CashAccount testSenderCashAccount = createTestAccount(
                 "111",
                 senderEmail,

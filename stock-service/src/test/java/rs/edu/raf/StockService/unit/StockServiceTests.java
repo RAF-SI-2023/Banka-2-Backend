@@ -24,7 +24,7 @@ public class StockServiceTests {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         List<Stock> stocks = new ArrayList<>();
 
         stocks.add(new Stock(
@@ -38,8 +38,7 @@ public class StockServiceTests {
                 1.0,
                 1,
                 1,
-                1.0
-        ));
+                1.0));
         stocks.add(new Stock(
                 "Stock2 Symbol",
                 "Stock2 Description",
@@ -51,8 +50,7 @@ public class StockServiceTests {
                 2.0,
                 2,
                 2,
-                2.0
-        ));
+                2.0));
     }
 
     @Test
@@ -70,8 +68,7 @@ public class StockServiceTests {
                 1.0,
                 1,
                 1,
-                1.0
-        ));
+                1.0));
         stocks.add(new Stock(
                 "Stock2 Symbol",
                 "Stock2 Description",
@@ -83,12 +80,9 @@ public class StockServiceTests {
                 2.0,
                 2,
                 2,
-                2.0
-        ));
-
+                2.0));
 
         when(stockRepository.findAll()).thenReturn(stocks);
-
 
         List<Stock> result = stockService.findAll();
 
@@ -110,8 +104,7 @@ public class StockServiceTests {
                 1.0,
                 1,
                 1,
-                1.0
-        );
+                1.0);
 
         when(stockRepository.findById(1L)).thenReturn(java.util.Optional.of(stock));
 
@@ -132,12 +125,10 @@ public class StockServiceTests {
                 1.0,
                 1,
                 1,
-                1.0
-        );
+                1.0);
         List<Stock> stocks = new ArrayList<>();
         stocks.add(stock);
         when(stockRepository.findStocksBySymbol("Stock1 Symbol")).thenReturn(stocks);
-
 
         List<Stock> result = stockService.findBySymbolDEPRICATED("Stock1 Symbol");
         assertEquals(stock, result.get(0));

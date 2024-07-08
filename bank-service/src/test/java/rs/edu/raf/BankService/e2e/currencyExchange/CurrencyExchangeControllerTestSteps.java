@@ -28,18 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class CurrencyExchangeControllerTestSteps extends CurrencyExchangeControllerConfigTests {
 
+    DomesticCurrencyCashAccount domesticCurrencyAccount1;
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private CurrencyExchangeControllerStateTests currencyExchangeControllerStateTests;
-
     private MockHttpServletResponse responseEntity;
-    DomesticCurrencyCashAccount domesticCurrencyAccount1;
-
     @Value("${MY_EMAIL_1:lukapavlovic032@gmail.com}")
     private String myEmail1;
 

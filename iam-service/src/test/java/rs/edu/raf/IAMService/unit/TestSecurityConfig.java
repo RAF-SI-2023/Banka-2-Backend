@@ -12,9 +12,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class TestSecurityConfig {
 
     /**
-
-    Ovo nek menja svako po potrebi, u zavisnosti od rola
-
+     * Ovo nek menja svako po potrebi, u zavisnosti od rola
      **/
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import rs.edu.raf.StockService.data.dto.FuturesContractDto;
 import rs.edu.raf.StockService.data.entities.FuturesContract;
 
-import java.util.Random;
-
 @Component
 public class FuturesContractMapper {
 
